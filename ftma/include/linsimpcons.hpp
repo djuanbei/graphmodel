@@ -32,6 +32,7 @@ struct Constraint{
     right=r;
     rhs=rh;
   }
+    
 
   friend  std::ostream& operator << (  std::ostream & os,  const Constraint & cons ){
     if ( cons.isStrct ){

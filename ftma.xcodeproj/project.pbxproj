@@ -24,7 +24,7 @@
 
 /* Begin PBXFileReference section */
 		F9911708224DC7F400CAABBC /* ftma */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ftma; sourceTree = BUILT_PRODUCTS_DIR; };
-		F991170B224DC7F400CAABBC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F991170B224DC7F400CAABBC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F9911717224DCD3200CAABBC /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
