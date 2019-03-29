@@ -15,11 +15,12 @@
 #ifndef __DBM__HPP
 #define __DBM__HPP
 #include <cstring>
-
+#include <cstdint>
 #include <algorithm>
 #include <limits>
+#include <set>
 
-
+#include "fastHash.h"
 
 namespace ftmd{
   using namespace std;
@@ -71,6 +72,10 @@ namespace ftmd{
       C* newD=new C[ size ](  );
       memcpy( newD, D, sizeof( C )*size );
       return  newD;
+    }
+    
+    uint32_t getHashValue( const C* D ) const{
+      return FastHash( ( char* )D,  sizeof( C )*size );
     }
     
     /**
@@ -352,9 +357,10 @@ namespace ftmd{
       }
       return D;
     }
-    
+   
     void split(const C* D,  const vector<Cons> &Gd,   vector<C*> &re  ){
       deleteVectorM( re );
+      set<uint32_t> passed;
       
       vector<C*> waitS;
       re.push_back( newMatrix(D) );
