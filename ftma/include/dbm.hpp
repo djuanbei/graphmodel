@@ -370,12 +370,30 @@ namespace ftmd{
         for ( typename vector<C*>::iterator dit =re.begin(  ); dit!= re.end(  ); dit++ ){
           
           if( isSatisfied(*dit, *cit ) && isSatisfied( *dit, (*cit).neg(  ) )  ){
-            
-            waitS.push_back(Add( *dit, *cit )  );
-            waitS.push_back( Add( *dit, ( *cit ).neg(  ) ) );
+            C* temp1=Add( *dit, *cit ) ;
+            C* temp2=Add( *dit, ( *cit ).neg(  ) );
+            uint32_t h1=getHashValue( temp1 );
+            uint32_t h2=getHashValue( temp2 );
+            if(passed.find( h1 )==passed.end(  ) ){
+              passed.insert( h1 );
+              waitS.push_back( temp1 );
+            }else{
+              deleteVectorM( temp1 );
+            }
+
+            if( passed.find( h2 )==passed.end(  ) ){
+              passed.insert( h2 );
+              waitS.push_back( temp2 );
+            }else{
+              deleteVectorM( temp2 );
+            }
             
           }else{
-            waitS.push_back( *dit );
+            uint32_t h=getHashValue( *dit );
+            if( passed.find( h )== passed.end(  ) ){
+              passed.insert( h );
+              waitS.push_back(newMatrix( *dit )  );
+            }
           }
         }
         re.swap( waitS );
