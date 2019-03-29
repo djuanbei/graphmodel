@@ -11,6 +11,7 @@
 #ifndef LIN_SIMP_CONS_HPP
 #define LIN_SIMP_CONS_HPP
 #include<iostream>
+#include "dbmutil.hpp"
 
 namespace ftmd{
 
@@ -20,25 +21,42 @@ namespace ftmd{
  */
 template <typename C , typename V>
 struct Constraint{
+ private:
+
+  void neg_impl( void ){
+    C temp=x;
+    x=y;
+    y=temp;
+    matrix_value= 1-matrix_value; 
+  }
+  
+ public:
   V x;
   V y;
-  bool isStrct;
-  C right;
-  C rhs;
-  Constraint(const  V i, const V j, const C r, const C rh, bool isStrctRef=true ){
+
+  C matrix_value;
+
+  Constraint(const  V i, const V j, const C r, bool isStrctRef=true ){
     x=i;
     y=j;
-    isStrct=isStrctRef;
-    right=r;
-    rhs=rh;
+    matrix_value=r<<1;
+    if( !isStrct ){
+      matrix_value=matrix_value|1;
+    }
+  }
+  
+  Constraint neg( void ) const{
+    Constraint re( *this );
+    re.neg_impl( );
+    return re;
   }
     
 
   friend  std::ostream& operator << (  std::ostream & os,  const Constraint & cons ){
-    if ( cons.isStrct ){
-      os<<"x_"<<cons.x<<  " - "<< "y_"<<cons.y<<" < "<<cons.right;
+    if ( isStrct<C>(cons.matrix_value) ){
+      os<<"x_"<<cons.x<<  " - "<< "y_"<<cons.y<<" < "<<getRight<C>(cons.matrix_value);
     }else{
-      os<<"x_"<<cons.x<<  " - "<< "y_"<<cons.y<<" <= "<<cons.right;
+      os<<"x_"<<cons.x<<  " - "<< "y_"<<cons.y<<" <= "getRight<C>(cons.matrix_value);
     }
     return os;
   }

@@ -49,70 +49,19 @@ namespace ftmd{
             
         }
     };
+
+
+template<typename C>
+bool isStrict( const C  c){
+  return  (c&1) == 0;
+}
+
+template<typename C>
+C getRight( const C c ){
+  return c>>1;
+}
+
     
-    
-    
-    /**
-     *  Only have compare <
-     *
-     */
-    
-    template<typename V>
-    struct dbmWeakStrickUTIL{
-        
-        const V  LTEQ_ZERO=0;
-        const V  MAX_INT=std::numeric_limits<V>::max( )/2;
-        V operator (  ) (  const V x, const V y ) const {
-            if(  (x>=MAX_INT) || (y>= MAX_INT)){
-                return MAX_INT;
-            }
-            return  x+y;
-            
-        }
-        
-        V getRight( V realRight, bool isStrct=true ){
-            return realRight;
-        }
-        
-        bool isSat( V x, V y ){
-            return x+y> LTEQ_ZERO;
-        }
-        std::string getComp( V x ) const{
-            return "< ";
-        }
-    };
-    
-    
-    /**
-     *  Only have compare <=
-     *
-     */
-    
-    template<typename V>
-    struct dbmWeakUTIL{
-        
-        const V  LTEQ_ZERO=0;
-        const V  MAX_INT=std::numeric_limits<V>::max( )/2;
-        V operator (  ) (  const V x, const V y ) const {
-            if(  (x>=MAX_INT) || (y>= MAX_INT)){
-                return MAX_INT;
-            }
-            return  x+y;
-            
-        }
-        
-        V getRight( V realRight, bool isStrct=true ){
-            return realRight;
-        }
-        
-        bool isSat( V x, V y ){
-            return x+y>= LTEQ_ZERO;
-        }
-        
-        std::string getComp( V x ) const{
-            return "<=";
-        }
-    };
     
 }
 

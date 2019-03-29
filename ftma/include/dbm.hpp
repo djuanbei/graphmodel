@@ -337,8 +337,26 @@ namespace ftmd{
         
         void split(const C* D,  const vector<Cons> &G,   vector<C*> &re  ){
             deleteVectorM( re );
-            
+            vector<C*> waitS;
+            re.push_back( newMatrix(D) );
+
+            for( vector<Cons>::const_iterator cit=G.begin(  ); cit!=G.end( ); cit++ ){
+              for ( vector<C*>::iterator dit =re.begin(  ); dit!= re.end(  ); dit++ ){
+                if( isSatisfied(*dit, *cit   ) && isSatisfied( *dit, (*cit).neg(  ) )  )
+                {
+                  waitS.push_back(Add( *dit, *cit )  );
+                  waitS.push_back( Add( *dit, ( *cit ).neg(  ) ) );
+
+                }else{
+                  waitS.push_back( *dit );
+                }
+              }
+              re.swap( waitS );
+              waitS.clear(  );
+            }
         }
+        
+        
         /**
          *  For automaton containing difference constraints in the guards, it is more
          * complicated and expensive to compute the normalized zones.
@@ -348,12 +366,17 @@ namespace ftmd{
          * @param G
          * @param re
          */
-        
         void norm( C * D,  const C* k, const vector<Cons> &G, vector<C*> &re )const{
             deleteVectorM( re );
+            vector<Cons> dummy;
+            for(vector<Cons>::const_iterator it=G.begin(); it!= G.end(); it++){
+              if( isSatisfied(D, *it   ) && isSatisfied( D, ( *it ).neg(  ) )  ){
+                dummy.push_back( *it );
+              }
+            }
             
             vector<C*> temp;
-            split( D, G, temp );
+            split( D, dummy, temp );
             
             for( typename vector<C*> ::iterator it=temp.begin( );  it!=temp.end(); it++ ){
                 re.push_back( corn_norm( *it, k, G ) );
