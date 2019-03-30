@@ -1,11 +1,11 @@
-#include "fastHash.h"
+#include "include/fastHash.h"
 
 
 uint32_t FastHash (const char * data, int len) {
 uint32_t hash = len, tmp;
 int rem;
 
-    if (len <= 0 || data == NULL) return 0;
+    if (len <= 0 || 0==data) return 0;
 
     rem = len & 3;
     len >>= 2;
