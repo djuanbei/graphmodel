@@ -22,7 +22,12 @@
 
 #include <map>
 
+#include<random>
+
+
 #include "fastHash.h"
+
+#include "dbmutil.hpp"
 
 namespace ftmd{
 using namespace std;
@@ -96,6 +101,30 @@ class dbm{
     C* newD=new C[ size ]( );
     memcpy( newD, D, sizeof (C)*size );
     return newD;
+  }
+
+  C* randomMatirx( )const const{
+    C* newD=new C[ size]( );
+    for( int i=0;i< size; i++){
+      C v=rand
+    }
+  }
+
+  std::string dump( const C* D) const{
+    string re="";
+    for( int i=0; i< n; i++){
+      re+="[  ";
+      for( int j=0; j< n; j++){
+        C v=D[loc(i,j)];
+        if(isStrict<C>(v)){
+          re+="("+getRight<C>(D[loc(i,j)])+",< ) ";          
+        }else{
+          re+="("+getRight<C>(D[loc(i,j)])+",<=) ";          
+        }
+        re+="  ]\n";
+      }
+    }
+    return re;
   }
     
   uint32_t getHashValue( const C* D ) const{
