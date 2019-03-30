@@ -12,8 +12,11 @@
 #define LIN_SIMP_CONS_HPP
 #include<iostream>
 #include "dbmutil.hpp"
+#include<random>
 
 namespace ftmd{
+
+using namespace std;
   
   /**
    *  x -y < ( <= ) realRight
@@ -43,6 +46,23 @@ namespace ftmd{
       if(!isStrctRef){
         matrix_value=matrix_value|1;
       }
+    }
+
+    
+    Constraint randConst(int num, V low, V up ) const{
+      std::uniform_int_distribution<V>      distribution( 0, num);
+      std::default_random_engine generator;
+      V xx=distribution( generator);
+      V yy=distribution( generator);
+      while( xx==yy){
+        yy=distribution( generator);
+      }
+      
+      std::uniform_int_distribution<C>      distribution1( low, up);
+      
+      C vv=distribution1( generator);
+      return Constraint( xx, yy, vv);
+      
     }
     
     Constraint neg( void ) const{

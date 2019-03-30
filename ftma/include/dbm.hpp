@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <limits>
 #include <vector>
-
+#include <sstream>
 #include <map>
 
 #include<random>
@@ -49,15 +49,18 @@ class dbm{
   int size; // n*n
   C MAX_INT;
   dbmUTIL add;
+  std::default_random_engine generator;
+  std::uniform_int_distribution<int>      distribution;
+  
   inline int loc(const int row, const int col ) const{
     return row* n +col;
   }
 
   void andImpl( C * newD, const Cons & cons ) const{
-    if (newD[loc( cons.y, cons.x )] + cons.right <0){
+    if (newD[loc( cons.y, cons.x )] + cons.matrix_value <0){
       newD[ 0 ]= add.getRight(-1, false );
-    }else if ( cons.right < newD[ loc(cons.x, cons.y) ] ){
-      newD[ loc(cons.x, cons.y) ]=cons.right;
+    }else if ( cons.matrix_value < newD[ loc(cons.x, cons.y) ] ){
+      newD[ loc(cons.x, cons.y) ]=cons.matrix_value;
       for( int i=0; i< n; i++ ){
         for( int j=0; j< n ; j++ ){
           C temp=add(newD[ loc( i, cons.x ) ], newD[ loc( cons.x, j ) ]);
@@ -78,8 +81,9 @@ class dbm{
  public:
     
   dbm( int nn ):n( nn+1 ){
-    size=n*n;
-    MAX_INT=numeric_limits<C>::max( );
+     size=n*n;
+    MAX_INT=add.MAX_INT;
+    distribution=std::uniform_int_distribution<int>(-MAX_INT+1, MAX_INT );
   }
   ~dbm( ){
     n=0;
@@ -103,28 +107,44 @@ class dbm{
     return newD;
   }
 
-  C* randomMatirx( )const const{
+  C* randomMatirx( )   {
+    
     C* newD=new C[ size]( );
     for( int i=0;i< size; i++){
-      C v=rand
+      newD[ i]=distribution(generator);
     }
+    return newD;
   }
 
+  C* randomFeasiableMatrix( ){
+    C* D=newMatrix( );
+    C* D1=up( D);
+    
+  }
+  
   std::string dump( const C* D) const{
-    string re="";
+
+    std::stringstream ss;
+
     for( int i=0; i< n; i++){
-      re+="[  ";
+      ss<<"[  ";
       for( int j=0; j< n; j++){
+        ss<<" (";
         C v=D[loc(i,j)];
+        
+
         if(isStrict<C>(v)){
-          re+="("+getRight<C>(D[loc(i,j)])+",< ) ";          
+          ss<<"< ,";          
         }else{
-          re+="("+getRight<C>(D[loc(i,j)])+",<=) ";          
+          ss<<"<=,";          
         }
-        re+="  ]\n";
+        ss.width(4);
+        ss<<std::left<<(int)getRight<C>(v);
+        ss<<") ";
       }
+      ss<<"  ]\n";
     }
-    return re;
+    return ss.str( );
   }
     
   uint32_t getHashValue( const C* D ) const{
@@ -196,7 +216,7 @@ class dbm{
   }
     
   /**
-   * D_{y,x} + cons.right ">=" 0
+   * D_{y,x} + cons.matrix_value ">=" 0
    }
    * This is to check D and x-y < ( <= ) m is non-empty
    * @param cons
@@ -205,7 +225,7 @@ class dbm{
    * false, otherwise.
    */
   bool isSatisfied(const C* D, const Cons &cons ) const{
-    return add.isSat(cons.right, D[ loc( cons.y, cons.x )] );
+    return add.isSat(cons.matrix_value, D[ loc( cons.y, cons.x )] );
   }
     
   /**
