@@ -1,4 +1,4 @@
-#include "include/fastHash.h"
+#include "fastHash.h"
 
 
 uint32_t FastHash (const char * data, int len) {

@@ -5,10 +5,10 @@
 //  Created by yun on 2019/3/29.
 //  Copyright © 2019 yun. All rights reserved.
 //
-#include "include/linsimpcons.hpp"
-#include "include/dbmutil.hpp"
+#include "linsimpcons.hpp"
+#include "dbmutil.hpp"
 
-#include "include/dbm.hpp"
+#include "dbm.hpp"
 #include <limits>
 #include<iostream>
 
@@ -22,9 +22,10 @@ int main(int argc, const char * argv[]) {
   
   cout<<cons<<endl;
   
-   cout<<cons.neg()<<endl;
+  cout<<cons.neg()<<endl;
   // insert code here...
   dbm<int ,int, Constraint<int, int>,   dbmUTIL<int> > exampleDBM(10);
   std::cout << "Hello, World!\n";
   return 0;
+
 }

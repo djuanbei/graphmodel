@@ -304,14 +304,14 @@ class dbm{
       
     for ( int i=0; i< n; i++ ){
       newD[ loc( x,i ) ]=add( newD[ loc( x,i ), pm ] );
-      newD[ loc( i, x ) ]=add( newD[ loc( i, x ) ], nm );
+      newD[ loc( i, x )]=add( newD[ loc( i, x ) ], nm );
     }
       
-    newD[ loc( x,x ) ]=add.LTEQ_ZERO;
-    int temp= loc( x,0 );
+    newD[ loc( x,x )]=add.LTEQ_ZERO;
+    int temp= loc(x,0);
     newD[ temp ]=newD[ temp ]> add.LTEQ_ZERO? newD[ temp ]: add.LTEQ_ZERO;
       
-    newD[ x ]=newD[ x ]< add.LTEQ_ZERO> newD[ x ]? : add.LTEQ_ZERO;
+    newD[x]=newD[x]< add.LTEQ_ZERO? newD[x] : add.LTEQ_ZERO;
       
     return newD;
       
