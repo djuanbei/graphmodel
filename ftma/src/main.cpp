@@ -48,12 +48,15 @@ int main(int argc, const char * argv[]) {
 
   C * D1=exampleDBM.newMatrix( );
   cout<<"matrix dump :\n"<<exampleDBM.dump( D1)<<endl;
-  C*  D2=exampleDBM.up( D1);
+  C*  D2=exampleDBM.reset( D1, ( V)1, ( C)10);
   cout<<"matrix dump :\n"<<exampleDBM.dump( D2)<<endl;
 
 
-  cout<<"constrain: "<<cons<<endl;
-  C*  D3=exampleDBM.And( D2, cons.neg( ));
+  // cout<<"constrain: "<<cons<<endl;
+  
+  // //C*  D3=exampleDBM.And( D2, cons.neg( ));
+  C*  D3=exampleDBM.reset( D2, (V)2, (C)10);
+    
   cout<<"matrix dump :\n"<<exampleDBM.dump( D3)<<endl;
   
   return 0;

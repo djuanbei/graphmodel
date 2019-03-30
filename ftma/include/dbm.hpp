@@ -81,7 +81,7 @@ class dbm{
  public:
     
   dbm( int nn ):n( nn+1 ){
-     size=n*n;
+    size=n*n;
     MAX_INT=add.MAX_INT;
     distribution=std::uniform_int_distribution<int>(-MAX_INT+1, MAX_INT );
   }
@@ -308,9 +308,9 @@ class dbm{
     C nm=add.getRight( -m, false );
       
     for( int i=0; i< n ;i++ ){
-      newD[ loc( x, i ) ] =add( pm, newD[i ] );
+      newD[loc(x, i)] =add(pm, newD[i]);
         
-      newD[ loc( i,x ) ]=add(newD[ loc( i, 0 ) ], nm );
+      newD[loc(i,x)]=add(newD[loc(i, 0)], nm);
         
     }
     return newD;
@@ -515,9 +515,9 @@ class dbm{
     deleteVectorM( re );
       
     vector<C*> splitDomain;
-    split( D, Gd, splitDomain);
+    split(D, Gd, splitDomain);
       
-    for( typename vector<C*> ::iterator it=splitDomain.begin( ); it!=splitDomain.end(); it++){
+    for(typename vector<C*> ::iterator it=splitDomain.begin( ); it!=splitDomain.end(); it++){
       re.push_back(corn_norm(*it, k, Gd));
     }
   }
