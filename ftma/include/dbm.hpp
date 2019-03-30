@@ -367,18 +367,18 @@ class dbm{
     vector<C*> waitS;
     re.push_back( newMatrix(D) );
   
-    for( typename vector<Cons>::const_iterator cit=Gd.begin( ); cit!=Gd.end( ); cit++ ){
+    for( typename vector<Cons>::const_iterator cit=Gd.begin(); cit!=Gd.end(); cit++ ){
       
       vector<bool> addToWaitS(re.size(), false);
-      
-      for ( typename vector<C*>::iterator dit =re.begin( ); dit!= re.end( ); dit++ ){
-
+      int i=0;
+      for ( typename vector<C*>::iterator dit =re.begin(); dit!= re.end(); dit++ ){
+        i++;
         /**
          * split
          * (D and C) && (D and -C) satisfies then using C to split D into two parts
          */
 
-        if( isSatisfied(*dit, *cit) && isSatisfied( *dit, (*cit).neg( ))){
+        if( isSatisfied(*dit, *cit) && isSatisfied(*dit, (*cit).neg())){
           
           C* temp1=Add(*dit, *cit) ;
           C* temp2=Add(*dit, (*cit).neg( ));
@@ -418,16 +418,23 @@ class dbm{
    
           if( fid== passed.end( ) ){
             passed[h]= *dit;
-            waitS.push_back(newMatrix( *dit ) );
+            waitS.push_back(*dit);
+            addToWaitS[i]=true;
           }else{
             if(!equalM(*dit, fid->second)){
-              waitS.push_back(newMatrix( *dit ) );
+              waitS.push_back(*dit );
+              addToWaitS[i]=true;
             }
           }
         }
       }
       re.swap( waitS );
-      deleteVectorM( waitS );
+      for(size_t i=0; i< waitS.size(); i++){
+        if(!addToWaitS[i]){
+          delete[] waitS[i];
+        }
+      }
+      waitS.clear();
     }
   }
  
