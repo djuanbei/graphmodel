@@ -54,9 +54,9 @@ namespace ftmd{
     
     friend  std::ostream& operator << (  std::ostream & os,  const Constraint & cons ){
       if ( isStrict<C>(cons.matrix_value) ){
-        os<<"x_"<<cons.x<<  " - "<< "y_"<<cons.y<<" < "<<getRight<C>(cons.matrix_value);
+        os<<"x_"<<cons.x<<  " - "<< "x_"<<cons.y<<" < "<<getRight<C>(cons.matrix_value);
       }else{
-        os<<"x_"<<cons.x<<  " - "<< "y_"<<cons.y<<" <= "<<getRight<C>(cons.matrix_value);
+        os<<"x_"<<cons.x<<  " - "<< "x_"<<cons.y<<" <= "<<getRight<C>(cons.matrix_value);
       }
       return os;
     }
