@@ -17,6 +17,12 @@ using namespace ftmd;
 
 
 int main(int argc, const char * argv[]) {
+  
+  Constraint<int, int> cons(1, 2, 2, false);
+  
+  cout<<cons<<endl;
+  
+   cout<<cons.neg()<<endl;
   // insert code here...
   dbm<int ,int, Constraint<int, int>,   dbmUTIL<int> > exampleDBM(10);
   std::cout << "Hello, World!\n";
