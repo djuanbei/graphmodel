@@ -70,7 +70,18 @@ using namespace std;
       re.neg_impl( );
       return re;
     }
-    
+
+    bool isSat( const Constraint<V,C> & cons )const{
+      if( (cons.x==x) && ( cons.y==y ) ){
+        return true;
+      }else if(  (cons.x==y) && ( cons.y==x ) ){
+        Constraint<V,C> negCons=cons.neg(  );
+
+        return negCons.matrix_value< matrix_value;
+      }
+      assert( false );
+      return true;
+    }
     
     friend  std::ostream& operator << (  std::ostream & os,  const Constraint & cons ){
       if ( isStrict<C>(cons.matrix_value) ){

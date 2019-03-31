@@ -42,7 +42,7 @@ else
 endif
 
 
-
+CFLAGS+= -fdiagnostics-absolute-paths #the error path is absolute path
 # COPTIMIZE	= -m64 -Ofast -flto -march=native  -funroll-loops
 COPTIMIZE ?= -O2 
 

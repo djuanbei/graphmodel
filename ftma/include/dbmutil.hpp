@@ -37,9 +37,12 @@ namespace ftmd{
       return right;
     }
     
-    bool isSat( V x, V y ) const{
-      return x+y> LTEQ_ZERO;
-    }
+    // bool isSat( V x, V y ) const{
+    //   return x+y> LTEQ_ZERO;
+    // }
+    
+
+    
     std::string getComp( V x ) const{
       if( x&1 ){
         return "<=";
