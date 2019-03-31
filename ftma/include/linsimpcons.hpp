@@ -14,7 +14,7 @@
 #include "dbmutil.hpp"
 #include<random>
 
-namespace ftmd{
+namespace ftma{
 
 using namespace std;
   

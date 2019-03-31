@@ -18,7 +18,7 @@
 #include<iostream>
 
 using namespace std;
-using namespace ftmd;
+using namespace ftma;
 
 
 typedef int C;

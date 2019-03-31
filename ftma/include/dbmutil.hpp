@@ -12,7 +12,7 @@
 #define DBM_UTIL_HPP
 #include<limits>
 
-namespace ftmd{
+namespace ftma{
   
   /**
    *  Both have compare < and <=

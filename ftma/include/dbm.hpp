@@ -29,7 +29,7 @@
 
 #include "dbmutil.hpp"
 
-namespace ftmd{
+namespace ftma{
 using namespace std;
   
 /**
