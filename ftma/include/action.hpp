@@ -10,12 +10,12 @@
  */
 #ifndef ACTION_HPP
 #define ACTION_HPP
-
+#include "counter.hpp"
+namespace ftma{
 struct action{
-
   void apply( counter & c ) const{
     
   }
 };
-
+}
 #endif 

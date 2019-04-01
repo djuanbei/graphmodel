@@ -18,8 +18,7 @@ struct  edge{
   vector<C> cons;// set of constraint at this edge
   vector<A> actions;// set of actions at this edge
   vector<int> reset;// set of reset clock variables
-  
 };
 }
 
-#endfi 
+#endif

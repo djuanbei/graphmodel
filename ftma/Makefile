@@ -30,7 +30,7 @@ ifeq ($(SRCSUF),cpp)
 	CC=g++  -std=c++11 
 
 	CLANG=clang++
-    CFLAGS     =  -I include -pedantic -W -Werror   -std=c++11    -DHAVE_CONFIG_H -Wlong-long -Wno-unused-parameter
+    CFLAGS     =  -I include -I /Users/yunyun/mycode/c++/raptor/include -pedantic -W -Werror   -std=c++11    -DHAVE_CONFIG_H -Wlong-long -Wno-unused-parameter
 #LFLAGS    =   -pedantic -W -Werror
 else
 	CC=gcc

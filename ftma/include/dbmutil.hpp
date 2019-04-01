@@ -14,57 +14,57 @@
 
 namespace ftma{
   
-  /**
-   *  Both have compare < and <=
-   *
-   */
+/**
+ *  Both have compare < and <=
+ *
+ */
   
-  template<typename V>
-  struct dbmUTIL{
-    const V  LTEQ_ZERO=1;
-    const V  MAX_INT=std::numeric_limits<V>::max( )/2-2;
-    V operator (  ) (  const V x, const V y ) const {
-      if(  MAX_INT== x || MAX_INT==y){
-        return MAX_INT;
-      }
-      return x+y-( ( x&1 )|( y&1 ));
-    }
-    V getRight( V realRight, bool isStrct=true ) const{
-      V right=realRight<<1;
-      if( !isStrct ){
-        right=right |1;
-      }
-      return right;
-    }
-    
-    // bool isSat( V x, V y ) const{
-    //   return x+y> LTEQ_ZERO;
-    // }
-    
+template<typename C>
+struct dbmUTIL{
+  const static C  LTEQ_ZERO=1;
+  const static  C  MAX_INT=std::numeric_limits<C>::max( )/2-2;
 
-    
-    std::string getComp( V x ) const{
-      if( x&1 ){
-        return "<=";
-      }else{
-        return "< ";
-      }
-      
+};
+
+
+
+template<typename C>
+C add   (  const C x, const C y ) {
+  if( dbmUTIL<C>::MAX_INT== x ||dbmUTIL<C>::MAX_INT==y){
+    return dbmUTIL<C>::MAX_INT;
+  }
+  return x+y-( ( x&1 )|( y&1 ));
+}
+
+
+template<typename C>
+C getMatrixValue( C realRight, bool isStrct=true ){
+    C right=realRight<<1;
+    if( !isStrct ){
+      right=right |1;
     }
-  };
-  
-  
-  template<typename C>
-  bool isStrict( const C  c){
-    return  (c&1) == 0;
+    return right;
+}
+
+template<typename C>
+std::string getComp(const C x ) {
+  if( x&1 ){
+    return "<=";
+  }else{
+    return "< ";
   }
+      
+}
+
+template<typename C>
+bool isStrict( const C  c){
+  return  (c&1) == 0;
+}
   
-  template<typename C>
-  C getRight( const C c ){
-    return c>>1;
-  }
-  
-  
+template<typename C>
+C getRight( const C c ){
+  return c>>1;
+}
   
 }
 

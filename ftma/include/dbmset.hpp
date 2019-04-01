@@ -36,7 +36,7 @@ class dbmset{
    */
   bool add( C * DM ){
     uint32_t hashValue=dbmManager.getHashValue( DM );
-    typename std::pair<std::map<uint32_t,C*>::iterator,bool> ret;
+    typename std::pair<typename std::map<uint32_t,C*>::iterator,bool> ret;
     ret= passedD,insert(std::pair<uint32_t, C*>( hashValue, DM )  );
 
     if(false== ret.second ){
@@ -44,7 +44,7 @@ class dbmset{
       C* D1=passedD[ hashValue ];
       if(!dbmManager.MEqual(DM, D1  )){
         bool have=false;
-        for( typename vector<C*>::iterator it=recoveryD.begin( ), it!=recoveryD.end(); it++){
+        for( typename vector<C*>::iterator it=recoveryD.begin( ); it!=recoveryD.end(); it++){
           if( dbmManager.MEqual(DM, *it  ) ){
             have=true;
             break;
@@ -63,7 +63,7 @@ class dbmset{
     return true;
   }
   
-  void toVector(typename vector<C*>& re )const{
+  void toVector( vector<C*>& re )const{
     re.clear(  );
     for( typename map<uint32_t, C*>::iterator it= passedD.begin(); it!= passedD.end(); it++ ){
       re.push_back( it->second );
@@ -81,9 +81,9 @@ class dbmset{
       delete [ ] it->second;
     }
     for( typename vector<C*>::iterator it=recoveryD.begin(  ); it!= recoveryD.end(  ); it++ ){
-      delete [  ] *it;
+      delete [ ] *it;
     }
-    clear(  );
+    clear( );
   }
   
   void And(  dbmset<C,D > & other  ){
@@ -99,4 +99,4 @@ class dbmset{
 
 };
 }
-#endfi
+#endif

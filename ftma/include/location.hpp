@@ -12,9 +12,9 @@
 #include<vector>
 namespace ftma{
 using namespace std;
-template<typename C>
+template<typename CS>
 struct location{
-  vector<C> cons; //set of invariants  in this location
+  vector<CS> cons; //set of invariants  in this location
 };
 }
 

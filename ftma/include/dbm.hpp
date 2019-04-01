@@ -33,13 +33,12 @@ namespace ftma{
 using namespace std;
   
 /**
- *@param V the type of clock variable index
  *@param C the type of value of clock
  *@param add the operator of x+y
  *
  */
   
-template <typename V, typename C, typename Cons, typename dbmUTIL >
+template < typename C, typename Cons >
 class dbm{
  private:
   /**
@@ -48,7 +47,7 @@ class dbm{
   int n;
   int size; // n*n
   C MAX_INT;
-  dbmUTIL add;
+  C LTEQ_ZERO;
   std::default_random_engine generator;
   std::uniform_int_distribution<int>      distribution;
   
@@ -61,7 +60,7 @@ class dbm{
     Cons  negCons=cons.neg( );
     
     if (negCons.matrix_value>=newD[loc( cons.y, cons.x)]){
-      newD[0]= add.getRight(-1, false);
+      newD[0]= getMatrixValue(-1, false);
     }else if ( cons.matrix_value < newD[loc(cons.x, cons.y)]){
       newD[loc(cons.x, cons.y)]=cons.matrix_value;
       for(int i=0; i< n; i++){
@@ -85,7 +84,9 @@ class dbm{
     
   dbm(int nn):n(nn+1){
     size=n*n;
-    MAX_INT=add.MAX_INT;
+    MAX_INT=dbmUTIL<C>::MAX_INT;
+    LTEQ_ZERO=dbmUTIL<C>::LTEQ_ZERO;
+    
     distribution=std::uniform_int_distribution<int>(-MAX_INT+1, MAX_INT);
   }
   ~dbm(){
@@ -94,7 +95,7 @@ class dbm{
     
   C* newMatrix() const{
     C* D=new C[size]();
-    fill(D, D+size, add.LTEQ_ZERO); // x-x<=0
+    fill(D, D+size, LTEQ_ZERO); // x-x<=0
     return D;
   }
   /**
@@ -199,14 +200,13 @@ class dbm{
    * false otherwise.
    */
   bool isConsistent(const C* D) const{
-    return D[0] >= add.LTEQ_ZERO;
+    return D[0] >= LTEQ_ZERO;
   }
     
     
   /**
    *
    *
-   * @param V
    * @param C
    * @param other
    *
@@ -261,7 +261,7 @@ class dbm{
   C* down(const C * D) const{
     C *newD=newMatrix(D);
     for (int i=1; i< n; i++){
-      newD[i] =add.LTEQ_ZERO;
+      newD[i] =LTEQ_ZERO;
       for(int j=1; j< n; j++){
         int k=loc(j,i);
         if(newD[i]>newD[k]){
@@ -294,13 +294,13 @@ class dbm{
    *
    * @param x
    */
-  C* free(const C * D, const V x) const{
+  C* free(const C * D, const int x) const{
     C *newD=newMatrix(D);
     for(int i=0; i<n; i++){
       newD[loc(x, i)]=MAX_INT;
       newD[loc(i, x)]=newD[loc(i,0)];
     }
-    newD[loc(x, x)]=add.LTEQ_ZERO;
+    newD[loc(x, x)]=LTEQ_ZERO;
     return newD;
   }
     
@@ -312,10 +312,10 @@ class dbm{
    * @param x
    * @param m
    */
-  C* reset (const C* D, const V x,const C m) const {
+  C* reset (const C* D, const int x,const C m) const {
     C *newD=newMatrix(D);
-    C postM=add.getRight(m, false);
-    C negM=add.getRight(-m, false);
+    C postM=getMatrixValue(m, false);
+    C negM=getMatrixValue(-m, false);
       
     for(int i=0; i< n ;i++){
       newD[loc(x, i)] =add(postM, newD[i]);
@@ -334,14 +334,14 @@ class dbm{
    * @param x
    * @param y
    */
-  C* copy(const C * D, const V x, const V y) const{
+  C* copy(const C * D, const int x, const int y) const{
     C *newD=newMatrix(D);
     for(int i=0; i< n; i++){
       newD[loc(x,i)]=newD[loc(y,i)];
       newD[loc(i,x)]=newD[loc(i,y)];
     }
       
-    newD[loc(x,x)]=newD[loc(x,y)]=newD[loc(y,x)]=add.LTEQ_ZERO;
+    newD[loc(x,x)]=newD[loc(x,y)]=newD[loc(y,x)]=LTEQ_ZERO;
     return newD;
   }
     
@@ -353,10 +353,10 @@ class dbm{
    * @param x
    * @param m
    */
-  C* shift(const C * D, const V x, const C m) const{
+  C* shift(const C * D, const int x, const C m) const{
     C *newD=newMatrix(D);
-    C postM=add.getRight(m, false);
-    C negM=add.getRight(-m, false);
+    C postM=getMatrixValue(m, false);
+    C negM= getMatrixValue(-m, false);
       
       
     for (int i=0; i< n; i++){
@@ -364,11 +364,11 @@ class dbm{
       newD[loc(i, x)]=add(newD[loc(i, x)], negM);
     }
       
-    newD[loc(x,x)]=add.LTEQ_ZERO;
+    newD[loc(x,x)]=LTEQ_ZERO;
     int temp= loc(x,0);
-    newD[temp]=newD[temp]> add.LTEQ_ZERO? newD[temp]: add.LTEQ_ZERO;
+    newD[temp]=newD[temp]> LTEQ_ZERO? newD[temp]: LTEQ_ZERO;
       
-    newD[x]=newD[x]< add.LTEQ_ZERO? newD[x] : add.LTEQ_ZERO;
+    newD[x]=newD[x]< LTEQ_ZERO? newD[x] : LTEQ_ZERO;
       
     return newD;
       

@@ -10,7 +10,9 @@
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
 namespace ftma{
-
+class counter{
+  
+};
 }
 
 #endif

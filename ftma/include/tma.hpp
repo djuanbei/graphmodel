@@ -13,14 +13,14 @@
 namespace ftma{
 
 template<typename L, typename E>
-class tma{
- private:
+struct tma{
+  public:
   vector<L> locations;
   vector<E> edges;
   int initial_loc;
   int clock_num;
- public:
-  tma(vector<L> &locs, vector<E> &es, int init, int vnum  ):locations( locs ), es( edges ) {
+  
+  tma(vector<L> &locs, vector<E> &es, int init, int vnum  ):locations(locs), edges( es) {
     initial_loc=init;
     clock_num=vnum;
   }
