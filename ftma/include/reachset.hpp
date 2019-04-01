@@ -12,10 +12,14 @@
 #ifndef __REACH_SET_HPP
 #define __REACH_SET_HPP
 
+
+
 namespace ftma{
+using namespace std;
 
 template<typename L, typename E>
 class reach{
+  private
   
 };
 }
