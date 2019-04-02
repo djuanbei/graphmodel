@@ -23,10 +23,15 @@ class dbmset{
   D dbmManager;
   
  public:
+  dbmset( ){
+    
+  }
   dbmset( D & d ){
     dbmManager=d;
   }
-
+  void setDBMManager( D & d){
+    dbmManager=d;
+  }
   /** 
 
    * @param D  A dbm matrix
@@ -61,6 +66,10 @@ class dbmset{
       }
     }
     return true;
+  }
+  
+  size_t size( ) const{
+    return passedD.size( )+recoveryD.size( );
   }
   
   void toVector( vector<C*>& re )const{

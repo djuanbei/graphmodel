@@ -11,30 +11,31 @@
 #ifndef DBM_UTIL_HPP
 #define DBM_UTIL_HPP
 #include<limits>
-
+#define LTEQ_ZERO 1
 namespace ftma{
-  
+
+
 /**
  *  Both have compare < and <=
  *
  */
-  
+
+
 template<typename C>
-struct dbmUTIL{
-  const static C  LTEQ_ZERO=1;
-  const static  C  MAX_INT=std::numeric_limits<C>::max( )/2-2;
-
-};
-
+C getMAX_INT(const C c){
+  return std::numeric_limits<C>::max( )/2-2;
+}
 
 
 template<typename C>
 C add   (  const C x, const C y ) {
-  if( dbmUTIL<C>::MAX_INT== x ||dbmUTIL<C>::MAX_INT==y){
-    return dbmUTIL<C>::MAX_INT;
+  static C MAX_INT=getMAX_INT(x);
+  if( x>=MAX_INT || y>=MAX_INT){
+    return MAX_INT;
   }
   return x+y-( ( x&1 )|( y&1 ));
 }
+
 
 
 template<typename C>

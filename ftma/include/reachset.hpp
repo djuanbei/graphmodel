@@ -25,12 +25,11 @@ using namespace std;
 template< typename C, typename L, typename E>
 class reach{
  private:
-  typedef dbm<C, Constraint<C> > D;
-  typedef dbmset< C, D > DSet;
+  typedef Constraint<C> CS;
+  typedef dbm<C, CS > DBM;
+  typedef dbmset< C, DBM > DSet;
   tma<L,E> &TMA;
-
-  D dbmManager;
-  
+  DBM dbmManager;
   vector< DSet > reachSet;
   graph_t <int> graph;
   C * ks;
@@ -49,9 +48,38 @@ class reach{
     reachSet.resize(TMA.locations.size( ) );
     graph.initial( srcs, snks);
 
-    ks=new C[ 2*(oTMA.clock_num+1) ];
-    fill( ks, ks+2*(oTMA.clock_num+1), dbmUTIL<C>::LTEQ_ZERO);
-    
+    ks=new C[ 2*(TMA.clock_num+1) ];
+    fill( ks, ks+2*(TMA.clock_num+1), LTEQ_ZERO);
+
+    for(typename vector<L>::iterator it=TMA.locations.begin( ) ; it!=TMA.locations.end( ); it++ ){
+      for( typename vector<CS>::iterator cit =it->invariants.begin( ); cit!=it->invariants.end( ); cit++ ){
+        
+        if( cit->x >0 && cit->y > 0){
+          differenceCons.push_back( *cit);
+        }else{
+          if( cit->x >0){
+            if( cit->matrix_value> ks[ cit->x] ){
+              ks[ cit->x]=cit->matrix_value;
+            }else{
+              CS temp= cit->neg( );
+              if( temp.matrix_value> ks[ temp.x]){
+                ks[ temp.x]=temp.matrix_value;
+              }
+            }
+          }
+        }
+      }
+    }
+    /**
+     *      x-y<= k_i
+     *      x-y< -k_{i+n+1}
+     * 
+     */
+
+
+    for( int i=1; i< TMA.clock_num+1; i++){
+      ks[i+TMA.clock_num+1]=LTEQ_ZERO-ks[i];
+    }
     
   }
   ~reach( ){
@@ -59,7 +87,7 @@ class reach{
     deleteData( );
   }
   
-  bool reachableSet(const tma<L,E> &TMA, vector< dbmset<C, D > > &reachSet, D & d ) const {
+  bool reachableSet(const tma<L,E> &TMA, vector< dbmset<C, DBM > > &reachSet, DBM & d ) const {
         
     run(TMA, graph,  reachSet );
 
@@ -76,9 +104,14 @@ class reach{
    * 
    * @return 
    */
-  bool run(const tma<L,E> & TMA, const graph_t<int> & graph, vector< dbmset<C, D > > &reachSet) const {
-    int initial_loc=    TMA.initial_loc;
+  bool run(const tma<L,E> & TMA, const graph_t<int> & graph, vector< dbmset<C, DBM > > &reachSet) const {
+    
+    int initial_loc= TMA.initial_loc;
     int vertex_num=graph.getVertex_num( );
+    vector<int> changed;
+    set<int>  secondChanged;
+
+        
     //There are no edges connect with  initial location
     if( initial_loc>= vertex_num){
       return true;
@@ -86,15 +119,54 @@ class reach{
     //    ASSERT(initial_loc>=0, "The initial location must greater or equal to 0" );
     assert(initial_loc>=0 );
     
-    vector< dbmset<C, D > > waitSet;
+    vector< dbmset<C, DBM > > waitSet;
     waitSet.resize(TMA.locations.size( ));
-    C* DM= dbmManager.newMatrix( );
-    waitSet[ initial_loc].add(DM );
+    vector< dbmset<C, DBM > > secondWaitSet;
+    secondWaitSet.resize(TMA.locations.size( ));
+    
+    C* D= dbmManager.newMatrix( );
+    TMA.locations[initial_loc ].apply( D);
+    waitSet[ initial_loc].add(D );
+    reachSet[ initial_loc].add( D);
+    changed.push_back( initial_loc);
+
+    while( !changed.empty( )){
+
+      for( size_t i=0; i< changed.size( ); i++){
+        int v=changed[ i];
+
+        int link, outDegree, tempSnk;
+        outDegree=graph.getOutDegree(v);
+        for( int j=0; j<  outDegree; j++){
+          link=graph.getAdj(v, j);
+          DSet next;
+          if(TMA.edges[link].apply(waitSet[ v], dbmManager, next )){
+            DSet next1;
+            graph.findRhs( link, v, tempSnk);
+            if(TMA.locations[ tempSnk].apply( dbmManager, next, next1)){
+              secondWaitSet[ tempSnk].And( next1);
+              reachSet[ tempSnk].And( next1);
+              secondChanged.insert( tempSnk);
+            }
+          }
+        }
+
+      }
+      changed.clear( );
+      changed.insert(changed.begin( ), secondChanged.begin( ), secondChanged.end( ) );
+      secondChanged.clear( );
+
+      waitSet=secondChanged;
+      for( int j=0; j< vertex_num; j++){
+        secondWaitSet[ j].clear( );
+      }
+      
+    }
         
   }
 
   void deleteData(  ){
-    for(typename vector< dbmset<C, D > >::iterator it =reachSet.begin( ) ; it!= reachSet.end( ); it++ ){
+    for(typename vector< dbmset<C, DBM > >::iterator it =reachSet.begin( ) ; it!= reachSet.end( ); it++ ){
       it->deleteAll();
     }
     reachSet.clear();

@@ -47,7 +47,6 @@ class dbm{
   int n;
   int size; // n*n
   C MAX_INT;
-  C LTEQ_ZERO;
   std::default_random_engine generator;
   std::uniform_int_distribution<int>      distribution;
   
@@ -55,42 +54,30 @@ class dbm{
     return row* n +col;
   }
 
-  void andImpl(C * newD, const Cons & cons) const{
-    
-    Cons  negCons=cons.neg( );
-    
-    if (negCons.matrix_value>=newD[loc( cons.y, cons.x)]){
-      newD[0]= getMatrixValue(-1, false);
-    }else if ( cons.matrix_value < newD[loc(cons.x, cons.y)]){
-      newD[loc(cons.x, cons.y)]=cons.matrix_value;
-      for(int i=0; i< n; i++){
-        for(int j=0; j< n ; j++){
-          C temp=add(newD[loc(i, cons.x)], newD[loc(cons.x, j)]);
-            
-          if (temp < newD[loc(i, j)]){
-            newD[loc(i, j)] = temp;
-          }
-            
-          C DandC=add(newD[loc(i, cons.y)], newD[loc(cons.y, j)]);
-          if(DandC < newD[loc(i,j)]){
-            newD[loc(i,j)]=DandC;
-          }
-        }
-      }
-    }
-      
-  }
+
  public:
-    
+
+  dbm(void ){
+    n=0;
+    size=0;
+    MAX_INT=getMAX_INT( ( C)0);
+
+    distribution=std::uniform_int_distribution<int>(-MAX_INT+1, MAX_INT);
+  }
+  
   dbm(int nn):n(nn+1){
     size=n*n;
-    MAX_INT=dbmUTIL<C>::MAX_INT;
-    LTEQ_ZERO=dbmUTIL<C>::LTEQ_ZERO;
+    MAX_INT=getMAX_INT( ( C)0);
     
     distribution=std::uniform_int_distribution<int>(-MAX_INT+1, MAX_INT);
   }
   ~dbm(){
     n=0;
+  }
+
+  void setClockNum( int num ){
+    n=num+1;
+    size=n*n;
   }
     
   C* newMatrix() const{
@@ -237,7 +224,13 @@ class dbm{
     Cons negCons=cons.neg( );
     return negCons.matrix_value<D[loc(cons.y, cons.x)];
   }
-    
+
+  void upImpl( C* D)const{
+    for(int i; i< n; i++) {
+      D[loc(i, 0)]=MAX_INT;
+    }
+  }
+  
   /**
    * Can not modify value of D
    * compute strongest post condition
@@ -246,12 +239,20 @@ class dbm{
    */
   C* up(const C* D) const{
     C* newD=newMatrix(D);
-    for(int i; i< n; i++) {
-      newD[loc(i, 0)]=MAX_INT;
-    }
+    upImpl( newD);
     return newD;
   }
-    
+
+  void downImpl(C * D ) const{
+    for (int i=1; i< n; i++){
+      D[i] =LTEQ_ZERO;
+      for(int j=1; j< n; j++){
+        int k=loc(j,i);
+        D[i]=D[i]< D[k]? D[i]: D[k];
+
+      }
+    }    
+  }
     
   /**
    * Can not modify value of D
@@ -260,19 +261,33 @@ class dbm{
    */
   C* down(const C * D) const{
     C *newD=newMatrix(D);
-    for (int i=1; i< n; i++){
-      newD[i] =LTEQ_ZERO;
-      for(int j=1; j< n; j++){
-        int k=loc(j,i);
-        if(newD[i]>newD[k]){
-          newD[i]=newD[k];
-        }
-      }
-    }
+    downImpl( newD);
     return newD;
   }
     
 
+  void andImpl(C * newD, const Cons & cons) const{
+    
+    Cons  negCons=cons.neg( );
+    
+    if (negCons.matrix_value>=newD[loc( cons.y, cons.x)]){
+      newD[0]= getMatrixValue(-1, false);
+    }else if ( cons.matrix_value < newD[loc(cons.x, cons.y)]){
+      newD[loc(cons.x, cons.y)]=cons.matrix_value;
+      for(int i=0; i< n; i++){
+        for(int j=0; j< n ; j++){
+          C temp=add(newD[loc(i, cons.x)], newD[loc(cons.x, j)]);
+          int k=loc(i, j);
+          newD[k]=newD[k]<temp? newD[k] : temp;
+            
+          C DandC=add(newD[loc(i, cons.y)], newD[loc(cons.y, j)]);
+          newD[k]=newD[k]< DandC ? newD[k]: DandC;
+        }
+      }
+    }
+  }
+
+  
   /**
    * Can not modify value of D
    * The most used operation in state-space exploration in conjunction
@@ -282,11 +297,17 @@ class dbm{
       
     C *newD=newMatrix(D);
     andImpl(newD, cons);
-      
     return newD;
   }
     
-    
+
+  void freeImpl( C *D, const int x) const{
+    for(int i=0; i<n; i++){
+      D[loc(x, i)]=MAX_INT;
+      D[loc(i, x)]=D[loc(i,0)];
+    }
+    D[loc(x, x)]=LTEQ_ZERO;    
+  }
     
   /**
    * Can not modify value of D
@@ -296,14 +317,23 @@ class dbm{
    */
   C* free(const C * D, const int x) const{
     C *newD=newMatrix(D);
-    for(int i=0; i<n; i++){
-      newD[loc(x, i)]=MAX_INT;
-      newD[loc(i, x)]=newD[loc(i,0)];
-    }
-    newD[loc(x, x)]=LTEQ_ZERO;
+    freeImpl( newD,x);
     return newD;
   }
+
+
+  void resetImpl ( C* D, const int x,const C m) const {
+    // clock id start from 1
+    assert( x>0);
     
+    C postM=getMatrixValue(m, false);
+    C negM=getMatrixValue(-m, false);
+      
+    for(int i=0; i< n ;i++){
+      D[loc(x, i)] =add(postM, D[i]);
+      D[loc(i,x)]=add(D[loc(i, 0)], negM);
+    }
+  }
     
     
   /**
@@ -314,20 +344,20 @@ class dbm{
    */
   C* reset (const C* D, const int x,const C m) const {
     C *newD=newMatrix(D);
-    C postM=getMatrixValue(m, false);
-    C negM=getMatrixValue(-m, false);
-      
-    for(int i=0; i< n ;i++){
-      newD[loc(x, i)] =add(postM, newD[i]);
-        
-      newD[loc(i,x)]=add(newD[loc(i, 0)], negM);
-        
-    }
+    resetImpl( newD, x, m);
     return newD;
   }
     
     
+
+  void  copyImpl( C * D, const int x, const int y) const{
+    for(int i=0; i< n; i++){
+      D[loc(x,i)]=D[loc(y,i)];
+      D[loc(i,x)]=D[loc(i,y)];
+    }
+    D[loc(x,x)]=D[loc(x,y)]=D[loc(y,x)]=LTEQ_ZERO;    
     
+  }
   /**
    * This is another operation used in forwards state space exporation.
    * Can not modify value of D
@@ -336,16 +366,29 @@ class dbm{
    */
   C* copy(const C * D, const int x, const int y) const{
     C *newD=newMatrix(D);
-    for(int i=0; i< n; i++){
-      newD[loc(x,i)]=newD[loc(y,i)];
-      newD[loc(i,x)]=newD[loc(i,y)];
-    }
-      
-    newD[loc(x,x)]=newD[loc(x,y)]=newD[loc(y,x)]=LTEQ_ZERO;
+    copyImpl( newD,  x,  y);
     return newD;
   }
     
-    
+
+  C* shiftImpl( C * D, const int x, const C m) const{
+
+    C postM=getMatrixValue(m, false);
+    C negM= getMatrixValue(-m, false);
+      
+      
+    for (int i=0; i< n; i++){
+      D[loc(x,i)]=add(D[loc(x,i), postM]);
+      D[loc(i, x)]=add(D[loc(i, x)], negM);
+    }
+      
+    D[loc(x,x)]=LTEQ_ZERO;
+    int temp= loc(x,0);
+    D[temp]=D[temp]> LTEQ_ZERO? D[temp]: LTEQ_ZERO;
+    D[x]=D[x]< LTEQ_ZERO? D[x] : LTEQ_ZERO;
+          
+  }
+  
     
   /**
    * The last reset operation is shifting a clock, i.e. adding or substracting a clock with an integer value.
@@ -355,23 +398,8 @@ class dbm{
    */
   C* shift(const C * D, const int x, const C m) const{
     C *newD=newMatrix(D);
-    C postM=getMatrixValue(m, false);
-    C negM= getMatrixValue(-m, false);
-      
-      
-    for (int i=0; i< n; i++){
-      newD[loc(x,i)]=add(newD[loc(x,i), postM]);
-      newD[loc(i, x)]=add(newD[loc(i, x)], negM);
-    }
-      
-    newD[loc(x,x)]=LTEQ_ZERO;
-    int temp= loc(x,0);
-    newD[temp]=newD[temp]> LTEQ_ZERO? newD[temp]: LTEQ_ZERO;
-      
-    newD[x]=newD[x]< LTEQ_ZERO? newD[x] : LTEQ_ZERO;
-      
+    shiftImpl( newD, x, m);
     return newD;
-      
   }
     
     

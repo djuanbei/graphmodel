@@ -4,7 +4,7 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Fri Mar 29 10:47:56 2019
  *
- * @brief  linear simple constraint such x-y <(  <= ) right
+ * @brief  linear simple constraint such x-y < ( <= ) right
  *
  *
  */
@@ -80,25 +80,25 @@ using namespace std;
         return negCons.matrix_value< matrix_value;
       }
 
-      if( (x>0 && y>=0)&& ( cons.x>=0 && cons.y>=0)){
+      if( (x>0 && y>0)&& ( cons.x>0 && cons.y>0)){
         return true;
       }
-      if(y>=0 && cons.y>=0 ){
+      if(y>0 && cons.y>0 ){
         return true;
       }
 
-      if(y<0 ){
+      if(0==y ){
         if( x!=cons.y){
           return true;
         }
         
-        return matrix_value+cons.matrix_value>dbmUTIL<C>::LTEQ_ZERO;
+        return matrix_value+cons.matrix_value>LTEQ_ZERO;
         
       }else{
         if( y!= cons.x){
           return true;
         }
-        return matrix_value+cons.matrix_value>dbmUTIL<C>::LTEQ_ZERO;
+        return matrix_value+cons.matrix_value>LTEQ_ZERO;
       }
 
       return true;
