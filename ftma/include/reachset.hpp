@@ -28,6 +28,11 @@ class reach{
   typedef Constraint<C> CS;
   typedef dbm<C, CS > DBM;
   typedef dbmset< C, DBM > DSet;
+  
+  int initial_loc; // the initial location of timed automata
+  int vertex_num; // number of locations in 
+
+
   tma<L,E> &TMA;
   DBM dbmManager;
   vector< DSet > reachSet;
@@ -37,33 +42,41 @@ class reach{
   vector<Constraint<C> > differenceCons;
   
  public:
-  reach( tma<L,E> &oTMA ):TMA( oTMA),dbmManager(oTMA.clock_num ){
-
-    vector<int>  srcs;
+  reach(tma<L,E> &oTMA ):TMA(oTMA),dbmManager(oTMA.clock_num ){
+    
+      
+    initial_loc= TMA.initial_loc;
+   
+    vector<int> srcs;
     vector<int> snks;
-    for(size_t i=0; i< TMA.edges.size( ); i++  ){
+    
+    for(size_t i=0; i< TMA.edges.size(); i++ ){
       srcs.push_back(TMA.edges[i].source);
       snks.push_back(TMA.edges[i].target);
     }
-    reachSet.resize(TMA.locations.size( ) );
-    graph.initial( srcs, snks);
 
-    ks=new C[ 2*(TMA.clock_num+1) ];
-    fill( ks, ks+2*(TMA.clock_num+1), LTEQ_ZERO);
+    graph.initial(srcs, snks);
 
-    for(typename vector<L>::iterator it=TMA.locations.begin( ) ; it!=TMA.locations.end( ); it++ ){
-      for( typename vector<CS>::iterator cit =it->invariants.begin( ); cit!=it->invariants.end( ); cit++ ){
+    vertex_num=graph.getVertex_num();
+
+    reachSet.resize(vertex_num);
+      
+    ks=new C[2*(TMA.clock_num+1) ];
+    fill(ks, ks+2*(TMA.clock_num+1), LTEQ_ZERO);
+
+    for(typename vector<L>::iterator it=TMA.locations.begin() ; it!=TMA.locations.end(); it++ ){
+      for(typename vector<CS>::iterator cit =it->invariants.begin(); cit!=it->invariants.end(); cit++ ){
         
-        if( cit->x >0 && cit->y > 0){
-          differenceCons.push_back( *cit);
+        if(cit->x >0 && cit->y > 0){
+          differenceCons.push_back(*cit);
         }else{
-          if( cit->x >0){
-            if( cit->matrix_value> ks[ cit->x] ){
-              ks[ cit->x]=cit->matrix_value;
+          if(cit->x >0){
+            if(cit->matrix_value> ks[cit->x] ){
+              ks[cit->x]=cit->matrix_value;
             }else{
-              CS temp= cit->neg( );
-              if( temp.matrix_value> ks[ temp.x]){
-                ks[ temp.x]=temp.matrix_value;
+              CS temp= cit->neg();
+              if(temp.matrix_value> ks[temp.x]){
+                ks[temp.x]=temp.matrix_value;
               }
             }
           }
@@ -76,20 +89,20 @@ class reach{
      * 
      */
 
-
-    for( int i=1; i< TMA.clock_num+1; i++){
+    for(int i=1; i< TMA.clock_num+1; i++){
       ks[i+TMA.clock_num+1]=LTEQ_ZERO-ks[i];
     }
     
   }
-  ~reach( ){
-    delete[ ] ks;
-    deleteData( );
+  ~reach(){
+    delete[] ks;
+    deleteData();
   }
   
-  bool reachableSet(const tma<L,E> &TMA, vector< dbmset<C, DBM > > &reachSet, DBM & d ) const {
+    
+  bool reachableSet()  {
         
-    run(TMA, graph,  reachSet );
+    run();
 
     return true;
     
@@ -104,69 +117,85 @@ class reach{
    * 
    * @return 
    */
-  bool run(const tma<L,E> & TMA, const graph_t<int> & graph, vector< dbmset<C, DBM > > &reachSet) const {
-    
-    int initial_loc= TMA.initial_loc;
-    int vertex_num=graph.getVertex_num( );
+  bool run()  {
     vector<int> changed;
     set<int>  secondChanged;
-
-        
+    
+    //For given target find the source which change in last step
+    map<int, vector<int> > relatedLinks;
+    
     //There are no edges connect with  initial location
-    if( initial_loc>= vertex_num){
+    if(initial_loc>= vertex_num){
       return true;
     }
     //    ASSERT(initial_loc>=0, "The initial location must greater or equal to 0" );
-    assert(initial_loc>=0 );
+    assert(initial_loc>=0);
     
-    vector< dbmset<C, DBM > > waitSet;
-    waitSet.resize(TMA.locations.size( ));
-    vector< dbmset<C, DBM > > secondWaitSet;
-    secondWaitSet.resize(TMA.locations.size( ));
-    
-    C* D= dbmManager.newMatrix( );
-    TMA.locations[initial_loc ].apply( D);
-    waitSet[ initial_loc].add(D );
-    reachSet[ initial_loc].add( D);
-    changed.push_back( initial_loc);
+    vector< dbmset<C, DBM > > waitSet(vertex_num);
+    vector< dbmset<C, DBM > > secondWaitSet(vertex_num );
+      
+    C* D= dbmManager.newMatrix();
+    TMA.locations[initial_loc ].apply(dbmManager, D);
+    waitSet[initial_loc].add(dbmManager, D);
+    reachSet[initial_loc].add(dbmManager, D);
+    changed.push_back(initial_loc);
 
-    while( !changed.empty( )){
+    while(!changed.empty()){
+      relatedLinks.clear( );
+      for(size_t i=0; i< changed.size(); i++){
+        int source=changed[i];
+        int link, outDegree, target;
+        outDegree=graph.getOutDegree(source);
+        for(int j=0; j<  outDegree; j++){
+          link=graph.getAdj(source, j);
 
-      for( size_t i=0; i< changed.size( ); i++){
-        int v=changed[ i];
+          graph.findRhs(link, source, target);
+          relatedLinks[ target].push_back( link);
+        }
+      }
 
-        int link, outDegree, tempSnk;
-        outDegree=graph.getOutDegree(v);
-        for( int j=0; j<  outDegree; j++){
-          link=graph.getAdj(v, j);
+      for( int i=0; i< (int)relatedLinks.size( ); i++){
+        map<int, vector<int> >::iterator it=relatedLinks.begin( );
+        for( int j=0; j< i; j++){
+          it++;
+        }
+        
+        int source, target, link;
+        target=it->first;
+        for( vector<int>::iterator lit=it->second.begin( ); lit!=it->second.end( ); lit++){
+
+          link=*lit;
+          graph.findRhs(link, target, source);
+
           DSet next;
-          if(TMA.edges[link].apply(waitSet[ v], dbmManager, next )){
+          if(TMA.edges[link].apply(dbmManager, waitSet[source],  next)){
             DSet next1;
-            graph.findRhs( link, v, tempSnk);
-            if(TMA.locations[ tempSnk].apply( dbmManager, next, next1)){
-              secondWaitSet[ tempSnk].And( next1);
-              reachSet[ tempSnk].And( next1);
-              secondChanged.insert( tempSnk);
+            graph.findRhs(link, source, target);
+            if(TMA.locations[target].apply(dbmManager, next, next1)){
+              secondWaitSet[target].And(dbmManager, next1);
+              reachSet[target].And(dbmManager, next1);
+              secondChanged.insert(target);
             }
           }
         }
-
       }
-      changed.clear( );
-      changed.insert(changed.begin( ), secondChanged.begin( ), secondChanged.end( ) );
-      secondChanged.clear( );
 
-      waitSet=secondChanged;
-      for( int j=0; j< vertex_num; j++){
-        secondWaitSet[ j].clear( );
+      changed.clear();
+      changed.insert(changed.begin(), secondChanged.begin(), secondChanged.end());
+      secondChanged.clear();
+
+      waitSet=secondWaitSet;
+      for(size_t i=0; i< changed.size(); i++){
+        int source=changed[i];
+        secondWaitSet[source].clear();
       }
-      
+
     }
-        
+    return true;
   }
 
-  void deleteData(  ){
-    for(typename vector< dbmset<C, DBM > >::iterator it =reachSet.begin( ) ; it!= reachSet.end( ); it++ ){
+  void deleteData(){
+    for(typename vector< dbmset<C, DBM > >::iterator it =reachSet.begin() ; it!= reachSet.end(); it++){
       it->deleteAll();
     }
     reachSet.clear();

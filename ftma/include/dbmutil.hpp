@@ -11,7 +11,7 @@
 #ifndef DBM_UTIL_HPP
 #define DBM_UTIL_HPP
 #include<limits>
-#define LTEQ_ZERO 1
+#define LTEQ_ZERO ((C)1)
 namespace ftma{
 
 

@@ -92,7 +92,7 @@ class dbm{
    *
    * @return
    */
-  C * newMatrix(const C * D) const{
+  C * newMatrix(const C * const D) const{
     C* newD=new C[size]();
     memcpy(newD, D, sizeof(C)*size);
     return newD;
@@ -117,7 +117,7 @@ class dbm{
         
   }
   
-  std::string dump(const C* D) const{
+  std::string dump(const C* const D) const{
 
     std::stringstream ss;
 
@@ -142,7 +142,7 @@ class dbm{
     return ss.str();
   }
     
-  uint32_t getHashValue(const C* D) const{
+  uint32_t getHashValue(const C* const D) const{
     return FastHash((char*)D, sizeof(C)*size);
   }
     
@@ -186,7 +186,7 @@ class dbm{
    * @return true if dbm D is not empty,
    * false otherwise.
    */
-  bool isConsistent(const C* D) const{
+  bool isConsistent(const C* const D) const{
     return D[0] >= LTEQ_ZERO;
   }
     
@@ -199,7 +199,7 @@ class dbm{
    *
    * @return true if this is included by other lhs <= rhs
    */
-  bool isInclude (const C * lhs, const C *rhs) const{
+  bool isInclude (const C * const lhs, const C * const rhs) const{
       
     for(int i=0; i< size; i++){
       if(lhs[i]> rhs[i]){
@@ -220,13 +220,13 @@ class dbm{
    * @return true if there is a value in this domain which satisfies cons
    * false, otherwise.
    */
-  bool isSatisfied(const C* D, const Cons &cons) const{
+  bool isSatisfied(const C* const D, const Cons &cons) const{
     Cons negCons=cons.neg( );
     return negCons.matrix_value<D[loc(cons.y, cons.x)];
   }
 
   void upImpl( C* D)const{
-    for(int i; i< n; i++) {
+    for(int i=1; i< n; i++) {
       D[loc(i, 0)]=MAX_INT;
     }
   }
@@ -237,7 +237,7 @@ class dbm{
    * up(D)={u+d | u \in D, d\in R+ }
    *
    */
-  C* up(const C* D) const{
+  C* up(const C* const D) const{
     C* newD=newMatrix(D);
     upImpl( newD);
     return newD;
@@ -259,7 +259,7 @@ class dbm{
    * compute weakest precondition
    *
    */
-  C* down(const C * D) const{
+  C* down(const C * const D) const{
     C *newD=newMatrix(D);
     downImpl( newD);
     return newD;
@@ -293,7 +293,7 @@ class dbm{
    * The most used operation in state-space exploration in conjunction
    * @param cons
    */
-  C * And(const C *D, const Cons & cons) const{
+  C * And(const C * const D, const Cons & cons) const{
       
     C *newD=newMatrix(D);
     andImpl(newD, cons);
@@ -315,7 +315,7 @@ class dbm{
    *
    * @param x
    */
-  C* free(const C * D, const int x) const{
+  C* free(const C * const D, const int x) const{
     C *newD=newMatrix(D);
     freeImpl( newD,x);
     return newD;
@@ -325,14 +325,17 @@ class dbm{
   void resetImpl ( C* D, const int x,const C m) const {
     // clock id start from 1
     assert( x>0);
-    
+    assert(m>=0);
     C postM=getMatrixValue(m, false);
     C negM=getMatrixValue(-m, false);
-      
+    int xStart=loc(x,0);
+    
     for(int i=0; i< n ;i++){
-      D[loc(x, i)] =add(postM, D[i]);
+      D[xStart+i] =add(postM, D[i]);
       D[loc(i,x)]=add(D[loc(i, 0)], negM);
     }
+      
+    D[loc(x,x)]=LTEQ_ZERO;
   }
     
     
@@ -342,7 +345,7 @@ class dbm{
    * @param x
    * @param m
    */
-  C* reset (const C* D, const int x,const C m) const {
+  C* reset (const C* const D, const int x,const C m) const {
     C *newD=newMatrix(D);
     resetImpl( newD, x, m);
     return newD;
@@ -364,7 +367,7 @@ class dbm{
    * @param x
    * @param y
    */
-  C* copy(const C * D, const int x, const int y) const{
+  C* copy(const C * const D, const int x, const int y) const{
     C *newD=newMatrix(D);
     copyImpl( newD,  x,  y);
     return newD;
@@ -396,7 +399,7 @@ class dbm{
    * @param x
    * @param m
    */
-  C* shift(const C * D, const int x, const C m) const{
+  C* shift(const C * const D, const int x, const C m) const{
     C *newD=newMatrix(D);
     shiftImpl( newD, x, m);
     return newD;
@@ -410,7 +413,7 @@ class dbm{
    * k[i+n]:= < -k_i
    * @param k k[i] is the maximum upper for x_i
    */
-  void norm(C * D, const C* k) const {
+  void norm(C * D, const C* const k) const {
     
     for (int i=0; i< n; i++){
       for(int j=0; j< n; j++){
@@ -427,7 +430,7 @@ class dbm{
     canonicalForm(D);
   }
     
-  C* corn_norm(C* D, const C* k, vector<Cons> & Gd) const{
+  C* corn_norm(C* D, const C* const k, vector<Cons> & Gd) const{
       
     vector<Cons> Gunsat;
       
@@ -457,7 +460,7 @@ class dbm{
     return D;
   }
     
-  void split(const C* D, const vector<Cons> &Gd, vector<C*> &re){
+  void split(const C* const D, const vector<Cons> &Gd, vector<C*> &re){
     deleteVectorM(re);
     map<uint32_t, C*>passed;
       
@@ -548,7 +551,7 @@ class dbm{
    * @param G
    * @param re
    */
-  void norm(C * D, const C* k, const vector<Cons> &Gd, vector<C*> &re)const{
+  void norm(C * D, const C* const k, const vector<Cons> &Gd, vector<C*> &re)const{
     deleteVectorM(re);
       
     vector<C*> splitDomain;

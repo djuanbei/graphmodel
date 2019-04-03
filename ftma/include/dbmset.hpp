@@ -20,18 +20,13 @@ class dbmset{
  private:
   map<uint32_t, C*>  passedD;
   vector<C*>  recoveryD;
-  D dbmManager;
+ 
   
  public:
   dbmset( ){
     
   }
-  dbmset( D & d ){
-    dbmManager=d;
-  }
-  void setDBMManager( D & d){
-    dbmManager=d;
-  }
+ 
   /** 
 
    * @param D  A dbm matrix
@@ -39,10 +34,10 @@ class dbmset{
    * @return true if real insert D into set
    * false otherwise. 
    */
-  bool add( C * DM ){
+  bool add(const D& dbmManager, C * DM){
     uint32_t hashValue=dbmManager.getHashValue( DM );
     typename std::pair<typename std::map<uint32_t,C*>::iterator,bool> ret;
-    ret= passedD,insert(std::pair<uint32_t, C*>( hashValue, DM )  );
+    ret= passedD.insert(std::pair<uint32_t, C*>( hashValue, DM )  );
 
     if(false== ret.second ){
       // hashValue has in passedD
@@ -74,7 +69,7 @@ class dbmset{
   
   void toVector( vector<C*>& re )const{
     re.clear(  );
-    for( typename map<uint32_t, C*>::iterator it= passedD.begin(); it!= passedD.end(); it++ ){
+    for( typename map<uint32_t, C*>::const_iterator it= passedD.begin(); it!= passedD.end(); it++ ){
       re.push_back( it->second );
     }
     re.insert( re.end( ), recoveryD.begin( ), recoveryD.end( ) );
@@ -95,13 +90,13 @@ class dbmset{
     clear( );
   }
   
-  void And(  dbmset<C,D > & other  ){
+  void And( const D& dbmManager,  dbmset<C,D > & other  ){
     for( typename map<uint32_t, C*>::iterator it= other.passedD.begin(); it!= other.passedD.end(); it++ ){
-      add(it->second);
+      add(dbmManager, it->second);
     }
     
     for( typename vector<C*>::iterator it=other.recoveryD.begin(  ); it!= other.recoveryD.end(  ); it++ ){
-      add(*it);
+      add(dbmManager, *it);
     }
     other.clear(  );
   }

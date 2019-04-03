@@ -23,8 +23,7 @@
                        +(uint32_t)(((const uint8_t *)(d))[0]) )
 #endif
 
-uint32_t FastHash (const char * data, int len);
-
+uint32_t FastHash (const char * const origData, int len);
 
 
 #endif

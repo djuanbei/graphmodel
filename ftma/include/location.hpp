@@ -45,7 +45,7 @@ struct location{
        * 
        */
 
-      for(typename vector<CS>::iterator cit=invariants.begin( ); cit!= invariants.end( ); cit++ ){
+      for(typename vector<CS>::const_iterator cit=invariants.begin( ); cit!= invariants.end( ); cit++ ){
         dbmManager.andImpl( D, *cit);
       }
       
@@ -58,11 +58,11 @@ struct location{
          * 
          */
 
-        for(typename vector<CS>::iterator cit=invariants.begin( ); cit!= invariants.end( ); cit++ ){
+        for(typename vector<CS>::const_iterator cit=invariants.begin( ); cit!= invariants.end( ); cit++ ){
           dbmManager.andImpl( D, *cit);
         }
         if( dbmManager.isConsistent( D)){
-          next.add( D);
+          next.add(dbmManager, D);
         }else{
           delete[] D;
         }
@@ -85,7 +85,7 @@ struct location{
    */
   bool apply( const DBM & dbmManager, C * D) const{
     dbmManager.upImpl( D);
-    for(typename vector<CS>::iterator cit=invariants.begin( ); cit!= invariants.end( ); cit++ ){
+    for(typename vector<CS>::const_iterator cit=invariants.begin( ); cit!= invariants.end( ); cit++ ){
         dbmManager.andImpl( D, *cit);
     }
     return dbmManager.isConsistent( D);

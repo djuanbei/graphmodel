@@ -22,34 +22,42 @@ struct  edge{
   vector<A> actions;// set of actions at this edge
   vector<int> reset;// set of reset clock variables
 
-  bool apply(const   DSet & Ds,  const DBM &dbmManager, DSet & next  ) const{
+  /** 
+   * 
+   * 
+   * @param dbmManager 
+   * @param Ds  The dbm matrix of source location. The edge can not change the value of it. 
+   * @param next  Compute the target dbm matrix after apply this edge on Ds.
+   * 
+   * @return true if next is nonempty, false otherwise.
+   */
+  bool apply(const DBM &dbmManager, const   DSet & Ds,  DSet & next  ) const{
+    
     next.deleteAll( );
     vector<C*> vecSet;
     Ds.toVector( vecSet);
     
-    for( typename vector<C*> ::iterator it =  vecSet.begin( ); it!= vecSet.end( ); it++){
-      C *D=*it;
-      for(typename vector<CS>::iterator cit=cons.begin( ); cit!= cons.end( ); cit++ ){
+    for( typename vector<C*> ::const_iterator it =  vecSet.begin( ); it!= vecSet.end( ); it++){
+      C *D=dbmManager.newMatrix(*it);
+      for(typename vector<CS>::const_iterator cit=cons.begin( ); cit!= cons.end( ); cit++ ){
         dbmManager.andImpl( D, *cit);
       }
       if( dbmManager.isConsistent( D)){
-        for( vector<int>::iterator rit=reset.begin( ); rit!=reset.end( ); rit++){
+        for( vector<int>::const_iterator rit=reset.begin( ); rit!=reset.end( ); rit++){
           assert( *rit>0);// clock id start from 1
           dbmManager.resetImpl(D, *rit, 0 );
         }
-        next.add( D);        
+        next.add(dbmManager, D);        
       }else{
         delete[ ] D;
       }
     }
-    
-    Ds.clear( );
     return next.size( )>0;
       
   }
 
-  bool apply( C* D, const DBM & dbmManager) const{
-
+  bool apply(const DBM & dbmManager, const C* const Din) const{
+    C* D=dbmManager.newMatrix( Din);
     for(typename vector<CS>::iterator cit=cons.begin( ); cit!= cons.end( ); cit++ ){
       dbmManager.andImpl( D, *cit);
     }

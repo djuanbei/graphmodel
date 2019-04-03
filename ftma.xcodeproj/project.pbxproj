@@ -6,11 +6,6 @@
 	objectVersion = 50;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		AE108B56224F6ACD00CC8C4C /* fashHash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE108B55224F6ACD00CC8C4C /* fashHash.cpp */; };
-		F991170C224DC7F400CAABBC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F991170B224DC7F400CAABBC /* main.cpp */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		F9911706224DC7F400CAABBC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -24,9 +19,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AE108B55224F6ACD00CC8C4C /* fashHash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fashHash.cpp; sourceTree = "<group>"; };
+		F95E272022543395002FB0B4 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = ftma/src; sourceTree = "<group>"; };
 		F9911708224DC7F400CAABBC /* ftma */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ftma; sourceTree = BUILT_PRODUCTS_DIR; };
-		F991170B224DC7F400CAABBC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; tabWidth = 2; };
 		F9911717224DCD3200CAABBC /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -44,6 +38,7 @@
 		F99116FF224DC7F400CAABBC = {
 			isa = PBXGroup;
 			children = (
+				F95E272022543395002FB0B4 /* src */,
 				F991170A224DC7F400CAABBC /* ftma */,
 				F9911709224DC7F400CAABBC /* Products */,
 			);
@@ -60,8 +55,6 @@
 		F991170A224DC7F400CAABBC /* ftma */ = {
 			isa = PBXGroup;
 			children = (
-				F991170B224DC7F400CAABBC /* main.cpp */,
-				AE108B55224F6ACD00CC8C4C /* fashHash.cpp */,
 				F9911717224DCD3200CAABBC /* include */,
 			);
 			path = ftma;
@@ -123,8 +116,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F991170C224DC7F400CAABBC /* main.cpp in Sources */,
-				AE108B56224F6ACD00CC8C4C /* fashHash.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

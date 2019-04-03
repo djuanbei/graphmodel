@@ -25,7 +25,7 @@
 
 using namespace std;
 using namespace ftma;
-
+    
 
 typedef int C;
 
@@ -38,6 +38,7 @@ typedef edge<C, CS, action> E;
 
 void example1( void){
   // x:1 y:2 z:3
+  vector<E> es;
   vector<L> ls;
   L S0, S1, S2, S3;
   E e01, e12, e23;
@@ -56,19 +57,33 @@ void example1( void){
   e23.target=3;
 
   CS cs2(1, 3, 1, true ); // x-z < 1
-  CS cs2(3, 2, 1, true ); // z-y < 1
+  CS cs3(3, 2, 1, true ); // z-y < 1
 
-  e23.cons.push_back( sc2);
-  e23.cons.push_back( sc3);
-  
-  
-  
+  e23.cons.push_back( cs2);
+  e23.cons.push_back( cs3);
+
+  ls.push_back( S0);
+  ls.push_back( S1);
+  ls.push_back( S2);
+  ls.push_back( S3);
+
+  es.push_back( e01);
+  es.push_back( e12);
+  es.push_back( e23);
+  tma< L, E > TMA1( ls, es, 0, 3);
+
+  reach<C,L,E> reacher( TMA1 );
+
+  //vector< dbmset<C, DBM > > reachSet;
+      
+  reacher.reachableSet( );
   
   
 }
 
 
 int main(int argc, const char * argv[]) {
+  example1( )  ;
   
   Constraint< C> cons(1, 2, 2, false);
   
