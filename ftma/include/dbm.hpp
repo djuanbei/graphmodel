@@ -31,7 +31,9 @@
 
 namespace ftma{
 using namespace std;
-  
+
+
+
 /**
  *@param C the type of value of clock
  *@param add the operator of x+y
@@ -208,7 +210,28 @@ class dbm{
     }
     return true;
   }
-    
+
+  /** 
+   * If lhs contains  rhs, then getIncludeFeature(lhs ) >= getIncludeFeature( rhs)
+   * 
+   * @param D 
+   * 
+   * @return 
+   */
+  
+  DF_T getIncludeFeature( const C*  const D ) const{
+    DF_T re=1.0;
+    DF_T rat=MAX_INT/1.1;
+    DF_T rat1=0.5*MAX_INT;
+    for(int i=0; i< n; i++ ){
+      int k=loc( i, 0);
+      for( int j=0; j<n; j++  ){
+        if( i==j) continue;
+        re=(re*rat1+(D[k+j]+MAX_INT))/rat;
+      }
+    }
+    return re;
+  }
   /**
    * D_{y,x} + cons.matrix_value ">=" 0
    } x-y < ( <= ) rhs and

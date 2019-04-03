@@ -154,16 +154,25 @@ class reach{
         }
       }
 
-      for( int i=0; i< (int)relatedLinks.size( ); i++){
-        map<int, vector<int> >::iterator it=relatedLinks.begin( );
-        for( int j=0; j< i; j++){
-          it++;
-        }
+      vector<int> targets;
+      vector<vector<int> > vecRelatedLinks;
+      for(map<int, vector<int> >::iterator it=relatedLinks.begin( ); it!=relatedLinks.end( ); it++){
+        targets.push_back( it->first);
+        vecRelatedLinks.push_back( it->second);
+      }
+
+      /**
+       * TODO:
+       * parallel  section
+       * 
+       */
+
+      for( int i=0; i< (int)targets.size( ); i++){
         
         int source, target, link;
-        target=it->first;
-        for( vector<int>::iterator lit=it->second.begin( ); lit!=it->second.end( ); lit++){
-
+        target=targets[i];
+        
+        for( vector<int>::iterator lit=vecRelatedLinks[i].begin( ); lit!=vecRelatedLinks[i].end( ); lit++){
           link=*lit;
           graph.findRhs(link, target, source);
 

@@ -13,92 +13,146 @@
 #include<vector>
 #include<algorithm>
 
+#include "dbmutil.hpp"
+
 namespace ftma{
 using namespace std;
-template<typename C, typename D>
+template<typename C, typename DBM>
 class dbmset{
  private:
-  map<uint32_t, C*>  passedD;
+  map<uint32_t, int>  passedD;
+  vector<C*> mapD;
+  vector<DF_T> mapDFeature;
+  
   vector<C*>  recoveryD;
- 
+  vector<DF_T> recoveryDFeature;
+  
+  C *getD(uint32_t hashValue) {
+    return mapD[ passedD[ hashValue]];
+  }
+  
+  void mapDAdd(  C * D, DF_T &value ){
+    mapD.push_back( D);
+    mapDFeature.push_back(value );
+  }
+  
+
+  void  recoveryDAdd(  C * D, DF_T &value ){
+    recoveryD.push_back( D);
+    recoveryDFeature.push_back(value);
+  }
+  
   
  public:
-  dbmset( ){
-    
-  }
- 
+   
   /** 
 
-   * @param D  A dbm matrix
+   * @param DBM  A dbm matrix
    * 
-   * @return true if real insert D into set
+   * @return true if real insert DBM into set
    * false otherwise. 
    */
-  bool add(const D& dbmManager, C * DM){
-    uint32_t hashValue=dbmManager.getHashValue( DM );
-    typename std::pair<typename std::map<uint32_t,C*>::iterator,bool> ret;
-    ret= passedD.insert(std::pair<uint32_t, C*>( hashValue, DM )  );
-
-    if(false== ret.second ){
+  bool add(const DBM& dbmManager, C * DM){
+    uint32_t hashValue=dbmManager.getHashValue( DM);
+    typename std::pair<typename std::map<uint32_t,int>::iterator,bool> ret;
+    ret= passedD.insert(std::pair<uint32_t, int>( hashValue, mapD.size()));
+    DF_T featrue=dbmManager.getIncludeFeature(DM );
+    if(false== ret.second){
       // hashValue has in passedD
-      C* D1=passedD[ hashValue ];
-      if(!dbmManager.MEqual(DM, D1  )){
+      C* D1=getD( hashValue);
+      
+      if(!dbmManager.MEqual(DM, D1 )){
         bool have=false;
-        for( typename vector<C*>::iterator it=recoveryD.begin( ); it!=recoveryD.end(); it++){
-          if( dbmManager.MEqual(DM, *it  ) ){
+        for( typename vector<C*>::iterator it=recoveryD.begin(); it!=recoveryD.end(); it++){
+          if( dbmManager.MEqual(DM, *it )){
             have=true;
             break;
           }
         }
-        if( have ){
+        if( have){
           delete [ ] DM;
           return false;
         }
-        recoveryD.push_back(DM);
+        if( isInclude(dbmManager, DM, featrue)){
+          delete[ ] DM;
+          return false;
+        }else{
+          recoveryDAdd( DM, featrue);
+        }
+
       }else{
         delete[ ] DM;
         return false;
       }
-    }
-    return true;
-  }
-  
-  size_t size( ) const{
-    return passedD.size( )+recoveryD.size( );
-  }
-  
-  void toVector( vector<C*>& re )const{
-    re.clear(  );
-    for( typename map<uint32_t, C*>::const_iterator it= passedD.begin(); it!= passedD.end(); it++ ){
-      re.push_back( it->second );
-    }
-    re.insert( re.end( ), recoveryD.begin( ), recoveryD.end( ) );
-  }
+    }else{
+      mapDAdd( DM, featrue);
 
-  void clear( void ){
-    passedD.clear(  );
-    recoveryD.clear(  );
-  }
-
-  void deleteAll ( void ){
-    for( typename map<uint32_t, C*>::iterator it= passedD.begin(); it!= passedD.end(); it++ ){
-      delete [ ] it->second;
-    }
-    for( typename vector<C*>::iterator it=recoveryD.begin(  ); it!= recoveryD.end(  ); it++ ){
-      delete [ ] *it;
-    }
-    clear( );
-  }
-  
-  void And( const D& dbmManager,  dbmset<C,D > & other  ){
-    for( typename map<uint32_t, C*>::iterator it= other.passedD.begin(); it!= other.passedD.end(); it++ ){
-      add(dbmManager, it->second);
     }
     
-    for( typename vector<C*>::iterator it=other.recoveryD.begin(  ); it!= other.recoveryD.end(  ); it++ ){
+    return true;
+  }
+
+  bool isInclude(const DBM& dbmManager, C * DM, DF_T & featrue)const{
+
+    for( size_t i=0; i<mapD.size( ); i++ ){
+      if((mapDFeature[ i]>= featrue) &&  dbmManager.isInclude(mapD[i], DM)){
+        return  true;        
+      }
+    }
+
+    for( size_t i=0; i<recoveryD.size( ); i++ ){
+      if((recoveryDFeature[i] >= featrue) && dbmManager.isInclude( recoveryD[ i], DM)){
+        return  true;
+      }
+    }
+    return false;
+  }
+  
+  size_t size() const{
+    return passedD.size()+recoveryD.size();
+  }
+  
+  void toVector( vector<C*>& re)const{
+    re.clear();
+
+    re.insert( re.end(), mapD.begin(), mapD.end());
+    re.insert( re.end(), recoveryD.begin(), recoveryD.end());
+  }
+
+  void clear( void){
+    passedD.clear();
+    
+    mapD.clear( );
+    mapDFeature.clear( );
+    
+    recoveryD.clear();
+    recoveryDFeature.clear( );
+
+    
+  }
+
+  void deleteAll ( void){
+
+    for( typename vector<C*>::const_iterator it=mapD.begin(); it!= mapD.end(); it++){
+      delete [ ] *it;
+    }
+        
+    for( typename vector<C*>::iterator it=recoveryD.begin(); it!= recoveryD.end(); it++){
+      delete [ ] *it;
+    }
+    clear();
+  }
+  
+  void And( const DBM& dbmManager,  dbmset<C,DBM > & other){
+
+    for( typename vector<C*>::iterator it=other.mapD.begin(); it!= other.mapD.end(); it++){
       add(dbmManager, *it);
     }
-    other.clear(  );
+    
+    for( typename vector<C*>::iterator it=other.recoveryD.begin(); it!= other.recoveryD.end(); it++){
+      add(dbmManager, *it);
+    }
+    other.clear();
   }
 
 };

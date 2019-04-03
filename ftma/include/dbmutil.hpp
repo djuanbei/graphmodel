@@ -12,8 +12,10 @@
 #define DBM_UTIL_HPP
 #include<limits>
 #define LTEQ_ZERO ((C)1)
+
 namespace ftma{
 
+typedef long double DF_T;
 
 /**
  *  Both have compare < and <=
@@ -61,11 +63,13 @@ template<typename C>
 bool isStrict( const C  c){
   return  (c&1) == 0;
 }
+
   
 template<typename C>
 C getRight( const C c ){
   return c>>1;
 }
+
   
 }
 
