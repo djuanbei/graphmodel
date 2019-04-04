@@ -220,14 +220,13 @@ class dbm{
    */
   
   DF_T getIncludeFeature( const C*  const D ) const{
-    DF_T re=1.0;
-    DF_T rat=MAX_INT/1.1;
-    DF_T rat1=0.5*MAX_INT;
+    DF_T re=0;
+
     for(int i=0; i< n; i++ ){
       int k=loc( i, 0);
       for( int j=0; j<n; j++  ){
         if( i==j) continue;
-        re=(re*rat1+(D[k+j]+MAX_INT))/rat;
+        re=(2*re*MAX_INT+(D[k+j]+MAX_INT));
       }
     }
     return re;
