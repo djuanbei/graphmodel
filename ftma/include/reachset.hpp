@@ -83,6 +83,10 @@ class reach{
         }
       }
     }
+    for(int i=1; i<= TMA.clock_num+1; i++){
+      ks[i]=getMatrixValue(getRight(ks[i]), false);
+    }
+    
     /**
      *      x-y<= k_i
      *      x-y< -k_{i+n+1}
@@ -181,9 +185,20 @@ class reach{
             DSet next1;
             graph.findRhs(link, source, target);
             if(TMA.locations[target].apply(dbmManager, next, next1)){
-              secondWaitSet[target].And(dbmManager, next1);
-              reachSet[target].And(dbmManager, next1);
-              secondChanged.insert(target);
+              vector<C*> vec;
+              next1.toVector( vec);
+              for(size_t k=0; k< vec.size( ); k++ ){
+                vector<C*> reVec;
+                dbmManager.norm(vec[k], ks, differenceCons,  reVec);
+                
+                for(size_t h=0; h< reVec.size( ); h++ ){
+                  if(reachSet[target].add(dbmManager, reVec[h])){
+                    secondWaitSet[target].add(dbmManager, reVec[h]);                    
+                  }
+                }
+                
+              }
+              secondChanged.insert(target);                              
             }
           }
         }

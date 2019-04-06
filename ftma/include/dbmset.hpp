@@ -92,6 +92,7 @@ class dbmset{
     return true;
   }
 
+
   bool isInclude(const DBM& dbmManager, C * DM, DF_T & featrue)const{
 
     for( size_t i=0; i<mapD.size( ); i++ ){

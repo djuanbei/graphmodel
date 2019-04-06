@@ -452,7 +452,7 @@ class dbm{
     canonicalForm(D);
   }
     
-  C* corn_norm(C* D, const C* const k, vector<Cons> & Gd) const{
+  C* corn_norm(C* D, const C* const k, const vector<Cons> & Gd) const{
       
     vector<Cons> Gunsat;
       
@@ -482,7 +482,7 @@ class dbm{
     return D;
   }
     
-  void split(const C* const D, const vector<Cons> &Gd, vector<C*> &re){
+  void split(const C* const D, const vector<Cons> &Gd, vector<C*> &re) const{
     deleteVectorM(re);
     map<uint32_t, C*>passed;
       
@@ -502,8 +502,8 @@ class dbm{
           
         if(isSatisfied(*dit, *cit) && isSatisfied(*dit, (*cit).neg())){
             
-          C* DandC=Add(*dit, *cit) ;
-          C* DandNegC=Add(*dit, (*cit).neg());
+          C* DandC=And(*dit, *cit) ;
+          C* DandNegC=And(*dit, (*cit).neg());
             
           uint32_t DandCHash=getHashValue(DandC);
           uint32_t DandNegCHash=getHashValue(DandNegC);
@@ -519,7 +519,8 @@ class dbm{
               
           }else{
             if(MEqual(DandC, DandCfid->second)){
-              deleteVectorM(DandC);
+              delete[ ] DandC;
+              //deleteVectorM(DandC);
             }else{
               waitS.push_back(DandC);
             }
@@ -530,7 +531,8 @@ class dbm{
             waitS.push_back(DandNegC);
           }else{
             if(MEqual(DandNegC, DandNegCfid->second)){
-              deleteVectorM(DandNegC);
+              delete [ ]DandNegC;
+              //deleteVectorM(DandNegC);
             }else{
               waitS.push_back(DandNegC);
             }
