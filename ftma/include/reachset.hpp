@@ -140,7 +140,10 @@ class reach{
       
     C* D= dbmManager.newMatrix();
     TMA.locations[initial_loc ].apply(dbmManager, D);
-    waitSet[initial_loc].add(dbmManager, D);
+    if(!waitSet[initial_loc].add(dbmManager, D)){
+        return true;
+    }
+   
     reachSet[initial_loc].add(dbmManager, D);
     changed.push_back(initial_loc);
 
@@ -175,7 +178,7 @@ class reach{
         
         int source, target, link;
         target=targets[i];
-        
+        source=0;
         for( vector<int>::iterator lit=vecRelatedLinks[i].begin( ); lit!=vecRelatedLinks[i].end( ); lit++){
           link=*lit;
           graph.findRhs(link, target, source);

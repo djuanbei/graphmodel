@@ -42,7 +42,7 @@ using namespace std;
     Constraint(const int i, const int j, const C r, bool isStrctRef=true ){
       x=i;
       y=j;
-      matrix_value=r<<1;
+      matrix_value=r*2;
       if(!isStrctRef){
         matrix_value=matrix_value|1;
       }

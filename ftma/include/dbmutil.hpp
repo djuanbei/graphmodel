@@ -42,7 +42,7 @@ C add   (  const C x, const C y ) {
 
 template<typename C>
 C getMatrixValue( C realRight, bool isStrct=true ){
-    C right=realRight<<1;
+    C right=realRight*2;
     if( !isStrct ){
       right=right |1;
     }
