@@ -1,9 +1,9 @@
 /**
- * @file   location.hpp
+ * @file   Location.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:33:47 2019
  *
- * @brief  Timed automata location class
+ * @brief  Timed automata Location class
  *
  *
  */
@@ -15,22 +15,22 @@
 
 namespace ftma {
 using namespace std;
-template <typename C, typename CS> struct location {
-  typedef dbm<C, CS>     DBM;
-  typedef dbmset<C, DBM> DSet;
-  vector<CS>             invariants; // set of invariants  in this location
+template <typename C, typename CS> struct Location {
+  typedef DBM<C, CS>     DBM_t;
+  typedef DBMset<C, DBM_t> DSet;
+  vector<CS>             invariants; // set of invariants  in this Location
 
   /**
    *
    *
-   * @param Ds  the dbm set of start value in this location
+   * @param Ds  the DBM set of start value in this Location
    * @param dbmManager
-   * @param next return dbm set of possible value stay in this location
+   * @param next return DBM set of possible value stay in this Location
    *
    * @return true if next is not empty
    *         false otherwise.
    */
-  bool apply( const DBM &dbmManager, DSet &Ds, DSet &next ) const {
+  bool apply( const DBM_t &dbmManager, DSet &Ds, DSet &next ) const {
     next.deleteAll();
 
     vector<C *> vecSet;
@@ -41,8 +41,8 @@ template <typename C, typename CS> struct location {
 
       C *D = *it;
       /**
-       * D reach location first check D satisfies all the invariants in
-       * this location
+       * D reach Location first check D satisfies all the invariants in
+       * this Location
        *
        */
 
@@ -80,12 +80,12 @@ template <typename C, typename CS> struct location {
 
   /**
    *
-   * @param D  A dbm matrix of start value  in this location
+   * @param D  A DBM matrix of start value  in this Location
    * @param dbmManager
    *
-   * @return  true if the final set in this location is non-empty
+   * @return  true if the final set in this Location is non-empty
    */
-  bool apply( const DBM &dbmManager, C *D ) const {
+  bool apply( const DBM_t &dbmManager, C *D ) const {
     dbmManager.upImpl( D );
     for ( typename vector<CS>::const_iterator cit = invariants.begin();
           cit != invariants.end(); cit++ ) {

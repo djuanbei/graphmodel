@@ -11,10 +11,10 @@
 
 #include "action.hpp"
 #include "dbmutil.hpp"
-#include "edge.hpp"
+#include "transition.hpp"
 #include "linsimpcons.hpp"
 #include "location.hpp"
-#include "reachset.hpp"
+#include "reachability.hpp"
 #include "tma.hpp"
 
 #include "dbm.hpp"
@@ -28,10 +28,10 @@ using namespace ftma;
 typedef int C;
 
 typedef Constraint<C>       CS;
-typedef dbm<C, CS>          DBM;
-typedef dbmset<C, DBM>      DSet;
-typedef location<C, CS>     L;
-typedef edge<C, CS, action> E;
+typedef DBM<C, CS>          DBM_t;
+typedef DBMset<C, DBM_t>      DSet;
+typedef Location<C, CS>     L;
+typedef Transition<C, CS, Action> E;
 
 void example1( void ) {
     // x:1 y:2 z:3
@@ -55,9 +55,10 @@ void example1( void ) {
 
     CS cs2( 1, 3, 1, true ); // x-z < 1
     CS cs3( 3, 2, 1, true ); // z-y < 1
-
-    e23.cons.push_back( cs2 );
-    e23.cons.push_back( cs3 );
+    e23+=cs2;
+    //e23.cons.push_back( cs2 );
+    e23+=cs3;
+    //    e23.cons.push_back( cs3 );
 
     ls.push_back( S0 );
     ls.push_back( S1 );
@@ -67,13 +68,13 @@ void example1( void ) {
     es.push_back( e01 );
     es.push_back( e12 );
     es.push_back( e23 );
-    tma<L, E> TMA1( ls, es, 0, 3 );
+    TMA<L, E> tma1( ls, es, 0, 3 );
 
-    reach<C, L, E> reacher( TMA1 );
+    reach<C, L, E> reacher( tma1 );
 
     // vector< dbmset<C, DBM > > reachSet;
 
-    reacher.reachableSet();
+    reacher.computeAllReachableSet();
 }
 
 void example2( void ) {
@@ -92,13 +93,14 @@ void example2( void ) {
     E00b.target = 0;
     E00b.reset.push_back( 1 ); // x-->0
     CS cs2( 1, 0, 2, false );  // x<=2
-    E00b.cons.push_back( cs2 );
+    E00b+=cs2;
+    //E00b.cons.push_back( cs2 );
 
     E01.source = 0;
     E01.target = 1;
 
-    CS cs3( 2, 0, 2, false );
-    CS cs4( 0, 1, -4, false );
+    CS cs3( 2, 0, 2, false ); // y<=2
+    CS cs4( 0, 1, -4, false ); //x>=4
 
     E01.cons.push_back( cs3 );
     E01.cons.push_back( cs4 );
@@ -110,25 +112,36 @@ void example2( void ) {
     es.push_back( E00b );
     es.push_back( E01 );
 
-    tma<L, E> TMA1( ls, es, 0, 2 );
+    TMA<L, E> tma1( ls, es, 0, 2 );
 
-    reach<C, L, E> reacher( TMA1 );
+    reach<C, L, E> reacher( tma1 );
 
-    // vector< dbmset<C, DBM > > reachSet;
+    if(reacher.reachable( 1)){
 
-    reacher.reachableSet();
+      cout<<"right"<<endl;
+    }else{
+      cout<<"there is something wrong"<<endl;
+    }
+
+}
+
+void example3( void){
+
+  
 }
 
 int main( int argc, const char *argv[] ) {
     example1();
-
+    example2();
+  
+  
     Constraint<C> cons( 1, 2, 2, false );
 
     cout << "constrain: " << cons << endl;
 
     cout << "negation constraint: " << cons.neg() << endl;
     // insert code here...
-    dbm<C, Constraint<C>> exampleDBM( 4 );
+    DBM_t exampleDBM( 4 );
     C *                   D = exampleDBM.randomMatirx();
     cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
 
@@ -152,14 +165,14 @@ int main( int argc, const char *argv[] ) {
     C *D3 = exampleDBM.reset( D2, 2, (C) 10 );
 
     cout << "matrix dump :\n" << exampleDBM.dump( D3 ) << endl;
-
+/*
     vector<L> locs;
 
     vector<E> es;
 
-    tma<L, E> TMA1( locs, es, 0, 3 );
+    tma<L, E> tma1( locs, es, 0, 3 );
 
-    reach<C, L, E> RETMA( TMA1 );
-
+    reach<C, L, E> RETMA( tma1 );
+*/
     return 0;
 }

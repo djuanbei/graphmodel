@@ -1,9 +1,9 @@
 /**
- * @file   edge.hpp
+ * @file   transitionedge.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:45:30 2019
  *
- * @brief  edge class in timed automata
+ * @brief  transitionedge class in timed automata
  *
  *
  */
@@ -15,23 +15,44 @@
 
 namespace ftma {
 using namespace std;
-template <typename C, typename CS, typename A> struct edge {
-  typedef dbm<C, CS>     DBM;
-  typedef dbmset<C, DBM> DSet;
+template <typename C, typename CS, typename A> struct Transition {
+  typedef DBM<C, CS>     DBM;
+  typedef DBMset<C, DBM> DSet;
 
-  int source, target;  // source location and target location of this edge. The
+  int source, target;  // source location and target location of this transitionedge. The
                        // index of location in tma.locations
-  vector<CS>  cons;    // set of constraint at this edge
-  vector<A>   actions; // set of actions at this edge
+  vector<CS>  cons;    // set of constraint at this transitionedge
+  vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables
 
+
+  /** 
+   * add constraint to Transition
+   * 
+   * @param lhs 
+   * @param cs 
+   * 
+   * @return 
+   */
+ 
+  friend Transition<C,CS, A>& operator + (Transition<C,CS, A> & lhs, CS & cs  ){
+    lhs.cons.push_back( cs);
+    return lhs;
+  }
+
+  Transition<C,CS, A>& operator += ( CS & cs  ){
+    cons.push_back( cs);
+    return *this;
+  }
+  
+  
   /**
    *
    *
    * @param dbmManager
-   * @param Ds  The dbm matrix of source location. The edge can not change the
+   * @param Ds  The DBM matrix of source location. The transitionedge can not change the
    * value of it.
-   * @param next  Compute the target dbm matrix after apply this edge on Ds.
+   * @param next  Compute the target DBM matrix after apply this transitionedge on Ds.
    *
    * @return true if next is nonempty, false otherwise.
    */

@@ -1,5 +1,6 @@
+
 /**
- * @file dbm.hpp
+ * @file DBM.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date Thu Mar 28 19:47:51 2019
  *
@@ -35,7 +36,7 @@ using namespace std;
  *
  */
 
-template <typename C, typename Cons> class dbm {
+template <typename C, typename Cons> class DBM {
 private:
   /**
    * number of clocks
@@ -49,7 +50,7 @@ private:
   inline int loc( const int row, const int col ) const { return row * n + col; }
 
 public:
-  dbm( void ) {
+  DBM( void ) {
     n       = 0;
     size    = 0;
     MAX_INT = getMAX_INT( (C) 0 );
@@ -57,14 +58,14 @@ public:
     distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
   }
 
-  dbm( int nn )
+  DBM( int nn )
       : n( nn + 1 ) {
     size    = n * n;
     MAX_INT = getMAX_INT( (C) 0 );
 
     distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
   }
-  ~dbm() { n = 0; }
+  ~DBM() { n = 0; }
 
   void setClockNum( int num ) {
     n    = num + 1;
@@ -172,7 +173,7 @@ public:
    * precondition D is canonicalForm
    * @param D
    *
-   * @return true if dbm D is not empty,
+   * @return true if DBM D is not empty,
    * false otherwise.
    */
   bool isConsistent( const C *const D ) const { return D[ 0 ] >= LTEQ_ZERO; }

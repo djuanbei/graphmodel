@@ -1,5 +1,5 @@
 /**
- * @file   tma.hpp
+ * @file   TMA.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:25:54 2019
  *
@@ -12,14 +12,14 @@
 #define __TIMED_AUTOMATA_
 namespace ftma {
 
-template <typename L, typename E> struct tma {
+template <typename L, typename E> struct TMA {
 public:
   vector<L> locations;
   vector<E> edges;
   int       initial_loc;
   int       clock_num;
 
-  tma( vector<L> &locs, vector<E> &es, int init, int vnum )
+  TMA( vector<L> &locs, vector<E> &es, int init, int vnum )
       : locations( locs )
       , edges( es ) {
     initial_loc = init;

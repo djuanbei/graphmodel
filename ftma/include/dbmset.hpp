@@ -1,5 +1,5 @@
 /**
- * @file   dbmset.h
+ * @file   DBMset.h
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:58:00 2019
  *
@@ -17,7 +17,7 @@
 
 namespace ftma {
 using namespace std;
-template <typename C, typename DBM> class dbmset {
+template <typename C, typename DBM> class DBMset {
 private:
   map<uint32_t, int> passedD;
   vector<C *>        mapD;
@@ -137,7 +137,7 @@ public:
     clear();
   }
 
-  void And( const DBM &dbmManager, dbmset<C, DBM> &other ) {
+  void And( const DBM &dbmManager, DBMset<C, DBM> &other ) {
 
     for ( typename vector<C *>::iterator it = other.mapD.begin();
           it != other.mapD.end(); it++ ) {
