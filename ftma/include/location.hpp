@@ -15,10 +15,21 @@
 
 namespace ftma {
 using namespace std;
-template <typename C, typename CS> struct Location {
+template <typename C, typename CS> class Location {
+ public:
   typedef DBM<C, CS>     DBM_t;
   typedef DBMset<C, DBM_t> DSet;
+  
+ private:
   vector<CS>             invariants; // set of invariants  in this Location
+
+ public:
+
+
+  const vector<CS> & getInvarients( ) const{
+    return invariants;
+  }
+  
 
   /**
    *
@@ -30,7 +41,8 @@ template <typename C, typename CS> struct Location {
    * @return true if next is not empty
    *         false otherwise.
    */
-  bool apply( const DBM_t &dbmManager, DSet &Ds, DSet &next ) const {
+  
+  bool operator( ) ( const DBM_t &dbmManager, DSet &Ds, DSet &next ) const {
     next.deleteAll();
 
     vector<C *> vecSet;
@@ -78,6 +90,8 @@ template <typename C, typename CS> struct Location {
     return next.size() > 0;
   }
 
+
+
   /**
    *
    * @param D  A DBM matrix of start value  in this Location
@@ -85,7 +99,7 @@ template <typename C, typename CS> struct Location {
    *
    * @return  true if the final set in this Location is non-empty
    */
-  bool apply( const DBM_t &dbmManager, C *D ) const {
+  bool operator( ) ( const DBM_t &dbmManager, C *D ) const {
     dbmManager.upImpl( D );
     for ( typename vector<CS>::const_iterator cit = invariants.begin();
           cit != invariants.end(); cit++ ) {
@@ -93,6 +107,21 @@ template <typename C, typename CS> struct Location {
     }
     return dbmManager.isConsistent( D );
   }
+
+
+  /** 
+   * Add one invariant to this location
+   * 
+   * @param cs 
+   * 
+   * @return 
+   */
+  Location<C, CS> & operator +=( CS & cs){
+    invariants.push_back( cs);
+    return *this;
+  }
+
+  
 };
 } // namespace ftma
 

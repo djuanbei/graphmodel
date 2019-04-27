@@ -15,17 +15,42 @@
 
 namespace ftma {
 using namespace std;
-template <typename C, typename CS, typename A> struct Transition {
+template <typename C, typename CS, typename A> class   Transition {
+ public:
   typedef DBM<C, CS>     DBM;
   typedef DBMset<C, DBM> DSet;
-
+ private:
   int source, target;  // source location and target location of this transitionedge. The
                        // index of location in tma.locations
   vector<CS>  cons;    // set of constraint at this transitionedge
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables
 
+ public:
 
+  Transition( ){
+    source=target=-1;
+  }
+  Transition( int s, int t){
+    source=s;
+    target=t;
+  }
+  void setSource( int s){
+    source=s;
+  }
+
+  int getSource( ) const{
+    return source;
+  }
+
+  void setTarget( int t){
+    target=t;
+  }
+
+  int getTarget( ) const{
+    return target;
+  }
+  
   /** 
    * add constraint to Transition
    * 
@@ -34,17 +59,51 @@ template <typename C, typename CS, typename A> struct Transition {
    * 
    * @return 
    */
+  
  
   friend Transition<C,CS, A>& operator + (Transition<C,CS, A> & lhs, CS & cs  ){
     lhs.cons.push_back( cs);
     return lhs;
   }
 
+  /** 
+   *  add one constraint to this transition
+   * 
+   * @param cs  constraint
+   * 
+   * @return 
+   */
   Transition<C,CS, A>& operator += ( CS & cs  ){
     cons.push_back( cs);
     return *this;
   }
-  
+
+
+  /** 
+   * 
+   *  add one action to this transition
+   *
+   * @param a 
+   * 
+   * @return 
+   */
+  Transition<C,CS, A>& operator += ( A & a  ){
+    actions.push_back(a);
+    return *this;
+  }
+
+
+  /** 
+   * add one clock reset  to this transition
+   * 
+   * @param r 
+   * 
+   * @return 
+   */
+  Transition<C,CS, A>& operator += ( int r  ){
+    reset.push_back( r);
+    return *this;
+  }
   
   /**
    *
@@ -56,7 +115,7 @@ template <typename C, typename CS, typename A> struct Transition {
    *
    * @return true if next is nonempty, false otherwise.
    */
-  bool apply( const DBM &dbmManager, const DSet &Ds, DSet &next ) const {
+  bool operator( ) ( const DBM &dbmManager, const DSet &Ds, DSet &next ) const {
 
     next.deleteAll();
     vector<C *> vecSet;
@@ -83,7 +142,7 @@ template <typename C, typename CS, typename A> struct Transition {
     return next.size() > 0;
   }
 
-  bool apply( const DBM &dbmManager, const C *const Din ) const {
+  bool operator ( )( const DBM &dbmManager, const C *const Din ) const {
     C *D = dbmManager.newMatrix( Din );
     for ( typename vector<CS>::iterator cit = cons.begin(); cit != cons.end();
           cit++ ) {

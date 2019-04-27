@@ -14,6 +14,8 @@
 #include <string>
 #define LTEQ_ZERO ( (C) 1 )
 
+const static  int zero_clock_index=0;
+
 namespace ftma {
 
 typedef long double DF_T;

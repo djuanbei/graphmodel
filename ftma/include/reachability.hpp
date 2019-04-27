@@ -4,7 +4,7 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:24:17 2019
  *
- * @brief  reachable analysis of an TMA
+ * @brief  reachable analysis of an TA
  *
  *
  */
@@ -23,7 +23,7 @@ using namespace std;
 using namespace raptor;
 using namespace std;
 
-template <typename C, typename L, typename E> class reach {
+template <typename C, typename L, typename T> class reach {
 
 private:
   typedef Constraint<C>  CS;
@@ -33,7 +33,7 @@ private:
   int initial_loc; // the initial location of timed automata
   int vertex_num;  // number of locations in
 
-  TMA<L, E> &  tma;
+  TA<L, T> &  tma;
   DBM_t          dbmManager;
   vector<DSet> reachSet;
   vector<DSet> waitSet;
@@ -64,19 +64,19 @@ private:
   }
 
 public:
-  reach( TMA<L, E> &otma )
+  reach( TA<L, T> &otma )
       : tma( otma )
-      , dbmManager( otma.clock_num ) {
+      , dbmManager( otma.getClockNum( ) ) {
 
-    initial_loc = tma.initial_loc;
+    initial_loc = tma.getInitialLoc();
 
     
     vector<int> srcs;
     vector<int> snks;
-
-    for ( size_t i = 0; i < tma.edges.size(); i++ ) {
-      srcs.push_back( tma.edges[ i ].source );
-      snks.push_back( tma.edges[ i ].target );
+    const vector<T> & transitions= tma.getTransitions( );
+    for(typename vector<T>::const_iterator it=transitions.begin( ); it!= transitions.end( ); it++){
+      srcs.push_back( it->getSource() );
+      snks.push_back( it->getTarget() );
     }
 
     graph.initial( srcs, snks );
@@ -91,20 +91,25 @@ public:
     reachSet.resize( vertex_num );
     
     C *D = dbmManager.newMatrix();
-    tma.locations[ initial_loc ].apply( dbmManager, D );
+    const vector<L> & locations=tma.getLocations( );
+    locations[ initial_loc]( dbmManager, D);
+
 
     waitSet[ initial_loc ].add( dbmManager, D );
     reachSet[ initial_loc ].add( dbmManager, D );
 
     lastChangedLocs.push_back( initial_loc );
 
-    clockUppuerBound = new C[ 2 * ( tma.clock_num + 1 ) ];
-    fill( clockUppuerBound, clockUppuerBound + 2 * ( tma.clock_num + 1 ), LTEQ_ZERO );
+    int clock_num=tma.getClockNum( );
+    clockUppuerBound = new C[ 2 * ( clock_num + 1 ) ];
+    fill( clockUppuerBound, clockUppuerBound + 2 * ( clock_num + 1 ), LTEQ_ZERO );
 
-    for ( typename vector<L>::iterator it = tma.locations.begin();
-          it != tma.locations.end(); it++ ) {
-      for ( typename vector<CS>::iterator cit = it->invariants.begin();
-            cit != it->invariants.end(); cit++ ) {
+    for ( typename vector<L>::const_iterator it = locations.begin();
+          it != locations.end(); it++ ) {
+      
+      const vector<CS> & invariants=it->getInvarients( );
+      for ( typename vector<CS>::const_iterator cit = invariants.begin();
+            cit != invariants.end(); cit++ ) {
 
         if ( cit->x > 0 && cit->y > 0 ) {
           differenceCons.push_back( *cit );
@@ -122,7 +127,7 @@ public:
         }
       }
     }
-    for ( int i = 1; i <= tma.clock_num + 1; i++ ) {
+    for ( int i = 1; i <= clock_num + 1; i++ ) {
       clockUppuerBound[ i ] = getMatrixValue( getRight( clockUppuerBound[ i ] ), false );
     }
 
@@ -132,8 +137,8 @@ public:
      *
      */
 
-    for ( int i = 1; i < tma.clock_num + 1; i++ ) {
-      clockUppuerBound[ i + tma.clock_num + 1 ] = LTEQ_ZERO - clockUppuerBound[ i ];
+    for ( int i = 1; i < clock_num + 1; i++ ) {
+      clockUppuerBound[ i + clock_num + 1 ] = LTEQ_ZERO - clockUppuerBound[ i ];
     }
   }
   ~reach() {
@@ -153,7 +158,7 @@ public:
 
   /**
    * @param L
-   * @param TMA
+   * @param TA
    * @param C
    * @param reachSet
    *
@@ -172,7 +177,8 @@ public:
         return true;
       }
     }
-    
+    const vector<T> & transitions= tma.getTransitions( );
+    const vector<L> & locations=tma.getLocations( );    
 
     set<int>    secondChanged;
 
@@ -203,7 +209,7 @@ public:
         targets.push_back( it->first );
         vecRelatedLinks.push_back( it->second );
       }
-
+      
       /**
        * TODO:
        * parallel  section
@@ -221,11 +227,11 @@ public:
           graph.findRhs( link, target, source );
 
           DSet discreteTransNext;
-          if ( tma.edges[ link ].apply( dbmManager, waitSet[ source ],
+          if ( transitions[ link ]( dbmManager, waitSet[ source ],
                                         discreteTransNext ) ) {
             DSet advanceNext;
             graph.findRhs( link, source, target );
-            if ( tma.locations[ target ].apply( dbmManager, discreteTransNext, advanceNext ) ) {
+            if (locations[ target ]( dbmManager, discreteTransNext, advanceNext ) ) {
               vector<C *> vec;
               advanceNext.toVector( vec );
               for ( size_t k = 0; k < vec.size(); k++ ) {
