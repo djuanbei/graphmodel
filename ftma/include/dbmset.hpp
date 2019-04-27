@@ -13,7 +13,7 @@
 #include <map>
 #include <vector>
 
-#include "dbmutil.hpp"
+#include "util/dbmutil.hpp"
 
 namespace ftma {
 using namespace std;

@@ -14,12 +14,19 @@
 #include <string>
 #define LTEQ_ZERO ( (C) 1 )
 
-const static  int zero_clock_index=0;
+
 
 namespace ftma {
 
+const static  int zero_clock_index=0;
+
 typedef long double DF_T;
 
+enum Check_State{
+  TRUE,
+  FALSE,
+  UNKOWN
+};
 /**
  *  Both have compare < and <=
  *

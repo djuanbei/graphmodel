@@ -10,7 +10,7 @@
  */
 #ifndef LIN_SIMP_CONS_HPP
 #define LIN_SIMP_CONS_HPP
-#include "dbmutil.hpp"
+#include "util/dbmutil.hpp"
 #include <iostream>
 #include <random>
 

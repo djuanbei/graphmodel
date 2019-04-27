@@ -23,9 +23,9 @@
 
 #include <random>
 
-#include "fastHash.h"
+#include "util/fastHash.h"
 
-#include "dbmutil.hpp"
+#include "util/dbmutil.hpp"
 
 namespace ftma {
 using namespace std;
@@ -407,7 +407,7 @@ public:
    * -k_i
    * @param k k[i] is the maximum upper for x_i
    */
-  void norm( C *D, const C *const k ) const {
+  void norm( C *D, const vector<C> &k ) const {
 
     for ( int i = 0; i < n; i++ ) {
       for ( int j = 0; j < n; j++ ) {
@@ -423,7 +423,7 @@ public:
     canonicalForm( D );
   }
 
-  C *corn_norm( C *D, const C *const k, const vector<Cons> &Gd ) const {
+  C *corn_norm( C *D, const vector<C> &k, const vector<Cons> &Gd ) const {
 
     vector<Cons> Gunsat;
 
@@ -554,7 +554,7 @@ public:
    * @param G
    * @param re
    */
-  void norm( C *D, const C *const k, const vector<Cons> &Gd,
+  void norm( C *D, const vector<C> &k, const vector<Cons> &Gd,
              vector<C *> &re ) const {
     deleteVectorM( re );
 
