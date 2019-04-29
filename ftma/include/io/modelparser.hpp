@@ -10,7 +10,7 @@
 #ifndef __MODEL_PARSER_HPP
 #define __MODEL_PARSER_HPP
 
-namespace ftma {
+namespace graphsat {
 using namespace std;
 
 }

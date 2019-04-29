@@ -9,35 +9,45 @@
  *
  */
 
-#include "action.hpp"
-#include "linsimpcons.hpp"
-#include "location.hpp"
-#include "reachability.hpp"
-#include "ta.hpp"
 #include "transition.hpp"
+#include "action.hpp"
+#include "constraint/linsimpcons.hpp"
+#include "location.hpp"
+#include "problem/reachability.hpp"
+#include "model/ta.hpp"
+
 #include "util/dbmutil.hpp"
 
-#include "dbm.hpp"
+
+#include "domain/dbm.hpp"
+#include "domain/dbmset.hpp"
+#include "reachableset.hpp"
 #include <cstdint>
 #include <iostream>
 #include <limits>
 
 using namespace std;
-using namespace ftma;
+using namespace graphsat;
 
 typedef int C;
 
 typedef Constraint<C>             CS;
-typedef DBM<C, CS>                DBM_t;
-typedef DBMset<C, DBM_t>          DSet;
-typedef Location<C, CS>           L;
-typedef Transition<C, CS, Action> T;
+typedef DBM<C, CS>                DManager_t;
+typedef DBMset<C, DManager_t>          DBMSet_t;
+typedef Location<C, CS, DManager_t, DBMSet_t>           L;
+typedef Transition<C, CS,DManager_t, DBMSet_t, Action> T;
+
+typedef TA<C,L,T> TA_t;
+typedef ReachableSet< TA_t>  R_t;
 
 void example1( void ) {
   // x:1 y:2 z:3
   vector<T> es;
   vector<L> ls;
-  L         S0, S1, S2, S3;
+  L         S0( 0 );
+  L         S1( 1 );
+  L         S2( 2 );
+  L         S3( 3 );
 
   T e01( 0, 1 );
   e01 += 3;
@@ -65,10 +75,10 @@ void example1( void ) {
   es.push_back( e01 );
   es.push_back( e12 );
   es.push_back( e23 );
-  TA<C, L, T>           tma1( ls, es, 0, 3 );
-  ReachableSet<C, L, T> data( tma1 );
+  TA_t           tma1( ls, es, 0, 3 );
+  R_t data( tma1 );
 
-  Reachability<C, L, T> reacher( data );
+  Reachability< R_t> reacher( data );
 
   // vector< dbmset<C, DBM > > reachSet;
 
@@ -78,7 +88,8 @@ void example1( void ) {
 void example2( void ) {
   vector<T> es;
   vector<L> ls;
-  L         L0, L1;
+  L         L0( 0 );
+  L         L1( 1 );
 
   T E00a( 0, 0 );
 
@@ -107,10 +118,12 @@ void example2( void ) {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  TA<C, L, T>           tma1( ls, es, 0, 2 );
-  ReachableSet<C, L, T> data( tma1 );
-  Reachability<C, L, T> reacher( data );
-  // reach<C, L, T> reacher( tma1 );
+  TA_t tma1( ls, es, 0, 2 );
+  tma1.initial();
+
+  R_t data( tma1 );
+  Reachability< R_t> reacher( data );
+
 
   if ( reacher.reachable( 1 ) ) {
 
@@ -132,7 +145,7 @@ int main( int argc, const char *argv[] ) {
 
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
-  DBM_t exampleDBM( 4 );
+  DManager_t exampleDBM( 4 );
   C *   D = exampleDBM.randomMatirx();
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
 

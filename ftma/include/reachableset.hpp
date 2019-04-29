@@ -11,94 +11,149 @@
 #define __REACH_SET_HPP
 #include <vector>
 
-#include "ta.hpp"
-
-namespace ftma {
+namespace graphsat {
 using namespace std;
 
-template <typename C, typename L, typename T> class ReachableSet {
+template <typename Model> class ReachableSet {
 public:
-  typedef Constraint<C>    CS_t;
-  typedef DBM<C, CS_t>     DBM_t;
-  typedef DBMset<C, DBM_t> DSet_t;
+  typedef Model Model_t;
+
+  typedef typename Model_t::CS_t       CS_t;
+  typedef typename Model_t::D_t        D_t;
+  typedef typename Model_t::DManager_t DManager_t;
+  typedef typename Model_t::DSet_t     DSet_t;
 
 private:
-  vector<DSet_t>     reachSet;
-  vector<DSet_t>     waitSet;
-  vector<int>        lastChangedLocs;
-  const TA<C, L, T> &ta;
-  DBM_t              dbmManager;
-  template <typename C1, typename L1, typename T1> friend class Reachability;
+  vector<DSet_t> reachSet;
+  vector<DSet_t> waitSet;
+  vector<int>    lastChangedLocs;
+  const Model_t &ta;
+  DManager_t     dManager;
+  template <typename R1> friend class Reachability;
 
-  bool isReachable( const vector<CS_t> &cons, const C *const dbm ) const {
+  bool isReachable( const vector<CS_t> &cons, const D_t dbm ) const {
     if ( cons.empty() ) {
       return true;
     }
-    C *newdbm = dbmManager.And( dbm, cons[ 0 ] );
-    if ( !dbmManager.isConsistent( newdbm ) ) {
-      delete[] newdbm;
+    D_t newdbm = dManager.And( dbm, cons[ 0 ] );
+    if ( !dManager.isConsistent( newdbm ) ) {
+      dManager.deleteD( newdbm );
+
       return false;
     }
 
     for ( size_t i = 1; i < cons.size(); i++ ) {
-      dbmManager.andImpl( newdbm, cons[ i ] );
-      if ( !dbmManager.isConsistent( newdbm ) ) {
-        delete[] newdbm;
+      dManager.andImpl( newdbm, cons[ i ] );
+      if ( !dManager.isConsistent( newdbm ) ) {
+        dManager.deleteD( newdbm );
         return false;
       }
     }
-    delete[] newdbm;
+    dManager.deleteD( newdbm );
     return true;
   }
 
 public:
-  ReachableSet( const TA<C, L, T> &outta )
-      : ta( outta )
-      , dbmManager( outta.getClockNum() ) {
+  ReachableSet( const Model_t &outta )
+      : ta( outta ) {
+
+    dManager = DManager_t( ta.getClockNum(), ta.getClockUppuerBound(),
+                           ta.getDifferenceCons() );
 
     int vertex_num = ta.getLocationNum();
     waitSet.resize( vertex_num );
     reachSet.resize( vertex_num );
 
-    C * D           = dbmManager.newMatrix();
+    D_t D           = dManager.newMatrix();
     int initial_loc = ta.getInitialLoc();
 
-    ta.getLocation( initial_loc )( dbmManager, D );
+    ta.getLocation( initial_loc )( dManager, D );
 
-    waitSet[ initial_loc ].add( dbmManager, D );
-    reachSet[ initial_loc ].add( dbmManager, D );
+    waitSet[ initial_loc ].add( dManager, D );
+    reachSet[ initial_loc ].add( dManager, D );
 
     lastChangedLocs.push_back( initial_loc );
   }
 
   ~ReachableSet() {
 
-    for ( typename vector<DBMset<C, DBM_t>>::iterator it = reachSet.begin();
+    for ( typename vector<DSet_t>::iterator it = reachSet.begin();
           it != reachSet.end(); it++ ) {
       it->deleteAll();
     }
     reachSet.clear();
   }
 
-  const TA<C, L, T> &getTA( void ) const { return ta; }
+  const Model_t &getTA( void ) const { return ta; }
 
   Check_State find( const int loc, const vector<CS_t> &cons ) {
     if ( loc < 0 || (size_t) loc >= reachSet.size() ) {
       return FALSE;
     }
 
-    vector<C *> haveReached;
-    reachSet[ loc ].toVector( haveReached );
+    // vector<C *> haveReached;
+    // reachSet[ loc ].toVector( haveReached );
+    typename DSet_t::iterator end1 = reachSet[ loc ].end();
+    for ( typename DSet_t::iterator it = reachSet[ loc ].begin(); it != end1;
+          ++it ) {
 
-    for ( size_t i = 0; i < haveReached.size(); i++ ) {
-      if ( isReachable( cons, haveReached[ i ] ) ) {
+      if ( isReachable( cons, *it ) ) {
         return TRUE;
       }
     }
     return UNKOWN;
   }
+
+  void update( set<int> &secondChanged, vector<DSet_t> &secondWaitSet ) {
+    lastChangedLocs.clear();
+
+    lastChangedLocs.insert( lastChangedLocs.begin(), secondChanged.begin(),
+                            secondChanged.end() );
+    secondChanged.clear();
+
+    waitSet = secondWaitSet;
+    for ( size_t i = 0; i < lastChangedLocs.size(); i++ ) {
+      int source = lastChangedLocs[ i ];
+      secondWaitSet[ source ].clear();
+    }
+  }
+
+  bool oneStep( const int loc, const vector<CS_t> &cons, const int target,
+                int link, set<int> &secondChanged,
+                vector<DSet_t> &secondWaitSet ) {
+    int source = 0;
+    ta.findRhs( link, target, source );
+
+    DSet_t discreteTransNext;
+    if ( ta.transitions[ link ]( dManager, waitSet[ source ],
+                                 discreteTransNext ) ) {
+
+      vector<D_t> advanceNext;
+
+      if ( ta.locations[ target ]( dManager, discreteTransNext,
+                                   advanceNext ) ) {
+
+        for ( size_t h = 0; h < advanceNext.size(); h++ ) {
+
+          if ( reachSet[ target ].add( dManager, advanceNext[ h ] ) ) {
+            secondWaitSet[ target ].add( dManager, advanceNext[ h ] );
+            if ( loc == target ) {
+              if ( isReachable( cons, advanceNext[ h ] ) ) {
+                secondChanged.insert( target );
+                update( secondChanged, secondWaitSet );
+
+                return true;
+              }
+            }
+          }
+        }
+        secondChanged.insert( target );
+      }
+    }
+    return false;
+  }
 };
 
-} // namespace ftma
+} // namespace graphsat
 
 #endif

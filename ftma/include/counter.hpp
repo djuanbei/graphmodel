@@ -9,8 +9,8 @@
  */
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
-namespace ftma {
+namespace graphsat {
 class counter {};
-} // namespace ftma
+} // namespace graphsat
 
 #endif

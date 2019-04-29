@@ -27,7 +27,7 @@
 
 #include "util/dbmutil.hpp"
 
-namespace ftma {
+namespace graphsat {
 using namespace std;
 
 /**
@@ -46,6 +46,9 @@ private:
   C                                  MAX_INT;
   std::default_random_engine         generator;
   std::uniform_int_distribution<int> distribution;
+  vector<C>                          clockUppuerBound;
+
+  vector<Constraint<C>> differenceCons;
 
   inline int loc( const int row, const int col ) const { return row * n + col; }
 
@@ -65,6 +68,18 @@ public:
 
     distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
   }
+
+  DBM( int nn, const vector<C> &oclockUppuerBound,
+       const vector<Constraint<C>> &odifferenceCons )
+      : n( nn + 1 ) {
+    size    = n * n;
+    MAX_INT = getMAX_INT( (C) 0 );
+
+    distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
+    clockUppuerBound = oclockUppuerBound;
+    differenceCons   = odifferenceCons;
+  }
+
   ~DBM() { n = 0; }
 
   void setClockNum( int num ) {
@@ -89,7 +104,10 @@ public:
     memcpy( newD, D, sizeof( C ) * size );
     return newD;
   }
-
+  
+  void deleteD( C * D) const{
+    delete[ ] D;
+  }
   C *randomMatirx() {
 
     C *newD = new C[ size ]();
@@ -457,18 +475,20 @@ public:
     return D;
   }
 
-  void split( const C *const D, const vector<Cons> &Gd,
-              vector<C *> &re ) const {
-    deleteVectorM( re );
+  void split( C *D, const vector<Cons> &Gd, vector<C *> &re ) const {
+
+    assert( re.empty( ));
+    
     map<uint32_t, C *> passed;
 
     vector<C *> waitS;
-    re.push_back( newMatrix( D ) );
+    re.push_back( D );
 
     for ( typename vector<Cons>::const_iterator cit = Gd.begin();
           cit != Gd.end(); cit++ ) {
 
       vector<bool> addToWaitS( re.size(), false );
+      
       int          i = 0;
       for ( typename vector<C *>::iterator dit = re.begin(); dit != re.end();
             dit++ ) {
@@ -500,7 +520,7 @@ public:
           } else {
             if ( MEqual( DandC, DandCfid->second ) ) {
               delete[] DandC;
-              // deleteVectorM(DandC);
+
             } else {
               waitS.push_back( DandC );
             }
@@ -512,7 +532,7 @@ public:
           } else {
             if ( MEqual( DandNegC, DandNegCfid->second ) ) {
               delete[] DandNegC;
-              // deleteVectorM(DandNegC);
+
             } else {
               waitS.push_back( DandNegC );
             }
@@ -533,6 +553,7 @@ public:
           }
         }
       }
+      
       re.swap( waitS );
       for ( size_t i = 0; i < waitS.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
@@ -542,7 +563,16 @@ public:
       waitS.clear();
     }
   }
-
+  /**
+   * TODO: The difference bounds will adjust depend on source
+   *
+   * @param source
+   * @param D
+   * @param re
+   */
+  void norm( int source, C *D, vector<C *> &re ) const {
+    return norm( D, clockUppuerBound, differenceCons, re );
+  }
   /**
    * For automaton containing difference constraints in the guards, it is more
    * complicated and expensive to compute the normalized zones.
@@ -550,13 +580,14 @@ public:
    * k[ i ]:= <= k_i
    * k[i+n]:= < -k_i
    * @param k k[i] is the maximum upper for x_i
-   * @param D
+   * @param D D will deen destroied before return
    * @param G
    * @param re
    */
   void norm( C *D, const vector<C> &k, const vector<Cons> &Gd,
              vector<C *> &re ) const {
-    deleteVectorM( re );
+
+    assert( re.empty() );
 
     vector<C *> splitDomain;
     split( D, Gd, splitDomain );

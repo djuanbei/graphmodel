@@ -15,7 +15,7 @@
 
 #include "util/dbmutil.hpp"
 
-namespace ftma {
+namespace graphsat {
 using namespace std;
 template <typename C, typename DBM> class DBMset {
 private:
@@ -39,6 +39,114 @@ private:
   }
 
 public:
+  class const_iterator {
+  protected:
+    const DBMset<C, DBM> *data;
+    size_t                index;
+
+  public:
+    const_iterator( const DBMset<C, DBM> *odata )
+        : data( odata ) {
+      index = 0;
+    }
+
+    const_iterator( const DBMset<C, DBM> *odata, size_t oindex )
+        : data( odata ) {
+      index = oindex;
+    }
+
+    const_iterator( const const_iterator &other )
+        : data( other.data ) {
+      index = other.index;
+    }
+
+    const_iterator &operator++() {
+      index++;
+      return *this;
+    }
+    bool operator==( const const_iterator &other ) const {
+      return index == other.index;
+    }
+    bool operator!=( const const_iterator &other ) const {
+      return index != other.index;
+    }
+
+    const C *operator*() const {
+      size_t dSize = data->mapD.size();
+      if ( index < dSize ) {
+
+        return data->mapD[ index ];
+      }
+      if ( index >= dSize + data->recoveryD.size() ) {
+        return NULL;
+      }
+
+      return data->recoveryD[ index - dSize ];
+    }
+  };
+
+  class iterator {
+
+  protected:
+    const DBMset<C, DBM> *data;
+    size_t                index;
+
+  public:
+    iterator( DBMset<C, DBM> *odata )
+        : data( odata ) {
+      index = 0;
+    }
+
+    iterator( DBMset<C, DBM> *odata, size_t oindex )
+        : data( odata ) {
+      index = oindex;
+    }
+
+    iterator( const iterator &other )
+        : data( other.data ) {
+      index = other.index;
+    }
+    iterator &operator++() {
+      index++;
+      return *this;
+    }
+
+    bool operator==( const iterator &other ) const {
+      return index == other.index;
+    }
+    bool operator!=( const iterator &other ) const {
+      return index != other.index;
+    }
+
+    C *operator*() {
+      size_t dSize = data->mapD.size();
+      if ( index < dSize ) {
+
+        return data->mapD[ index ];
+      }
+      if ( index >= dSize + data->recoveryD.size() ) {
+        return NULL;
+      }
+
+      return data->recoveryD[ index - dSize ];
+    }
+  };
+
+  iterator begin() { return iterator( this ); }
+
+  const_iterator begin() const { return const_iterator( this ); }
+
+  iterator end() {
+
+    return iterator( this, mapD.size() + recoveryD.size() );
+    /**/
+  }
+
+  const_iterator end() const {
+    return const_iterator( this, mapD.size() + recoveryD.size() );
+    /**/
+  }
+
   /**
 
    * @param DBM  A dbm matrix
@@ -106,12 +214,12 @@ public:
 
   size_t size() const { return passedD.size() + recoveryD.size(); }
 
-  void toVector( vector<C *> &re ) const {
-    re.clear();
+  // void toVector( vector<C *> &re ) const {
+  //   re.clear();
 
-    re.insert( re.end(), mapD.begin(), mapD.end() );
-    re.insert( re.end(), recoveryD.begin(), recoveryD.end() );
-  }
+  //   re.insert( re.end(), mapD.begin(), mapD.end() );
+  //   re.insert( re.end(), recoveryD.begin(), recoveryD.end() );
+  // }
 
   void clear( void ) {
     passedD.clear();

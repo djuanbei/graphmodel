@@ -11,23 +11,35 @@
 #ifndef __TIMED_AUTOMATA_
 #define __TIMED_AUTOMATA_
 #include "graph/graph.hpp"
+#include "domain/dbm.hpp"
+#include "domain/dbmset.hpp"
+
 #include <vector>
 
-namespace ftma {
+namespace graphsat {
 
 using namespace std;
 using namespace raptor;
 
 template <typename C, typename L, typename T> class TA {
 
-private:
+ public:
+  typedef C* D_t;
   typedef Constraint<C> CS_t;
+  typedef DBM<C, CS_t>     DManager_t;
+  typedef DBMset<C, DManager_t> DSet_t;
+
+  template < typename R1> friend class Reachability;
+  template < typename R2> friend class ReachableSet;
+private:
+
+  
   vector<L>             locations;
   vector<T>             transitions;
   int                   initial_loc;
   int                   clock_num;
 
-  template <typename C1, typename L1, typename T1> friend class Reachability;
+
 
   graph_t<int> graph;
 
@@ -47,9 +59,15 @@ public:
     initial_loc = init;
     clock_num   = vnum;
   }
+  void findRhs( const int link, const int lhs, int &rhs) const{
+    graph.findRhs( link, lhs, rhs );    
+  }
+  vector<C> getClockUppuerBound() const { return clockUppuerBound; }
 
-  int getLocationNum() const { return locations.size(); }
-  int getTransitionNum() const { return transitions.size(); }
+  vector<Constraint<C>> getDifferenceCons() const { return differenceCons; }
+
+  int getLocationNum() const { return (int) locations.size(); }
+  int getTransitionNum() const { return (int) transitions.size(); }
 
   const L &getLocation( int id ) const { return locations[ id ]; }
 
@@ -73,9 +91,9 @@ public:
     // // There are no edges connect with  initial location
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
-    clockUppuerBound = new C[ 2 * ( clock_num + 1 ) ];
-    fill( clockUppuerBound, clockUppuerBound + 2 * ( clock_num + 1 ),
-          LTEQ_ZERO );
+    clockUppuerBound.resize( 2 * ( clock_num + 1 ), LTEQ_ZERO );
+    // fill( clockUppuerBound.begin(), clockUppuerBound + 2 * ( clock_num + 1 ),
+    //   LTEQ_ZERO );
 
     for ( typename vector<L>::const_iterator it = locations.begin();
           it != locations.end(); it++ ) {

@@ -9,20 +9,17 @@
  */
 #ifndef EDGE_HPP
 #define EDGE_HPP
-#include "dbm.hpp"
-#include "dbmset.hpp"
+
 #include <vector>
 
-namespace ftma {
+namespace graphsat {
 using namespace std;
-template <typename C, typename CS, typename A> class Transition {
+template <typename C, typename CS, typename D, typename DSet, typename A>
+class Transition {
 public:
-  typedef DBM<C, CS>     DBM;
-  typedef DBMset<C, DBM> DSet;
-
 private:
-  int source, target; // source location and target location of this
-                      // transitionedge. The index of location in tma.locations
+  int source, target;  // source location and target location of this
+                       // transitionedge. The index of location in tma.locations
   vector<CS>  cons;    // set of constraint at this transitionedge
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables
@@ -50,7 +47,8 @@ public:
    * @return
    */
 
-  friend Transition<C, CS, A> &operator+( Transition<C, CS, A> &lhs, CS &cs ) {
+  friend Transition<C, CS, D, DSet, A> &
+      operator+( Transition<C, CS, D, DSet, A> &lhs, CS &cs ) {
     lhs.cons.push_back( cs );
     return lhs;
   }
@@ -62,7 +60,7 @@ public:
    *
    * @return
    */
-  Transition<C, CS, A> &operator+=( CS &cs ) {
+  Transition<C, CS, D, DSet, A> &operator+=( CS &cs ) {
     cons.push_back( cs );
     return *this;
   }
@@ -75,7 +73,7 @@ public:
    *
    * @return
    */
-  Transition<C, CS, A> &operator+=( A &a ) {
+  Transition<C, CS, D, DSet, A> &operator+=( A &a ) {
     actions.push_back( a );
     return *this;
   }
@@ -87,7 +85,7 @@ public:
    *
    * @return
    */
-  Transition<C, CS, A> &operator+=( int r ) {
+  Transition<C, CS, D, DSet, A> &operator+=( int r ) {
     reset.push_back( r );
     return *this;
   }
@@ -96,51 +94,52 @@ public:
    *
    *
    * @param dbmManager
-   * @param Ds  The DBM matrix of source location. The transitionedge can not
-   * change the value of it.
-   * @param next  Compute the target DBM matrix after apply this transitionedge
-   * on Ds.
+   * @param sourceDBMs  The D matrix of source location. The transitionedge
+   * can not change the value of it.
+   * @param nextDBMs  Compute the target D matrix after apply this
+   * transitionedge on sourceDBMs.
    *
-   * @return true if next is nonempty, false otherwise.
+   * @return true if nextDBMs is nonempty, false otherwise.
    */
-  bool operator()( const DBM &dbmManager, const DSet &Ds, DSet &next ) const {
+  bool operator()( const D &dbmManager, const DSet &sourceDBMs,
+                   DSet &nextDBMs ) const {
 
-    next.deleteAll();
-    vector<C *> vecSet;
-    Ds.toVector( vecSet );
+    nextDBMs.deleteAll();
 
-    for ( typename vector<C *>::const_iterator it = vecSet.begin();
-          it != vecSet.end(); it++ ) {
-      C *D = dbmManager.newMatrix( *it );
+    typename DSet::const_iterator end1 = sourceDBMs.end();
+
+    for ( typename DSet::const_iterator it = sourceDBMs.begin(); it != end1;
+          ++it ) {
+      C *d1 = dbmManager.newMatrix( *it );
       for ( typename vector<CS>::const_iterator cit = cons.begin();
             cit != cons.end(); cit++ ) {
-        dbmManager.andImpl( D, *cit );
+        dbmManager.andImpl( d1, *cit );
       }
-      if ( dbmManager.isConsistent( D ) ) {
+      if ( dbmManager.isConsistent( d1 ) ) {
         for ( vector<int>::const_iterator rit = reset.begin();
               rit != reset.end(); rit++ ) {
           assert( *rit > 0 ); // clock id start from 1
-          dbmManager.resetImpl( D, *rit, 0 );
+          dbmManager.resetImpl( d1, *rit, 0 );
         }
-        next.add( dbmManager, D );
+        nextDBMs.add( dbmManager, d1 );
       } else {
-        delete[] D;
+        delete[] d1;
       }
     }
-    return next.size() > 0;
+    return nextDBMs.size() > 0;
   }
 
-  bool operator()( const DBM &dbmManager, const C *const Din ) const {
-    C *D = dbmManager.newMatrix( Din );
+  bool operator()( const D &dbmManager, const C *const Din ) const {
+    C *d1 = dbmManager.newMatrix( Din );
     for ( typename vector<CS>::iterator cit = cons.begin(); cit != cons.end();
           cit++ ) {
-      dbmManager.andImpl( D, *cit );
+      dbmManager.andImpl( d1, *cit );
     }
-    if ( dbmManager.isConsistent( D ) ) {
+    if ( dbmManager.isConsistent( d1 ) ) {
       for ( vector<int>::iterator rit = reset.begin(); rit != reset.end();
             rit++ ) {
         assert( *rit > 0 ); // clock id start from 1
-        dbmManager.resetImpl( D, *rit, 0 );
+        dbmManager.resetImpl( d1, *rit, 0 );
       }
       return true;
     } else {
@@ -148,6 +147,6 @@ public:
     }
   }
 };
-} // namespace ftma
+} // namespace graphsat
 
 #endif

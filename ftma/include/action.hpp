@@ -11,9 +11,9 @@
 #ifndef ACTION_HPP
 #define ACTION_HPP
 #include "counter.hpp"
-namespace ftma {
+namespace graphsat {
 struct Action {
   void apply( counter &c ) const {}
 };
-} // namespace ftma
+} // namespace graphsat
 #endif

@@ -16,7 +16,7 @@
 
 
 
-namespace ftma {
+namespace graphsat {
 
 const static  int zero_clock_index=0;
 

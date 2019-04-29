@@ -14,7 +14,7 @@
 #include <iostream>
 #include <random>
 
-namespace ftma {
+namespace graphsat {
 
 using namespace std;
 

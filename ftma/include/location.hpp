@@ -9,51 +9,50 @@
  */
 #ifndef __LOCATION_HPP
 #define __LOCATION_HPP
-#include "dbm.hpp"
-#include "dbmset.hpp"
+
 #include <vector>
 
-namespace ftma {
+namespace graphsat {
 using namespace std;
-template <typename C, typename CS> class Location {
+template <typename C_t, typename CS_t, typename D_t, typename DSet_t>
+class Location {
 public:
-  typedef DBM<C, CS>       DBM_t;
-  typedef DBMset<C, DBM_t> DSet;
-
 private:
-  vector<CS> invariants; // set of invariants  in this Location
+  vector<CS_t> invariants; // set of invariants  in this Location
+  int          locationID;
 
 public:
-  const vector<CS> &getInvarients() const { return invariants; }
+public:
+  explicit Location( int loc ) { locationID = loc; }
+
+  const vector<CS_t> &getInvarients() const { return invariants; }
 
   /**
    *
    *
-   * @param Ds  the DBM set of start value in this Location
+   * @param reachDBMS  the D_t set of start value in this Location
    * @param dbmManager
-   * @param next return DBM set of possible value stay in this Location
+   * @param advanceNext return D_t set of possible value stay in this Location
    *
-   * @return true if next is not empty
+   * @return true if advanceNext is not empty
    *         false otherwise.
    */
 
-  bool operator()( const DBM_t &dbmManager, DSet &Ds, DSet &next ) const {
-    next.deleteAll();
+  bool operator()( const D_t &dbmManager, DSet_t &reachDBMS,
+                   vector<C_t *> &reNormVecDBM ) const {
+    assert( reNormVecDBM.empty() );
+    DSet_t                    advanceNext;
+    typename DSet_t::iterator end1 = reachDBMS.end();
+    for ( typename DSet_t::iterator it = reachDBMS.begin(); it != end1; ++it ) {
 
-    vector<C *> vecSet;
-    Ds.toVector( vecSet );
-
-    for ( typename vector<C *>::iterator it = vecSet.begin();
-          it != vecSet.end(); it++ ) {
-
-      C *D = *it;
+      C_t *D = *it;
       /**
        * D reach Location first check D satisfies all the invariants in
        * this Location
        *
        */
 
-      for ( typename vector<CS>::const_iterator cit = invariants.begin();
+      for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
             cit != invariants.end(); cit++ ) {
         dbmManager.andImpl( D, *cit );
       }
@@ -67,12 +66,12 @@ public:
          *
          */
 
-        for ( typename vector<CS>::const_iterator cit = invariants.begin();
+        for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
               cit != invariants.end(); cit++ ) {
           dbmManager.andImpl( D, *cit );
         }
         if ( dbmManager.isConsistent( D ) ) {
-          next.add( dbmManager, D );
+          advanceNext.add( dbmManager, D );
         } else {
           delete[] D;
         }
@@ -80,21 +79,36 @@ public:
         delete[] D;
       }
     }
-    Ds.clear();
+    reachDBMS.clear();
 
-    return next.size() > 0;
+    if ( 0 == advanceNext.size() ) {
+      return false;
+    }
+
+    typename DSet_t::iterator end2 = advanceNext.end();
+    for ( typename DSet_t::iterator it = advanceNext.begin(); it != end2;
+          ++it ) {
+
+      vector<C_t *> normVecDBM;
+      dbmManager.norm( locationID, *it, normVecDBM );
+
+      reNormVecDBM.insert( reNormVecDBM.end(), normVecDBM.begin(),
+                           normVecDBM.end() );
+    }
+
+    return reNormVecDBM.size() > 0;
   }
 
   /**
    *
-   * @param D  A DBM matrix of start value  in this Location
+   * @param D  A D_t matrix of start value  in this Location
    * @param dbmManager
    *
    * @return  true if the final set in this Location is non-empty
    */
-  bool operator()( const DBM_t &dbmManager, C *D ) const {
+  bool operator()( const D_t &dbmManager, C_t *D ) const {
     dbmManager.upImpl( D );
-    for ( typename vector<CS>::const_iterator cit = invariants.begin();
+    for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
           cit != invariants.end(); cit++ ) {
       dbmManager.andImpl( D, *cit );
     }
@@ -108,11 +122,11 @@ public:
    *
    * @return
    */
-  Location<C, CS> &operator+=( CS &cs ) {
+  Location<C_t, CS_t, D_t, DSet_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );
     return *this;
   }
 };
-} // namespace ftma
+} // namespace graphsat
 
 #endif
