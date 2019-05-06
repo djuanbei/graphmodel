@@ -1,5 +1,4 @@
 
-
 /**
  * @file   xmlconf.cpp
  * @author Liyun Dai <dlyun2009@gmail.com>

@@ -26,6 +26,8 @@
 #include "util/fastHash.h"
 
 #include "util/dbmutil.hpp"
+#include "constraint/linsimpcons.hpp"
+
 
 namespace graphsat {
 using namespace std;

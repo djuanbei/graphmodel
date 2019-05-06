@@ -17,6 +17,9 @@
 #include <vector>
 #include <set>
 #include <map>
+
+#include "parallel.h"
+
 namespace graphsat {
 
 using namespace std;
@@ -25,15 +28,10 @@ template < typename ReachableSet> class Reachability {
 
 private:
 
-
-
-  int initial_loc; // the initial location of timed automata
   int vertex_num;  // number of locations in
 
   ReachableSet &data;
   const typename ReachableSet::Model_t &    ta;
-
-
 
 
 public:
@@ -41,7 +39,6 @@ public:
       : data( outData )
       , ta( data.getTA() ) {
 
-    initial_loc = ta.getInitialLoc();
     vertex_num  = ta.getLocationNum();
   }
 
@@ -85,6 +82,7 @@ public:
     vector<typename ReachableSet::DSet_t> secondWaitSet( vertex_num );
 
     while ( !data.lastChangedLocs.empty() ) {
+      
       lasetChangedLinks.clear();
       for ( size_t i = 0; i < data.lastChangedLocs.size(); i++ ) {
         int source = data.lastChangedLocs[ i ];
@@ -92,7 +90,6 @@ public:
         outDegree = ta.graph.getOutDegree( source );
         for ( int j = 0; j < outDegree; j++ ) {
           link = ta.graph.getAdj( source, j );
-
           ta.graph.findRhs( link, source, target );
           lasetChangedLinks[ target ].push_back( link );
         }
@@ -111,23 +108,24 @@ public:
        * parallel  section
        *
        */
-
-      for ( size_t i = 0; i < targets.size(); i++ ) {
-
+      int target_size=(int)targets.size();
+      bool find=false;
+      parallel_for ( int i = 0; !find &&i < target_size; i++ ) {
         int        link;
         const int target = targets[ i ]; // fixed target
-
         for ( vector<int>::iterator lit = vecRelatedLinks[ i ].begin();
               lit != vecRelatedLinks[ i ].end(); lit++ ) {
           link = *lit;
           if( data.oneStep(loc, cons, target, link, secondChanged, secondWaitSet ) ){
-            return true;
+            find=true;
           }
         }
       }
+      if( find){
+        return true;
+      }
       data.update( secondChanged, secondWaitSet );
     }
-
     return false;
   }
 };

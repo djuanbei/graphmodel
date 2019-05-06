@@ -22,7 +22,7 @@ typedef map<string, string> FXML_ATTRLIST;
 class XmlConfig;
 typedef map<string, vector<const XmlConfig *> >  XML_NODE;
 
-using namespace rapidxml;
+
 using namespace std;
 
 int convert( const string, bool & );
