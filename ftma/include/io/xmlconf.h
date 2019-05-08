@@ -127,13 +127,16 @@ public:
 
   inline const FXML_ATTRLIST *getAttrList() const { return &attr; }
   inline string               getTag() const { return tag; }
+  inline string getValue( ) const{return value;}
 
   int setAttr( const string, const string );
   int addChild(string key, const XmlConfig * );
   int setTag( const string );
+  int setValue(  const string);
 
 private:
   string                    tag;
+  string value;
   XML_NODE children;
   FXML_ATTRLIST             attr;
 };

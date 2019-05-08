@@ -75,6 +75,7 @@ const static string FORMULA_STR="formula";
 
 const static string COMMENT_STR="comment";
 
+
 typedef int C;
 
 typedef Constraint<C>                                   CS;
