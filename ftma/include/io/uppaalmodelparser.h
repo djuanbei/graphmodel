@@ -29,9 +29,9 @@
 
 namespace graphsat {
 
-const static  string  NTA_STR="nta";
+const static  string NTA_STR="nta";
 
-const static  string  DECLARATION_STR="declaration";
+const static  string DECLARATION_STR="declaration";
 
 const static  string TEMPLATE_STR="template";
 
@@ -48,6 +48,8 @@ const static string TRANSITION_STR="transition";
 const static string SOURCE_STR="source";
 
 const static string TARGET_STR="target";
+
+const static string ID_STR="id";
 
 const static string REF_STR="ref";
 
@@ -87,6 +89,8 @@ typedef TA<C, L, T>        TA_t;
 
 
 class  UppaalParser{
+
+  
  public:
   UppaalParser( ){
   }
@@ -96,6 +100,15 @@ class  UppaalParser{
 
  private:
   TA_t model;
+  int parserDeclaration( child_type declarations );
+
+  int parserTemplate( child_type templates);
+
+  int  parserSystem( child_type system);
+  
+  int parserQuery(  child_type queries);
+
+  
   
   
   

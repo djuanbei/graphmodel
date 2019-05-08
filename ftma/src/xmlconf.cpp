@@ -100,13 +100,23 @@ int XmlConfig::addChild( string key, const XmlConfig *c ) {
   return 0;
 }
 
-const vector<const XmlConfig *> *XmlConfig::getChild( const string s ) const {
-  const vector<const XmlConfig *> *ptr( NULL );
-  for ( XML_NODE::const_iterator it = children.begin(); it != children.end();
-        ++it ) {
-    if ( it->first == s ) {
-      ptr = &( it->second );
-      break;
+child_type XmlConfig::getChild( const string s ) const {
+  child_type ptr( NULL );
+  XML_NODE::const_iterator it=children.find( s);
+  
+  if( it!= children.end( )){
+    ptr = &( it->second );
+  }
+
+  return ptr;
+}
+
+const XmlConfig * XmlConfig::getOneChild( string id) const{
+  const XmlConfig *ptr( NULL);
+  XML_NODE::const_iterator it=children.find( id);
+  if( it!= children.end( )){
+    if(!it->second.empty( ) ){
+      ptr=it->second[ 0];
     }
   }
   return ptr;
