@@ -131,5 +131,5 @@ public:
     return os;
   }
 };
-} // namespace ftma
+} // namespace graphsat
 #endif

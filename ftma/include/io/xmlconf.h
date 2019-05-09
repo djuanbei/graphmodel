@@ -20,10 +20,9 @@ using namespace std;
 
 typedef map<string, string> FXML_ATTRLIST;
 class XmlConfig;
-typedef map<string, vector<const XmlConfig *> >  XML_NODE;
-typedef vector<const XmlConfig *>::const_iterator  child_iterator;
-typedef  const vector<const XmlConfig *> *  child_type;
-
+typedef map<string, vector<const XmlConfig *>>    XML_NODE;
+typedef vector<const XmlConfig *>::const_iterator child_iterator;
+typedef const vector<const XmlConfig *> *         child_type;
 
 using namespace std;
 
@@ -34,11 +33,10 @@ int convert( const string, string & );
 
 /**
  * dek=delete start spaces and  last spaces
- * 
+ *
  */
 
-string trim(std::string s);
-
+string trim( std::string s );
 
 class XmlConfig {
 
@@ -47,8 +45,9 @@ public:
       : tag( "" ) {}
 
   ~XmlConfig() {
-    for( XML_NODE::iterator it= children.begin( ); it!= children.end( ); it++){
-      
+    for ( XML_NODE::iterator it = children.begin(); it != children.end();
+          it++ ) {
+
       for ( vector<const XmlConfig *>::iterator lit = it->second.begin();
             lit != it->second.end(); lit++ ) {
         delete ( *lit );
@@ -59,25 +58,24 @@ public:
   XmlConfig( string, bool b_fileinput = true );
   XmlConfig( const XmlConfig &other ) {
     tag = other.tag;
-    for( XML_NODE::const_iterator it= other.children.begin( ); it!= other.children.end( ); it++){
+    for ( XML_NODE::const_iterator it = other.children.begin();
+          it != other.children.end(); it++ ) {
       for ( vector<const XmlConfig *>::const_iterator lit = it->second.begin();
             lit != it->second.end(); lit++ ) {
-        children[it->first].push_back( new XmlConfig( **lit ) );
+        children[ it->first ].push_back( new XmlConfig( **lit ) );
       }
     }
-        
 
     attr = other.attr;
   }
 
   const XML_NODE *getChildren() const;
 
-  const vector<const XmlConfig *>  *getChild(string id) const;
-  
-  const XmlConfig * getOneChild( string id) const;
+  const vector<const XmlConfig *> *getChild( string id ) const;
 
+  const XmlConfig *getOneChild( string id ) const;
 
-  template <typename T> int getAttr( const string &a, T &out ) const  {
+  template <typename T> int getAttr( const string &a, T &out ) const {
     map<string, string>::const_iterator it = attr.find( a );
     if ( it != attr.end() ) {
       T val;
@@ -112,15 +110,15 @@ public:
     string str_a = string( a );
     return getAttr<T>( str_a );
   }
-  
-  string getAttrValue( const string &a) const{
+
+  string getAttrValue( const string &a ) const {
     map<string, string>::const_iterator it = attr.find( a );
-    if( it==attr.end( )){
+    if ( it == attr.end() ) {
       return "";
     }
     return it->second;
   }
-  
+
   template <typename T> T getAttrDefault( const string &a, const T df ) const {
     map<string, string>::const_iterator it = attr.find( a );
     if ( it != attr.end() ) {
@@ -139,18 +137,18 @@ public:
 
   inline const FXML_ATTRLIST *getAttrList() const { return &attr; }
   inline string               getTag() const { return tag; }
-  inline string getValue( ) const{return value;}
+  inline string               getValue() const { return value; }
 
   int setAttr( const string, const string );
-  int addChild(string key, const XmlConfig * );
+  int addChild( string key, const XmlConfig * );
   int setTag( const string );
-  int setValue(  const string);
+  int setValue( const string );
 
 private:
-  string                    tag;
-  string value;
-  XML_NODE children;
-  FXML_ATTRLIST             attr;
+  string        tag;
+  string        value;
+  XML_NODE      children;
+  FXML_ATTRLIST attr;
 };
 
 } // namespace graphsat

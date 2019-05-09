@@ -10,9 +10,9 @@
 
 #ifndef __TIMED_AUTOMATA_
 #define __TIMED_AUTOMATA_
-#include "graph/graph.hpp"
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
+#include "graph/graph.hpp"
 
 #include <vector>
 
@@ -23,23 +23,20 @@ using namespace raptor;
 
 template <typename C, typename L, typename T> class TA {
 
- public:
-  typedef C* D_t;
-  typedef Constraint<C> CS_t;
-  typedef DBM<C, CS_t>     DManager_t;
+public:
+  typedef C *                   D_t;
+  typedef Constraint<C>         CS_t;
+  typedef DBM<C, CS_t>          DManager_t;
   typedef DBMset<C, DManager_t> DSet_t;
 
-  template < typename R1> friend class Reachability;
-  template < typename R2> friend class ReachableSet;
+  template <typename R1> friend class Reachability;
+  template <typename R2> friend class ReachableSet;
+
 private:
-
-  
-  vector<L>             locations;
-  vector<T>             transitions;
-  int                   initial_loc;
-  int                   clock_num;
-
-
+  vector<L> locations;
+  vector<T> transitions;
+  int       initial_loc;
+  int       clock_num;
 
   graph_t<int> graph;
 
@@ -59,8 +56,8 @@ public:
     initial_loc = init;
     clock_num   = vnum;
   }
-  void findRhs( const int link, const int lhs, int &rhs) const{
-    graph.findRhs( link, lhs, rhs );    
+  void findRhs( const int link, const int lhs, int &rhs ) const {
+    graph.findRhs( link, lhs, rhs );
   }
   vector<C> getClockUppuerBound() const { return clockUppuerBound; }
 
@@ -169,6 +166,6 @@ public:
   }
 };
 
-} // namespace ftma
+} // namespace graphsat
 
 #endif

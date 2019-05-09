@@ -20,8 +20,8 @@
 
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
-#include "reachableset.hpp"
 #include "io/uppaalmodelparser.h"
+#include "reachableset.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -136,9 +136,9 @@ void example2( void ) {
 void example3( void ) {}
 
 int main( int argc, const char *argv[] ) {
-  UppaalParser parser( argv[ 1]);
+  UppaalParser parser( argv[ 1 ] );
   return 0;
-  
+
   example1();
   example2();
 

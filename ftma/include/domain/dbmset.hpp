@@ -259,5 +259,5 @@ public:
     other.clear();
   }
 };
-} // namespace ftma
+} // namespace graphsat
 #endif

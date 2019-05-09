@@ -10,27 +10,23 @@
 
 #ifndef DBM_UTIL_HPP
 #define DBM_UTIL_HPP
+#include <iostream>
 #include <limits>
 #include <string>
-#include<iostream>
+#include <vector>
 
 #define LTEQ_ZERO ( (C) 1 )
 
-
-#define newA(__E,__n) (__E*) malloc((__n)*sizeof(__E))
-
+#define newA( __E, __n ) (__E *) malloc( ( __n ) * sizeof( __E ) )
 
 namespace graphsat {
-
-const static  int zero_clock_index=0;
+using std::string;
+using std::vector;
+const static int zero_clock_index = 0;
 
 typedef long double DF_T;
 
-enum Check_State{
-  TRUE,
-  FALSE,
-  UNKOWN
-};
+enum Check_State { TRUE, FALSE, UNKOWN };
 /**
  *  Both have compare < and <=
  *
@@ -68,39 +64,42 @@ template <typename C> bool isStrict( const C c ) { return ( c & 1 ) == 0; }
 
 template <typename C> C getRight( const C c ) { return c >> 1; }
 
-
-template <class T>
-inline bool CAS(T *ptr, T oldv, T newv) {
-  if (sizeof(T) == 1) {
-    return __sync_bool_compare_and_swap((bool*)ptr, *((bool*)&oldv), *((bool*)&newv));
-  } else if (sizeof(T) == 4) {
-    return __sync_bool_compare_and_swap((int*)ptr, *((int*)&oldv), *((int*)&newv));
-  } else if (sizeof(T) == 8) {
-    return __sync_bool_compare_and_swap((long*)ptr, *((long*)&oldv), *((long*)&newv));
-  }
-  else {
-    std::cout << "CAS bad length : " << sizeof(T) << std::endl;
+template <class T> inline bool CAS( T *ptr, T oldv, T newv ) {
+  if ( sizeof( T ) == 1 ) {
+    return __sync_bool_compare_and_swap( (bool *) ptr, *( (bool *) &oldv ),
+                                         *( (bool *) &newv ) );
+  } else if ( sizeof( T ) == 4 ) {
+    return __sync_bool_compare_and_swap( (int *) ptr, *( (int *) &oldv ),
+                                         *( (int *) &newv ) );
+  } else if ( sizeof( T ) == 8 ) {
+    return __sync_bool_compare_and_swap( (long *) ptr, *( (long *) &oldv ),
+                                         *( (long *) &newv ) );
+  } else {
+    std::cout << "CAS bad length : " << sizeof( T ) << std::endl;
     abort();
   }
 }
 
-template <class T>
-inline bool writeMin(T *a, T b) {
-  T c; bool r=0;
-  do c = *a;
-  while (c > b && !(r=CAS(a,c,b)));
+template <class T> inline bool writeMin( T *a, T b ) {
+  T    c;
+  bool r = 0;
+  do
+    c = *a;
+  while ( c > b && !( r = CAS( a, c, b ) ) );
   return r;
 }
 
-template <class T>
-inline void writeAdd(T *a, T b) {
+template <class T> inline void writeAdd( T *a, T b ) {
   volatile T newV, oldV;
-  do {oldV = *a; newV = oldV + b;}
-  while (!CAS(a, oldV, newV));
+  do {
+    oldV = *a;
+    newV = oldV + b;
+  } while ( !CAS( a, oldV, newV ) );
 }
 
+std::vector<string> splitStr( const string &stringToBeSplitted,
+                              const string &delimeter );
 
-
-} // namespace ftma
+} // namespace graphsat
 
 #endif

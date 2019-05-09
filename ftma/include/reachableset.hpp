@@ -17,8 +17,8 @@ using namespace std;
 template <typename Model> class ReachableSet {
 public:
   typedef Model Model_t;
- 
-  typedef typename  Model_t::CS_t       CS_t;
+
+  typedef typename Model_t::CS_t       CS_t;
   typedef typename Model_t::D_t        D_t;
   typedef typename Model_t::DManager_t DManager_t;
   typedef typename Model_t::DSet_t     DSet_t;
@@ -90,7 +90,7 @@ public:
     if ( loc < 0 || (size_t) loc >= reachSet.size() ) {
       return FALSE;
     }
- 
+
     typename DSet_t::iterator end1 = reachSet[ loc ].end();
     for ( typename DSet_t::iterator it = reachSet[ loc ].begin(); it != end1;
           ++it ) {

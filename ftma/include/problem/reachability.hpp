@@ -12,11 +12,9 @@
 #ifndef __REACHABILITY_HPP
 #define __REACHABILITY_HPP
 
-
-
-#include <vector>
-#include <set>
 #include <map>
+#include <set>
+#include <vector>
 
 #include "parallel.h"
 
@@ -24,22 +22,20 @@ namespace graphsat {
 
 using namespace std;
 
-template < typename ReachableSet> class Reachability {
+template <typename ReachableSet> class Reachability {
 
 private:
+  int vertex_num; // number of locations in
 
-  int vertex_num;  // number of locations in
-
-  ReachableSet &data;
-  const typename ReachableSet::Model_t &    ta;
-
+  ReachableSet &                        data;
+  const typename ReachableSet::Model_t &ta;
 
 public:
   Reachability( ReachableSet &outData )
       : data( outData )
       , ta( data.getTA() ) {
 
-    vertex_num  = ta.getLocationNum();
+    vertex_num = ta.getLocationNum();
   }
 
   ~Reachability() {}
@@ -82,7 +78,7 @@ public:
     vector<typename ReachableSet::DSet_t> secondWaitSet( vertex_num );
 
     while ( !data.lastChangedLocs.empty() ) {
-      
+
       lasetChangedLinks.clear();
       for ( size_t i = 0; i < data.lastChangedLocs.size(); i++ ) {
         int source = data.lastChangedLocs[ i ];
@@ -108,20 +104,21 @@ public:
        * parallel  section
        *
        */
-      int target_size=(int)targets.size();
-      bool find=false;
-      parallel_for ( int i = 0; !find &&i < target_size; i++ ) {
-        int        link;
+      int  target_size = (int) targets.size();
+      bool find        = false;
+      parallel_for( int i = 0; !find && i < target_size; i++ ) {
+        int       link;
         const int target = targets[ i ]; // fixed target
         for ( vector<int>::iterator lit = vecRelatedLinks[ i ].begin();
               lit != vecRelatedLinks[ i ].end(); lit++ ) {
           link = *lit;
-          if( data.oneStep(loc, cons, target, link, secondChanged, secondWaitSet ) ){
-            find=true;
+          if ( data.oneStep( loc, cons, target, link, secondChanged,
+                             secondWaitSet ) ) {
+            find = true;
           }
         }
       }
-      if( find){
+      if ( find ) {
         return true;
       }
       data.update( secondChanged, secondWaitSet );
@@ -129,6 +126,6 @@ public:
     return false;
   }
 };
-} // namespace ftma
+} // namespace graphsat
 
 #endif

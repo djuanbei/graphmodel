@@ -34,8 +34,8 @@ static int parse( xml_node<> *root, XmlConfig *cfg ) {
   }
   string str = trim( string( root->name() ) );
   cfg->setTag( str );
-  string value=trim( string( root->value( )));
-  cfg->setValue( value);
+  string value = trim( string( root->value() ) );
+  cfg->setValue( value );
 
   for ( rapidxml::xml_attribute<char> *attr = root->first_attribute();
         attr != NULL; attr                  = attr->next_attribute() ) {
@@ -86,12 +86,12 @@ int XmlConfig::setAttr( string a, string v ) {
   return 0;
 }
 
-int XmlConfig::setTag(const string t ) {
+int XmlConfig::setTag( const string t ) {
   tag = t;
   return 0;
 }
-int XmlConfig::setValue( const string v ){
-  value=v;
+int XmlConfig::setValue( const string v ) {
+  value = v;
   return 0;
 }
 
@@ -101,22 +101,22 @@ int XmlConfig::addChild( string key, const XmlConfig *c ) {
 }
 
 child_type XmlConfig::getChild( const string s ) const {
-  child_type ptr( NULL );
-  XML_NODE::const_iterator it=children.find( s);
-  
-  if( it!= children.end( )){
+  child_type               ptr( NULL );
+  XML_NODE::const_iterator it = children.find( s );
+
+  if ( it != children.end() ) {
     ptr = &( it->second );
   }
 
   return ptr;
 }
 
-const XmlConfig * XmlConfig::getOneChild( string id) const{
-  const XmlConfig *ptr( NULL);
-  XML_NODE::const_iterator it=children.find( id);
-  if( it!= children.end( )){
-    if(!it->second.empty( ) ){
-      ptr=it->second[ 0];
+const XmlConfig *XmlConfig::getOneChild( string id ) const {
+  const XmlConfig *        ptr( NULL );
+  XML_NODE::const_iterator it = children.find( id );
+  if ( it != children.end() ) {
+    if ( !it->second.empty() ) {
+      ptr = it->second[ 0 ];
     }
   }
   return ptr;

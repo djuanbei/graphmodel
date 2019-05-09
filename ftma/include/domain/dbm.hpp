@@ -25,9 +25,8 @@
 
 #include "util/fastHash.h"
 
-#include "util/dbmutil.hpp"
 #include "constraint/linsimpcons.hpp"
-
+#include "util/dbmutil.hpp"
 
 namespace graphsat {
 using namespace std;
@@ -106,11 +105,9 @@ public:
     memcpy( newD, D, sizeof( C ) * size );
     return newD;
   }
-  
-  void deleteD( C * D) const{
-    delete[ ] D;
-  }
-  C *randomMatirx() {
+
+  void deleteD( C *D ) const { delete[] D; }
+  C *  randomMatirx() {
 
     C *newD = new C[ size ]();
     for ( int i = 0; i < size; i++ ) {
@@ -479,8 +476,8 @@ public:
 
   void split( C *D, const vector<Cons> &Gd, vector<C *> &re ) const {
 
-    assert( re.empty( ));
-    
+    assert( re.empty() );
+
     map<uint32_t, C *> passed;
 
     vector<C *> waitS;
@@ -490,8 +487,8 @@ public:
           cit != Gd.end(); cit++ ) {
 
       vector<bool> addToWaitS( re.size(), false );
-      
-      int          i = 0;
+
+      int i = 0;
       for ( typename vector<C *>::iterator dit = re.begin(); dit != re.end();
             dit++ ) {
         i++;
@@ -555,7 +552,7 @@ public:
           }
         }
       }
-      
+
       re.swap( waitS );
       for ( size_t i = 0; i < waitS.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
@@ -601,6 +598,6 @@ public:
   }
 };
 
-} // namespace ftma
+} // namespace graphsat
 
 #endif
