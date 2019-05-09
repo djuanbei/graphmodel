@@ -10,6 +10,7 @@
 #ifndef XML_UTIL_HPP
 #define XML_UTIL_HPP
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>

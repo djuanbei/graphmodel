@@ -1,6 +1,13 @@
 %{
   #include<iostream>
   #include<string>
+#include <stdio.h>
+  
+
+    
+
+    
+  
   using  std::string; 
   int yydebug=1;   
   using std::cerr;
@@ -12,7 +19,8 @@
   extern int yylex();
   extern int yyparse();
  
-  extern FILE* yyin;  
+  extern FILE* yyin;
+  
  %}
 
 
@@ -411,9 +419,11 @@ function_definition
 ;
 
 %%
-#include <stdio.h>
- #include "uppaalscan.h"
-#include <string>
+
+
+
+      // #include "uppaalscan.h"
+
 
 
 /* extern int column; */
@@ -438,3 +448,6 @@ void parseProblem( const string &str){
   fclose(yyin);
   
 }
+ 
+
+

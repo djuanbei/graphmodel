@@ -14,7 +14,7 @@
 #include "model/ta.hpp"
 
 #include "action.hpp"
-#include "constraint/linsimpcons.hpp"
+#include "constraint/clockdiffcons.hpp"
 #include "location.hpp"
 
 #include "problem/reachability.hpp"
@@ -77,8 +77,8 @@ const static string COMMENT_STR = "comment";
 
 typedef int C;
 
-typedef Constraint<C>                                   CS;
-typedef DBM<C, CS>                                      DManager_t;
+typedef ClockConstraint<C>                                   CS;
+typedef DBM<C>                                      DManager_t;
 typedef DBMset<C, DManager_t>                           DBMSet_t;
 typedef Location<C, CS, DManager_t, DBMSet_t>           L;
 typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
@@ -92,14 +92,23 @@ public:
   UppaalParser( const string &xmlfile );
 
 private:
-  TA_t model;
-  int  parserDeclaration( child_type declarations );
+  map<string, int> locationMAP;
+  
+  int              parserDeclaration( child_type declarations );
 
   int parserTemplate( child_type templates );
+
+  
 
   int parserSystem( child_type system );
 
   int parserQuery( child_type queries );
+
+  vector<L> parserLocation( child_type locations );
+
+  vector<T> parserTransition( child_type transitions );
+
+  vector<CS> parserConstraints( string guards );
 };
 
 } // namespace graphsat

@@ -12,6 +12,9 @@
 
 #include <vector>
 
+#include "constraint/countercons.h"
+
+
 namespace graphsat {
 using namespace std;
 template <typename C, typename CS, typename D, typename DSet, typename A>
@@ -21,6 +24,9 @@ private:
   int source, target;  // source location and target location of this
                        // transitionedge. The index of location in tma.locations
   vector<CS>  cons;    // set of constraint at this transitionedge
+  
+  vector<CounterConstraint> counterCons; // counter constraint like pid ==id or id==0
+  
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables
 
@@ -89,6 +95,12 @@ public:
     reset.push_back( r );
     return *this;
   }
+
+
+  Transition<C, CS, D, DSet, A> &operator+= (CounterConstraint &cons ) {
+    counterCons.push_back( cons);
+  }
+  
 
   /**
    *

@@ -21,12 +21,13 @@ namespace graphsat {
 using namespace std;
 using namespace raptor;
 
+
 template <typename C, typename L, typename T> class TA {
 
 public:
   typedef C *                   D_t;
-  typedef Constraint<C>         CS_t;
-  typedef DBM<C, CS_t>          DManager_t;
+  typedef ClockConstraint<C>         CS_t;
+  typedef DBM<C>          DManager_t;
   typedef DBMset<C, DManager_t> DSet_t;
 
   template <typename R1> friend class Reachability;
@@ -42,7 +43,7 @@ private:
 
   vector<C> clockUppuerBound;
 
-  vector<Constraint<C>> differenceCons;
+  vector<ClockConstraint<C>> differenceCons;
 
 public:
   TA() { initial_loc = clock_num = -1; }
@@ -61,7 +62,7 @@ public:
   }
   vector<C> getClockUppuerBound() const { return clockUppuerBound; }
 
-  vector<Constraint<C>> getDifferenceCons() const { return differenceCons; }
+  vector<ClockConstraint<C>> getDifferenceCons() const { return differenceCons; }
 
   int getLocationNum() const { return (int) locations.size(); }
   int getTransitionNum() const { return (int) transitions.size(); }
@@ -89,8 +90,6 @@ public:
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     clockUppuerBound.resize( 2 * ( clock_num + 1 ), LTEQ_ZERO );
-    // fill( clockUppuerBound.begin(), clockUppuerBound + 2 * ( clock_num + 1 ),
-    //   LTEQ_ZERO );
 
     for ( typename vector<L>::const_iterator it = locations.begin();
           it != locations.end(); it++ ) {

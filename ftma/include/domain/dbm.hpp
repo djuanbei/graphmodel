@@ -25,7 +25,7 @@
 
 #include "util/fastHash.h"
 
-#include "constraint/linsimpcons.hpp"
+#include "constraint/clockdiffcons.hpp"
 #include "util/dbmutil.hpp"
 
 namespace graphsat {
@@ -37,7 +37,7 @@ using namespace std;
  *
  */
 
-template <typename C, typename Cons> class DBM {
+template <typename C> class DBM {
 private:
   /**
    * number of clocks
@@ -49,7 +49,7 @@ private:
   std::uniform_int_distribution<int> distribution;
   vector<C>                          clockUppuerBound;
 
-  vector<Constraint<C>> differenceCons;
+  vector<ClockConstraint<C>> differenceCons;
 
   inline int loc( const int row, const int col ) const { return row * n + col; }
 
@@ -71,7 +71,7 @@ public:
   }
 
   DBM( int nn, const vector<C> &oclockUppuerBound,
-       const vector<Constraint<C>> &odifferenceCons )
+       const vector<ClockConstraint<C>> &odifferenceCons )
       : n( nn + 1 ) {
     size    = n * n;
     MAX_INT = getMAX_INT( (C) 0 );
@@ -245,8 +245,8 @@ public:
    * @return true if there is a value in this domain which satisfies cons
    * false, otherwise.
    */
-  bool isSatisfied( const C *const D, const Cons &cons ) const {
-    Cons negCons = cons.neg();
+  bool isSatisfied( const C *const D, const ClockConstraint<C> &cons ) const {
+    ClockConstraint<C> negCons = cons.neg();
     return negCons.matrix_value < D[ loc( cons.y, cons.x ) ];
   }
 
@@ -289,9 +289,9 @@ public:
     return newD;
   }
 
-  void andImpl( C *newD, const Cons &cons ) const {
+  void andImpl( C *newD, const ClockConstraint<C> &cons ) const {
 
-    Cons negCons = cons.neg();
+    ClockConstraint<C> negCons = cons.neg();
 
     if ( negCons.matrix_value >= newD[ loc( cons.y, cons.x ) ] ) {
       newD[ 0 ] = getMatrixValue( -1, false );
@@ -315,7 +315,7 @@ public:
    * The most used operation in state-space exploration in conjunction
    * @param cons
    */
-  C *And( const C *const D, const Cons &cons ) const {
+  C *And( const C *const D, const ClockConstraint<C> &cons ) const {
 
     C *newD = newMatrix( D );
     andImpl( newD, cons );
@@ -440,9 +440,9 @@ public:
     canonicalForm( D );
   }
 
-  C *corn_norm( C *D, const vector<C> &k, const vector<Cons> &Gd ) const {
+  C *corn_norm( C *D, const vector<C> &k, const vector<ClockConstraint<C> > &Gd ) const {
 
-    vector<Cons> Gunsat;
+    vector<ClockConstraint<C> > Gunsat;
 
     for ( size_t i = 0; i < Gd.size(); i++ ) {
       /**
@@ -467,14 +467,14 @@ public:
     }
 
     norm( D, k );
-    for ( typename vector<Cons>::iterator it = Gunsat.begin();
+    for ( typename vector<ClockConstraint<C> >::iterator it = Gunsat.begin();
           it != Gunsat.end(); it++ ) {
       andImpl( D, it->neg() );
     }
     return D;
   }
 
-  void split( C *D, const vector<Cons> &Gd, vector<C *> &re ) const {
+  void split( C *D, const vector<ClockConstraint<C> > &Gd, vector<C *> &re ) const {
 
     assert( re.empty() );
 
@@ -483,7 +483,7 @@ public:
     vector<C *> waitS;
     re.push_back( D );
 
-    for ( typename vector<Cons>::const_iterator cit = Gd.begin();
+    for ( typename vector<ClockConstraint<C> >::const_iterator cit = Gd.begin();
           cit != Gd.end(); cit++ ) {
 
       vector<bool> addToWaitS( re.size(), false );
@@ -583,7 +583,7 @@ public:
    * @param G
    * @param re
    */
-  void norm( C *D, const vector<C> &k, const vector<Cons> &Gd,
+  void norm( C *D, const vector<C> &k, const vector<ClockConstraint<C> > &Gd,
              vector<C *> &re ) const {
 
     assert( re.empty() );

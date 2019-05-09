@@ -10,7 +10,7 @@
  */
 
 #include "action.hpp"
-#include "constraint/linsimpcons.hpp"
+#include "constraint/clockdiffcons.hpp"
 #include "location.hpp"
 #include "model/ta.hpp"
 #include "problem/reachability.hpp"
@@ -22,6 +22,7 @@
 #include "domain/dbmset.hpp"
 #include "io/uppaalmodelparser.h"
 #include "reachableset.hpp"
+#include "state.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -32,8 +33,8 @@ using namespace graphsat;
 
 typedef int C;
 
-typedef Constraint<C>                                   CS;
-typedef DBM<C, CS>                                      DManager_t;
+typedef ClockConstraint<C>                                   CS;
+typedef DBM<C>                                      DManager_t;
 typedef DBMset<C, DManager_t>                           DBMSet_t;
 typedef Location<C, CS, DManager_t, DBMSet_t>           L;
 typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
@@ -142,7 +143,7 @@ int main( int argc, const char *argv[] ) {
   example1();
   example2();
 
-  Constraint<C> cons( 1, 2, 2, false );
+  ClockConstraint<C> cons( 1, 2, 2, false );
 
   cout << "constrain: " << cons << endl;
 

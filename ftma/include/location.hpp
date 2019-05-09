@@ -14,16 +14,33 @@
 
 namespace graphsat {
 using namespace std;
+
+enum Location_Type{
+  NORMOAL_LOC, INIT_LOC,
+  URGENT_LOC, COMMIT_LOC
+};
+
 template <typename C_t, typename CS_t, typename D_t, typename DSet_t>
 class Location {
 public:
 private:
   vector<CS_t> invariants; // set of invariants  in this Location
+
   int          locationID;
+  Location_Type type;
+
+  
 
 public:
 public:
-  explicit Location( int loc ) { locationID = loc; }
+  explicit Location( int loc ) { locationID = loc;
+    type=NORMOAL_LOC;
+  }
+
+  explicit Location( int loc, Location_Type t ) {
+    locationID = loc;
+    type=t;
+  }
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
@@ -42,6 +59,7 @@ public:
                    vector<C_t *> &reNormVecDBM ) const {
     assert( reNormVecDBM.empty() );
     DSet_t                    advanceNext;
+    
     typename DSet_t::iterator end1 = reachDBMS.end();
     for ( typename DSet_t::iterator it = reachDBMS.begin(); it != end1; ++it ) {
 
@@ -56,10 +74,16 @@ public:
             cit != invariants.end(); cit++ ) {
         dbmManager.andImpl( D, *cit );
       }
-
+      
       if ( dbmManager.isConsistent( D ) ) {
+        /**
+         * Urgent and commit locations freeze time; i.e. time is not allowed to pass when a process is in an urgent location.
+         * 
+         */
 
-        dbmManager.upImpl( D );
+        if(type!=URGENT_LOC || type!= COMMIT_LOC ){
+          dbmManager.upImpl( D );
+        }
         /**
          * After D satisfies the invarient then do operator up on D,
          * then left the area which satisfies all invariants

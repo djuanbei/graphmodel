@@ -214,13 +214,6 @@ public:
 
   size_t size() const { return passedD.size() + recoveryD.size(); }
 
-  // void toVector( vector<C *> &re ) const {
-  //   re.clear();
-
-  //   re.insert( re.end(), mapD.begin(), mapD.end() );
-  //   re.insert( re.end(), recoveryD.begin(), recoveryD.end() );
-  // }
-
   void clear( void ) {
     passedD.clear();
 

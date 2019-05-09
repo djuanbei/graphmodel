@@ -22,7 +22,7 @@ using namespace std;
  *  x -y < ( <= ) realRight
  *
  */
-template <typename C> class Constraint {
+template <typename C> class ClockConstraint {
 private:
   void neg_impl( void ) {
     int temp     = x;
@@ -37,7 +37,7 @@ public:
 
   C matrix_value;
 
-  Constraint( const int i, const int j, const C r, bool isStrctRef = true ) {
+  ClockConstraint( const int i, const int j, const C r, bool isStrctRef = true ) {
     x            = i;
     y            = j;
     matrix_value = r * 2;
@@ -46,7 +46,7 @@ public:
     }
   }
 
-  Constraint randConst( int num, int low, int up ) const {
+  ClockConstraint randConst( int num, int low, int up ) const {
     std::uniform_int_distribution<int> distribution( 0, num );
     std::default_random_engine         generator;
     int                                xx = distribution( generator );
@@ -58,21 +58,21 @@ public:
     std::uniform_int_distribution<C> distribution1( low, up );
 
     C vv = distribution1( generator );
-    return Constraint( xx, yy, vv );
+    return ClockConstraint( xx, yy, vv );
   }
 
-  Constraint neg( void ) const {
-    Constraint re( *this );
+  ClockConstraint neg( void ) const {
+    ClockConstraint re( *this );
     re.neg_impl();
     return re;
   }
 
-  bool isSat( const Constraint<C> &cons ) const {
+  bool isSat( const ClockConstraint<C> &cons ) const {
 
     if ( ( cons.x == x ) && ( cons.y == y ) ) {
       return true;
     } else if ( ( cons.x == y ) && ( cons.y == x ) ) {
-      Constraint<C> negCons = cons.neg();
+      ClockConstraint<C> negCons = cons.neg();
       return negCons.matrix_value < matrix_value;
     }
 
@@ -100,7 +100,7 @@ public:
     return true;
   }
 
-  friend std::ostream &operator<<( std::ostream &os, const Constraint &cons ) {
+  friend std::ostream &operator<<( std::ostream &os, const ClockConstraint &cons ) {
     if ( cons.x >= 0 && cons.y >= 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
         os << "x_" << cons.x << " - "

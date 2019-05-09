@@ -6,8 +6,8 @@ E            [-]?{D}+
 
 
 %{
-    #include <stdio.h>
-    
+#include <stdio.h>
+
 void count();
 void comment();
 void commentLine();
@@ -173,3 +173,8 @@ int check_type()
     
     return(IDENTIFIER);
 }
+
+
+
+
+

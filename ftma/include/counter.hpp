@@ -10,7 +10,16 @@
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
 namespace graphsat {
-class counter {};
+class counter {
+ private:
+  int value; 
+  int lb, up; //lb<= value<= up
+ public:
+  counter( ){
+    value=lb=up=0;
+  }
+ 
+};
 } // namespace graphsat
 
 #endif
