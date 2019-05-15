@@ -112,8 +112,9 @@ public:
         for ( vector<int>::iterator lit = vecRelatedLinks[ i ].begin();
               lit != vecRelatedLinks[ i ].end(); lit++ ) {
           link = *lit;
+          // one edge transition (source --> target)
           if ( data.oneStep( loc, cons, target, link, secondChanged,
-                             secondWaitSet ) ) {
+                             secondWaitSet ) ) { 
             find = true;
           }
         }

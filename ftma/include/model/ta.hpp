@@ -13,6 +13,7 @@
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
+#include "channel.h"
 
 #include <vector>
 
@@ -25,7 +26,8 @@ using namespace raptor;
 template <typename C, typename L, typename T> class TA {
 
 public:
-  typedef C *                   D_t;
+
+  typedef C* D_t;
   typedef ClockConstraint<C>         CS_t;
   typedef DBM<C>          DManager_t;
   typedef DBMset<C, DManager_t> DSet_t;
@@ -38,24 +40,30 @@ private:
   vector<T> transitions;
   int       initial_loc;
   int       clock_num;
-
+  int counter_num;
+  
   graph_t<int> graph;
 
   vector<C> clockUppuerBound;
-
+   
   vector<ClockConstraint<C>> differenceCons;
 
+  vector<Channel> channels;
+  
+
 public:
-  TA() { initial_loc = clock_num = -1; }
-  TA( int init, int vnum ) {
+  TA() { initial_loc = clock_num =counter_num= -1; }
+  TA( int init, int vnum, int cnum =0) {
     initial_loc = init;
     clock_num   = vnum;
+    counter_num=cnum;
   }
-  TA( vector<L> &locs, vector<T> &es, int init, int vnum )
+  TA( vector<L> &locs, vector<T> &es, int init, int vnum, int cnum=0 )
       : locations( locs )
       , transitions( es ) {
     initial_loc = init;
     clock_num   = vnum;
+    counter_num=cnum;
   }
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
@@ -71,6 +79,8 @@ public:
 
   const T &getTransition( int id ) const { return transitions[ id ]; }
 
+
+  
   void initial() {
 
     vector<int> srcs;

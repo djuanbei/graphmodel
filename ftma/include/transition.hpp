@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "constraint/countercons.h"
+#include "channel.h"
 
 
 namespace graphsat {
@@ -21,11 +22,13 @@ template <typename C, typename CS, typename D, typename DSet, typename A>
 class Transition {
 public:
 private:
+  typedef Transition<C, CS, D, DSet, A> Transition_t;
   int source, target;  // source location and target location of this
                        // transitionedge. The index of location in tma.locations
   vector<CS>  cons;    // set of constraint at this transitionedge
   
   vector<CounterConstraint> counterCons; // counter constraint like pid ==id or id==0
+  vector<Channel> channels; // the Synchronisation channels
   
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables
@@ -36,6 +39,7 @@ public:
     source = s;
     target = t;
   }
+  
   void setSource( int s ) { source = s; }
 
   int getSource() const { return source; }
@@ -53,8 +57,8 @@ public:
    * @return
    */
 
-  friend Transition<C, CS, D, DSet, A> &
-      operator+( Transition<C, CS, D, DSet, A> &lhs, CS &cs ) {
+  friend Transition_t &
+      operator+( Transition_t &lhs, CS &cs ) {
     lhs.cons.push_back( cs );
     return lhs;
   }
@@ -66,8 +70,19 @@ public:
    *
    * @return
    */
-  Transition<C, CS, D, DSet, A> &operator+=( CS &cs ) {
+  Transition_t &operator+=( CS &cs ) {
     cons.push_back( cs );
+    return *this;
+  }
+
+
+  friend Transition_t& operator+( Transition_t &lhs, Channel &ch ){
+    lhs.channels.push_back( ch);
+    return lhs;
+  }
+
+  Transition_t & operator +=( Channel &ch){
+    channels.push_back( ch);
     return *this;
   }
 
@@ -79,7 +94,7 @@ public:
    *
    * @return
    */
-  Transition<C, CS, D, DSet, A> &operator+=( A &a ) {
+  Transition_t &operator+=( A &a ) {
     actions.push_back( a );
     return *this;
   }
@@ -91,19 +106,18 @@ public:
    *
    * @return
    */
-  Transition<C, CS, D, DSet, A> &operator+=( int r ) {
+  Transition_t &operator+=( int r ) {
     reset.push_back( r );
     return *this;
   }
 
 
-  Transition<C, CS, D, DSet, A> &operator+= (CounterConstraint &cons ) {
+  Transition_t &operator+= (CounterConstraint &cons ) {
     counterCons.push_back( cons);
   }
   
 
   /**
-   *
    *
    * @param dbmManager
    * @param sourceDBMs  The D matrix of source location. The transitionedge

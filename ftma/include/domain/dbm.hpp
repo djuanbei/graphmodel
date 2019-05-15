@@ -22,6 +22,7 @@
 #include <vector>
 
 #include <random>
+#include <utility>
 
 #include "util/fastHash.h"
 
@@ -44,6 +45,7 @@ private:
    */
   int                                n;
   int                                size; // n*n
+  int number_counter;
   C                                  MAX_INT;
   std::default_random_engine         generator;
   std::uniform_int_distribution<int> distribution;
@@ -87,12 +89,21 @@ public:
     n    = num + 1;
     size = n * n;
   }
+  
+
 
   C *newMatrix() const {
     C *D = new C[ size ]();
     fill( D, D + size, LTEQ_ZERO ); // x-x<=0
     return D;
   }
+
+  pair<vector<int> , C*> newConfigure( ) const{
+    C *D=newMatrix( );
+    vector<int> temp(number_counter );
+    return make_pair (temp, D );
+  }
+  
   /**
    * Create a new matrix and initial the values with D
    *

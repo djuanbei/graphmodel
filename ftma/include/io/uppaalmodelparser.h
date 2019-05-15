@@ -77,8 +77,8 @@ const static string COMMENT_STR = "comment";
 
 typedef int C;
 
-typedef ClockConstraint<C>                                   CS;
-typedef DBM<C>                                      DManager_t;
+typedef ClockConstraint<C>                              CS;
+typedef DBM<C>                                          DManager_t;
 typedef DBMset<C, DManager_t>                           DBMSet_t;
 typedef Location<C, CS, DManager_t, DBMSet_t>           L;
 typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
@@ -93,12 +93,10 @@ public:
 
 private:
   map<string, int> locationMAP;
-  
-  int              parserDeclaration( child_type declarations );
+
+  int parserDeclaration( child_type declarations );
 
   int parserTemplate( child_type templates );
-
-  
 
   int parserSystem( child_type system );
 

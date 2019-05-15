@@ -22,7 +22,6 @@
 #include "domain/dbmset.hpp"
 #include "io/uppaalmodelparser.h"
 #include "reachableset.hpp"
-#include "state.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -33,8 +32,8 @@ using namespace graphsat;
 
 typedef int C;
 
-typedef ClockConstraint<C>                                   CS;
-typedef DBM<C>                                      DManager_t;
+typedef ClockConstraint<C>                              CS;
+typedef DBM<C>                                          DManager_t;
 typedef DBMset<C, DManager_t>                           DBMSet_t;
 typedef Location<C, CS, DManager_t, DBMSet_t>           L;
 typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
@@ -137,6 +136,8 @@ void example2( void ) {
 void example3( void ) {}
 
 int main( int argc, const char *argv[] ) {
+  //  State<int> s;
+
   UppaalParser parser( argv[ 1 ] );
   return 0;
 

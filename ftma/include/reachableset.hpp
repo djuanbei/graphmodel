@@ -35,14 +35,9 @@ private:
     if ( cons.empty() ) {
       return true;
     }
-    D_t newdbm = dManager.And( dbm, cons[ 0 ] );
-    if ( !dManager.isConsistent( newdbm ) ) {
-      dManager.deleteD( newdbm );
+    D_t newdbm =dManager.newMatrix( dbm);
 
-      return false;
-    }
-
-    for ( size_t i = 1; i < cons.size(); i++ ) {
+    for ( size_t i = 0; i < cons.size(); i++ ) {
       dManager.andImpl( newdbm, cons[ i ] );
       if ( !dManager.isConsistent( newdbm ) ) {
         dManager.deleteD( newdbm );
@@ -64,12 +59,16 @@ public:
     waitSet.resize( vertex_num );
     reachSet.resize( vertex_num );
 
-    D_t D           = dManager.newMatrix();
+    //   D_t D           = dManager.newConfigure( );
+
+    D_t D           = dManager.newMatrix( );
+      
     int initial_loc = ta.getInitialLoc();
 
     ta.getLocation( initial_loc )( dManager, D );
 
     waitSet[ initial_loc ].add( dManager, D );
+    
     reachSet[ initial_loc ].add( dManager, D );
 
     lastChangedLocs.push_back( initial_loc );

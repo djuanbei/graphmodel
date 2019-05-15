@@ -57,7 +57,9 @@ public:
 
   bool operator()( const D_t &dbmManager, DSet_t &reachDBMS,
                    vector<C_t *> &reNormVecDBM ) const {
+    
     assert( reNormVecDBM.empty() );
+    
     DSet_t                    advanceNext;
     
     typename DSet_t::iterator end1 = reachDBMS.end();
@@ -83,22 +85,19 @@ public:
 
         if(type!=URGENT_LOC || type!= COMMIT_LOC ){
           dbmManager.upImpl( D );
+          /**
+           * After D satisfies the invarient then do operator up on D,
+           * then left the area which satisfies all invariants
+           *
+           */
+          for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
+                cit != invariants.end(); cit++ ) {
+            dbmManager.andImpl( D, *cit );
+          }
+          assert(dbmManager.isConsistent( D ) );
         }
-        /**
-         * After D satisfies the invarient then do operator up on D,
-         * then left the area which satisfies all invariants
-         *
-         */
-
-        for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
-              cit != invariants.end(); cit++ ) {
-          dbmManager.andImpl( D, *cit );
-        }
-        if ( dbmManager.isConsistent( D ) ) {
-          advanceNext.add( dbmManager, D );
-        } else {
-          delete[] D;
-        }
+        
+        advanceNext.add( dbmManager, D );
       } else {
         delete[] D;
       }
@@ -131,12 +130,34 @@ public:
    * @return  true if the final set in this Location is non-empty
    */
   bool operator()( const D_t &dbmManager, C_t *D ) const {
-    dbmManager.upImpl( D );
+    
+    if(!dbmManager.isConsistent( D )){
+      return false;
+    }
+    /**
+     * D reach Location first check D satisfies all the invariants in
+     * this Location
+     *
+     */
+
     for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
           cit != invariants.end(); cit++ ) {
       dbmManager.andImpl( D, *cit );
     }
-    return dbmManager.isConsistent( D );
+    
+    if (dbmManager.isConsistent( D ) ) {
+      dbmManager.upImpl( D );
+      for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
+            cit != invariants.end(); cit++ ) {
+        dbmManager.andImpl( D, *cit );
+      }
+      
+      assert(dbmManager.isConsistent( D )  );
+      return true;
+      
+    }else{
+      return false;
+    }
   }
 
   /**
