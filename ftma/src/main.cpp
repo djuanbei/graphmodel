@@ -23,6 +23,8 @@
 #include "io/uppaalmodelparser.h"
 #include "reachableset.hpp"
 
+#include "discretestate.hpp"
+
 #include <cstdint>
 #include <iostream>
 #include <limits>
@@ -35,11 +37,12 @@ typedef int C;
 typedef ClockConstraint<C>                              CS;
 typedef DBM<C>                                          DManager_t;
 typedef DBMset<C, DManager_t>                           DBMSet_t;
-typedef Location<C, CS, DManager_t, DBMSet_t>           L;
-typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
+typedef Location<NIntState, CS, DManager_t, DBMSet_t>           L;
+typedef Transition<NIntState, CS, DManager_t, DBMSet_t, Action> T;
 
 typedef TA<C, L, T>        TA_t;
-typedef ReachableSet<TA_t> R_t;
+typedef TAS<C, L, T>        TAS_t;
+typedef ReachableSet<TAS_t> R_t;
 
 void example1( void ) {
   // x:1 y:2 z:3
@@ -77,7 +80,11 @@ void example1( void ) {
   es.push_back( e12 );
   es.push_back( e23 );
   TA_t tma1( ls, es, 0, 3 );
-  R_t  data( tma1 );
+  tma1.initial( );
+  
+  TAS_t sys;
+  sys+=tma1;
+  R_t  data( sys );
 
   Reachability<R_t> reacher( data );
 
@@ -121,8 +128,9 @@ void example2( void ) {
 
   TA_t tma1( ls, es, 0, 2 );
   tma1.initial();
-
-  R_t               data( tma1 );
+  TAS_t sys;
+  sys+=tma1;
+  R_t               data( sys );
   Reachability<R_t> reacher( data );
 
   if ( reacher.reachable( 1 ) ) {

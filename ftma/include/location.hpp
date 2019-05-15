@@ -20,7 +20,7 @@ enum Location_Type{
   URGENT_LOC, COMMIT_LOC
 };
 
-template <typename C_t, typename CS_t, typename D_t, typename DSet_t>
+template <typename C_t, typename CS_t, typename DManager_t, typename DSet_t>
 class Location {
 public:
 private:
@@ -28,7 +28,6 @@ private:
 
   int          locationID;
   Location_Type type;
-
   
 
 public:
@@ -47,15 +46,15 @@ public:
   /**
    *
    *
-   * @param reachDBMS  the D_t set of start value in this Location
+   * @param reachDBMS  the DManager_t set of start value in this Location
    * @param dbmManager
-   * @param advanceNext return D_t set of possible value stay in this Location
+   * @param advanceNext return DManager_t set of possible value stay in this Location
    *
    * @return true if advanceNext is not empty
    *         false otherwise.
    */
 
-  bool operator()( const D_t &dbmManager, DSet_t &reachDBMS,
+  bool operator()( const DManager_t &dbmManager, DSet_t &reachDBMS,
                    vector<C_t *> &reNormVecDBM ) const {
     
     assert( reNormVecDBM.empty() );
@@ -124,12 +123,12 @@ public:
 
   /**
    *
-   * @param D  A D_t matrix of start value  in this Location
+   * @param D  A DManager_t matrix of start value  in this Location
    * @param dbmManager
    *
    * @return  true if the final set in this Location is non-empty
    */
-  bool operator()( const D_t &dbmManager, C_t *D ) const {
+  bool operator()( const DManager_t &dbmManager, C_t *D ) const {
     
     if(!dbmManager.isConsistent( D )){
       return false;
@@ -167,7 +166,7 @@ public:
    *
    * @return
    */
-  Location<C_t, CS_t, D_t, DSet_t> &operator+=( CS_t &cs ) {
+  Location<C_t, CS_t, DManager_t, DSet_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );
     return *this;
   }

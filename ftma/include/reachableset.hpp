@@ -24,9 +24,9 @@ public:
   typedef typename Model_t::DSet_t     DSet_t;
 
 private:
-  vector<DSet_t> reachSet;
-  vector<DSet_t> waitSet;
-  vector<int>    lastChangedLocs;
+  StateSet<NIntState> reachSet;
+  StateSet<NIntState> waitSet;
+
   const Model_t &ta;
   DManager_t     dManager;
   template <typename R1> friend class Reachability;
@@ -52,46 +52,29 @@ public:
   ReachableSet( const Model_t &outta )
       : ta( outta ) {
 
-    dManager = DManager_t( ta.getClockNum(), ta.getClockUppuerBound(),
-                           ta.getDifferenceCons() );
+    dManager =ta.getStateManager( );
 
-    int vertex_num = ta.getLocationNum();
-    waitSet.resize( vertex_num );
-    reachSet.resize( vertex_num );
-
-    //   D_t D           = dManager.newConfigure( );
-
-    D_t D           = dManager.newMatrix( );
-      
-    int initial_loc = ta.getInitialLoc();
-
-    ta.getLocation( initial_loc )( dManager, D );
-
-    waitSet[ initial_loc ].add( dManager, D );
+    D_t D  = dManager.newMatrix( );
+    ta.initState(dManager, D);
     
-    reachSet[ initial_loc ].add( dManager, D );
+    waitSet.add(D );
 
-    lastChangedLocs.push_back( initial_loc );
+    reachSet.add( D);
+
+
   }
 
   ~ReachableSet() {
 
-    for ( typename vector<DSet_t>::iterator it = reachSet.begin();
-          it != reachSet.end(); it++ ) {
-      it->deleteAll();
-    }
     reachSet.clear();
   }
 
   const Model_t &getTA( void ) const { return ta; }
 
-  Check_State find( const int loc, const vector<CS_t> &cons ) {
-    if ( loc < 0 || (size_t) loc >= reachSet.size() ) {
-      return FALSE;
-    }
-
-    typename DSet_t::iterator end1 = reachSet[ loc ].end();
-    for ( typename DSet_t::iterator it = reachSet[ loc ].begin(); it != end1;
+  Check_State find( const vector<int> &loc, const vector< vector<CS_t> > &cons ) {
+    
+    typename DSet_t::iterator end1 = reachSet.end();
+    for ( typename DSet_t::iterator it = reachSet.begin(); it != end1;
           ++it ) {
 
       if ( isReachable( cons, *it ) ) {
@@ -101,22 +84,18 @@ public:
     return UNKOWN;
   }
 
-  void update( set<int> &secondChanged, vector<DSet_t> &secondWaitSet ) {
-    lastChangedLocs.clear();
+  void update(  DSet_t &secondWaitSet ) {
 
-    lastChangedLocs.insert( lastChangedLocs.begin(), secondChanged.begin(),
-                            secondChanged.end() );
-    secondChanged.clear();
 
     waitSet = secondWaitSet;
-    for ( size_t i = 0; i < lastChangedLocs.size(); i++ ) {
-      int source = lastChangedLocs[ i ];
-      secondWaitSet[ source ].clear();
-    }
+    secondWaitSet.clear( );
+    
+
   }
 
   bool oneStep( const int loc, const vector<CS_t> &cons, const int target,
                 int link, set<int> &secondChanged,
+                
                 vector<DSet_t> &secondWaitSet ) {
     int source = 0;
     ta.findRhs( link, target, source );

@@ -116,8 +116,13 @@ public:
     memcpy( newD, D, sizeof( C ) * size );
     return newD;
   }
+  
 
   void deleteD( C *D ) const { delete[] D; }
+
+  void  init( C * D) const{
+    fill( D, D + size, LTEQ_ZERO ); // x-x<=0
+  }
   C *  randomMatirx() {
 
     C *newD = new C[ size ]();
@@ -134,6 +139,10 @@ public:
 
     C *D2 = free( D1, 0 );
     return D2;
+  }
+
+  int getSize( ) const{
+    return size;
   }
 
   std::string dump( const C *const D ) const {

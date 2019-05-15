@@ -75,18 +75,19 @@ const static string FORMULA_STR = "formula";
 
 const static string COMMENT_STR = "comment";
 
-typedef int C;
 
-typedef ClockConstraint<C>                              CS;
-typedef DBM<C>                                          DManager_t;
-typedef DBMset<C, DManager_t>                           DBMSet_t;
-typedef Location<C, CS, DManager_t, DBMSet_t>           L;
-typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
-typedef TA<C, L, T>                                     TA_t;
 
 class UppaalParser {
 
-public:
+  typedef int C;
+
+  typedef ClockConstraint<C>                              CS;
+  typedef DBM<C>                                          DManager_t;
+  typedef DBMset<C, DManager_t>                           DBMSet_t;
+  typedef Location<C, CS, DManager_t, DBMSet_t>           L;
+  typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
+  typedef TA<C, L, T>                                     TA_t;
+ public:
   UppaalParser() {}
 
   UppaalParser( const string &xmlfile );

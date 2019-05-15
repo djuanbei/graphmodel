@@ -86,14 +86,43 @@ class StateSet{
  private:
   int stateId;
   map<int, T*> mapValues;
-  vector<T*>  confictValues;
+  vector<T*>  recoveryValues;
  public:
+  StateSet( ){
+    stateId=-1;
+  }
   StateSet( int id){
     stateId=id;
+  }
+  ~StateSet( ){
+    deleteAll( );
+  }
+  void deleteAll( ){
+    for( typename vector<T*>::const_iterator it= recoveryValues.begin( ); it!= recoveryValues.end( );
+         it++){
+      delete (*it);
+    }
+    
+    recoveryValues.clear( );
+    
+    for( typename map<int, T*>::const_iterator it= mapValues.begin( ); it!= mapValues.end( ); it++){
+      delete (it->second);
+    }
+    
+    mapValues.clear( );
+    
+  }
+  void clear( ){
+    recoveryValues.clear( );
+    mapValues.clear( );
   }
   
   int getID( void) const{
     return stateId;
+  }
+  
+  void setId( int id){
+    stateId=id;
   }
   
   bool add( T *one ) {
@@ -107,7 +136,7 @@ class StateSet{
     if( state){
       mapValues[ f]=one;
     }else{
-      confictValues.push_back( one);      
+      recoveryValues.push_back( one);      
     }
     return true;
   }
@@ -122,7 +151,7 @@ class StateSet{
         return true;
       }
     }
-    for( typename vector<T*>::const_iterator it= confictValues.begin( ); it!= confictValues.end( );
+    for( typename vector<T*>::const_iterator it= recoveryValues.begin( ); it!= recoveryValues.end( );
          it++){
       if(one->isContained((*it ))){
         return true;
@@ -134,6 +163,118 @@ class StateSet{
       }
     }
     return false;
+  }
+
+
+  class const_iterator {
+   protected:
+      const StateSet<T> *data;
+
+    size_t                index;
+
+  public:
+    const_iterator( const StateSet<T> *odata )
+        : data( odata ) {
+      index = 0;
+    }
+
+    const_iterator( const StateSet<T> *odata, size_t oindex )
+        : data( odata ) {
+      index = oindex;
+    }
+
+    const_iterator( const const_iterator &other )
+        : data( other.data ) {
+      index = other.index;
+    }
+
+    const_iterator &operator++() {
+      index++;
+      return *this;
+    }
+    bool operator==( const const_iterator &other ) const {
+      return index == other.index;
+    }
+    bool operator!=( const const_iterator &other ) const {
+      return index != other.index;
+    }
+
+    const T *operator*() const {
+      size_t dSize = data->mapValues.size();
+      if ( index < dSize ) {
+
+        return data->mapValues[ index ];
+      }
+      if ( index >= dSize + data->recoveryValues.size() ) {
+        return NULL;
+      }
+
+      return data->recoveryValues[ index - dSize ];
+    }
+  };
+
+
+
+  class iterator {
+
+  protected:
+    const StateSet<T> *data;
+    size_t                index;
+
+  public:
+    iterator( StateSet<T> *odata )
+        : data( odata ) {
+      index = 0;
+    }
+
+    iterator(StateSet<T> * odata, size_t oindex )
+        : data( odata ) {
+      index = oindex;
+    }
+
+    iterator( const iterator &other )
+        : data( other.data ) {
+      index = other.index;
+    }
+    iterator &operator++() {
+      index++;
+      return *this;
+    }
+
+    bool operator==( const iterator &other ) const {
+      return index == other.index;
+    }
+    bool operator!=( const iterator &other ) const {
+      return index != other.index;
+    }
+
+    T *operator*() {
+      size_t dSize = data->mapValues.size();
+      if ( index < dSize ) {
+
+        return data->mapValues[ index ];
+      }
+      if ( index >= dSize + data->recoveryValues.size() ) {
+        return NULL;
+      }
+
+      return data->recoveryValues[ index - dSize ];
+    }
+  };
+
+  iterator begin() { return iterator( this ); }
+
+  const_iterator begin() const { return const_iterator( this ); }
+
+  iterator end() {
+
+    return iterator( this, mapValues.size() + recoveryValues.size() );
+    /**/
+  }
+
+  const_iterator end() const {
+    return const_iterator( this, mapValues.size() + recoveryValues.size() );
+    /**/
   }
 };
 
@@ -252,9 +393,13 @@ class ExpandComposeStateSet: public ComposeStateSet<T>{
   }
   
   ~ExpandComposeStateSet( ){
+    clear( );
+  }
+  void clear( ){
     for( typename vector<T*>::iterator it=values.begin( ); it!= values.end( ); it++){
       delete (*it);
     }
+    values.clear( );
   }
   
   bool add(const vector<pair<int, T*> > & one ){
@@ -487,7 +632,6 @@ class CompactComposeStateSet: public ComposeStateSet<T>{
  };
 
   
-  
 
 class IntState: public StateElem{
  private:
@@ -520,6 +664,66 @@ class IntState: public StateElem{
     const IntState* rhs=( const IntState*) other;
     return (value[ 1]==rhs->value[ 1]) &&(value[ 0]==rhs->value[ 0]);
   }
+  
+};
+
+
+class NIntState: public StateElem{
+ private:
+
+  NIntState( const NIntState & other){
+    assert( false);
+  }
+  NIntState& operator =( const NIntState & other){
+    return *this;
+  }
+ public:
+  int n;
+  int * value;
+  NIntState( ):n( 0), value( NULL){
+    
+  }
+  NIntState( int s){
+    assert( s>0);
+    n=s;
+    value=new int[ n];
+    fill( value, value+n, 0);
+  }
+
+
+  ~NIntState( ){
+    delete [ ] value;
+    value=NULL;
+  }
+
+  int  digitalFeature( ) const{
+    int re=0;
+    for( int i=0; i<n; i++){
+      re+=value[ i];
+    }
+    return re;
+  }
+
+  bool isContained ( const StateElem *other ) const{
+    const NIntState* rhs=( const NIntState*) other;
+    for( int i=0; i< n; i++){
+      if(value[i]>rhs->value[ i]){
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  bool equal ( const StateElem *other ) const{
+    const NIntState* rhs=( const NIntState*) other;
+    for( int i=0; i< n; i++){
+      if( value[ i]!= rhs->value[ i]){
+        return false;
+      }
+    }
+    return true;
+  }
+
   
 };
 

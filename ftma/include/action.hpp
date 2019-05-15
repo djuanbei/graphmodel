@@ -13,7 +13,7 @@
 #include "counter.hpp"
 namespace graphsat {
 struct Action {
-  void apply( counter &c ) const {}
+  void apply( Counter &c ) const {}
 };
 } // namespace graphsat
 #endif

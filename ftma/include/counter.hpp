@@ -1,5 +1,5 @@
 /**
- * @file   counter.hpp
+ * @file   Counter.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:37:15 2019
  *
@@ -10,12 +10,12 @@
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
 namespace graphsat {
-class counter {
+class Counter {
  private:
   int value; 
   int lb, up; //lb<= value<= up
  public:
-  counter( ){
+  Counter( ){
     value=lb=up=0;
   }
  
