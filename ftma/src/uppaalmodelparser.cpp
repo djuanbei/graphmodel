@@ -148,7 +148,7 @@ vector<T_t> UppaalParser::parserTransition( child_type transitions ) {
 vector<CS_t> UppaalParser::parserConstraints( string guards ) {
   string         delimeter = "&&";
   vector<string> guardvec  = splitStr( guards, delimeter );
-  vector<CS_t>     re;
+  vector<CS_t>   re;
 
   return re;
 }

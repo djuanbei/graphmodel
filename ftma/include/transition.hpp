@@ -12,9 +12,8 @@
 
 #include <vector>
 
-#include "constraint/countercons.h"
 #include "channel.h"
-
+#include "constraint/countercons.h"
 
 namespace graphsat {
 using namespace std;
@@ -23,13 +22,14 @@ class Transition {
 public:
 private:
   typedef Transition<C, CS, D, DSet, A> Transition_t;
-  int source, target;  // source location and target location of this
-                       // transitionedge. The index of location in tma.locations
-  vector<CS>  cons;    // set of constraint at this transitionedge
-  
-  vector<CounterConstraint> counterCons; // counter constraint like pid ==id or id==0
-  vector<Channel> channels; // the Synchronisation channels
-  
+  int source, target; // source location and target location of this
+                      // transitionedge. The index of location in tma.locations
+  vector<CS> cons;    // set of constraint at this transitionedge
+
+  vector<CounterConstraint>
+                  counterCons; // counter constraint like pid ==id or id==0
+  vector<Channel> channels;    // the Synchronisation channels
+
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables
 
@@ -39,7 +39,7 @@ public:
     source = s;
     target = t;
   }
-  
+
   void setSource( int s ) { source = s; }
 
   int getSource() const { return source; }
@@ -57,8 +57,7 @@ public:
    * @return
    */
 
-  friend Transition_t &
-      operator+( Transition_t &lhs, CS &cs ) {
+  friend Transition_t &operator+( Transition_t &lhs, CS &cs ) {
     lhs.cons.push_back( cs );
     return lhs;
   }
@@ -75,14 +74,13 @@ public:
     return *this;
   }
 
-
-  friend Transition_t& operator+( Transition_t &lhs, Channel &ch ){
-    lhs.channels.push_back( ch);
+  friend Transition_t &operator+( Transition_t &lhs, Channel &ch ) {
+    lhs.channels.push_back( ch );
     return lhs;
   }
 
-  Transition_t & operator +=( Channel &ch){
-    channels.push_back( ch);
+  Transition_t &operator+=( Channel &ch ) {
+    channels.push_back( ch );
     return *this;
   }
 
@@ -111,11 +109,9 @@ public:
     return *this;
   }
 
-
-  Transition_t &operator+= (CounterConstraint &cons ) {
-    counterCons.push_back( cons);
+  Transition_t &operator+=( CounterConstraint &cons ) {
+    counterCons.push_back( cons );
   }
-  
 
   /**
    *
@@ -155,48 +151,45 @@ public:
     return nextDBMs.size() > 0;
   }
 
-
-  bool operator()( const D &dbmManager, const C *sourceDBM,
-                   DSet &nextDBMs ) const {
-
-    nextDBMs.deleteAll();
-
-    C *d1 = dbmManager.newMatrix( sourceDBM );
+  C* operator()( const D &dbmManager, const C * const sourceDBM ) const {
+    C *re = dbmManager.newMatrix( sourceDBM );
     for ( typename vector<CS>::const_iterator cit = cons.begin();
           cit != cons.end(); cit++ ) {
-      dbmManager.andImpl( d1, *cit );
+      dbmManager.andImpl( re, *cit );
     }
-    if ( dbmManager.isConsistent( d1 ) ) {
-      for ( vector<int>::const_iterator rit = reset.begin();
-            rit != reset.end(); rit++ ) {
-        assert( *rit > 0 ); // clock id start from 1
-        dbmManager.resetImpl( d1, *rit, 0 );
-      }
-      nextDBMs.add( dbmManager, d1 );
-    } else {
-      delete[] d1;
-    }
-
-    return nextDBMs.size() > 0;
-  }
-
-  bool operator()( const D &dbmManager, const C *const Din ) const {
-    C *d1 = dbmManager.newMatrix( Din );
-    for ( typename vector<CS>::iterator cit = cons.begin(); cit != cons.end();
-          cit++ ) {
-      dbmManager.andImpl( d1, *cit );
-    }
-    if ( dbmManager.isConsistent( d1 ) ) {
-      for ( vector<int>::iterator rit = reset.begin(); rit != reset.end();
+    if ( dbmManager.isConsistent( re ) ) {
+      for ( vector<int>::const_iterator rit = reset.begin(); rit != reset.end();
             rit++ ) {
         assert( *rit > 0 ); // clock id start from 1
-        dbmManager.resetImpl( d1, *rit, 0 );
+        dbmManager.resetImpl( re, *rit, 0 );
       }
-      return true;
     } else {
-      return false;
+      delete[] re;
+      re = NULL;
+      return re;
     }
+    return re;
   }
+
+  // bool operator()( const D &dbmManager, const C *const Din ) const {
+  //   C *d1 = dbmManager.newMatrix( Din );
+  //   for ( typename vector<CS>::iterator cit = cons.begin(); cit != cons.end();
+  //         cit++ ) {
+  //     dbmManager.andImpl( d1, *cit );
+  //   }
+  //   if ( dbmManager.isConsistent( d1 ) ) {
+  //     for ( vector<int>::iterator rit = reset.begin(); rit != reset.end();
+  //           rit++ ) {
+  //       assert( *rit > 0 ); // clock id start from 1
+  //       dbmManager.resetImpl( d1, *rit, 0 );
+  //     }
+  //     dbmManager.deleteVectorM( d1);
+  //     return true;
+  //   } else {
+  //     dbmManager.deleteVectorM( d1);
+  //     return false;
+  //   }
+  // }
 };
 } // namespace graphsat
 

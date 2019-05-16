@@ -37,7 +37,8 @@ public:
 
   C matrix_value;
 
-  ClockConstraint( const int i, const int j, const C r, bool isStrctRef = true ) {
+  ClockConstraint( const int i, const int j, const C r,
+                   bool isStrctRef = true ) {
     x            = i;
     y            = j;
     matrix_value = r * 2;
@@ -100,7 +101,8 @@ public:
     return true;
   }
 
-  friend std::ostream &operator<<( std::ostream &os, const ClockConstraint &cons ) {
+  friend std::ostream &operator<<( std::ostream &         os,
+                                   const ClockConstraint &cons ) {
     if ( cons.x >= 0 && cons.y >= 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
         os << "x_" << cons.x << " - "

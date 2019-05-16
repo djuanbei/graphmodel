@@ -45,7 +45,6 @@ private:
    */
   int                                n;
   int                                size; // n*n
-  int number_counter;
   C                                  MAX_INT;
   std::default_random_engine         generator;
   std::uniform_int_distribution<int> distribution;
@@ -89,8 +88,6 @@ public:
     n    = num + 1;
     size = n * n;
   }
-  
-
 
   C *newMatrix() const {
     C *D = new C[ size ]();
@@ -98,12 +95,6 @@ public:
     return D;
   }
 
-  pair<vector<int> , C*> newConfigure( ) const{
-    C *D=newMatrix( );
-    vector<int> temp(number_counter );
-    return make_pair (temp, D );
-  }
-  
   /**
    * Create a new matrix and initial the values with D
    *
@@ -116,14 +107,13 @@ public:
     memcpy( newD, D, sizeof( C ) * size );
     return newD;
   }
-  
 
   void deleteD( C *D ) const { delete[] D; }
 
-  void  init( C * D) const{
+  void init( C *D ) const {
     fill( D, D + size, LTEQ_ZERO ); // x-x<=0
   }
-  C *  randomMatirx() {
+  C *randomMatirx() {
 
     C *newD = new C[ size ]();
     for ( int i = 0; i < size; i++ ) {
@@ -141,9 +131,7 @@ public:
     return D2;
   }
 
-  int getSize( ) const{
-    return size;
-  }
+  int getSize() const { return size; }
 
   std::string dump( const C *const D ) const {
 
@@ -460,9 +448,10 @@ public:
     canonicalForm( D );
   }
 
-  C *corn_norm( C *D, const vector<C> &k, const vector<ClockConstraint<C> > &Gd ) const {
+  C *corn_norm( C *D, const vector<C> &k,
+                const vector<ClockConstraint<C>> &Gd ) const {
 
-    vector<ClockConstraint<C> > Gunsat;
+    vector<ClockConstraint<C>> Gunsat;
 
     for ( size_t i = 0; i < Gd.size(); i++ ) {
       /**
@@ -487,14 +476,15 @@ public:
     }
 
     norm( D, k );
-    for ( typename vector<ClockConstraint<C> >::iterator it = Gunsat.begin();
+    for ( typename vector<ClockConstraint<C>>::iterator it = Gunsat.begin();
           it != Gunsat.end(); it++ ) {
       andImpl( D, it->neg() );
     }
     return D;
   }
 
-  void split( C *D, const vector<ClockConstraint<C> > &Gd, vector<C *> &re ) const {
+  void split( C *D, const vector<ClockConstraint<C>> &Gd,
+              vector<C *> &re ) const {
 
     assert( re.empty() );
 
@@ -503,7 +493,7 @@ public:
     vector<C *> waitS;
     re.push_back( D );
 
-    for ( typename vector<ClockConstraint<C> >::const_iterator cit = Gd.begin();
+    for ( typename vector<ClockConstraint<C>>::const_iterator cit = Gd.begin();
           cit != Gd.end(); cit++ ) {
 
       vector<bool> addToWaitS( re.size(), false );
@@ -603,7 +593,7 @@ public:
    * @param G
    * @param re
    */
-  void norm( C *D, const vector<C> &k, const vector<ClockConstraint<C> > &Gd,
+  void norm( C *D, const vector<C> &k, const vector<ClockConstraint<C>> &Gd,
              vector<C *> &re ) const {
 
     assert( re.empty() );

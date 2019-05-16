@@ -77,8 +77,6 @@ const static string COMMENT_STR = "comment";
 
 class UppaalParser {
 
-
-
 public:
   UppaalParser() {}
 

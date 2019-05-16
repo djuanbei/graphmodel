@@ -11,14 +11,11 @@
 #define COUNTER_HPP
 namespace graphsat {
 class Counter {
- private:
-  int value; 
-  int lb, up; //lb<= value<= up
- public:
-  Counter( ){
-    value=lb=up=0;
-  }
- 
+private:
+  int value;
+  int lb, up; // lb<= value<= up
+public:
+  Counter() { value = lb = up = 0; }
 };
 } // namespace graphsat
 

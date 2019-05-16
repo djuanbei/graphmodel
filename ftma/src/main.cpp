@@ -135,12 +135,12 @@ void example3( void ) {}
 int main( int argc, const char *argv[] ) {
   //  State<int> s;
 
-  UppaalParser parser( argv[ 1 ] );
-  return 0;
+  //  UppaalParser parser( argv[ 1 ] );
+  //  return 0;
 
   example1();
   example2();
-
+  return 0;
   CS_t cons( 1, 2, 2, false );
 
   cout << "constrain: " << cons << endl;
