@@ -14,48 +14,48 @@
 namespace graphsat {
 using namespace std;
 
-template <typename Model> class ReachableSet {
+template <typename SYS> class ReachableSet {
 public:
-  typedef Model Model_t;
-
-  typedef typename Model_t::CS_t       CS_t;
-  typedef typename Model_t::D_t        D_t;
-  typedef typename Model_t::DManager_t DManager_t;
-  typedef typename Model_t::DSet_t     DSet_t;
 
 private:
-  StateSet<NIntState> reachSet;
-  StateSet<NIntState> waitSet;
+  StateSet<State_t> reachSet;
+  StateSet<State_t> waitSet;
 
-  const Model_t &ta;
-  DManager_t     dManager;
+  const SYS &ta;
+  StateManager_t     manager;
   template <typename R1> friend class Reachability;
-
-  bool isReachable( const vector<CS_t> &cons, const D_t dbm ) const {
+  int component_num;
+  
+  bool isReachable( const vector< vector <CS_t> > &cons, const State_t* dbm ) const {
     if ( cons.empty() ) {
       return true;
     }
-    D_t newdbm =dManager.newMatrix( dbm);
+    
+    State_t* newdbm = dbm->copy( );
+    for( int i=0; i< component_num; i++){
+      
+      for ( size_t j = 0; j < cons[i].size(); j++ ) {
+        manager.getClockManager(i ).andImpl( newdbm->value+manager.getClockStart( i), cons[ i ][ j] );
 
-    for ( size_t i = 0; i < cons.size(); i++ ) {
-      dManager.andImpl( newdbm, cons[ i ] );
-      if ( !dManager.isConsistent( newdbm ) ) {
-        dManager.deleteD( newdbm );
-        return false;
+        if ( !manager.getClockManager(i ).isConsistent( newdbm->value+manager.getClockStart( i) ) ) {
+          delete newdbm;
+          return false;
+        }
       }
     }
-    dManager.deleteD( newdbm );
+
+    delete newdbm;
     return true;
   }
 
 public:
-  ReachableSet( const Model_t &outta )
+  ReachableSet( const SYS &outta )
       : ta( outta ) {
 
-    dManager =ta.getStateManager( );
-
-    D_t D  = dManager.newMatrix( );
-    ta.initState(dManager, D);
+    manager =ta.getStateManager( );
+    component_num=ta.getComponentNum( );
+    State_t* D  = manager.newMatrix( );
+    ta.initState(manager, D);
     
     waitSet.add(D );
 
@@ -69,12 +69,12 @@ public:
     reachSet.clear();
   }
 
-  const Model_t &getTA( void ) const { return ta; }
+  const SYS &getTA( void ) const { return ta; }
 
   Check_State find( const vector<int> &loc, const vector< vector<CS_t> > &cons ) {
     
-    typename DSet_t::iterator end1 = reachSet.end();
-    for ( typename DSet_t::iterator it = reachSet.begin(); it != end1;
+    typename StateSet_t::iterator end1 = reachSet.end();
+    for ( typename StateSet_t::iterator it = reachSet.begin(); it != end1;
           ++it ) {
 
       if ( isReachable( cons, *it ) ) {
@@ -84,52 +84,63 @@ public:
     return UNKOWN;
   }
 
-  void update(  DSet_t &secondWaitSet ) {
+  void update(  StateSet_t &secondWaitSet ) {
 
 
     waitSet = secondWaitSet;
     secondWaitSet.clear( );
-    
 
   }
 
-  bool oneStep( const int loc, const vector<CS_t> &cons, const int target,
-                int link, set<int> &secondChanged,
-                
-                vector<DSet_t> &secondWaitSet ) {
+  bool oneStep( const vector<int> loc, const vector< vector<CS_t> > &cons, 
+                NIntState * state, 
+                StateSet_t &secondWaitSet ) {
+    
     int source = 0;
-    ta.findRhs( link, target, source );
 
-    DSet_t discreteTransNext;
-    if ( ta.transitions[ link ]( dManager, waitSet[ source ],
-                                 discreteTransNext ) ) {
+    DBMSet_t discreteTransNext;
+    
+    for( int i=0; i< component_num; i++) {
+      int source=state->value[ i];
+      int target=0;
+      int outDegree = ta.tas[i].graph.getOutDegree(source);
+      for( int j=0; j< outDegree; j++){
+        int link = ta.tas[i].graph.getAdj(source, j);
+        ta.tas[i].graph.findRhs(link, source, target);
+        
+        ta.tas[i].transitions[link]( manager.getClockManager( i),
+                                    state->value+manager.getClockStart( i), discreteTransNext );
+        
+        vector<C_t *> advanceNext;
 
-      vector<D_t> advanceNext;
+        if ( ta.tas[i].locations[ target ](manager.getClockManager( i), discreteTransNext,
+                                        advanceNext ) ) {
+          
 
-      if ( ta.locations[ target ]( dManager, discreteTransNext,
-                                   advanceNext ) ) {
+          for ( size_t h = 0; h < advanceNext.size(); h++ ) {
 
-        for ( size_t h = 0; h < advanceNext.size(); h++ ) {
+            // if ( reachSet.add( manager, advanceNext[ h ] ) ) {
+            //   secondWaitSet[ target ].add( manager, advanceNext[ h ] );
+            //   // if ( loc == target ) {
+            //   //   if ( isReachable( cons, advanceNext[ h ] ) ) {
+            //   //     secondChanged.insert( target );
+            //   //     update( secondChanged, secondWaitSet );
 
-          if ( reachSet[ target ].add( dManager, advanceNext[ h ] ) ) {
-            secondWaitSet[ target ].add( dManager, advanceNext[ h ] );
-            if ( loc == target ) {
-              if ( isReachable( cons, advanceNext[ h ] ) ) {
-                secondChanged.insert( target );
-                update( secondChanged, secondWaitSet );
-
-                return true;
-              }
-            }
+            //   //     return true;
+            //   //   }
+            //   // }
+            // }
           }
+
         }
-        secondChanged.insert( target );
+
       }
+
     }
     return false;
   }
 };
-
+typedef ReachableSet<TAS_t> R_t;
 } // namespace graphsat
 
 #endif

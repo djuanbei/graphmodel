@@ -32,40 +32,28 @@
 using namespace std;
 using namespace graphsat;
 
-typedef int C;
-
-typedef ClockConstraint<C>                              CS;
-typedef DBM<C>                                          DManager_t;
-typedef DBMset<C, DManager_t>                           DBMSet_t;
-typedef Location<NIntState, CS, DManager_t, DBMSet_t>           L;
-typedef Transition<NIntState, CS, DManager_t, DBMSet_t, Action> T;
-
-typedef TA<C, L, T>        TA_t;
-typedef TAS<C, L, T>        TAS_t;
-typedef ReachableSet<TAS_t> R_t;
-
 void example1( void ) {
   // x:1 y:2 z:3
-  vector<T> es;
-  vector<L> ls;
-  L         S0( 0 );
-  L         S1( 1 );
-  L         S2( 2 );
-  L         S3( 3 );
+  vector<T_t> es;
+  vector<L_t> ls;
+  L_t         S0( 0 );
+  L_t         S1( 1 );
+  L_t         S2( 2 );
+  L_t         S3( 3 );
 
-  T e01( 0, 1 );
+  T_t e01( 0, 1 );
   e01 += 3;
   // e01.reset.push_back( 3 ); // z -->0
-  T e12( 1, 2 );
+  T_t e12( 1, 2 );
 
-  CS cs1( 0, 2, -2, true ); // 0-y < -2
+  CS_t cs1( 0, 2, -2, true ); // 0-y < -2
   e12 += cs1;
   e12 += 2; // y --> 0
 
-  T e23( 2, 3 );
+  T_t e23( 2, 3 );
 
-  CS cs2( 1, 3, 1, true ); // x-z < 1
-  CS cs3( 3, 2, 1, true ); // z-y < 1
+  CS_t cs2( 1, 3, 1, true ); // x-z < 1
+  CS_t cs3( 3, 2, 1, true ); // z-y < 1
   e23 += cs2;
   // e23.cons.push_back( cs2 );
   e23 += cs3;
@@ -80,41 +68,41 @@ void example1( void ) {
   es.push_back( e12 );
   es.push_back( e23 );
   TA_t tma1( ls, es, 0, 3 );
-  tma1.initial( );
-  
+  tma1.initial();
+
   TAS_t sys;
-  sys+=tma1;
-  R_t  data( sys );
+  sys += tma1;
+  R_t data( sys );
 
   Reachability<R_t> reacher( data );
 
-  // vector< dbmset<C, DBM > > reachSet;
+  // vector< dbmset<C_t, DBM > > reachSet;
 
   reacher.computeAllReachableSet();
 }
 
 void example2( void ) {
-  vector<T> es;
-  vector<L> ls;
-  L         L0( 0 );
-  L         L1( 1 );
+  vector<T_t> es;
+  vector<L_t> ls;
+  L_t         L0( 0 );
+  L_t         L1( 1 );
 
-  T E00a( 0, 0 );
+  T_t E00a( 0, 0 );
 
-  E00a += 2;                // y-->0
-  CS cs1( 2, 0, 2, false ); // y<=2
+  E00a += 2;                  // y-->0
+  CS_t cs1( 2, 0, 2, false ); // y<=2
   E00a += cs1;
 
-  T E00b( 0, 0 );
+  T_t E00b( 0, 0 );
 
-  E00b += 1;                // x-->0
-  CS cs2( 1, 0, 2, false ); // x<=2
+  E00b += 1;                  // x-->0
+  CS_t cs2( 1, 0, 2, false ); // x<=2
   E00b += cs2;
 
-  T E01( 0, 1 );
+  T_t E01( 0, 1 );
 
-  CS cs3( 2, 0, 2, false );  // y<=2
-  CS cs4( 0, 1, -4, false ); // x>=4
+  CS_t cs3( 2, 0, 2, false );  // y<=2
+  CS_t cs4( 0, 1, -4, false ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -129,11 +117,12 @@ void example2( void ) {
   TA_t tma1( ls, es, 0, 2 );
   tma1.initial();
   TAS_t sys;
-  sys+=tma1;
+  sys += tma1;
   R_t               data( sys );
   Reachability<R_t> reacher( data );
-
-  if ( reacher.reachable( 1 ) ) {
+  vector<int>       loc;
+  loc.push_back( 1 );
+  if ( reacher.reachable( loc ) ) {
 
     cout << "right" << endl;
   } else {
@@ -152,14 +141,14 @@ int main( int argc, const char *argv[] ) {
   example1();
   example2();
 
-  ClockConstraint<C> cons( 1, 2, 2, false );
+  CS_t cons( 1, 2, 2, false );
 
   cout << "constrain: " << cons << endl;
 
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
-  DManager_t exampleDBM( 4 );
-  C *        D = exampleDBM.randomMatirx();
+  DBMManager_t exampleDBM( 4 );
+  C_t *        D = exampleDBM.randomMatirx();
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
 
   cout << "========================" << endl;
@@ -171,25 +160,25 @@ int main( int argc, const char *argv[] ) {
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
   std::cout << "Hello, World!\n";
 
-  C *D1 = exampleDBM.newMatrix();
+  C_t *D1 = exampleDBM.newMatrix();
   cout << "matrix dump :\n" << exampleDBM.dump( D1 ) << endl;
-  C *D2 = exampleDBM.reset( D1, 1, (C) 10 );
+  C_t *D2 = exampleDBM.reset( D1, 1, (C_t) 10 );
   cout << "matrix dump :\n" << exampleDBM.dump( D2 ) << endl;
 
   // cout<<"constrain: "<<cons<<endl;
 
-  // //C*  D3=exampleDBM.And( D2, cons.neg( ));
-  C *D3 = exampleDBM.reset( D2, 2, (C) 10 );
+  // //C_t*  D3=exampleDBM.And( D2, cons.neg( ));
+  C_t *D3 = exampleDBM.reset( D2, 2, (C_t) 10 );
 
   cout << "matrix dump :\n" << exampleDBM.dump( D3 ) << endl;
   /*
-      vector<L> locs;
+      vector<L_t> locs;
 
-      vector<T> es;
+      vector<T_t> es;
 
-      tma<L, T> tma1( locs, es, 0, 3 );
+      tma<L_t, T_t> tma1( locs, es, 0, 3 );
 
-      reach<C, L, T> RETMA( tma1 );
+      reach<C_t, L_t, T_t> RETMA( tma1 );
   */
   return 0;
 }

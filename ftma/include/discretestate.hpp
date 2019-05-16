@@ -116,7 +116,10 @@ class StateSet{
     recoveryValues.clear( );
     mapValues.clear( );
   }
-  
+
+  bool empty( ) const{
+    return mapValues.empty( ) &&  recoveryValues.empty( );
+  }
   int getID( void) const{
     return stateId;
   }
@@ -218,7 +221,7 @@ class StateSet{
   class iterator {
 
   protected:
-    const StateSet<T> *data;
+    StateSet<T> *data;
     size_t                index;
 
   public:
@@ -269,12 +272,12 @@ class StateSet{
   iterator end() {
 
     return iterator( this, mapValues.size() + recoveryValues.size() );
-    /**/
+   
   }
 
   const_iterator end() const {
     return const_iterator( this, mapValues.size() + recoveryValues.size() );
-    /**/
+   
   }
 };
 
@@ -679,13 +682,15 @@ class NIntState: public StateElem{
   }
  public:
   int n;
+  int start=0;
   int * value;
-  NIntState( ):n( 0), value( NULL){
+  NIntState( ):n( 0),start( 0), value( NULL){
     
   }
-  NIntState( int s){
+  NIntState( int s, int ss=0){
     assert( s>0);
     n=s;
+    start=ss;
     value=new int[ n];
     fill( value, value+n, 0);
   }
@@ -696,6 +701,12 @@ class NIntState: public StateElem{
     value=NULL;
   }
 
+  NIntState* copy( )const{
+    NIntState *re=new NIntState( n, start);
+    memcpy(re->value, value, n*sizeof( int) );
+    return re;
+  }
+  
   int  digitalFeature( ) const{
     int re=0;
     for( int i=0; i<n; i++){
@@ -705,18 +716,30 @@ class NIntState: public StateElem{
   }
 
   bool isContained ( const StateElem *other ) const{
+
     const NIntState* rhs=( const NIntState*) other;
-    for( int i=0; i< n; i++){
+
+    if( 0!=memcpy(value, rhs->value, start*sizeof( int))){
+      return false;
+    }
+    for( int i=start; i< n; i++){
       if(value[i]>rhs->value[ i]){
         return false;
       }
     }
     return true;
   }
+
+
   
   bool equal ( const StateElem *other ) const{
+
     const NIntState* rhs=( const NIntState*) other;
-    for( int i=0; i< n; i++){
+
+    if( 0!=memcpy(value, rhs->value, start*sizeof( int))){
+      return false;
+    }
+    for( int i=start; i< n; i++){
       if( value[ i]!= rhs->value[ i]){
         return false;
       }

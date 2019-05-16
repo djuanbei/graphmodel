@@ -20,7 +20,7 @@ enum Location_Type{
   URGENT_LOC, COMMIT_LOC
 };
 
-template <typename C_t, typename CS_t, typename DManager_t, typename DSet_t>
+template <typename C_t, typename CS_t, typename DManager_t, typename DBMSet_t>
 class Location {
 public:
 private:
@@ -45,7 +45,6 @@ public:
 
   /**
    *
-   *
    * @param reachDBMS  the DManager_t set of start value in this Location
    * @param dbmManager
    * @param advanceNext return DManager_t set of possible value stay in this Location
@@ -54,17 +53,17 @@ public:
    *         false otherwise.
    */
 
-  bool operator()( const DManager_t &dbmManager, DSet_t &reachDBMS,
+  bool operator()( const DManager_t &dbmManager, const DBMSet_t &reachDBMS,
                    vector<C_t *> &reNormVecDBM ) const {
     
     assert( reNormVecDBM.empty() );
     
-    DSet_t                    advanceNext;
+    DBMSet_t                    advanceNext;
     
-    typename DSet_t::iterator end1 = reachDBMS.end();
-    for ( typename DSet_t::iterator it = reachDBMS.begin(); it != end1; ++it ) {
+    typename DBMSet_t::const_iterator end1 = reachDBMS.end();
+    for ( typename DBMSet_t::const_iterator it = reachDBMS.begin(); it != end1; ++it ) {
 
-      C_t *D = *it;
+      C_t *D = dbmManager.newMatrix(*it);
       /**
        * D reach Location first check D satisfies all the invariants in
        * this Location
@@ -97,18 +96,78 @@ public:
         }
         
         advanceNext.add( dbmManager, D );
-      } else {
-        delete[] D;
       }
     }
-    reachDBMS.clear();
+
 
     if ( 0 == advanceNext.size() ) {
       return false;
     }
 
-    typename DSet_t::iterator end2 = advanceNext.end();
-    for ( typename DSet_t::iterator it = advanceNext.begin(); it != end2;
+    typename DBMSet_t::iterator end2 = advanceNext.end();
+    for ( typename DBMSet_t::iterator it = advanceNext.begin(); it != end2;
+          ++it ) {
+
+      vector<C_t *> normVecDBM;
+      dbmManager.norm( locationID, *it, normVecDBM );
+
+      reNormVecDBM.insert( reNormVecDBM.end(), normVecDBM.begin(),
+                           normVecDBM.end() );
+    }
+
+    return reNormVecDBM.size() > 0;
+  }
+
+  bool operator( )( const DManager_t &dbmManager, C_t *D, vector<C_t *> &reNormVecDBM ) const {
+    
+    assert( reNormVecDBM.empty() );
+    
+    DBMSet_t                    advanceNext;
+    
+
+    /**
+     * D reach Location first check D satisfies all the invariants in
+     * this Location
+     *
+     */
+
+    for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
+          cit != invariants.end(); cit++ ) {
+      dbmManager.andImpl( D, *cit );
+    }
+      
+    if ( dbmManager.isConsistent( D ) ) {
+      /**
+       * Urgent and commit locations freeze time; i.e. time is not allowed to pass when a process is in an urgent location.
+       * 
+       */
+
+      if(type!=URGENT_LOC || type!= COMMIT_LOC ){
+        dbmManager.upImpl( D );
+        /**
+         * After D satisfies the invarient then do operator up on D,
+         * then left the area which satisfies all invariants
+         *
+         */
+        for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
+              cit != invariants.end(); cit++ ) {
+          dbmManager.andImpl( D, *cit );
+        }
+        assert(dbmManager.isConsistent( D ) );
+      }
+        
+      advanceNext.add( dbmManager, D );
+    } else {
+      delete[] D;
+    }
+  
+
+    if ( 0 == advanceNext.size() ) {
+      return false;
+    }
+
+    typename DBMSet_t::iterator end2 = advanceNext.end();
+    for ( typename DBMSet_t::iterator it = advanceNext.begin(); it != end2;
           ++it ) {
 
       vector<C_t *> normVecDBM;
@@ -166,7 +225,7 @@ public:
    *
    * @return
    */
-  Location<C_t, CS_t, DManager_t, DSet_t> &operator+=( CS_t &cs ) {
+  Location<C_t, CS_t, DManager_t, DBMSet_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );
     return *this;
   }

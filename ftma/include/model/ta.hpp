@@ -14,7 +14,9 @@
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
 #include "channel.h"
-
+#include "action.hpp"
+#include "transition.hpp"
+#include "location.hpp"
 #include "discretestate.hpp"
 
 #include <vector>
@@ -23,6 +25,19 @@ namespace graphsat {
 
 using namespace std;
 using namespace raptor;
+
+
+
+typedef int C_t;
+typedef C_t*   DBM_t;
+typedef DBM<C_t>                                          DBMManager_t;
+typedef DBMset<C_t> DBMSet_t;
+typedef NIntState  State_t;
+typedef StateSet<NIntState> StateSet_t;
+typedef ClockConstraint<C_t>                              CS_t;
+
+typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>           L_t;
+typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t, Action> T_t;
 
 /** 
  * 
@@ -34,15 +49,11 @@ template <typename C, typename L, typename T> class TA {
 
 public:
 
-  //typedef C* D_t;
-
-  //typedef DBM<C>          DManager_t;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
 
 private:
-  typedef ClockConstraint<C>         CS_t;
   
   vector<L> locations;
   vector<T> transitions;
@@ -81,8 +92,6 @@ public:
 
   int getLocationNum() const { return (int) locations.size(); }
   int getTransitionNum() const { return (int) transitions.size(); }
-
-
 
   
   void initial() {
@@ -153,8 +162,12 @@ public:
   void setInitialLoc( int loc ) { initial_loc = loc; }
   int  getInitialLoc() const { return initial_loc; }
 
-  bool upInLocation( int i, const DBM<C> &manager, C* D  ) const{
-    return locations[ i](manager, D);
+  bool locationRun( int i, const DBM<C> &manager, C* D  ) const{
+    return locations[i](manager, D);
+  }
+  
+  bool transitionRun(int link, const DBM<C> &manager, C* D  ) const{
+    return transitions[ link]( manager, D);
   }
   
 
@@ -183,22 +196,15 @@ public:
   }
 };
 
+typedef TA<C_t, L_t, T_t>         TA_t;
 
-
-template <typename C, typename L, typename T> class TAS {
-public:
-  
-
-  typedef NIntState* D_t;
-  typedef ClockConstraint<C>         CS_t;
-
-  /** 
- * state is [channel_state, counter_state, clock_state]
- * 
- */
-  
+template<typename C>
 struct  StateManager{
-
+  /** 
+   * state is [channel_state, counter_state, clock_state]
+   * 
+   */
+  
   int compoment_num;
   int stateLen;
 
@@ -233,17 +239,16 @@ struct  StateManager{
 
   }
 
-  D_t newMatrix( ) const{
+  NIntState* newMatrix( ) const{
     
     NIntState *re= new NIntState( stateLen);
-
-
     for(int i=0; i<compoment_num; i++ ){
       clock_manager[ i].init( re->value+clock_start_loc[ i]);
     }
 
     return re;
   }
+  
   
   inline const DBM<C>&  getClockManager( int i) const{
     return clock_manager[ i];
@@ -254,13 +259,18 @@ struct  StateManager{
   }
   
 };
-  
-  typedef StateManager          DManager_t;
-  typedef DBMset<C, DManager_t> DSet_t;
 
-  template <typename R1> friend class Reachability;
-  template <typename R2> friend class ReachableSet;
-  typedef TA<C,L,T> TA_t;
+
+template <typename C, typename L, typename T> class TAS {
+public:
+
+
+
+
+
+  
+template <typename R1> friend class Reachability;
+template <typename R2> friend class ReachableSet;
 private:
   /**
    * multi-components
@@ -285,6 +295,9 @@ private:
     
     return *this;
   }
+  int getComponentNum( ) const{
+    return tas.size( );
+  }
   TAS<C,L,T> & operator+=( Channel &ch){
     channels.push_back( ch);
     return *this;
@@ -295,21 +308,28 @@ private:
     return *this;
   }
 
-  StateManager getStateManager( )const{
+  StateManager<C> getStateManager( )const{
     
-    StateManager re(tas.size( ),  counters.size( ), clock_num, clockUppuerBound, differenceCons );
+    StateManager<C> re(tas.size( ),  counters.size( ), clock_num, clockUppuerBound, differenceCons );
     
     return re;
   }
-  void initState(const StateManager & manager, NIntState *value ) const{
+  void initState(const StateManager<C> & manager, NIntState *value ) const{
 
     for( size_t i=0; i< tas.size( ); i++){
-      tas[i].upInLocation( initial_loc[ i], manager.getClockManager(i), value->value+manager.getClockStart( i) );
+      tas[i].locationRun( initial_loc[ i], manager.getClockManager(i), value->value+manager.getClockStart( i) );
       value->value[ i]=initial_loc[ i];
     }
   }
 
 };
+
+
+typedef StateManager<C_t>          StateManager_t;
+
+typedef TAS<C_t, L_t, T_t>        TAS_t;
+
+
 } // namespace graphsat
 
 #endif

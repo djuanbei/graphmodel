@@ -155,6 +155,31 @@ public:
     return nextDBMs.size() > 0;
   }
 
+
+  bool operator()( const D &dbmManager, const C *sourceDBM,
+                   DSet &nextDBMs ) const {
+
+    nextDBMs.deleteAll();
+
+    C *d1 = dbmManager.newMatrix( sourceDBM );
+    for ( typename vector<CS>::const_iterator cit = cons.begin();
+          cit != cons.end(); cit++ ) {
+      dbmManager.andImpl( d1, *cit );
+    }
+    if ( dbmManager.isConsistent( d1 ) ) {
+      for ( vector<int>::const_iterator rit = reset.begin();
+            rit != reset.end(); rit++ ) {
+        assert( *rit > 0 ); // clock id start from 1
+        dbmManager.resetImpl( d1, *rit, 0 );
+      }
+      nextDBMs.add( dbmManager, d1 );
+    } else {
+      delete[] d1;
+    }
+
+    return nextDBMs.size() > 0;
+  }
+
   bool operator()( const D &dbmManager, const C *const Din ) const {
     C *d1 = dbmManager.newMatrix( Din );
     for ( typename vector<CS>::iterator cit = cons.begin(); cit != cons.end();

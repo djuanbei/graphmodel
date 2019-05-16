@@ -15,9 +15,11 @@
 
 #include "util/dbmutil.hpp"
 
+#include "domain/dbm.hpp"
+
 namespace graphsat {
 using namespace std;
-template <typename C, typename DBM> class DBMset {
+template <typename C> class DBMset {
 private:
   map<uint32_t, int> passedD;
   vector<C *>        mapD;
@@ -41,16 +43,16 @@ private:
 public:
   class const_iterator {
   protected:
-    const DBMset<C, DBM> *data;
+    const DBMset<C > *data;
     size_t                index;
 
   public:
-    const_iterator( const DBMset<C, DBM> *odata )
+    const_iterator( const DBMset<C > *odata )
         : data( odata ) {
       index = 0;
     }
 
-    const_iterator( const DBMset<C, DBM> *odata, size_t oindex )
+    const_iterator( const DBMset<C > *odata, size_t oindex )
         : data( odata ) {
       index = oindex;
     }
@@ -88,16 +90,16 @@ public:
   class iterator {
 
   protected:
-    const DBMset<C, DBM> *data;
+    const DBMset<C > *data;
     size_t                index;
 
   public:
-    iterator( DBMset<C, DBM> *odata )
+    iterator( DBMset<C > *odata )
         : data( odata ) {
       index = 0;
     }
 
-    iterator( DBMset<C, DBM> *odata, size_t oindex )
+    iterator( DBMset<C > *odata, size_t oindex )
         : data( odata ) {
       index = oindex;
     }
@@ -154,7 +156,7 @@ public:
    * @return true if real insert DBM into set
    * false otherwise.
    */
-  bool add( const DBM &dbmManager, C *DM ) {
+  bool add( const DBM<C> &dbmManager, C *DM ) {
     uint32_t hashValue = dbmManager.getHashValue( DM );
     typename std::pair<typename std::map<uint32_t, int>::iterator, bool> ret;
     ret = passedD.insert( std::pair<uint32_t, int>( hashValue, mapD.size() ) );
@@ -194,7 +196,7 @@ public:
     return true;
   }
 
-  bool isInclude( const DBM &dbmManager, C *DM, DF_T &featrue ) const {
+  bool isInclude( const DBM<C> &dbmManager, C *DM, DF_T &featrue ) const {
 
     for ( size_t i = 0; i < mapD.size(); i++ ) {
       if ( ( mapDFeature[ i ] >= featrue ) &&
@@ -238,7 +240,7 @@ public:
     clear();
   }
 
-  void And( const DBM &dbmManager, DBMset<C, DBM> &other ) {
+  void And( const DBM<C> &dbmManager, DBMset<C > &other ) {
 
     for ( typename vector<C *>::iterator it = other.mapD.begin();
           it != other.mapD.end(); it++ ) {

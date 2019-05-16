@@ -75,19 +75,11 @@ const static string FORMULA_STR = "formula";
 
 const static string COMMENT_STR = "comment";
 
-
-
 class UppaalParser {
 
-  typedef int C;
 
-  typedef ClockConstraint<C>                              CS;
-  typedef DBM<C>                                          DManager_t;
-  typedef DBMset<C, DManager_t>                           DBMSet_t;
-  typedef Location<C, CS, DManager_t, DBMSet_t>           L;
-  typedef Transition<C, CS, DManager_t, DBMSet_t, Action> T;
-  typedef TA<C, L, T>                                     TA_t;
- public:
+
+public:
   UppaalParser() {}
 
   UppaalParser( const string &xmlfile );
@@ -103,11 +95,11 @@ private:
 
   int parserQuery( child_type queries );
 
-  vector<L> parserLocation( child_type locations );
+  vector<L_t> parserLocation( child_type locations );
 
-  vector<T> parserTransition( child_type transitions );
+  vector<T_t> parserTransition( child_type transitions );
 
-  vector<CS> parserConstraints( string guards );
+  vector<CS_t> parserConstraints( string guards );
 };
 
 } // namespace graphsat

@@ -55,13 +55,13 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type locations = ( *it )->getChild( LOCATION_STR );
 
-    vector<L> ls = parserLocation( locations );
+    vector<L_t> ls = parserLocation( locations );
 
     int locationID = 0;
 
     child_type transitions = ( *it )->getChild( TRANSITION_STR );
 
-    vector<T> es = parserTransition( transitions );
+    vector<T_t> es = parserTransition( transitions );
   }
 
   return 0;
@@ -71,8 +71,8 @@ int UppaalParser::parserSystem( child_type system ) { return 0; }
 
 int UppaalParser::parserQuery( child_type queries ) { return 0; }
 
-vector<L> UppaalParser::parserLocation( child_type locations ) {
-  vector<L> ls;
+vector<L_t> UppaalParser::parserLocation( child_type locations ) {
+  vector<L_t> ls;
 
   for ( child_iterator lit = locations->begin(); lit != locations->end();
         lit++ ) {
@@ -82,7 +82,7 @@ vector<L> UppaalParser::parserLocation( child_type locations ) {
     assert( idstr != "" );
     int locationID       = locationMAP.size();
     locationMAP[ idstr ] = locationID;
-    L temp( locationID );
+    L_t temp( locationID );
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -106,8 +106,8 @@ vector<L> UppaalParser::parserLocation( child_type locations ) {
   return ls;
 }
 
-vector<T> UppaalParser::parserTransition( child_type transitions ) {
-  vector<T> es;
+vector<T_t> UppaalParser::parserTransition( child_type transitions ) {
+  vector<T_t> es;
   for ( child_iterator tit = transitions->begin(); tit != transitions->end();
         tit++ ) {
     cout << "transition" << endl;
@@ -120,7 +120,7 @@ vector<T> UppaalParser::parserTransition( child_type transitions ) {
     int sourceId = locationMAP[ sourceRef ];
     int targetId = locationMAP[ targetRef ];
 
-    T temp( sourceId, targetId );
+    T_t temp( sourceId, targetId );
 
     child_type labels = ( *tit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -145,10 +145,10 @@ vector<T> UppaalParser::parserTransition( child_type transitions ) {
   return es;
 }
 
-vector<CS> UppaalParser::parserConstraints( string guards ) {
+vector<CS_t> UppaalParser::parserConstraints( string guards ) {
   string         delimeter = "&&";
   vector<string> guardvec  = splitStr( guards, delimeter );
-  vector<CS>     re;
+  vector<CS_t>     re;
 
   return re;
 }
