@@ -10,6 +10,7 @@
 #ifndef __REACH_SET_HPP
 #define __REACH_SET_HPP
 #include <vector>
+#include <random>
 
 namespace graphsat {
 using namespace std;
@@ -74,28 +75,34 @@ public:
       int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
       for ( int j = 0; j < outDegree; j++ ) {
         int link = sys.tas[ comp ].graph.getAdj( source, j );
+        if(!sys.tas[ component ].transitions[ link ].isOK( component, manager, state ) ){
+          continue;
+        }
 
         const Channel &ch=sys.tas[ comp ].transitions[ link ].getChannel( );
         if( ch.id>-1){
-          int waitComp=-1;
+          vector<int> waitComp;
           if(CHANNEL_SEND==ch.action ){
             waitComp=manager.blockComponent(-ch.id, state);
           }else if(CHANNEL_RECEIVE==ch.action ){
             waitComp=manager.blockComponent(ch.id, state);
           }
-          if(waitComp>-1 ){
-            State_t *temp=state->copy( );
-            temp->value[ waitComp+component_num ]=0;
-            int blockLink=temp->value[ waitComp];
-            int blockSource=0;
-            sys.tas[ waitComp ].graph.findSrc( blockLink,  blockSource );
-            temp->value[ waitComp]=blockSource;
-            if(oneTranision(waitComp, blockLink, loc, cons, temp, secondWaitSet )){
-              return true;
-            }
-
-            if(oneTranision(comp, link, loc, cons, temp, secondWaitSet )){
-              return true;
+          if(!waitComp.empty( )){
+            if( ch.type=ONE2ONE){
+              std::uniform_int_distribution<int> distribution(0,waitComp.size( )-1);
+              int id=distribution( generator);
+              int cid=waitComp[ id];
+            
+              if(relaxeOne( cid, link, state, loc, cons, secondWaitSet )){
+                return true;
+              }
+            }else if( ch.type==ONE2ALL){
+              for( auto id : waitComp){
+                int cid=waitComp[ id];
+                if(relaxeOne( cid, link, state, loc, cons, secondWaitSet )){
+                  return true;
+                }
+              }
             }
               
           }else{
@@ -130,6 +137,7 @@ private:
   StateManager_t manager;
   template <typename R1> friend class Reachability;
   int component_num;
+  std::default_random_engine generator;
 
   bool isReachable( const vector<vector<CS_t>> &cons,
                     const State_t *             state ) const {
@@ -186,6 +194,24 @@ private:
          
     }    
     return false; 
+  }
+
+  bool relaxeOne(const int cid, const int link, const State_t * const state,
+                 const vector<int> loc, const vector<vector<CS_t>> &cons,  StateSet_t &secondWaitSet) {
+    State_t *temp=state->copy( );
+    temp->value[cid+component_num ]=0;
+    int blockLink=temp->value[cid];
+    int blockSource=0;
+    sys.tas[ cid ].graph.findSrc( blockLink,  blockSource );
+    temp->value[ cid]=blockSource;
+    if(oneTranision(cid, blockLink, loc, cons, temp, secondWaitSet )){
+      return true;
+    }
+
+    if(oneTranision(cid, link, loc, cons, temp, secondWaitSet )){
+      return true;
+    }
+    return false;
   }
 };
 typedef ReachableSet<TAS_t> R_t;

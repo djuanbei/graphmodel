@@ -250,17 +250,20 @@ template <typename C> struct StateManager {
     return getClockManager( id ).isConsistent( getkDBM( id, state ) );
   }
 
-  inline int blockComponent( const int chid, const State_t * const state) const{
+  inline vector<int> blockComponent( const int chid, const State_t * const state) const{
+    vector<int> temp;
     for( int i=0; i< component_num ; i++){
       /**
        * return first componment which waits for this signal chid
        * 
        */
       if(state->value[ i+component_num] ==chid ){
-        return  i;
+        temp.push_back( i);
+        //  return  i;
       }
     }
-    return -1;
+    return temp;
+    //  return -1;
   }
 
 
