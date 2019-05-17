@@ -53,6 +53,7 @@ template <typename C> C getMatrixValue( C realRight, bool isStrct = true ) {
   }
   return right;
 }
+template <typename C> bool isStrict( const C c ) { return ( c & 1 ) == 0; }
 
 template <typename C> std::string getComp( const C x ) {
   if ( x & 1 ) {
@@ -62,9 +63,13 @@ template <typename C> std::string getComp( const C x ) {
   }
 }
 
-template <typename C> bool isStrict( const C c ) { return ( c & 1 ) == 0; }
-
 template <typename C> C getRight( const C c ) { return c >> 1; }
+
+template <typename C> C negMatrixValue( C matrix_value ) {
+  bool strict = isStrict( matrix_value );
+
+  return getMatrixValue( -getRight( matrix_value ), strict );
+}
 
 template <class T> inline bool CAS( T *ptr, T oldv, T newv ) {
   if ( sizeof( T ) == 1 ) {

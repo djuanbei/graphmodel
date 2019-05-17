@@ -122,8 +122,6 @@ public:
 
     assert( reNormVecDBM.empty() );
 
-    DBMSet_t advanceNext;
-
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -156,27 +154,27 @@ public:
         assert( dbmManager.isConsistent( D ) );
       }
 
-      advanceNext.add( dbmManager, D );
     } else {
-      delete[] D;
-    }
-
-    if ( 0 == advanceNext.size() ) {
+      dbmManager.deleteD( D );
       return false;
     }
 
-    typename DBMSet_t::iterator end2 = advanceNext.end();
-    for ( typename DBMSet_t::iterator it = advanceNext.begin(); it != end2;
-          ++it ) {
+    reNormVecDBM.push_back( D );
+    return true;
 
-      vector<C_t *> normVecDBM;
-      dbmManager.norm( locationID, *it, normVecDBM );
+    // typename DBMSet_t::iterator end2 = advanceNext.end();
+    // for ( typename DBMSet_t::iterator it = advanceNext.begin(); it != end2;
+    //       ++it ) {
+    //   reNormVecDBM.push_back(*it );
+    //   //TODO
+    //   vector<C_t *> normVecDBM;
+    //   dbmManager.norm( locationID, *it, normVecDBM );
 
-      reNormVecDBM.insert( reNormVecDBM.end(), normVecDBM.begin(),
-                           normVecDBM.end() );
-    }
+    //   reNormVecDBM.insert( reNormVecDBM.end(), normVecDBM.begin(),
+    //                        normVecDBM.end() );
+    // }
 
-    return reNormVecDBM.size() > 0;
+    // return reNormVecDBM.size() > 0;
   }
 
   /**

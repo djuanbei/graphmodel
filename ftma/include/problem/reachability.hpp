@@ -60,7 +60,6 @@ public:
    * @return
    */
   bool run( const vector<int> &loc, const vector<vector<CS_t>> &cons ) {
-    // assert( loc.size( )==component_num && cons.size( )== component_num);
 
     Check_State re = data.find( loc, cons );
 
@@ -89,7 +88,7 @@ public:
 
       for ( typename StateSet_t::iterator it = data.waitSet.begin();
             !find && ( it != end1 ); ++it ) {
-        
+
         if ( data.oneStep( loc, cons, *it, secondWaitSet ) ) {
           find = true;
         }

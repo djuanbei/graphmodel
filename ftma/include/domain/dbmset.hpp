@@ -43,16 +43,16 @@ private:
 public:
   class const_iterator {
   protected:
-    const DBMset<C > *data;
-    size_t                index;
+    const DBMset<C> *data;
+    size_t           index;
 
   public:
-    const_iterator( const DBMset<C > *odata )
+    const_iterator( const DBMset<C> *odata )
         : data( odata ) {
       index = 0;
     }
 
-    const_iterator( const DBMset<C > *odata, size_t oindex )
+    const_iterator( const DBMset<C> *odata, size_t oindex )
         : data( odata ) {
       index = oindex;
     }
@@ -90,16 +90,16 @@ public:
   class iterator {
 
   protected:
-    const DBMset<C > *data;
-    size_t                index;
+    const DBMset<C> *data;
+    size_t           index;
 
   public:
-    iterator( DBMset<C > *odata )
+    iterator( DBMset<C> *odata )
         : data( odata ) {
       index = 0;
     }
 
-    iterator( DBMset<C > *odata, size_t oindex )
+    iterator( DBMset<C> *odata, size_t oindex )
         : data( odata ) {
       index = oindex;
     }
@@ -240,7 +240,7 @@ public:
     clear();
   }
 
-  void And( const DBM<C> &dbmManager, DBMset<C > &other ) {
+  void And( const DBM<C> &dbmManager, DBMset<C> &other ) {
 
     for ( typename vector<C *>::iterator it = other.mapD.begin();
           it != other.mapD.end(); it++ ) {

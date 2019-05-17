@@ -24,7 +24,7 @@ private:
   typedef Transition<C, CS, D, DSet, A> Transition_t;
   int source, target; // source location and target location of this
                       // transitionedge. The index of location in tma.locations
-  vector<CS> cons;    // set of constraint at this transitionedge
+  vector<CS> guards;  // set of constraint at this transitionedge
 
   vector<CounterConstraint>
                   counterCons; // counter constraint like pid ==id or id==0
@@ -48,6 +48,8 @@ public:
 
   int getTarget() const { return target; }
 
+  const vector<CS> &getGuards() const { return guards; }
+
   /**
    * add constraint to Transition
    *
@@ -58,7 +60,7 @@ public:
    */
 
   friend Transition_t &operator+( Transition_t &lhs, CS &cs ) {
-    lhs.cons.push_back( cs );
+    lhs.guards.push_back( cs );
     return lhs;
   }
 
@@ -70,7 +72,7 @@ public:
    * @return
    */
   Transition_t &operator+=( CS &cs ) {
-    cons.push_back( cs );
+    guards.push_back( cs );
     return *this;
   }
 
@@ -109,8 +111,8 @@ public:
     return *this;
   }
 
-  Transition_t &operator+=( CounterConstraint &cons ) {
-    counterCons.push_back( cons );
+  Transition_t &operator+=( CounterConstraint &guards ) {
+    counterCons.push_back( guards );
   }
 
   /**
@@ -133,8 +135,8 @@ public:
     for ( typename DSet::const_iterator it = sourceDBMs.begin(); it != end1;
           ++it ) {
       C *d1 = dbmManager.newMatrix( *it );
-      for ( typename vector<CS>::const_iterator cit = cons.begin();
-            cit != cons.end(); cit++ ) {
+      for ( typename vector<CS>::const_iterator cit = guards.begin();
+            cit != guards.end(); cit++ ) {
         dbmManager.andImpl( d1, *cit );
       }
       if ( dbmManager.isConsistent( d1 ) ) {
@@ -151,10 +153,10 @@ public:
     return nextDBMs.size() > 0;
   }
 
-  C* operator()( const D &dbmManager, const C * const sourceDBM ) const {
+  C *operator()( const D &dbmManager, const C *const sourceDBM ) const {
     C *re = dbmManager.newMatrix( sourceDBM );
-    for ( typename vector<CS>::const_iterator cit = cons.begin();
-          cit != cons.end(); cit++ ) {
+    for ( typename vector<CS>::const_iterator cit = guards.begin();
+          cit != guards.end(); cit++ ) {
       dbmManager.andImpl( re, *cit );
     }
     if ( dbmManager.isConsistent( re ) ) {
@@ -173,7 +175,8 @@ public:
 
   // bool operator()( const D &dbmManager, const C *const Din ) const {
   //   C *d1 = dbmManager.newMatrix( Din );
-  //   for ( typename vector<CS>::iterator cit = cons.begin(); cit != cons.end();
+  //   for ( typename vector<CS>::iterator cit = guards.begin(); cit !=
+  //   guards.end();
   //         cit++ ) {
   //     dbmManager.andImpl( d1, *cit );
   //   }

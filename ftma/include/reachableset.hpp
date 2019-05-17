@@ -110,10 +110,10 @@ public:
       for ( int j = 0; j < outDegree; j++ ) {
         int link = sys.tas[ i ].graph.getAdj( source, j );
         sys.tas[ i ].graph.findRhs( link, source, target );
-        DBM_t discreteTransNext = sys.tas[ i ].transitions[ link ]( manager.getClockManager( i ),
-                                               manager.getkDBM( i, state ));
-        
-        if (discreteTransNext!=NULL  ) {
+        DBM_t discreteTransNext = sys.tas[ i ].transitions[ link ](
+            manager.getClockManager( i ), manager.getkDBM( i, state ) );
+
+        if ( discreteTransNext != NULL ) {
 
           vector<C_t *> advanceNext;
 
@@ -122,11 +122,12 @@ public:
                                                  advanceNext ) ) {
 
             for ( size_t h = 0; h < advanceNext.size(); h++ ) {
-              
-              State_t *temp=manager.add( i, target, reachSet, advanceNext[ h ], state);
-              
-              if (temp!=NULL  ) {
-               
+
+              State_t *temp =
+                  manager.add( i, target, reachSet, advanceNext[ h ], state );
+
+              if ( temp != NULL ) {
+
                 secondWaitSet.add( temp );
                 if ( 0 == memcmp( &loc[ 0 ], temp->value,
                                   component_num * sizeof( int ) ) ) {

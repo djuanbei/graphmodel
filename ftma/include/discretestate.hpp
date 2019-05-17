@@ -70,41 +70,36 @@ public:
 template <typename T> class StateSet {
 private:
   int           stateId;
-  map<int, int>  passedD;
-  vector<T*> mapD;
+  map<int, int> passedD;
+  vector<T *>   mapD;
   vector<T *>   recoveryD;
 
-  
   T *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
 
-  void mapDAdd( T *D, int hashValue ) {
-    mapD.push_back( D );
-  }
+  void mapDAdd( T *D, int hashValue ) { mapD.push_back( D ); }
 
-  void recoveryDAdd( T *D ) {
-     recoveryD.push_back( D );
-  }
-  
+  void recoveryDAdd( T *D ) { recoveryD.push_back( D ); }
+
 public:
   StateSet() { stateId = -1; }
   StateSet( int id ) { stateId = id; }
   ~StateSet() { deleteAll(); }
   void deleteAll() {
-    
+
     for ( typename vector<T *>::const_iterator it = recoveryD.begin();
           it != recoveryD.end(); it++ ) {
       delete ( *it );
     }
-    
-    for ( typename vector< T *>::const_iterator it = mapD.begin();
+
+    for ( typename vector<T *>::const_iterator it = mapD.begin();
           it != mapD.end(); it++ ) {
       delete ( *it );
     }
 
-    clear( );
+    clear();
   }
   void clear() {
-    passedD.clear( );
+    passedD.clear();
 
     mapD.clear();
 
@@ -117,44 +112,44 @@ public:
   void setId( int id ) { stateId = id; }
 
   bool add( T *one ) {
-    
+
     int hashValue = one->digitalFeature();
-    
+
     typename std::pair<typename std::map<int, int>::iterator, bool> ret;
     ret = passedD.insert( std::pair<int, int>( hashValue, mapD.size() ) );
 
-    if( false== ret.second){
-      T *D1=getD( hashValue);
-      if( !one->equal( D1) ){
-        for( typename vector<T*>::iterator it= recoveryD.begin( );
-             it!= recoveryD.end( ); it++){
-          if( one->equal( *it )){
+    if ( false == ret.second ) {
+      T *D1 = getD( hashValue );
+      if ( !one->equal( D1 ) ) {
+        for ( typename vector<T *>::iterator it = recoveryD.begin();
+              it != recoveryD.end(); it++ ) {
+          if ( one->equal( *it ) ) {
             return false;
           }
         }
-        
-        if( contain( one)){
+
+        if ( contain( one ) ) {
           return false;
         }
-        recoveryD.push_back( one);
+        recoveryD.push_back( one );
         return true;
-        
-      }else{
+
+      } else {
         return false;
       }
     }
-    mapDAdd( one, hashValue);
+    mapDAdd( one, hashValue );
     return true;
   }
 
   bool contain( const T *one ) const {
     for ( size_t i = 0; i < mapD.size(); i++ ) {
-      if ( one->isContained(mapD[ i ])  ) {
+      if ( one->isContained( mapD[ i ] ) ) {
         return true;
       }
     }
     for ( size_t i = 0; i < recoveryD.size(); i++ ) {
-      if ( one->isContained(recoveryD[ i ]) ) {
+      if ( one->isContained( recoveryD[ i ] ) ) {
         return true;
       }
     }
@@ -259,10 +254,7 @@ public:
 
   const_iterator begin() const { return const_iterator( this ); }
 
-  iterator end() {
-
-    return iterator( this, mapD.size() + recoveryD.size() );
-  }
+  iterator end() { return iterator( this, mapD.size() + recoveryD.size() ); }
 
   const_iterator end() const {
     return const_iterator( this, mapD.size() + recoveryD.size() );

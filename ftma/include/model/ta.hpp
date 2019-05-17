@@ -58,9 +58,28 @@ private:
 
   graph_t<int> graph;
 
-  vector<C> clockUppuerBound;
+  vector<C> clockUpperBound;
 
   vector<ClockConstraint<C>> differenceCons;
+
+  void updateUpperAndDiff( const CS_t &cs ) {
+
+    if ( cs.x > 0 && cs.y > 0 ) {
+      differenceCons.push_back( cs );
+    }
+    C realRhs = getRight( cs.matrix_value );
+    if ( cs.x > 0 ) {
+      if ( realRhs > clockUpperBound[ cs.x ] ) {
+        clockUpperBound[ cs.x ] = realRhs;
+      }
+    }
+
+    if ( cs.y > 0 ) {
+      if ( -realRhs > clockUpperBound[ cs.y ] ) {
+        clockUpperBound[ cs.y ] = -realRhs;
+      }
+    }
+  }
 
 public:
   TA() { initial_loc = clock_num = -1; }
@@ -80,7 +99,7 @@ public:
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
   }
-  vector<C> getClockUppuerBound() const { return clockUppuerBound; }
+  vector<C> getClockUppuerBound() const { return clockUpperBound; }
 
   vector<ClockConstraint<C>> getDifferenceCons() const {
     return differenceCons;
@@ -108,7 +127,7 @@ public:
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     differenceCons.clear();
-    clockUppuerBound.resize( 2 * ( clock_num + 1 ), LTEQ_ZERO );
+    clockUpperBound.resize( 2 * ( clock_num + 1 ), 0 );
 
     for ( typename vector<L>::const_iterator it = locations.begin();
           it != locations.end(); it++ ) {
@@ -116,26 +135,16 @@ public:
       const vector<CS_t> &invariants = it->getInvarients();
       for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
             cit != invariants.end(); cit++ ) {
-
-        if ( cit->x > 0 && cit->y > 0 ) {
-          differenceCons.push_back( *cit );
-        } else {
-          if ( cit->x > 0 ) {
-            if ( cit->matrix_value > clockUppuerBound[ cit->x ] ) {
-              clockUppuerBound[ cit->x ] = cit->matrix_value;
-            } else {
-              CS_t temp = cit->neg();
-              if ( temp.matrix_value > clockUppuerBound[ temp.x ] ) {
-                clockUppuerBound[ temp.x ] = temp.matrix_value;
-              }
-            }
-          }
-        }
+        updateUpperAndDiff( *cit );
       }
     }
-    for ( int i = 1; i <= clock_num + 1; i++ ) {
-      clockUppuerBound[ i ] =
-          getMatrixValue( getRight( clockUppuerBound[ i ] ), false );
+    for ( typename vector<T>::const_iterator it = transitions.begin();
+          it != transitions.end(); it++ ) {
+      const vector<CS_t> &gurads = it->getGuards();
+      for ( typename vector<CS_t>::const_iterator cit = gurads.begin();
+            cit != gurads.end(); cit++ ) {
+        updateUpperAndDiff( *cit );
+      }
     }
 
     /**
@@ -145,7 +154,12 @@ public:
      */
 
     for ( int i = 1; i < clock_num + 1; i++ ) {
-      clockUppuerBound[ i + clock_num + 1 ] = LTEQ_ZERO - clockUppuerBound[ i ];
+      clockUpperBound[ i + clock_num + 1 ] =
+          getMatrixValue( -clockUpperBound[ i ], true );
+    }
+
+    for ( int i = 1; i <= clock_num + 1; i++ ) {
+      clockUpperBound[ i ] = getMatrixValue( clockUpperBound[ i ], false );
     }
   }
 
@@ -207,7 +221,7 @@ template <typename C> struct StateManager {
   StateManager() { component_num = stateLen = counter_start_loc = 0; }
 
   StateManager( int comp_num, int counter_num, vector<int> clock_num,
-                vector<vector<C>>                  clockUppuerBound,
+                vector<vector<C>>                  clockUpperBound,
                 vector<vector<ClockConstraint<C>>> differenceCons ) {
 
     component_num = comp_num;
@@ -224,7 +238,7 @@ template <typename C> struct StateManager {
       stateLen += ( clock_num[ i ] + 1 ) * ( clock_num[ i ] + 1 );
 
       DBM<C> temp =
-          DBM<C>( clock_num[ i ], clockUppuerBound[ i ], differenceCons[ i ] );
+          DBM<C>( clock_num[ i ], clockUpperBound[ i ], differenceCons[ i ] );
 
       clock_manager.push_back( temp );
     }
@@ -260,17 +274,18 @@ template <typename C> struct StateManager {
     return getClockManager( id ).isConsistent( getkDBM( id, state ) );
   }
 
-  State_t* add( const int id, const int target,  StateSet_t &stateSet, DBM_t d, const State_t *state ) const {
-    State_t* re      = state->copy();
-    int len = 0;
+  State_t *add( const int id, const int target, StateSet_t &stateSet, DBM_t d,
+                const State_t *state ) const {
+    State_t *re  = state->copy();
+    int      len = 0;
     if ( id + 1 < (int) clock_start_loc.size() ) {
       len = clock_start_loc[ id + 1 ] - clock_start_loc[ id ];
     } else {
       len = stateLen - clock_start_loc[ id ];
     }
     memcpy( re->value + clock_start_loc[ id ], d, sizeof( C ) * len );
-    
-    re->value[id ]=target;
+
+    re->value[ id ] = target;
 
     if ( !stateSet.add( re ) ) {
       delete re;
@@ -296,7 +311,7 @@ private:
   vector<int>     initial_loc;
   vector<int>     clock_num;
 
-  vector<vector<C>>                  clockUppuerBound;
+  vector<vector<C>>                  clockUpperBound;
   vector<vector<ClockConstraint<C>>> differenceCons;
 
 public:
@@ -304,7 +319,7 @@ public:
     tas.push_back( ta );
     initial_loc.push_back( ta.getInitialLoc() );
     clock_num.push_back( ta.getClockNum() );
-    clockUppuerBound.push_back( ta.getClockUppuerBound() );
+    clockUpperBound.push_back( ta.getClockUppuerBound() );
     differenceCons.push_back( ta.getDifferenceCons() );
 
     return *this;
@@ -322,17 +337,17 @@ public:
 
   StateManager<C> getStateManager() const {
 
-    StateManager<C> re( tas.size(), counters.size(), clock_num,
-                        clockUppuerBound, differenceCons );
+    StateManager<C> re( tas.size(), counters.size(), clock_num, clockUpperBound,
+                        differenceCons );
 
     return re;
   }
   void initState( const StateManager<C> &manager, NIntState *value ) const {
-    int component_num=tas.size( );
+    int component_num = tas.size();
     for ( int i = 0; i < component_num; i++ ) {
-      
+
       tas[ i ].locationRun( initial_loc[ i ], manager.getClockManager( i ),
-                            manager.getkDBM(i, value));
+                            manager.getkDBM( i, value ) );
       value->value[ i ] = initial_loc[ i ];
     }
   }
