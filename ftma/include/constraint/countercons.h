@@ -18,10 +18,6 @@ namespace graphsat {
 
 using namespace std;
 class CounterConstraint {
-private:
-  vector<pair<int, int>> constraint;
-  int                    rhs;
-  COMP_OPERATOR          op;
 
 public:
   CounterConstraint( const vector<pair<int, int>> &cons, int erhs,
@@ -51,6 +47,11 @@ public:
     }
     return false;
   }
+
+private:
+  vector<pair<int, int>> constraint;
+  int                    rhs;
+  COMP_OPERATOR          op;
 };
 
 } // namespace graphsat

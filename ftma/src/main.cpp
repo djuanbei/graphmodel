@@ -68,7 +68,6 @@ void example1( void ) {
   es.push_back( e12 );
   es.push_back( e23 );
   TA_t tma1( ls, es, 0, 3 );
-  tma1.initial();
 
   TAS_t sys;
   sys += tma1;
@@ -115,7 +114,7 @@ void example2( void ) {
   es.push_back( E01 );
 
   TA_t tma1( ls, es, 0, 2 );
-  tma1.initial();
+
   TAS_t sys;
   sys += tma1;
   R_t               data( sys );

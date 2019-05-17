@@ -20,25 +20,6 @@
 namespace graphsat {
 using namespace std;
 template <typename C> class DBMset {
-private:
-  map<uint32_t, int> passedD;
-  vector<C *>        mapD;
-  vector<DF_T>       mapDFeature;
-
-  vector<C *>  recoveryD;
-  vector<DF_T> recoveryDFeature;
-
-  C *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
-
-  void mapDAdd( C *D, DF_T &value ) {
-    mapD.push_back( D );
-    mapDFeature.push_back( value );
-  }
-
-  void recoveryDAdd( C *D, DF_T &value ) {
-    recoveryD.push_back( D );
-    recoveryDFeature.push_back( value );
-  }
 
 public:
   class const_iterator {
@@ -178,7 +159,7 @@ public:
           delete[] DM;
           return false;
         }
-        if ( isInclude( dbmManager, DM, featrue ) ) {
+        if ( include( dbmManager, DM, featrue ) ) {
           delete[] DM;
           return false;
         } else {
@@ -196,18 +177,18 @@ public:
     return true;
   }
 
-  bool isInclude( const DBM<C> &dbmManager, C *DM, DF_T &featrue ) const {
+  bool include( const DBM<C> &dbmManager, C *DM, DF_T &featrue ) const {
 
     for ( size_t i = 0; i < mapD.size(); i++ ) {
       if ( ( mapDFeature[ i ] >= featrue ) &&
-           dbmManager.isInclude( mapD[ i ], DM ) ) {
+           dbmManager.include( mapD[ i ], DM ) ) {
         return true;
       }
     }
 
     for ( size_t i = 0; i < recoveryD.size(); i++ ) {
       if ( ( recoveryDFeature[ i ] >= featrue ) &&
-           dbmManager.isInclude( recoveryD[ i ], DM ) ) {
+           dbmManager.include( recoveryD[ i ], DM ) ) {
         return true;
       }
     }
@@ -252,6 +233,26 @@ public:
       add( dbmManager, *it );
     }
     other.clear();
+  }
+
+private:
+  map<uint32_t, int> passedD;
+  vector<C *>        mapD;
+  vector<DF_T>       mapDFeature;
+
+  vector<C *>  recoveryD;
+  vector<DF_T> recoveryDFeature;
+
+  C *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
+
+  void mapDAdd( C *D, DF_T &value ) {
+    mapD.push_back( D );
+    mapDFeature.push_back( value );
+  }
+
+  void recoveryDAdd( C *D, DF_T &value ) {
+    recoveryD.push_back( D );
+    recoveryDFeature.push_back( value );
   }
 };
 } // namespace graphsat

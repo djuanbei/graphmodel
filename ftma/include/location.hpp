@@ -19,12 +19,6 @@ enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
 template <typename C_t, typename CS_t, typename DManager_t, typename DBMSet_t>
 class Location {
-public:
-private:
-  vector<CS_t> invariants; // set of invariants  in this Location
-
-  int           locationID;
-  Location_Type type;
 
 public:
 public:
@@ -121,7 +115,7 @@ public:
                    vector<C_t *> &reNormVecDBM ) const {
 
     assert( reNormVecDBM.empty() );
-    
+
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -161,11 +155,11 @@ public:
 
     reNormVecDBM.push_back( D );
     return true;
-    
-    //TODO
+
+    // TODO
     //    dbmManager.norm( locationID, D, reNormVecDBM );
 
-    //return reNormVecDBM.size() > 0;
+    // return reNormVecDBM.size() > 0;
   }
 
   /**
@@ -217,6 +211,11 @@ public:
     invariants.push_back( cs );
     return *this;
   }
+
+private:
+  vector<CS_t>  invariants; // set of invariants  in this Location
+  int           locationID;
+  Location_Type type;
 };
 } // namespace graphsat
 

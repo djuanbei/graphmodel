@@ -39,30 +39,7 @@ using namespace std;
  */
 
 template <typename C> class DBM {
-private:
-  /**
-   * number of clocks
-   */
-  int                                n;
-  int                                size; // n*n
-  C                                  MAX_INT;
-  std::default_random_engine         generator;
-  std::uniform_int_distribution<int> distribution;
-  vector<C>                          clockUppuerBound;
 
-  vector<ClockConstraint<C>> differenceCons;
-
-  inline int loc( const int row, const int col ) const { return row * n + col; }
-
-  bool contain( const vector<C*>& values, const C* const D ) const{
-    
-    for( typename vector<C*>::const_iterator it= values.begin( ); it!= values.end( ); it++){
-      if( MEqual(*it, D ) ){
-        return true;
-      }
-    }
-    return false;
-  }
 public:
   DBM( void ) {
     n       = 0;
@@ -180,9 +157,8 @@ public:
    * @param Cvec
    */
   void deleteVectorM( vector<C *> &Cvec ) const {
-    for ( typename vector<C *>::iterator it = Cvec.begin(); it != Cvec.end();
-          it++ ) {
-      delete[]( *it );
+    for ( auto d : Cvec ) {
+      delete[] d;
     }
     Cvec.clear();
   }
@@ -218,12 +194,12 @@ public:
    * @param C
    * @param other
    *
-   * @return true if this is included by other lhs <= rhs
+   * @return true if this is included by other lhs>= rhs
    */
-  bool isInclude( const C *const lhs, const C *const rhs ) const {
+  bool include( const C *const lhs, const C *const rhs ) const {
 
     for ( int i = 0; i < size; i++ ) {
-      if ( lhs[ i ] > rhs[ i ] ) {
+      if ( lhs[ i ] < rhs[ i ] ) {
         return false;
       }
     }
@@ -307,6 +283,9 @@ public:
   }
 
   void andImpl( C *newD, const ClockConstraint<C> &cons ) const {
+    if( newD[ 0]<LTEQ_ZERO){
+      return;
+    }
 
     ClockConstraint<C> negCons = cons.neg();
 
@@ -485,13 +464,11 @@ public:
     }
 
     norm( D, k );
-    for ( typename vector<ClockConstraint<C>>::iterator it = Gunsat.begin();
-          it != Gunsat.end(); it++ ) {
-      andImpl( D, it->neg() );
+    for ( auto cs : Gunsat ) {
+      andImpl( D, cs.neg() );
     }
     return D;
   }
-  
 
   void split( C *D, const vector<ClockConstraint<C>> &Gd,
               vector<C *> &re ) const {
@@ -499,37 +476,35 @@ public:
     vector<C *> waitS;
     re.push_back( D );
 
-    for ( typename vector<ClockConstraint<C>>::const_iterator cit = Gd.begin();
-          cit != Gd.end(); cit++ ) {
+    for ( auto cs : Gd ) {
 
       vector<bool> addToWaitS( re.size(), false );
 
       int i = 0;
-      for( size_t  i=0; i< re.size( ); i++ ){
+      for ( size_t i = 0; i < re.size(); i++ ) {
         /**
          * split
          * (D and C) && (D and -C) satisfies then using C to split D
          * into two parts
          */
-        if ( isSatisfied( re[ i], *cit ) &&
-             isSatisfied( re[ i], cit->neg() ) ) {
+        if ( isSatisfied( re[ i ], cs ) && isSatisfied( re[ i ], cs.neg() ) ) {
 
-          C *DandC    = And( re[ i], *cit );
-          C *DandNegC = And( re[ i], cit->neg() );
-          if( !contain(  waitS, DandC )){
-            waitS.push_back( DandC);
-          }else{
-            deleteD(DandC );
+          C *DandC    = And( re[ i ], cs );
+          C *DandNegC = And( re[ i ], cs.neg() );
+          if ( !contain( waitS, DandC ) ) {
+            waitS.push_back( DandC );
+          } else {
+            deleteD( DandC );
           }
-          if( !contain( waitS, DandNegC)){
-            waitS.push_back( DandNegC);
-          }else{
-            deleteD( DandNegC);
+          if ( !contain( waitS, DandNegC ) ) {
+            waitS.push_back( DandNegC );
+          } else {
+            deleteD( DandNegC );
           }
 
         } else {
-          if( !contain( waitS, re[ i])){
-            waitS.push_back( re[ i]);
+          if ( !contain( waitS, re[ i ] ) ) {
+            waitS.push_back( re[ i ] );
             addToWaitS[ i ] = true;
           }
         }
@@ -537,7 +512,7 @@ public:
       re.swap( waitS );
       for ( size_t i = 0; i < waitS.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
-          deleteD(waitS[ i ] );
+          deleteD( waitS[ i ] );
         }
         waitS.clear();
       }
@@ -572,10 +547,34 @@ public:
     vector<C *> splitDomain;
     split( D, Gd, splitDomain );
 
-    for ( typename vector<C *>::iterator it = splitDomain.begin();
-          it != splitDomain.end(); it++ ) {
-      re.push_back( corn_norm( *it, k, Gd ) );
+    for ( auto d : splitDomain ) {
+      re.push_back( corn_norm( d, k, Gd ) );
     }
+  }
+
+private:
+  /**
+   * number of clocks
+   */
+  int                                n;
+  int                                size; // n*n
+  C                                  MAX_INT;
+  std::default_random_engine         generator;
+  std::uniform_int_distribution<int> distribution;
+  vector<C>                          clockUppuerBound;
+
+  vector<ClockConstraint<C>> differenceCons;
+
+  inline int loc( const int row, const int col ) const { return row * n + col; }
+
+  bool contain( const vector<C *> &values, const C *const D ) const {
+
+    for ( auto v : values ) {
+      if ( MEqual( v, D ) ) {
+        return true;
+      }
+    }
+    return false;
   }
 };
 

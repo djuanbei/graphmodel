@@ -24,11 +24,6 @@ using namespace std;
 
 template <typename ReachableSet> class Reachability {
 
-private:
-  ReachableSet &data;
-  const TAS_t & sys;
-  int           component_num;
-
 public:
   Reachability( ReachableSet &outData )
       : data( outData )
@@ -85,7 +80,6 @@ public:
       find = false;
 
       typename StateSet_t::iterator end1 = data.waitSet.end();
-
       for ( typename StateSet_t::iterator it = data.waitSet.begin();
             !find && ( it != end1 ); ++it ) {
 
@@ -100,6 +94,11 @@ public:
     }
     return false;
   }
+
+private:
+  ReachableSet &data;
+  const TAS_t & sys;
+  int           component_num;
 };
 } // namespace graphsat
 

@@ -23,13 +23,6 @@ using namespace std;
  *
  */
 template <typename C> class ClockConstraint {
-private:
-  void neg_impl( void ) {
-    int temp     = x;
-    x            = y;
-    y            = temp;
-    matrix_value = 1 - matrix_value;
-  }
 
 public:
   int x;
@@ -131,6 +124,14 @@ public:
       }
     }
     return os;
+  }
+
+private:
+  void neg_impl( void ) {
+    int temp     = x;
+    x            = y;
+    y            = temp;
+    matrix_value = 1 - matrix_value;
   }
 };
 } // namespace graphsat

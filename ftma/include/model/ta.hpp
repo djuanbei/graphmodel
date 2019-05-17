@@ -43,43 +43,9 @@ typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t, Action> T_t;
  *
  */
 
+
+
 template <typename C, typename L, typename T> class TA {
-
-public:
-  template <typename R1> friend class Reachability;
-  template <typename R2> friend class ReachableSet;
-
-private:
-  vector<L> locations;
-  vector<T> transitions;
-  int       initial_loc;
-
-  int clock_num;
-
-  graph_t<int> graph;
-
-  vector<C> clockUpperBound;
-
-  vector<ClockConstraint<C>> differenceCons;
-
-  void updateUpperAndDiff( const CS_t &cs ) {
-
-    if ( cs.x > 0 && cs.y > 0 ) {
-      differenceCons.push_back( cs );
-    }
-    C realRhs = getRight( cs.matrix_value );
-    if ( cs.x > 0 ) {
-      if ( realRhs > clockUpperBound[ cs.x ] ) {
-        clockUpperBound[ cs.x ] = realRhs;
-      }
-    }
-
-    if ( cs.y > 0 ) {
-      if ( -realRhs > clockUpperBound[ cs.y ] ) {
-        clockUpperBound[ cs.y ] = -realRhs;
-      }
-    }
-  }
 
 public:
   TA() { initial_loc = clock_num = -1; }
@@ -108,15 +74,63 @@ public:
   int getLocationNum() const { return (int) locations.size(); }
   int getTransitionNum() const { return (int) transitions.size(); }
 
+  int getClockNum() const { return clock_num; }
+
+  void setInitialLoc( int loc ) { initial_loc = loc; }
+  int  getInitialLoc() const { return initial_loc; }
+
+  bool locationRun( int i, const DBM<C> &manager, C *D ) const {
+    return locations[ i ]( manager, D );
+  }
+
+  bool transitionRun( int link, const DBM<C> &manager, C *D ) const {
+    return transitions[ link ]( manager, D );
+  }
+
+
+private:
+  vector<L> locations;
+  vector<T> transitions;
+  int       initial_loc;
+
+  int clock_num;
+
+  graph_t<int> graph;
+
+  vector<C> clockUpperBound;
+
+  vector<ClockConstraint<C>> differenceCons;
+
+  template <typename R1> friend class Reachability;
+  template <typename R2> friend class ReachableSet;
+
+  void updateUpperAndDiff( const CS_t &cs ) {
+
+    if ( cs.x > 0 && cs.y > 0 ) {
+      differenceCons.push_back( cs );
+    }
+    C realRhs = getRight( cs.matrix_value );
+    if ( cs.x > 0 ) {
+      if ( realRhs > clockUpperBound[ cs.x ] ) {
+        clockUpperBound[ cs.x ] = realRhs;
+      }
+    }
+
+    if ( cs.y > 0 ) {
+      if ( -realRhs > clockUpperBound[ cs.y ] ) {
+        clockUpperBound[ cs.y ] = -realRhs;
+      }
+    }
+  }
+
   void initial() {
 
     vector<int> srcs;
     vector<int> snks;
 
-    for ( typename vector<T>::iterator it = transitions.begin();
-          it != transitions.end(); it++ ) {
-      srcs.push_back( it->getSource() );
-      snks.push_back( it->getTarget() );
+    for ( auto t : transitions ) {
+      srcs.push_back( t.getSource() );
+      snks.push_back( t.getTarget() );
     }
 
     graph.initial( srcs, snks );
@@ -128,23 +142,20 @@ public:
 
     differenceCons.clear();
     clockUpperBound.resize( 2 * ( clock_num + 1 ) );
-    fill(clockUpperBound.begin( ), clockUpperBound.end( ), 0 );
+    fill( clockUpperBound.begin(), clockUpperBound.end(), 0 );
 
-    for ( typename vector<L>::const_iterator it = locations.begin();
-          it != locations.end(); it++ ) {
+    for ( auto l : locations ) {
 
-      const vector<CS_t> &invariants = it->getInvarients();
-      for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
-            cit != invariants.end(); cit++ ) {
-        updateUpperAndDiff( *cit );
+      const vector<CS_t> &invariants = l.getInvarients();
+      for ( auto cs : invariants ) {
+        updateUpperAndDiff( cs );
       }
     }
-    for ( typename vector<T>::const_iterator it = transitions.begin();
-          it != transitions.end(); it++ ) {
-      const vector<CS_t> &gurads = it->getGuards();
-      for ( typename vector<CS_t>::const_iterator cit = gurads.begin();
-            cit != gurads.end(); cit++ ) {
-        updateUpperAndDiff( *cit );
+    for ( auto t : transitions ) {
+
+      const vector<CS_t> &gurads = t.getGuards();
+      for ( auto cs : gurads ) {
+        updateUpperAndDiff( cs );
       }
     }
 
@@ -162,43 +173,6 @@ public:
     for ( int i = 1; i <= clock_num + 1; i++ ) {
       clockUpperBound[ i ] = getMatrixValue( clockUpperBound[ i ], false );
     }
-  }
-
-  int getClockNum() const { return clock_num; }
-
-  void setInitialLoc( int loc ) { initial_loc = loc; }
-  int  getInitialLoc() const { return initial_loc; }
-
-  bool locationRun( int i, const DBM<C> &manager, C *D ) const {
-    return locations[ i ]( manager, D );
-  }
-
-  bool transitionRun( int link, const DBM<C> &manager, C *D ) const {
-    return transitions[ link ]( manager, D );
-  }
-
-  /**
-   * Add one location to this timed automata
-   *
-   * @param location
-   *
-   * @return
-   */
-  TA<C, L, T> &operator+=( L &location ) {
-    locations.push_back( location );
-    return *this;
-  }
-
-  /**
-   * Add one transition to this timed automata
-   *
-   * @param edge
-   *
-   * @return
-   */
-  TA<C, L, T> &operator+=( T &edge ) {
-    transitions.push_back( edge );
-    return *this;
   }
 };
 
@@ -260,6 +234,7 @@ template <typename C> struct StateManager {
     }
   }
 
+
   inline const DBM<C> &getClockManager( int i ) const {
     return clock_manager[ i ];
   }
@@ -274,6 +249,20 @@ template <typename C> struct StateManager {
   inline bool isConsistent( const int id, State_t *state ) const {
     return getClockManager( id ).isConsistent( getkDBM( id, state ) );
   }
+
+  inline int blockComponent( const int chid, const State_t * const state) const{
+    for( int i=0; i< component_num ; i++){
+      /**
+       * return first componment which waits for this signal chid
+       * 
+       */
+      if(state->value[ i+component_num] ==chid ){
+        return  i;
+      }
+    }
+    return -1;
+  }
+
 
   State_t *add( const int id, const int target, StateSet_t &stateSet, DBM_t d,
                 const State_t *state ) const {
@@ -297,23 +286,6 @@ template <typename C> struct StateManager {
 };
 
 template <typename C, typename L, typename T> class TAS {
-public:
-  template <typename R1> friend class Reachability;
-  template <typename R2> friend class ReachableSet;
-
-private:
-  /**
-   * multi-components
-   *
-   */
-  vector<TA_t>    tas;
-  vector<Channel> channels;
-  vector<Counter> counters;
-  vector<int>     initial_loc;
-  vector<int>     clock_num;
-
-  vector<vector<C>>                  clockUpperBound;
-  vector<vector<ClockConstraint<C>>> differenceCons;
 
 public:
   TAS<C, L, T> &operator+=( TA_t &ta ) {
@@ -352,6 +324,23 @@ public:
       value->value[ i ] = initial_loc[ i ];
     }
   }
+
+private:
+  /**
+   * multi-components
+   *
+   */
+  vector<TA_t>    tas;
+  vector<Channel> channels;
+  vector<Counter> counters;
+  vector<int>     initial_loc;
+  vector<int>     clock_num;
+
+  vector<vector<C>>                  clockUpperBound;
+  vector<vector<ClockConstraint<C>>> differenceCons;
+
+  template <typename R1> friend class Reachability;
+  template <typename R2> friend class ReachableSet;
 };
 
 typedef StateManager<C_t> StateManager_t;

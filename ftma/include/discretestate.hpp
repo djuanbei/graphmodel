@@ -22,33 +22,31 @@ using namespace std;
 class StateElem {
 public:
   virtual int  digitalFeature() const { return 0; }
-  virtual bool isContained( const StateElem *other ) const { return false; }
+  virtual bool contain( const StateElem *other ) const { return false; }
   virtual bool equal( const StateElem *other ) const { return false; }
 };
 
 class ComposeState : public StateElem {
-private:
-  StateElem *left;
-  StateElem *right;
 
 public:
   int digitalFeature() const {
     return left->digitalFeature() * 100 + right->digitalFeature();
   }
-  virtual bool isContained( const StateElem *other ) const {
+  virtual bool contain( const StateElem *other ) const {
     const ComposeState *rhs = (const ComposeState *) other;
-    return left->isContained( rhs->left ) && right->isContained( rhs->right );
+    return left->contain( rhs->left ) && right->contain( rhs->right );
   }
   virtual bool equal( const StateElem *other ) const {
     const ComposeState *rhs = (const ComposeState *) other;
     return left->equal( rhs->left ) && right->equal( rhs->right );
   }
+
+private:
+  StateElem *left;
+  StateElem *right;
 };
 
 template <typename T> class SingleElem {
-private:
-  int stateId;
-  T * value;
 
 public:
   SingleElem() {
@@ -65,22 +63,17 @@ public:
     value   = v;
   }
   const T *getValue() const { return value; }
+
+private:
+  int stateId;
+  T * value;
 };
 
 template <typename T> class StateSet {
-private:
-  int           stateId;
-  map<int, int> passedD;
-  vector<T *>   mapD;
-  vector<T *>   recoveryD;
-
-  T *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
-
-  void mapDAdd( T *D, int hashValue ) { mapD.push_back( D ); }
-
-  void recoveryDAdd( T *D ) { recoveryD.push_back( D ); }
 
 public:
+  class const_iterator;
+  class iterator;
   StateSet() { stateId = -1; }
   StateSet( int id ) { stateId = id; }
   ~StateSet() { deleteAll(); }
@@ -144,23 +137,32 @@ public:
 
   bool contain( const T *one ) const {
     for ( size_t i = 0; i < mapD.size(); i++ ) {
-      if ( one->isContained( mapD[ i ] ) ) {
+      if ( mapD[ i ]->contain( one ) ) {
         return true;
       }
     }
     for ( size_t i = 0; i < recoveryD.size(); i++ ) {
-      if ( one->isContained( recoveryD[ i ] ) ) {
+      if ( recoveryD[ i ]->contain( one ) ) {
         return true;
       }
     }
     return false;
   }
 
+  iterator begin() { return iterator( this ); }
+
+  const_iterator begin() const { return const_iterator( this ); }
+
+  iterator end() { return iterator( this, mapD.size() + recoveryD.size() ); }
+
+  const_iterator end() const {
+    return const_iterator( this, mapD.size() + recoveryD.size() );
+  }
+
   class const_iterator {
   protected:
     const StateSet<T> *data;
-
-    size_t index;
+    size_t             index;
 
   public:
     const_iterator( const StateSet<T> *odata )
@@ -250,20 +252,20 @@ public:
     }
   };
 
-  iterator begin() { return iterator( this ); }
+private:
+  int           stateId;
+  map<int, int> passedD;
+  vector<T *>   mapD;
+  vector<T *>   recoveryD;
 
-  const_iterator begin() const { return const_iterator( this ); }
+  T *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
 
-  iterator end() { return iterator( this, mapD.size() + recoveryD.size() ); }
+  void mapDAdd( T *D, int hashValue ) { mapD.push_back( D ); }
 
-  const_iterator end() const {
-    return const_iterator( this, mapD.size() + recoveryD.size() );
-  }
+  void recoveryDAdd( T *D ) { recoveryD.push_back( D ); }
 };
 
 template <typename T> class SingleStateSet {
-protected:
-  int stateId;
 
 public:
   SingleStateSet() { stateId = -1; }
@@ -273,14 +275,12 @@ public:
   virtual bool add( const pair<int, T *> &one ) { return false; }
 
   virtual bool contain( const pair<int, T *> &one ) const { return false; }
+
+protected:
+  int stateId;
 };
 
 template <typename T> class ComposeStateSet {
-protected:
-  int           num;
-  map<int, int> stateIndexMap; // id -> loc_index
-
-  virtual void addCompentImpl( SingleStateSet<T> &comp ) {}
 
 public:
   ComposeStateSet() { num = 0; }
@@ -309,6 +309,12 @@ public:
     return *this;
   }
 
+protected:
+  int           num;
+  map<int, int> stateIndexMap; // id -> loc_index
+
+  virtual void addCompentImpl( SingleStateSet<T> &comp ) {}
+
   // virtual ComposeStateSet<T> & operator += (const ComposeStateSet<T> & other
   // ){
   //   *this;
@@ -316,33 +322,6 @@ public:
 };
 
 template <typename T> class ExpandComposeStateSet : public ComposeStateSet<T> {
-private:
-  vector<T *> values;
-  int         len;
-
-  ExpandComposeStateSet( const ExpandComposeStateSet<T> &other ) {}
-  ExpandComposeStateSet<T> &operator=( const ExpandComposeStateSet<T> &other ) {
-    return *this;
-  }
-
-  bool contain( const vector<T *> &dummy ) const {
-    int num = ComposeStateSet<T>::num;
-    for ( size_t i = 0; i < len; i++ ) {
-      int j = 0;
-      for ( ; j < num; j++ ) {
-        if ( !dummy[ j ]->isContained( values[ i * num + j ] ) ) {
-          break;
-        }
-      }
-      if ( j == num ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-protected:
-  void addStateIdImpl() { len = 0; }
 
 public:
   ExpandComposeStateSet()
@@ -392,17 +371,39 @@ public:
     return contain( dummy );
   }
 
+private:
+  vector<T *> values;
+  int         len;
+
+  ExpandComposeStateSet( const ExpandComposeStateSet<T> &other ) {}
+  ExpandComposeStateSet<T> &operator=( const ExpandComposeStateSet<T> &other ) {
+    return *this;
+  }
+
+  bool contain( const vector<T *> &dummy ) const {
+    int num = ComposeStateSet<T>::num;
+    for ( size_t i = 0; i < len; i++ ) {
+      int j = 0;
+      for ( ; j < num; j++ ) {
+        if ( !values[ i * num + j ]->contain( dummy[ j ] ) ) {
+          break;
+        }
+      }
+      if ( j == num ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+protected:
+  void addStateIdImpl() { len = 0; }
+
   //  CompactComposeStateSet<T> toCompactCompStateSet( ) const;
 };
 
 template <typename T>
 class SingleCompactComposeStateSet : public SingleStateSet<T> {
-private:
-  SingleElem<T> singleValue;
-  bool          isInitial;
-
-protected:
-  void addStateIdImpl() {}
 
 public:
   SingleCompactComposeStateSet( int id )
@@ -420,18 +421,22 @@ public:
       return false;
     }
     assert( SingleStateSet<T>::stateId == one.first );
-    if ( one.second->isContained( singleValue.getValue() ) ) {
+    if ( singleValue.getValue()->contain( one.second ) ) {
       return true;
     }
     return false;
   }
+
+protected:
+  void addStateIdImpl() {}
+
+private:
+  SingleElem<T> singleValue;
+  bool          isInitial;
 };
 
 template <typename T>
 class SingleSetCompactComposeStateSet : public SingleStateSet<T> {
-
-private:
-  StateSet<T> setValue;
 
 public:
   SingleSetCompactComposeStateSet( int id )
@@ -452,6 +457,9 @@ public:
 
     return true;
   }
+
+private:
+  StateSet<T> setValue;
 };
 
 /**
@@ -464,13 +472,6 @@ public:
  */
 template <typename T>
 class CompleteCompactComposeStateSet : public ComposeStateSet<T> {
-
-private:
-  vector<SingleStateSet<T>> composeValue;
-
-  virtual void addCompentImpl( SingleStateSet<T> &comp ) {
-    composeValue.push_back( comp );
-  }
 
 public:
   /**
@@ -534,15 +535,16 @@ public:
     }
     return true;
   }
+
+private:
+  vector<SingleStateSet<T>> composeValue;
+
+  virtual void addCompentImpl( SingleStateSet<T> &comp ) {
+    composeValue.push_back( comp );
+  }
 };
 
 template <typename T> class CompactComposeStateSet : public ComposeStateSet<T> {
-private:
-  vector<CompleteCompactComposeStateSet<T>> composeValue;
-  ExpandComposeStateSet<T>                  other;
-
-protected:
-  void addCompentImpl( SingleStateSet<T> &comp ) { other.addCompent( comp ); }
 
 public:
   bool contain( const vector<pair<int, T *>> &one ) const {
@@ -572,48 +574,49 @@ public:
     }
     return other.add( one );
   }
-};
 
-class IntState : public StateElem {
+protected:
+  void addCompentImpl( SingleStateSet<T> &comp ) { other.addCompent( comp ); }
+
 private:
-  int value[ 2 ];
-
-public:
-  IntState() { value[ 0 ] = value[ 1 ] = 0; }
-  IntState( int f, int s ) {
-    value[ 0 ] = f;
-    value[ 1 ] = s;
-  }
-  IntState( int *v ) {
-    value[ 0 ] = v[ 0 ];
-    value[ 1 ] = v[ 1 ];
-  }
-
-  int digitalFeature() const { return value[ 0 ] + value[ 1 ]; }
-
-  bool isContained( const StateElem *other ) const {
-    const IntState *rhs = (const IntState *) other;
-    if ( value[ 0 ] > rhs->value[ 0 ] ) {
-      return false;
-    }
-    return value[ 1 ] <= rhs->value[ 1 ];
-  }
-  bool equal( const StateElem *other ) const {
-    const IntState *rhs = (const IntState *) other;
-    return ( value[ 1 ] == rhs->value[ 1 ] ) &&
-           ( value[ 0 ] == rhs->value[ 0 ] );
-  }
+  vector<CompleteCompactComposeStateSet<T>> composeValue;
+  ExpandComposeStateSet<T>                  other;
 };
+
+// class IntState : public StateElem {
+// public:
+//   IntState() { value[ 0 ] = value[ 1 ] = 0; }
+//   IntState( int f, int s ) {
+//     value[ 0 ] = f;
+//     value[ 1 ] = s;
+//   }
+//   IntState( int *v ) {
+//     value[ 0 ] = v[ 0 ];
+//     value[ 1 ] = v[ 1 ];
+//   }
+
+//   int digitalFeature() const { return value[ 0 ] + value[ 1 ]; }
+
+//   bool  contain( const StateElem *other ) const {
+//     const IntState *rhs = (const IntState *) other;
+//     if ( value[ 0 ] > rhs->value[ 0 ] ) {
+//       return false;
+//     }
+//     return value[ 1 ] <= rhs->value[ 1 ];
+//   }
+//   bool equal( const StateElem *other ) const {
+//     const IntState *rhs = (const IntState *) other;
+//     return ( value[ 1 ] == rhs->value[ 1 ] ) &&
+//            ( value[ 0 ] == rhs->value[ 0 ] );
+//   }
+
+//  private:
+//   int value[ 2 ];
+// };
 
 class NIntState : public StateElem {
-private:
-  NIntState( const NIntState &other ) { assert( false ); }
-  NIntState &operator=( const NIntState &other ) { return *this; }
 
 public:
-  int  n;
-  int  start = 0;
-  int *value;
   NIntState()
       : n( 0 )
       , start( 0 )
@@ -645,7 +648,7 @@ public:
     return re;
   }
 
-  bool isContained( const StateElem *other ) const {
+  bool contain( const StateElem *other ) const {
 
     const NIntState *rhs = (const NIntState *) other;
 
@@ -653,7 +656,7 @@ public:
       return false;
     }
     for ( int i = start; i < n; i++ ) {
-      if ( value[ i ] > rhs->value[ i ] ) {
+      if ( value[ i ] < rhs->value[ i ] ) {
         return false;
       }
     }
@@ -674,50 +677,62 @@ public:
     }
     return true;
   }
-};
 
-class DoubleState : public StateElem {
 private:
-  double value[ 3 ];
+  int  n;
+  int  start = 0;
+  int *value;
+  NIntState( const NIntState &other ) { assert( false ); }
+  NIntState &operator=( const NIntState &other ) { return *this; }
 
-public:
-  DoubleState() { value[ 0 ] = value[ 1 ] = value[ 2 ] = 0.0; }
-  DoubleState( double v1, double v2, double v3 ) {
-    value[ 0 ] = v1;
-    value[ 1 ] = v2;
-    value[ 2 ] = v3;
-  }
-  DoubleState( double *d ) {
-    value[ 0 ] = d[ 0 ];
-    value[ 1 ] = d[ 1 ];
-    value[ 2 ] = d[ 2 ];
-  }
+  template <typename C> friend class StateManager;
 
-  int digitalFeature() const {
-    return (int) ( value[ 0 ] + value[ 1 ] + value[ 2 ] );
-  }
-
-  bool isContained( const StateElem *other ) const {
-    const DoubleState *rhs = (const DoubleState *) other;
-    if ( value[ 0 ] > rhs->value[ 0 ] ) {
-      return false;
-    }
-    if ( value[ 1 ] > rhs->value[ 1 ] ) {
-      return false;
-    }
-    return value[ 2 ] <= rhs->value[ 2 ];
-  }
-
-  bool equal( const StateElem *other ) const {
-    const DoubleState *rhs = (const DoubleState *) other;
-    if ( ( value[ 0 ] == rhs->value[ 0 ] ) &&
-         ( value[ 1 ] == rhs->value[ 1 ] ) &&
-         ( value[ 2 ] == rhs->value[ 2 ] ) ) {
-      return true;
-    }
-    return false;
-  }
+  template <typename C, typename L, typename T> friend class TAS;
+  template <typename S> friend class ReachableSet;
 };
+
+// class DoubleState : public StateElem {
+
+// public:
+//   DoubleState() { value[ 0 ] = value[ 1 ] = value[ 2 ] = 0.0; }
+//   DoubleState( double v1, double v2, double v3 ) {
+//     value[ 0 ] = v1;
+//     value[ 1 ] = v2;
+//     value[ 2 ] = v3;
+//   }
+//   DoubleState( double *d ) {
+//     value[ 0 ] = d[ 0 ];
+//     value[ 1 ] = d[ 1 ];
+//     value[ 2 ] = d[ 2 ];
+//   }
+
+//   int digitalFeature() const {
+//     return (int) ( value[ 0 ] + value[ 1 ] + value[ 2 ] );
+//   }
+
+//   bool  contain( const StateElem *other ) const {
+//     const DoubleState *rhs = (const DoubleState *) other;
+//     if ( value[ 0 ] > rhs->value[ 0 ] ) {
+//       return false;
+//     }
+//     if ( value[ 1 ] > rhs->value[ 1 ] ) {
+//       return false;
+//     }
+//     return value[ 2 ] <= rhs->value[ 2 ];
+//   }
+
+//   bool equal( const StateElem *other ) const {
+//     const DoubleState *rhs = (const DoubleState *) other;
+//     if ( ( value[ 0 ] == rhs->value[ 0 ] ) &&
+//          ( value[ 1 ] == rhs->value[ 1 ] ) &&
+//          ( value[ 2 ] == rhs->value[ 2 ] ) ) {
+//       return true;
+//     }
+//     return false;
+//   }
+//  private:
+//   double value[ 3 ];
+// };
 
 // int example( ){
 //   int id=0;
