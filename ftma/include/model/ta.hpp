@@ -127,7 +127,8 @@ public:
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     differenceCons.clear();
-    clockUpperBound.resize( 2 * ( clock_num + 1 ), 0 );
+    clockUpperBound.resize( 2 * ( clock_num + 1 ) );
+    fill(clockUpperBound.begin( ), clockUpperBound.end( ), 0 );
 
     for ( typename vector<L>::const_iterator it = locations.begin();
           it != locations.end(); it++ ) {

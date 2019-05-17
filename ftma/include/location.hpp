@@ -121,7 +121,7 @@ public:
                    vector<C_t *> &reNormVecDBM ) const {
 
     assert( reNormVecDBM.empty() );
-
+    
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -161,20 +161,11 @@ public:
 
     reNormVecDBM.push_back( D );
     return true;
+    
+    //TODO
+    //    dbmManager.norm( locationID, D, reNormVecDBM );
 
-    // typename DBMSet_t::iterator end2 = advanceNext.end();
-    // for ( typename DBMSet_t::iterator it = advanceNext.begin(); it != end2;
-    //       ++it ) {
-    //   reNormVecDBM.push_back(*it );
-    //   //TODO
-    //   vector<C_t *> normVecDBM;
-    //   dbmManager.norm( locationID, *it, normVecDBM );
-
-    //   reNormVecDBM.insert( reNormVecDBM.end(), normVecDBM.begin(),
-    //                        normVecDBM.end() );
-    // }
-
-    // return reNormVecDBM.size() > 0;
+    //return reNormVecDBM.size() > 0;
   }
 
   /**

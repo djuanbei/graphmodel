@@ -54,6 +54,15 @@ private:
 
   inline int loc( const int row, const int col ) const { return row * n + col; }
 
+  bool contain( const vector<C*>& values, const C* const D ) const{
+    
+    for( typename vector<C*>::const_iterator it= values.begin( ); it!= values.end( ); it++){
+      if( MEqual(*it, D ) ){
+        return true;
+      }
+    }
+    return false;
+  }
 public:
   DBM( void ) {
     n       = 0;
@@ -482,14 +491,11 @@ public:
     }
     return D;
   }
+  
 
   void split( C *D, const vector<ClockConstraint<C>> &Gd,
               vector<C *> &re ) const {
-
     assert( re.empty() );
-
-    map<uint32_t, C *> passed;
-
     vector<C *> waitS;
     re.push_back( D );
 
@@ -499,77 +505,42 @@ public:
       vector<bool> addToWaitS( re.size(), false );
 
       int i = 0;
-      for ( typename vector<C *>::iterator dit = re.begin(); dit != re.end();
-            dit++ ) {
-        i++;
+      for( size_t  i=0; i< re.size( ); i++ ){
         /**
          * split
          * (D and C) && (D and -C) satisfies then using C to split D
          * into two parts
          */
+        if ( isSatisfied( re[ i], *cit ) &&
+             isSatisfied( re[ i], cit->neg() ) ) {
 
-        if ( isSatisfied( *dit, *cit ) &&
-             isSatisfied( *dit, ( *cit ).neg() ) ) {
-
-          C *DandC    = And( *dit, *cit );
-          C *DandNegC = And( *dit, ( *cit ).neg() );
-
-          uint32_t DandCHash    = getHashValue( DandC );
-          uint32_t DandNegCHash = getHashValue( DandNegC );
-
-          typename map<uint32_t, C *>::iterator DandCfid;
-          DandCfid = passed.find( DandCHash );
-          typename map<uint32_t, C *>::iterator DandNegCfid;
-          DandNegCfid = passed.find( DandNegCHash );
-
-          if ( DandCfid == passed.end() ) {
-            passed[ DandCHash ] = DandC;
-            waitS.push_back( DandC );
-
-          } else {
-            if ( MEqual( DandC, DandCfid->second ) ) {
-              delete[] DandC;
-
-            } else {
-              waitS.push_back( DandC );
-            }
+          C *DandC    = And( re[ i], *cit );
+          C *DandNegC = And( re[ i], cit->neg() );
+          if( !contain(  waitS, DandC )){
+            waitS.push_back( DandC);
+          }else{
+            deleteD(DandC );
+          }
+          if( !contain( waitS, DandNegC)){
+            waitS.push_back( DandNegC);
+          }else{
+            deleteD( DandNegC);
           }
 
-          if ( DandNegCfid == passed.end() ) {
-            passed[ DandNegCHash ] = DandNegC;
-            waitS.push_back( DandNegC );
-          } else {
-            if ( MEqual( DandNegC, DandNegCfid->second ) ) {
-              delete[] DandNegC;
-
-            } else {
-              waitS.push_back( DandNegC );
-            }
-          }
         } else {
-          uint32_t                              Dhash    = getHashValue( *dit );
-          typename map<uint32_t, C *>::iterator DhashFid = passed.find( Dhash );
-
-          if ( DhashFid == passed.end() ) {
-            passed[ Dhash ] = *dit;
-            waitS.push_back( *dit );
+          if( !contain( waitS, re[ i])){
+            waitS.push_back( re[ i]);
             addToWaitS[ i ] = true;
-          } else {
-            if ( !MEqual( *dit, DhashFid->second ) ) {
-              waitS.push_back( *dit );
-              addToWaitS[ i ] = true;
-            }
           }
         }
       }
-
       re.swap( waitS );
       for ( size_t i = 0; i < waitS.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
-          delete[] waitS[ i ];
+          deleteD(waitS[ i ] );
         }
+        waitS.clear();
       }
-      waitS.clear();
     }
   }
   /**
