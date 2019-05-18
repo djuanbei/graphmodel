@@ -68,7 +68,7 @@ public:
 
     // For given target find the source which change in last step
 
-    StateSet_t secondWaitSet;
+    //  StateSet_t secondWaitSet;
     bool       find = false;
     while ( !data.waitSet.empty() ) {
 
@@ -77,20 +77,15 @@ public:
        * parallel  section
        *
        */
-      find = false;
 
-      typename StateSet_t::iterator end1 = data.waitSet.end();
-      for ( typename StateSet_t::iterator it = data.waitSet.begin();
-            !find && ( it != end1 ); ++it ) {
-
-        if ( data.oneStep( loc, cons, *it, secondWaitSet ) ) {
-          find = true;
+      while( !data.waitSet.empty( ) ){
+        State_t * state=data.waitSet.front( );
+        data.waitSet.pop_front( );
+        if ( data.oneStep( loc, cons, state ) ) {
+          return true;
         }
       }
-      data.update( secondWaitSet );
-      if ( find ) {
-        return true;
-      }
+
     }
     return false;
   }

@@ -11,6 +11,7 @@
 #define __REACH_SET_HPP
 #include <random>
 #include <vector>
+#include <deque>
 
 namespace graphsat {
 using namespace std;
@@ -26,7 +27,7 @@ public:
     State_t *D    = manager.newMatrix();
     sys.initState( manager, D );
 
-    waitSet.add( D );
+    waitSet.push_back( D );
     reachSet.add( D );
   }
 
@@ -53,14 +54,8 @@ public:
     return UNKOWN;
   }
 
-  void update( StateSet_t &secondWaitSet ) {
-
-    waitSet = secondWaitSet;
-    secondWaitSet.clear();
-  }
-
   bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
-                State_t *state, StateSet_t &secondWaitSet ) {
+                State_t *state ) {
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
         /**
@@ -99,14 +94,13 @@ public:
               int id  = distribution( generator );
               int cid = waitComp[ id ];
 
-              if ( unBlockOne( cid, link, state, loc, cons, secondWaitSet ) ) {
+              if ( unBlockOne( cid, link, state, loc, cons ) ) {
                 return true;
               }
             } else if ( ch.type == ONE2ALL ) {
               for ( auto id : waitComp ) {
                 int cid = waitComp[ id ];
-                if ( unBlockOne( cid, link, state, loc, cons,
-                                 secondWaitSet ) ) {
+                if ( unBlockOne( cid, link, state, loc, cons ) ) {
                   return true;
                 }
               }
@@ -122,12 +116,12 @@ public:
 
             temp->value[ comp ] = link; // block link
             if ( reachSet.add( temp ) ) {
-              secondWaitSet.add( temp );
+              waitSet.push_back( temp);
             }
           }
 
         } else {
-          if ( oneTranision( comp, link, loc, cons, state, secondWaitSet ) ) {
+          if ( oneTranision( comp, link, loc, cons, state ) ) {
             return true;
           }
         }
@@ -138,7 +132,7 @@ public:
 
 private:
   StateSet<State_t> reachSet;
-  StateSet<State_t> waitSet;
+  deque< State_t* > waitSet;
 
   const SYS &    sys;
   StateManager_t manager;
@@ -169,7 +163,7 @@ private:
 
   bool oneTranision( const int component, const int link, const vector<int> loc,
                      const vector<vector<CS_t>> &cons,
-                     const State_t *const state, StateSet_t &secondWaitSet ) {
+                     const State_t *const state ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
     State_t *discreteTransNext =
@@ -185,12 +179,14 @@ private:
         State_t *temp = manager.add( component, target, reachSet, next, state );
 
         if ( temp != NULL ) {
+          if ( reachSet.add( temp ) ) {
+            waitSet.push_back( temp);
 
-          secondWaitSet.add( temp );
-          if ( 0 == memcmp( &loc[ 0 ], temp->value,
-                            component_num * sizeof( int ) ) ) {
-            if ( isReach( cons, temp ) ) {
-              return true;
+            if ( 0 == memcmp( &loc[ 0 ], temp->value,
+                              component_num * sizeof( int ) ) ) {
+              if ( isReach( cons, temp ) ) {
+                return true;
+              }
             }
           }
         }
@@ -200,8 +196,7 @@ private:
   }
 
   bool unBlockOne( const int cid, const int link, State_t *state,
-                   const vector<int> loc, const vector<vector<CS_t>> &cons,
-                   StateSet_t &secondWaitSet ) {
+                   const vector<int> loc, const vector<vector<CS_t>> &cons ) {
     const int blockChannel              = state->value[ cid + component_num ];
     state->value[ cid + component_num ] = 0;
     const int blockLink                 = state->value[ cid ];
@@ -209,13 +204,13 @@ private:
     sys.tas[ cid ].graph.findSrc( blockLink, blockSource );
 
     state->value[ cid ] = blockSource;
-    if ( oneTranision( cid, blockLink, loc, cons, state, secondWaitSet ) ) {
+    if ( oneTranision( cid, blockLink, loc, cons, state ) ) {
       state->value[ cid + component_num ] = blockChannel;
       state->value[ cid ]                 = blockLink;
       return true;
     }
 
-    if ( oneTranision( cid, link, loc, cons, state, secondWaitSet ) ) {
+    if ( oneTranision( cid, link, loc, cons, state ) ) {
       state->value[ cid + component_num ] = blockChannel;
       state->value[ cid ]                 = blockLink;
 
