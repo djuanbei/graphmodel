@@ -12,10 +12,9 @@
 #define ACTION_HPP
 #include "counter.hpp"
 namespace graphsat {
-class CounterAction{
- public:
-  virtual void operator( )( int *value) const=0;
-  
+class CounterAction {
+public:
+  virtual void operator()( int *value ) const = 0;
 };
 
 } // namespace graphsat

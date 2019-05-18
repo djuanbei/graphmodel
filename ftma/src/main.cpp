@@ -9,8 +9,8 @@
  *
  */
 
-#include "counteraction.h"
 #include "constraint/clockdiffcons.hpp"
+#include "counteraction.h"
 #include "location.hpp"
 #include "model/ta.hpp"
 #include "problem/reachability.hpp"
@@ -41,16 +41,16 @@ void example1( void ) {
   L_t         S2( 2 );
   L_t         S3( 3 );
 
-  T_t e01( 0, 1 );
-  pair<int, int> rest1( 3,0);
-  e01.addReset( rest1);
+  T_t            e01( 0, 1 );
+  pair<int, int> rest1( 3, 0 );
+  e01.addReset( rest1 );
   // e01.reset.push_back( 3 ); // z -->0
   T_t e12( 1, 2 );
 
   CS_t cs1( 0, 2, -2, true ); // 0-y < -2
   e12 += cs1;
-  pair<int, int> rest2( 2,0);
-  e12.addReset(rest2); // y --> 0
+  pair<int, int> rest2( 2, 0 );
+  e12.addReset( rest2 ); // y --> 0
 
   T_t e23( 2, 3 );
 
@@ -88,15 +88,15 @@ void example2( void ) {
   L_t         L0( 0 );
   L_t         L1( 1 );
 
-  T_t E00a( 0, 0 );
-  pair<int, int> reset1( 2,0);
-  E00a.addReset(reset1);                  // y-->0
+  T_t            E00a( 0, 0 );
+  pair<int, int> reset1( 2, 0 );
+  E00a.addReset( reset1 );    // y-->0
   CS_t cs1( 2, 0, 2, false ); // y<=2
   E00a += cs1;
 
-  T_t E00b( 0, 0 );
-  pair<int, int> reset2( 1,0);
-  E00b.addReset(reset2);                  // x-->0
+  T_t            E00b( 0, 0 );
+  pair<int, int> reset2( 1, 0 );
+  E00b.addReset( reset2 );    // x-->0
   CS_t cs2( 1, 0, 2, false ); // x<=2
   E00b += cs2;
 

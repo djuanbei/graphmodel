@@ -11,8 +11,11 @@
 #ifndef COUNTER_CONS_H
 #define COUNTER_CONS_H
 
-#include "util/dbmutil.hpp"
 #include <vector>
+
+#include "parameter.h"
+
+#include "util/dbmutil.hpp"
 
 namespace graphsat {
 
@@ -26,7 +29,7 @@ public:
       , rhs( erhs )
       , op( eop ) {}
 
-  bool operator()( const int *valuation ) const {
+  bool operator()( const Parameter &p, const int *valuation ) const {
     int dummy = 0;
     for ( vector<pair<int, int>>::const_iterator it = constraint.begin();
           it != constraint.end(); it++ ) {

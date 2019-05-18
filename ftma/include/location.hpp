@@ -141,7 +141,7 @@ public:
          * then left the area which satisfies all invariants
          *
          */
-        for( auto cs :invariants ){
+        for ( auto cs : invariants ) {
           dbmManager.andImpl( D, cs );
         }
 

@@ -14,12 +14,11 @@
 
 #include "channel.h"
 #include "constraint/countercons.h"
-#include "state.hpp"
+#include "statemanager.hpp"
 
 namespace graphsat {
 using namespace std;
-template <typename C, typename CS, typename D, typename DSet>
-class Transition {
+template <typename C, typename CS, typename D, typename DSet> class Transition {
 
   typedef Transition<C, CS, D, DSet> Transition_t;
 
@@ -78,10 +77,7 @@ public:
    *
    * @return
    */
-  void addCounterAction( const CounterAction *a){
-    actions.push_back( a );
-  }
-
+  void addCounterAction( const CounterAction *a ) { actions.push_back( a ); }
 
   /**
    * add one clock reset  to this transition
@@ -90,77 +86,75 @@ public:
    *
    * @return
    */
-  void addReset(pair<int,int> & r ){
-    reset.push_back( r );
-  }
+  void addReset( pair<int, int> &r ) { reset.push_back( r ); }
 
   Transition_t &operator+=( CounterConstraint &guards ) {
     counterCons.push_back( guards );
   }
-  /** 
+  /**
    * @brief Except synchronize signal, other state satisfies jump conditions
-   * 
-   * @param comp 
-   * @param manager 
-   * @param state 
-   * 
-   * @return 
+   *
+   * @param comp
+   * @param manager
+   * @param state
+   *
+   * @return
    */
   bool isOK( const int comp, const StateManager<C> &manager,
-             const  NIntState *state ) const {
-    if(!guards.empty( )){
+             const NIntState *state ) const {
+    if ( !guards.empty() ) {
 
-      const  D& dbmManager=manager.getClockManager( comp);
-      const C*sourceDBM=manager.getkDBM( comp, state);
-      assert(dbmManager.isConsistent( sourceDBM )  );
+      const D &dbmManager = manager.getClockManager( comp );
+      const C *sourceDBM  = manager.getkDBM( comp, state );
+      assert( dbmManager.isConsistent( sourceDBM ) );
       C *copyDBM = dbmManager.createDBM( sourceDBM );
-    
+
       for ( auto cs : guards ) {
         dbmManager.andImpl( copyDBM, cs );
       }
-    
+
       if ( !dbmManager.isConsistent( copyDBM ) ) {
-        dbmManager.destroyDBM( copyDBM);
+        dbmManager.destroyDBM( copyDBM );
         return false;
       }
-      dbmManager.destroyDBM( copyDBM);
+      dbmManager.destroyDBM( copyDBM );
     }
-    
-    if(!counterCons.empty( )){
-      const   C *counterValue=manager.getCounterValue( state);
-    
-      for( auto cs: counterCons){
-        if(!cs( counterValue) ){
+
+    if ( !counterCons.empty() ) {
+      const C *counterValue = manager.getCounterValue( state );
+
+      for ( auto cs : counterCons ) {
+        if ( !cs( manager.getParameter( comp ), counterValue ) ) {
           return false;
         }
       }
     }
-    
+
     return true;
   }
 
-  NIntState *operator()(const int comp, const StateManager<C> &manager,
-            const NIntState * const state ) const {
-    assert(isOK( comp, manager, state)) ;
-    
-    NIntState* re=state->copy( );
+  NIntState *operator()( const int comp, const StateManager<C> &manager,
+                         const NIntState *const state ) const {
+    assert( isOK( comp, manager, state ) );
 
-    const  D& dbmManager=manager.getClockManager( comp);
-        
-    C* sourceDBM=manager.getkDBM( comp, re);
+    NIntState *re = state->copy();
+
+    const D &dbmManager = manager.getClockManager( comp );
+
+    C *sourceDBM = manager.getkDBM( comp, re );
 
     for ( auto r : reset ) {
-      assert( r.first > 0 ); // clock id start from 1
+      assert( r.first > 0 );   // clock id start from 1
       assert( r.second >= 0 ); // clock value must positive
       dbmManager.resetImpl( sourceDBM, r.first, r.second );
     }
-    
-    C *counterValue=manager.getCounterValue( re);
 
-    for(  auto act: actions){
-      (*act) (counterValue );
+    C *counterValue = manager.getCounterValue( re );
+
+    for ( auto act : actions ) {
+      ( *act )( counterValue );
     }
-    
+
     return re;
   }
 
@@ -173,8 +167,9 @@ private:
           counterCons; // counter constraint like pid ==id or id==0
   Channel channel;     // Only one synchronisation channels
 
-  vector<const CounterAction*>   actions; // set of actions at this transitionedge
-  vector<pair<int, int> > reset;   // set of reset clock variables
+  vector<const CounterAction *>
+                         actions; // set of actions at this transitionedge
+  vector<pair<int, int>> reset;   // set of reset clock variables
 };
 } // namespace graphsat
 

@@ -13,8 +13,8 @@
 #include "io/xmlconf.h"
 #include "model/ta.hpp"
 
-#include "counteraction.h"
 #include "constraint/clockdiffcons.hpp"
+#include "counteraction.h"
 #include "location.hpp"
 
 #include "problem/reachability.hpp"

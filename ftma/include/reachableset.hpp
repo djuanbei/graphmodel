@@ -72,11 +72,11 @@ public:
       int source    = state->value[ comp ];
       int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
       for ( int j = 0; j < outDegree; j++ ) {
-        
+
         int link = sys.tas[ comp ].graph.getAdj( source, j );
         /**
          * Whether the jump conditions satisfies except synchronize signal
-         * 
+         *
          */
 
         if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager,
@@ -105,7 +105,8 @@ public:
             } else if ( ch.type == ONE2ALL ) {
               for ( auto id : waitComp ) {
                 int cid = waitComp[ id ];
-                if ( unBlockOne( cid, link, state, loc, cons, secondWaitSet ) ) {
+                if ( unBlockOne( cid, link, state, loc, cons,
+                                 secondWaitSet ) ) {
                   return true;
                 }
               }
@@ -145,8 +146,7 @@ private:
   int                        component_num;
   std::default_random_engine generator;
 
-  bool isReach( const vector<vector<CS_t>> &cons,
-                    const State_t *             state ) const {
+  bool isReach( const vector<vector<CS_t>> &cons, const State_t *state ) const {
 
     if ( cons.empty() ) {
       return true;
@@ -168,21 +168,21 @@ private:
   }
 
   bool oneTranision( const int component, const int link, const vector<int> loc,
-                     const vector<vector<CS_t>> &cons, const State_t *const state,
-                     StateSet_t &secondWaitSet ) {
+                     const vector<vector<CS_t>> &cons,
+                     const State_t *const state, StateSet_t &secondWaitSet ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
-    State_t* discreteTransNext = sys.tas[ component ].transitions[ link ]( component, manager, state);
+    State_t *discreteTransNext =
+        sys.tas[ component ].transitions[ link ]( component, manager, state );
 
     vector<DBM_t> advanceNext;
 
     if ( sys.tas[ component ].locations[ target ](
-            manager.getClockManager( component ), manager.getkDBM(component,discreteTransNext),
-            advanceNext ) ) {
+             manager.getClockManager( component ),
+             manager.getkDBM( component, discreteTransNext ), advanceNext ) ) {
       for ( auto next : advanceNext ) {
 
-        State_t *temp =
-            manager.add( component, target, reachSet, next, state );
+        State_t *temp = manager.add( component, target, reachSet, next, state );
 
         if ( temp != NULL ) {
 
@@ -195,35 +195,34 @@ private:
           }
         }
       }
-
     }
     return false;
   }
 
-  bool unBlockOne( const int cid, const int link,  State_t * state,
-                  const vector<int> loc, const vector<vector<CS_t>> &cons,
-                  StateSet_t &secondWaitSet ) {
-    const int blockChannel=state->value[ cid + component_num ];
+  bool unBlockOne( const int cid, const int link, State_t *state,
+                   const vector<int> loc, const vector<vector<CS_t>> &cons,
+                   StateSet_t &secondWaitSet ) {
+    const int blockChannel              = state->value[ cid + component_num ];
     state->value[ cid + component_num ] = 0;
-    const int blockLink                      = state->value[ cid ];
-    int blockSource                    = 0;
+    const int blockLink                 = state->value[ cid ];
+    int       blockSource               = 0;
     sys.tas[ cid ].graph.findSrc( blockLink, blockSource );
-    
+
     state->value[ cid ] = blockSource;
     if ( oneTranision( cid, blockLink, loc, cons, state, secondWaitSet ) ) {
-      state->value[ cid + component_num ]=blockChannel;
-      state->value[ cid ]=blockLink;
+      state->value[ cid + component_num ] = blockChannel;
+      state->value[ cid ]                 = blockLink;
       return true;
     }
 
     if ( oneTranision( cid, link, loc, cons, state, secondWaitSet ) ) {
-      state->value[ cid + component_num ]=blockChannel;
-      state->value[ cid ]=blockLink;
-      
+      state->value[ cid + component_num ] = blockChannel;
+      state->value[ cid ]                 = blockLink;
+
       return true;
     }
-    state->value[ cid + component_num ]=blockChannel;
-    state->value[ cid ]=blockLink;
+    state->value[ cid + component_num ] = blockChannel;
+    state->value[ cid ]                 = blockLink;
     return false;
   }
 };

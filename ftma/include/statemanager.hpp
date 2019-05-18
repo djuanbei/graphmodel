@@ -13,26 +13,17 @@
 #include <vector>
 
 #include "discretestate.hpp"
-
+#include "parameter.h"
 namespace graphsat {
 
 using std::vector;
 
-template <typename C> struct StateManager {
+template <typename C> class StateManager {
   /**
    * state is [loc, channel_state, counter_state, clock_state]
    *
    */
-
-  int component_num;
-  int stateLen;
-
-  int counter_start_loc;
-
-  vector<int> clock_start_loc;
-
-  vector<DBMFactory<C>> clock_manager;
-
+public:
   StateManager() { component_num = stateLen = counter_start_loc = 0; }
 
   StateManager( int comp_num, int counter_num, vector<int> clock_num,
@@ -52,8 +43,8 @@ template <typename C> struct StateManager {
 
       stateLen += ( clock_num[ i ] + 1 ) * ( clock_num[ i ] + 1 );
 
-      DBMFactory<C> temp =
-          DBMFactory<C>( clock_num[ i ], clockUpperBound[ i ], differenceCons[ i ] );
+      DBMFactory<C> temp = DBMFactory<C>( clock_num[ i ], clockUpperBound[ i ],
+                                          differenceCons[ i ] );
 
       clock_manager.push_back( temp );
     }
@@ -77,19 +68,22 @@ template <typename C> struct StateManager {
   inline const DBMFactory<C> &getClockManager( int i ) const {
     return clock_manager[ i ];
   }
+  inline const Parameter &getParameter( const int i ) const {
+    return paramters[ i ];
+  }
 
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
   inline C * getkDBM( const int k, const NIntState *const state ) const {
     return state->value + getClockStart( k );
   }
-  inline C* getCounterValue(NIntState * state ) const{
-    return state->value+counter_start_loc;
+  inline C *getCounterValue( NIntState *state ) const {
+    return state->value + counter_start_loc;
   }
 
-  inline const C* getCounterValue(const NIntState *const state ) const{
-    return state->value+counter_start_loc;
+  inline const C *getCounterValue( const NIntState *const state ) const {
+    return state->value + counter_start_loc;
   }
-  
+
   inline void andImpl( const int id, const ClockConstraint<C> &cs,
                        NIntState *state ) const {
     return getClockManager( id ).andImpl( getkDBM( id, state ), cs );
@@ -99,7 +93,7 @@ template <typename C> struct StateManager {
   }
 
   inline vector<int> blockComponents( const int              chid,
-                                     const NIntState *const state ) const {
+                                      const NIntState *const state ) const {
     vector<int> temp;
     for ( int i = 0; i < component_num; i++ ) {
 
@@ -134,6 +128,18 @@ template <typename C> struct StateManager {
     }
     return re;
   }
+
+private:
+  int component_num;
+  int stateLen;
+
+  int counter_start_loc;
+
+  vector<int> clock_start_loc;
+
+  vector<DBMFactory<C>> clock_manager;
+
+  vector<Parameter> paramters;
 };
 } // namespace graphsat
 #endif

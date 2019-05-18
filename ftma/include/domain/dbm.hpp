@@ -58,7 +58,7 @@ public:
   }
 
   DBMFactory( int nn, const vector<C> &oclockUppuerBound,
-       const vector<ClockConstraint<C>> &odifferenceCons )
+              const vector<ClockConstraint<C>> &odifferenceCons )
       : n( nn + 1 ) {
     size    = n * n;
     MAX_INT = getMAX_INT( (C) 0 );

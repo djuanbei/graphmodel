@@ -10,14 +10,14 @@
 
 #ifndef __TIMED_AUTOMATA_
 #define __TIMED_AUTOMATA_
-#include "counteraction.h"
 #include "channel.h"
+#include "counteraction.h"
 #include "discretestate.hpp"
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
 #include "location.hpp"
-#include "state.hpp"
+#include "statemanager.hpp"
 #include "transition.hpp"
 
 #include <vector>
@@ -29,13 +29,13 @@ using namespace raptor;
 
 typedef int                  C_t;
 typedef C_t *                DBM_t;
-typedef DBMFactory<C_t>             DBMManager_t;
+typedef DBMFactory<C_t>      DBMManager_t;
 typedef DBMset<C_t>          DBMSet_t;
 typedef NIntState            State_t;
 typedef StateSet<NIntState>  StateSet_t;
 typedef ClockConstraint<C_t> CS_t;
 
-typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>           L_t;
+typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>   L_t;
 typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t> T_t;
 
 /**
@@ -87,6 +87,7 @@ public:
   }
 
 private:
+  Parameter parameter;
   vector<L> locations;
   vector<T> transitions;
   int       initial_loc;
