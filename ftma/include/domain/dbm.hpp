@@ -283,7 +283,7 @@ public:
   }
 
   void andImpl( C *newD, const ClockConstraint<C> &cons ) const {
-    if( newD[ 0]<LTEQ_ZERO){
+    if ( newD[ 0 ] < LTEQ_ZERO ) {
       return;
     }
 

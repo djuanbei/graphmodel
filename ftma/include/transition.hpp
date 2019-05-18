@@ -65,14 +65,9 @@ public:
     return *this;
   }
 
-  void setChannel( const Channel& ch){
-    channel =ch;
-  }
+  void setChannel( const Channel &ch ) { channel = ch; }
 
-  
-  const  Channel& getChannel( ) const{
-    return channel;
-  }
+  const Channel &getChannel() const { return channel; }
 
   /**
    *
@@ -128,8 +123,8 @@ private:
   vector<CS> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint>
-                  counterCons; // counter constraint like pid ==id or id==0
-  Channel channel;    //Only one synchronisation channels
+      counterCons; // counter constraint like pid ==id or id==0
+  Channel channel; // Only one synchronisation channels
 
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables

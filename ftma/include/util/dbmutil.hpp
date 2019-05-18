@@ -30,8 +30,6 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
-
-
 /**
  *  Both have compare < and <=
  *

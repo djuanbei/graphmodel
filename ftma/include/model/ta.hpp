@@ -43,8 +43,6 @@ typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t, Action> T_t;
  *
  */
 
-
-
 template <typename C, typename L, typename T> class TA {
 
 public:
@@ -86,7 +84,6 @@ public:
   bool transitionRun( int link, const DBM<C> &manager, C *D ) const {
     return transitions[ link ]( manager, D );
   }
-
 
 private:
   vector<L> locations;
@@ -234,13 +231,12 @@ template <typename C> struct StateManager {
     }
   }
 
-
   inline const DBM<C> &getClockManager( int i ) const {
     return clock_manager[ i ];
   }
 
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
-  inline C * getkDBM( const int k, State_t *state ) const {
+  inline  C * getkDBM( const int k,const State_t * const state ) const {
     return state->value + getClockStart( k );
   }
   inline void andImpl( const int id, const CS_t &cs, State_t *state ) const {
@@ -250,19 +246,19 @@ template <typename C> struct StateManager {
     return getClockManager( id ).isConsistent( getkDBM( id, state ) );
   }
 
-  inline int blockComponent( const int chid, const State_t * const state) const{
-    for( int i=0; i< component_num ; i++){
+  inline int blockComponent( const int            chid,
+                             const State_t *const state ) const {
+    for ( int i = 0; i < component_num; i++ ) {
       /**
        * return first componment which waits for this signal chid
-       * 
+       *
        */
-      if(state->value[ i+component_num] ==chid ){
-        return  i;
+      if ( state->value[ i + component_num ] == chid ) {
+        return i;
       }
     }
     return -1;
   }
-
 
   State_t *add( const int id, const int target, StateSet_t &stateSet, DBM_t d,
                 const State_t *state ) const {

@@ -58,9 +58,8 @@ public:
     secondWaitSet.clear();
   }
 
-
   bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
-                State_t *state, StateSet_t &secondWaitSet ) {
+                State_t * state, StateSet_t &secondWaitSet ) {
     int source = 0;
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
@@ -75,45 +74,46 @@ public:
       for ( int j = 0; j < outDegree; j++ ) {
         int link = sys.tas[ comp ].graph.getAdj( source, j );
 
-        const Channel &ch=sys.tas[ comp ].transitions[ link ].getChannel( );
-        if( ch.id>-1){
-          int waitComp=-1;
-          if(CHANNEL_SEND==ch.action ){
-            waitComp=manager.blockComponent(-ch.id, state);
-          }else if(CHANNEL_RECEIVE==ch.action ){
-            waitComp=manager.blockComponent(ch.id, state);
+        const Channel &ch = sys.tas[ comp ].transitions[ link ].getChannel();
+        if ( ch.id > -1 ) {
+          int waitComp = -1;
+          if ( CHANNEL_SEND == ch.action ) {
+            waitComp = manager.blockComponent( -ch.id, state );
+          } else if ( CHANNEL_RECEIVE == ch.action ) {
+            waitComp = manager.blockComponent( ch.id, state );
           }
-          if(waitComp>-1 ){
-            State_t *temp=state->copy( );
-            temp->value[ waitComp+component_num ]=0;
-            int blockLink=temp->value[ waitComp];
-            int blockSource=0;
-            sys.tas[ waitComp ].graph.findSrc( blockLink,  blockSource );
-            temp->value[ waitComp]=blockSource;
-            if(oneTranision(waitComp, blockLink, loc, cons, temp, secondWaitSet )){
+          if ( waitComp > -1 ) {
+            State_t *temp                           = state->copy();
+            temp->value[ waitComp + component_num ] = 0;
+            int blockLink                           = temp->value[ waitComp ];
+            int blockSource                         = 0;
+            sys.tas[ waitComp ].graph.findSrc( blockLink, blockSource );
+            temp->value[ waitComp ] = blockSource;
+            if ( oneTranision( waitComp, blockLink, loc, cons, temp,
+                               secondWaitSet ) ) {
               return true;
             }
 
-            if(oneTranision(comp, link, loc, cons, temp, secondWaitSet )){
+            if ( oneTranision( comp, link, loc, cons, temp, secondWaitSet ) ) {
               return true;
             }
-              
-          }else{
-            State_t *temp=state->copy( );
-            if(CHANNEL_SEND==ch.action ){
-              temp->value[ comp + component_num ]=ch.id;
-            }else if( CHANNEL_RECEIVE==ch.action){
-              temp->value[ comp + component_num ]=-ch.id;
+
+          } else {
+            State_t *temp = state->copy();
+            if ( CHANNEL_SEND == ch.action ) {
+              temp->value[ comp + component_num ] = ch.id;
+            } else if ( CHANNEL_RECEIVE == ch.action ) {
+              temp->value[ comp + component_num ] = -ch.id;
             }
 
-            temp->value[ comp]=link;
-            if( reachSet.add( temp)){
+            temp->value[ comp ] = link;//block link
+            if ( reachSet.add( temp ) ) {
               secondWaitSet.add( temp );
             }
           }
 
-        }else{
-          if(oneTranision(comp, link, loc, cons,state,secondWaitSet )){
+        } else {
+          if ( oneTranision( comp, link, loc, cons, state, secondWaitSet ) ) {
             return true;
           }
         }
@@ -153,23 +153,26 @@ private:
     return true;
   }
 
-  bool oneTranision( const int component, const int link, const vector<int> loc, const vector<vector<CS_t>> &cons,
-                     State_t *state, StateSet_t &secondWaitSet ){
-    int target=0;
-    sys.tas[ component ].graph.findSnk( link,  target );        
+  bool oneTranision( const int component, const int link, const vector<int> loc,
+                     const vector<vector<CS_t>> &cons, State_t *  state,
+                     StateSet_t &secondWaitSet ) {
+    int target = 0;
+    sys.tas[ component ].graph.findSnk( link, target );
     DBM_t discreteTransNext = sys.tas[ component ].transitions[ link ](
-        manager.getClockManager( component ), manager.getkDBM( component, state ) );
+        manager.getClockManager( component ),
+        manager.getkDBM( component, state ) );
 
     if ( discreteTransNext != NULL ) {
 
       vector<DBM_t> advanceNext;
 
-      if ( sys.tas[ component ].locations[ target ]( manager.getClockManager( component ),
-                                             discreteTransNext,
-                                             advanceNext ) ) {
+      if ( sys.tas[ component ].locations[ target ](
+               manager.getClockManager( component ), discreteTransNext,
+               advanceNext ) ) {
         for ( auto next : advanceNext ) {
 
-          State_t *temp = manager.add( component, target, reachSet, next, state );
+          State_t *temp =
+              manager.add( component, target, reachSet, next, state );
 
           if ( temp != NULL ) {
 
@@ -183,9 +186,8 @@ private:
           }
         }
       }
-         
-    }    
-    return false; 
+    }
+    return false;
   }
 };
 typedef ReachableSet<TAS_t> R_t;
