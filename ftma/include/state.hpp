@@ -31,7 +31,7 @@ template <typename C> struct StateManager {
 
   vector<int> clock_start_loc;
 
-  vector<DBM<C>> clock_manager;
+  vector<DBMFactory<C>> clock_manager;
 
   StateManager() { component_num = stateLen = counter_start_loc = 0; }
 
@@ -52,8 +52,8 @@ template <typename C> struct StateManager {
 
       stateLen += ( clock_num[ i ] + 1 ) * ( clock_num[ i ] + 1 );
 
-      DBM<C> temp =
-          DBM<C>( clock_num[ i ], clockUpperBound[ i ], differenceCons[ i ] );
+      DBMFactory<C> temp =
+          DBMFactory<C>( clock_num[ i ], clockUpperBound[ i ], differenceCons[ i ] );
 
       clock_manager.push_back( temp );
     }
@@ -74,7 +74,7 @@ template <typename C> struct StateManager {
     }
   }
 
-  inline const DBM<C> &getClockManager( int i ) const {
+  inline const DBMFactory<C> &getClockManager( int i ) const {
     return clock_manager[ i ];
   }
 
@@ -98,7 +98,7 @@ template <typename C> struct StateManager {
     return getClockManager( id ).isConsistent( getkDBM( id, state ) );
   }
 
-  inline vector<int> blockComponent( const int              chid,
+  inline vector<int> blockComponents( const int              chid,
                                      const NIntState *const state ) const {
     vector<int> temp;
     for ( int i = 0; i < component_num; i++ ) {

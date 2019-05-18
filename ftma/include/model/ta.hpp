@@ -10,7 +10,7 @@
 
 #ifndef __TIMED_AUTOMATA_
 #define __TIMED_AUTOMATA_
-#include "action.hpp"
+#include "counteraction.h"
 #include "channel.h"
 #include "discretestate.hpp"
 #include "domain/dbm.hpp"
@@ -29,14 +29,14 @@ using namespace raptor;
 
 typedef int                  C_t;
 typedef C_t *                DBM_t;
-typedef DBM<C_t>             DBMManager_t;
+typedef DBMFactory<C_t>             DBMManager_t;
 typedef DBMset<C_t>          DBMSet_t;
 typedef NIntState            State_t;
 typedef StateSet<NIntState>  StateSet_t;
 typedef ClockConstraint<C_t> CS_t;
 
 typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>           L_t;
-typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t, Action> T_t;
+typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t> T_t;
 
 /**
  *
@@ -78,11 +78,11 @@ public:
   void setInitialLoc( int loc ) { initial_loc = loc; }
   int  getInitialLoc() const { return initial_loc; }
 
-  bool locationRun( int i, const DBM<C> &manager, C *D ) const {
+  bool locationRun( int i, const DBMFactory<C> &manager, C *D ) const {
     return locations[ i ]( manager, D );
   }
 
-  bool transitionRun( int link, const DBM<C> &manager, C *D ) const {
+  bool transitionRun( int link, const DBMFactory<C> &manager, C *D ) const {
     return transitions[ link ]( manager, D );
   }
 

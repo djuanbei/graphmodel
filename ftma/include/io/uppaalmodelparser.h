@@ -13,7 +13,7 @@
 #include "io/xmlconf.h"
 #include "model/ta.hpp"
 
-#include "action.hpp"
+#include "counteraction.h"
 #include "constraint/clockdiffcons.hpp"
 #include "location.hpp"
 

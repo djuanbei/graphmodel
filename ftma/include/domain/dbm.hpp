@@ -1,6 +1,6 @@
 
 /**
- * @file DBM.hpp
+ * @file DBMFactory.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date Thu Mar 28 19:47:51 2019
  *
@@ -38,10 +38,10 @@ using namespace std;
  *
  */
 
-template <typename C> class DBM {
+template <typename C> class DBMFactory {
 
 public:
-  DBM( void ) {
+  DBMFactory( void ) {
     n       = 0;
     size    = 0;
     MAX_INT = getMAX_INT( (C) 0 );
@@ -49,7 +49,7 @@ public:
     distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
   }
 
-  DBM( int nn )
+  DBMFactory( int nn )
       : n( nn + 1 ) {
     size    = n * n;
     MAX_INT = getMAX_INT( (C) 0 );
@@ -57,7 +57,7 @@ public:
     distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
   }
 
-  DBM( int nn, const vector<C> &oclockUppuerBound,
+  DBMFactory( int nn, const vector<C> &oclockUppuerBound,
        const vector<ClockConstraint<C>> &odifferenceCons )
       : n( nn + 1 ) {
     size    = n * n;
@@ -68,14 +68,14 @@ public:
     differenceCons   = odifferenceCons;
   }
 
-  ~DBM() { n = 0; }
+  ~DBMFactory() { n = 0; }
 
   void setClockNum( int num ) {
     n    = num + 1;
     size = n * n;
   }
 
-  C *newMatrix() const {
+  C *createDBM() const {
     C *D = new C[ size ]();
     fill( D, D + size, LTEQ_ZERO ); // x-x<=0
     return D;
@@ -88,13 +88,13 @@ public:
    *
    * @return
    */
-  C *newMatrix( const C *const D ) const {
+  C *createDBM( const C *const D ) const {
     C *newD = new C[ size ]();
     memcpy( newD, D, sizeof( C ) * size );
     return newD;
   }
 
-  void deleteD( C *D ) const { delete[] D; }
+  void destroyDBM( C *D ) const { delete[] D; }
 
   void init( C *D ) const {
     fill( D, D + size, LTEQ_ZERO ); // x-x<=0
@@ -109,7 +109,7 @@ public:
   }
   // TODO
   C *randomFeasiableMatrix() {
-    C *D  = newMatrix();
+    C *D  = createDBM();
     C *D1 = up( D );
     delete[] D;
 
@@ -183,7 +183,7 @@ public:
    * precondition D is canonicalForm
    * @param D
    *
-   * @return true if DBM D is not empty,
+   * @return true if DBMFactory D is not empty,
    * false otherwise.
    */
   bool isConsistent( const C *const D ) const { return D[ 0 ] >= LTEQ_ZERO; }
@@ -256,7 +256,7 @@ public:
    *
    */
   C *up( const C *const D ) const {
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     upImpl( newD );
     return newD;
   }
@@ -277,7 +277,7 @@ public:
    *
    */
   C *down( const C *const D ) const {
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     downImpl( newD );
     return newD;
   }
@@ -313,7 +313,7 @@ public:
    */
   C *And( const C *const D, const ClockConstraint<C> &cons ) const {
 
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     andImpl( newD, cons );
     return newD;
   }
@@ -333,7 +333,7 @@ public:
    * @param x
    */
   C *free( const C *const D, const int x ) const {
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     freeImpl( newD, x );
     return newD;
   }
@@ -361,7 +361,7 @@ public:
    * @param m
    */
   C *reset( const C *const D, const int x, const C m ) const {
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     resetImpl( newD, x, m );
     return newD;
   }
@@ -380,7 +380,7 @@ public:
    * @param y
    */
   C *copy( const C *const D, const int x, const int y ) const {
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     copyImpl( newD, x, y );
     return newD;
   }
@@ -409,7 +409,7 @@ public:
    * @param m
    */
   C *shift( const C *const D, const int x, const C m ) const {
-    C *newD = newMatrix( D );
+    C *newD = createDBM( D );
     shiftImpl( newD, x, m );
     return newD;
   }
@@ -494,12 +494,12 @@ public:
           if ( !contain( waitS, DandC ) ) {
             waitS.push_back( DandC );
           } else {
-            deleteD( DandC );
+            destroyDBM( DandC );
           }
           if ( !contain( waitS, DandNegC ) ) {
             waitS.push_back( DandNegC );
           } else {
-            deleteD( DandNegC );
+            destroyDBM( DandNegC );
           }
 
         } else {
@@ -512,7 +512,7 @@ public:
       re.swap( waitS );
       for ( size_t i = 0; i < waitS.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
-          deleteD( waitS[ i ] );
+          destroyDBM( waitS[ i ] );
         }
         waitS.clear();
       }

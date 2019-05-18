@@ -18,10 +18,10 @@
 
 namespace graphsat {
 using namespace std;
-template <typename C, typename CS, typename D, typename DSet, typename A>
+template <typename C, typename CS, typename D, typename DSet>
 class Transition {
 
-  typedef Transition<C, CS, D, DSet, A> Transition_t;
+  typedef Transition<C, CS, D, DSet> Transition_t;
 
 public:
   Transition() { source = target = -1; }
@@ -78,10 +78,10 @@ public:
    *
    * @return
    */
-  Transition_t &operator+=( A &a ) {
+  void addCounterAction( const CounterAction *a){
     actions.push_back( a );
-    return *this;
   }
+
 
   /**
    * add one clock reset  to this transition
@@ -90,9 +90,8 @@ public:
    *
    * @return
    */
-  Transition_t &operator+=( int r ) {
+  void addReset(pair<int,int> & r ){
     reset.push_back( r );
-    return *this;
   }
 
   Transition_t &operator+=( CounterConstraint &guards ) {
@@ -109,26 +108,31 @@ public:
    */
   bool isOK( const int comp, const StateManager<C> &manager,
              const  NIntState *state ) const {
-    const  D& dbmManager=manager.getClockManager( comp);
+    if(!guards.empty( )){
+
+      const  D& dbmManager=manager.getClockManager( comp);
+      const C*sourceDBM=manager.getkDBM( comp, state);
+      assert(dbmManager.isConsistent( sourceDBM )  );
+      C *copyDBM = dbmManager.createDBM( sourceDBM );
     
-    const C*sourceDBM=manager.getkDBM( comp, state);
+      for ( auto cs : guards ) {
+        dbmManager.andImpl( copyDBM, cs );
+      }
     
-    C *copyDBM = dbmManager.newMatrix( sourceDBM );
-    for ( auto cs : guards ) {
-      dbmManager.andImpl( copyDBM, cs );
-    }
-    if ( !dbmManager.isConsistent( copyDBM ) ) {
-      dbmManager.deleteD( copyDBM);
-      return false;
-    }
-    
-    dbmManager.deleteD( copyDBM);
-    
-    const   C *counterValue=manager.getCounterValue( state);
-    
-    for( auto cs: counterCons){
-      if(!cs( counterValue) ){
+      if ( !dbmManager.isConsistent( copyDBM ) ) {
+        dbmManager.destroyDBM( copyDBM);
         return false;
+      }
+      dbmManager.destroyDBM( copyDBM);
+    }
+    
+    if(!counterCons.empty( )){
+      const   C *counterValue=manager.getCounterValue( state);
+    
+      for( auto cs: counterCons){
+        if(!cs( counterValue) ){
+          return false;
+        }
       }
     }
     
@@ -136,7 +140,7 @@ public:
   }
 
   NIntState *operator()(const int comp, const StateManager<C> &manager,
-             NIntState *state ) const {
+            const NIntState * const state ) const {
     assert(isOK( comp, manager, state)) ;
     
     NIntState* re=state->copy( );
@@ -146,14 +150,15 @@ public:
     C* sourceDBM=manager.getkDBM( comp, re);
 
     for ( auto r : reset ) {
-      assert( r > 0 ); // clock id start from 1
-      dbmManager.resetImpl( sourceDBM, r, 0 );
+      assert( r.first > 0 ); // clock id start from 1
+      assert( r.second >= 0 ); // clock value must positive
+      dbmManager.resetImpl( sourceDBM, r.first, r.second );
     }
     
-    C *counterValue=manager.getCounterValue( state);
+    C *counterValue=manager.getCounterValue( re);
 
     for(  auto act: actions){
-      act(counterValue );
+      (*act) (counterValue );
     }
     
     return re;
@@ -168,8 +173,8 @@ private:
           counterCons; // counter constraint like pid ==id or id==0
   Channel channel;     // Only one synchronisation channels
 
-  vector<A>   actions; // set of actions at this transitionedge
-  vector<int> reset;   // set of reset clock variables
+  vector<const CounterAction*>   actions; // set of actions at this transitionedge
+  vector<pair<int, int> > reset;   // set of reset clock variables
 };
 } // namespace graphsat
 

@@ -9,7 +9,7 @@
  *
  */
 
-#include "action.hpp"
+#include "counteraction.h"
 #include "constraint/clockdiffcons.hpp"
 #include "location.hpp"
 #include "model/ta.hpp"
@@ -42,13 +42,15 @@ void example1( void ) {
   L_t         S3( 3 );
 
   T_t e01( 0, 1 );
-  e01 += 3;
+  pair<int, int> rest1( 3,0);
+  e01.addReset( rest1);
   // e01.reset.push_back( 3 ); // z -->0
   T_t e12( 1, 2 );
 
   CS_t cs1( 0, 2, -2, true ); // 0-y < -2
   e12 += cs1;
-  e12 += 2; // y --> 0
+  pair<int, int> rest2( 2,0);
+  e12.addReset(rest2); // y --> 0
 
   T_t e23( 2, 3 );
 
@@ -87,14 +89,14 @@ void example2( void ) {
   L_t         L1( 1 );
 
   T_t E00a( 0, 0 );
-
-  E00a += 2;                  // y-->0
+  pair<int, int> reset1( 2,0);
+  E00a.addReset(reset1);                  // y-->0
   CS_t cs1( 2, 0, 2, false ); // y<=2
   E00a += cs1;
 
   T_t E00b( 0, 0 );
-
-  E00b += 1;                  // x-->0
+  pair<int, int> reset2( 1,0);
+  E00b.addReset(reset2);                  // x-->0
   CS_t cs2( 1, 0, 2, false ); // x<=2
   E00b += cs2;
 
@@ -159,7 +161,7 @@ int main( int argc, const char *argv[] ) {
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
   std::cout << "Hello, World!\n";
 
-  C_t *D1 = exampleDBM.newMatrix();
+  C_t *D1 = exampleDBM.createDBM();
   cout << "matrix dump :\n" << exampleDBM.dump( D1 ) << endl;
   C_t *D2 = exampleDBM.reset( D1, 1, (C_t) 10 );
   cout << "matrix dump :\n" << exampleDBM.dump( D2 ) << endl;

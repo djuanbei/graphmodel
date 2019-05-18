@@ -141,15 +141,15 @@ public:
          * then left the area which satisfies all invariants
          *
          */
-        for ( typename vector<CS_t>::const_iterator cit = invariants.begin();
-              cit != invariants.end(); cit++ ) {
-          dbmManager.andImpl( D, *cit );
+        for( auto cs :invariants ){
+          dbmManager.andImpl( D, cs );
         }
+
         assert( dbmManager.isConsistent( D ) );
       }
 
     } else {
-      dbmManager.deleteD( D );
+      dbmManager.destroyDBM( D );
       return false;
     }
 

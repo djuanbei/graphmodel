@@ -45,7 +45,7 @@ public:
       if ( 0 ==
            memcmp( &loc[ 0 ], state->value, component_num * sizeof( int ) ) ) {
 
-        if ( isReachable( cons, state ) ) {
+        if ( isReach( cons, state ) ) {
           return TRUE;
         }
       }
@@ -61,11 +61,10 @@ public:
 
   bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
                 State_t *state, StateSet_t &secondWaitSet ) {
-    int source = 0;
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
         /**
-         * waiting for synchronize signal
+         * Waiting for synchronize signal
          *
          */
         continue;
@@ -89,9 +88,9 @@ public:
         if ( ch.id > -1 ) {
           vector<int> waitComp;
           if ( CHANNEL_SEND == ch.action ) {
-            waitComp = manager.blockComponent( -ch.id, state );
+            waitComp = manager.blockComponents( -ch.id, state );
           } else if ( CHANNEL_RECEIVE == ch.action ) {
-            waitComp = manager.blockComponent( ch.id, state );
+            waitComp = manager.blockComponents( ch.id, state );
           }
           if ( !waitComp.empty() ) {
             if ( ch.type == ONE2ONE ) {
@@ -100,13 +99,13 @@ public:
               int id  = distribution( generator );
               int cid = waitComp[ id ];
 
-              if ( relaxeOne( cid, link, state, loc, cons, secondWaitSet ) ) {
+              if ( unBlockOne( cid, link, state, loc, cons, secondWaitSet ) ) {
                 return true;
               }
             } else if ( ch.type == ONE2ALL ) {
               for ( auto id : waitComp ) {
                 int cid = waitComp[ id ];
-                if ( relaxeOne( cid, link, state, loc, cons, secondWaitSet ) ) {
+                if ( unBlockOne( cid, link, state, loc, cons, secondWaitSet ) ) {
                   return true;
                 }
               }
@@ -146,7 +145,7 @@ private:
   int                        component_num;
   std::default_random_engine generator;
 
-  bool isReachable( const vector<vector<CS_t>> &cons,
+  bool isReach( const vector<vector<CS_t>> &cons,
                     const State_t *             state ) const {
 
     if ( cons.empty() ) {
@@ -169,7 +168,7 @@ private:
   }
 
   bool oneTranision( const int component, const int link, const vector<int> loc,
-                     const vector<vector<CS_t>> &cons, State_t *state,
+                     const vector<vector<CS_t>> &cons, const State_t *const state,
                      StateSet_t &secondWaitSet ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
@@ -190,7 +189,7 @@ private:
           secondWaitSet.add( temp );
           if ( 0 == memcmp( &loc[ 0 ], temp->value,
                             component_num * sizeof( int ) ) ) {
-            if ( isReachable( cons, temp ) ) {
+            if ( isReach( cons, temp ) ) {
               return true;
             }
           }
@@ -201,22 +200,30 @@ private:
     return false;
   }
 
-  bool relaxeOne( const int cid, const int link, const State_t *const state,
+  bool unBlockOne( const int cid, const int link,  State_t * state,
                   const vector<int> loc, const vector<vector<CS_t>> &cons,
                   StateSet_t &secondWaitSet ) {
-    State_t *temp                      = state->copy();
-    temp->value[ cid + component_num ] = 0;
-    int blockLink                      = temp->value[ cid ];
+    const int blockChannel=state->value[ cid + component_num ];
+    state->value[ cid + component_num ] = 0;
+    const int blockLink                      = state->value[ cid ];
     int blockSource                    = 0;
     sys.tas[ cid ].graph.findSrc( blockLink, blockSource );
-    temp->value[ cid ] = blockSource;
-    if ( oneTranision( cid, blockLink, loc, cons, temp, secondWaitSet ) ) {
+    
+    state->value[ cid ] = blockSource;
+    if ( oneTranision( cid, blockLink, loc, cons, state, secondWaitSet ) ) {
+      state->value[ cid + component_num ]=blockChannel;
+      state->value[ cid ]=blockLink;
       return true;
     }
 
-    if ( oneTranision( cid, link, loc, cons, temp, secondWaitSet ) ) {
+    if ( oneTranision( cid, link, loc, cons, state, secondWaitSet ) ) {
+      state->value[ cid + component_num ]=blockChannel;
+      state->value[ cid ]=blockLink;
+      
       return true;
     }
+    state->value[ cid + component_num ]=blockChannel;
+    state->value[ cid ]=blockLink;
     return false;
   }
 };

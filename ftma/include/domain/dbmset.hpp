@@ -132,12 +132,12 @@ public:
 
   /**
 
-   * @param DBM  A dbm matrix
+   * @param DBMFactory  A dbm matrix
    *
-   * @return true if real insert DBM into set
+   * @return true if real insert DBMFactory into set
    * false otherwise.
    */
-  bool add( const DBM<C> &dbmManager, C *DM ) {
+  bool add( const DBMFactory<C> &dbmManager, C *DM ) {
     uint32_t hashValue = dbmManager.getHashValue( DM );
     typename std::pair<typename std::map<uint32_t, int>::iterator, bool> ret;
     ret = passedD.insert( std::pair<uint32_t, int>( hashValue, mapD.size() ) );
@@ -177,7 +177,7 @@ public:
     return true;
   }
 
-  bool include( const DBM<C> &dbmManager, C *DM, DF_T &featrue ) const {
+  bool include( const DBMFactory<C> &dbmManager, C *DM, DF_T &featrue ) const {
 
     for ( size_t i = 0; i < mapD.size(); i++ ) {
       if ( ( mapDFeature[ i ] >= featrue ) &&
@@ -221,7 +221,7 @@ public:
     clear();
   }
 
-  void And( const DBM<C> &dbmManager, DBMset<C> &other ) {
+  void And( const DBMFactory<C> &dbmManager, DBMset<C> &other ) {
 
     for ( typename vector<C *>::iterator it = other.mapD.begin();
           it != other.mapD.end(); it++ ) {
