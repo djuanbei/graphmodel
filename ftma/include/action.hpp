@@ -14,6 +14,9 @@
 namespace graphsat {
 struct Action {
   void apply( Counter &c ) const {}
+  void operator( )( int * value)const{
+    
+  }
 };
 } // namespace graphsat
 #endif

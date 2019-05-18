@@ -14,6 +14,7 @@
 
 #include "channel.h"
 #include "constraint/countercons.h"
+#include "state.hpp"
 
 namespace graphsat {
 using namespace std;
@@ -97,23 +98,64 @@ public:
   Transition_t &operator+=( CounterConstraint &guards ) {
     counterCons.push_back( guards );
   }
-
-  C *operator()( const D &dbmManager, const C *const sourceDBM ) const {
-
-    C *re = dbmManager.newMatrix( sourceDBM );
+  /** 
+   * @brief Except synchronize signal, other state satisfies jump conditions
+   * 
+   * @param comp 
+   * @param manager 
+   * @param state 
+   * 
+   * @return 
+   */
+  bool isOK( const int comp, const StateManager<C> &manager,
+             const  NIntState *state ) const {
+    const  D& dbmManager=manager.getClockManager( comp);
+    
+    const C*sourceDBM=manager.getkDBM( comp, state);
+    
+    C *copyDBM = dbmManager.newMatrix( sourceDBM );
     for ( auto cs : guards ) {
-      dbmManager.andImpl( re, cs );
+      dbmManager.andImpl( copyDBM, cs );
     }
-    if ( dbmManager.isConsistent( re ) ) {
-      for ( auto r : reset ) {
-        assert( r > 0 ); // clock id start from 1
-        dbmManager.resetImpl( re, r, 0 );
+    if ( !dbmManager.isConsistent( copyDBM ) ) {
+      dbmManager.deleteD( copyDBM);
+      return false;
+    }
+    
+    dbmManager.deleteD( copyDBM);
+    
+    const   C *counterValue=manager.getCounterValue( state);
+    
+    for( auto cs: counterCons){
+      if(!cs( counterValue) ){
+        return false;
       }
-    } else {
-      delete[] re;
-      re = NULL;
-      return re;
     }
+    
+    return true;
+  }
+
+  NIntState *operator()(const int comp, const StateManager<C> &manager,
+             NIntState *state ) const {
+    assert(isOK( comp, manager, state)) ;
+    
+    NIntState* re=state->copy( );
+
+    const  D& dbmManager=manager.getClockManager( comp);
+        
+    C* sourceDBM=manager.getkDBM( comp, re);
+
+    for ( auto r : reset ) {
+      assert( r > 0 ); // clock id start from 1
+      dbmManager.resetImpl( sourceDBM, r, 0 );
+    }
+    
+    C *counterValue=manager.getCounterValue( state);
+
+    for(  auto act: actions){
+      act(counterValue );
+    }
+    
     return re;
   }
 
@@ -123,8 +165,8 @@ private:
   vector<CS> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint>
-      counterCons; // counter constraint like pid ==id or id==0
-  Channel channel; // Only one synchronisation channels
+          counterCons; // counter constraint like pid ==id or id==0
+  Channel channel;     // Only one synchronisation channels
 
   vector<A>   actions; // set of actions at this transitionedge
   vector<int> reset;   // set of reset clock variables

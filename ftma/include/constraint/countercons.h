@@ -26,7 +26,7 @@ public:
       , rhs( erhs )
       , op( eop ) {}
 
-  bool operator()( const vector<int> &valuation ) const {
+  bool operator()( const int *valuation ) const {
     int dummy = 0;
     for ( vector<pair<int, int>>::const_iterator it = constraint.begin();
           it != constraint.end(); it++ ) {

@@ -9,6 +9,7 @@
  */
 #ifndef __REACH_SET_HPP
 #define __REACH_SET_HPP
+#include <random>
 #include <vector>
 
 namespace graphsat {
@@ -59,7 +60,7 @@ public:
   }
 
   bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
-                State_t * state, StateSet_t &secondWaitSet ) {
+                State_t *state, StateSet_t &secondWaitSet ) {
     int source = 0;
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
@@ -72,30 +73,43 @@ public:
       int source    = state->value[ comp ];
       int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
       for ( int j = 0; j < outDegree; j++ ) {
+        
         int link = sys.tas[ comp ].graph.getAdj( source, j );
+        /**
+         * Whether the jump conditions satisfies except synchronize signal
+         * 
+         */
+
+        if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager,
+                                                        state ) ) {
+          continue;
+        }
 
         const Channel &ch = sys.tas[ comp ].transitions[ link ].getChannel();
         if ( ch.id > -1 ) {
-          int waitComp = -1;
+          vector<int> waitComp;
           if ( CHANNEL_SEND == ch.action ) {
             waitComp = manager.blockComponent( -ch.id, state );
           } else if ( CHANNEL_RECEIVE == ch.action ) {
             waitComp = manager.blockComponent( ch.id, state );
           }
-          if ( waitComp > -1 ) {
-            State_t *temp                           = state->copy();
-            temp->value[ waitComp + component_num ] = 0;
-            int blockLink                           = temp->value[ waitComp ];
-            int blockSource                         = 0;
-            sys.tas[ waitComp ].graph.findSrc( blockLink, blockSource );
-            temp->value[ waitComp ] = blockSource;
-            if ( oneTranision( waitComp, blockLink, loc, cons, temp,
-                               secondWaitSet ) ) {
-              return true;
-            }
+          if ( !waitComp.empty() ) {
+            if ( ch.type == ONE2ONE ) {
+              std::uniform_int_distribution<int> distribution(
+                  0, waitComp.size() - 1 );
+              int id  = distribution( generator );
+              int cid = waitComp[ id ];
 
-            if ( oneTranision( comp, link, loc, cons, temp, secondWaitSet ) ) {
-              return true;
+              if ( relaxeOne( cid, link, state, loc, cons, secondWaitSet ) ) {
+                return true;
+              }
+            } else if ( ch.type == ONE2ALL ) {
+              for ( auto id : waitComp ) {
+                int cid = waitComp[ id ];
+                if ( relaxeOne( cid, link, state, loc, cons, secondWaitSet ) ) {
+                  return true;
+                }
+              }
             }
 
           } else {
@@ -106,7 +120,7 @@ public:
               temp->value[ comp + component_num ] = -ch.id;
             }
 
-            temp->value[ comp ] = link;//block link
+            temp->value[ comp ] = link; // block link
             if ( reachSet.add( temp ) ) {
               secondWaitSet.add( temp );
             }
@@ -129,7 +143,8 @@ private:
   const SYS &    sys;
   StateManager_t manager;
   template <typename R1> friend class Reachability;
-  int component_num;
+  int                        component_num;
+  std::default_random_engine generator;
 
   bool isReachable( const vector<vector<CS_t>> &cons,
                     const State_t *             state ) const {
@@ -154,38 +169,53 @@ private:
   }
 
   bool oneTranision( const int component, const int link, const vector<int> loc,
-                     const vector<vector<CS_t>> &cons, State_t *  state,
+                     const vector<vector<CS_t>> &cons, State_t *state,
                      StateSet_t &secondWaitSet ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
-    DBM_t discreteTransNext = sys.tas[ component ].transitions[ link ](
-        manager.getClockManager( component ),
-        manager.getkDBM( component, state ) );
+    State_t* discreteTransNext = sys.tas[ component ].transitions[ link ]( component, manager, state);
 
-    if ( discreteTransNext != NULL ) {
+    vector<DBM_t> advanceNext;
 
-      vector<DBM_t> advanceNext;
+    if ( sys.tas[ component ].locations[ target ](
+            manager.getClockManager( component ), manager.getkDBM(component,discreteTransNext),
+            advanceNext ) ) {
+      for ( auto next : advanceNext ) {
 
-      if ( sys.tas[ component ].locations[ target ](
-               manager.getClockManager( component ), discreteTransNext,
-               advanceNext ) ) {
-        for ( auto next : advanceNext ) {
+        State_t *temp =
+            manager.add( component, target, reachSet, next, state );
 
-          State_t *temp =
-              manager.add( component, target, reachSet, next, state );
+        if ( temp != NULL ) {
 
-          if ( temp != NULL ) {
-
-            secondWaitSet.add( temp );
-            if ( 0 == memcmp( &loc[ 0 ], temp->value,
-                              component_num * sizeof( int ) ) ) {
-              if ( isReachable( cons, temp ) ) {
-                return true;
-              }
+          secondWaitSet.add( temp );
+          if ( 0 == memcmp( &loc[ 0 ], temp->value,
+                            component_num * sizeof( int ) ) ) {
+            if ( isReachable( cons, temp ) ) {
+              return true;
             }
           }
         }
       }
+
+    }
+    return false;
+  }
+
+  bool relaxeOne( const int cid, const int link, const State_t *const state,
+                  const vector<int> loc, const vector<vector<CS_t>> &cons,
+                  StateSet_t &secondWaitSet ) {
+    State_t *temp                      = state->copy();
+    temp->value[ cid + component_num ] = 0;
+    int blockLink                      = temp->value[ cid ];
+    int blockSource                    = 0;
+    sys.tas[ cid ].graph.findSrc( blockLink, blockSource );
+    temp->value[ cid ] = blockSource;
+    if ( oneTranision( cid, blockLink, loc, cons, temp, secondWaitSet ) ) {
+      return true;
+    }
+
+    if ( oneTranision( cid, link, loc, cons, temp, secondWaitSet ) ) {
+      return true;
     }
     return false;
   }
