@@ -110,7 +110,7 @@ public:
   }
 
   NIntState *add( const int id, const int target, StateSet<NIntState> &stateSet,
-                  C *d, const NIntState *state ) const {
+                  const C *const dbm, const NIntState *const state ) const {
     NIntState *re  = state->copy();
     int        len = 0;
     if ( id + 1 < (int) clock_start_loc.size() ) {
@@ -118,15 +118,27 @@ public:
     } else {
       len = stateLen - clock_start_loc[ id ];
     }
-    memcpy( re->value + clock_start_loc[ id ], d, sizeof( C ) * len );
+    memcpy( re->value + clock_start_loc[ id ], dbm, sizeof( C ) * len );
 
     re->value[ id ] = target;
+
 
     if ( !stateSet.add( re ) ) {
       delete re;
       return NULL;
     }
     return re;
+  }
+  inline bool  isCommitComp( const int id, const NIntState * const state) const{
+    return state->value[ id]<0;
+  }
+
+  inline void setCommitState( const int id, const int target, NIntState * state ) const {
+    state->value[id ]=-1-state->value[id ];
+  }
+  
+  inline  int getCommitLoc( const int id, const NIntState* const state) const{
+    return -(state->value[ id])-1;
   }
 
 private:

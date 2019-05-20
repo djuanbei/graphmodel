@@ -19,7 +19,9 @@
 
 namespace graphsat {
 
-using namespace std;
+using std::pair;
+using std::vector;
+
 class CounterConstraint {
 
 public:

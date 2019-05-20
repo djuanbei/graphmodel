@@ -10,14 +10,21 @@
 #ifndef __DISCRETE_STATE_H
 #define __DISCRETE_STATE_H
 
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <random>
 #include <vector>
-
 namespace graphsat {
 
-using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
+using std::fill;
+using std::map;
+using std::pair;
+
+using std::vector;
 
 class StateElem {
 public:
@@ -111,12 +118,17 @@ public:
     typename std::pair<typename std::map<int, int>::iterator, bool> ret;
     ret = passedD.insert( std::pair<int, int>( hashValue, mapD.size() ) );
 
-    if ( false == ret.second ) {
+    /**
+     * check whether has elemeent is set has same digitalFeature
+     *
+     */
+    if ( false == ret.second ) { // has
       T *D1 = getD( hashValue );
       if ( !one->equal( D1 ) ) {
         for ( typename vector<T *>::iterator it = recoveryD.begin();
               it != recoveryD.end(); it++ ) {
           if ( one->equal( *it ) ) {
+
             return false;
           }
         }
@@ -131,21 +143,23 @@ public:
         return false;
       }
     }
-    mapDAdd( one, hashValue );
+    mapDAdd( one );
     return true;
   }
 
-  bool contain( const T *one ) const {
-    for ( size_t i = 0; i < mapD.size(); i++ ) {
-      if ( mapD[ i ]->contain( one ) ) {
+  bool contain( const T *const one ) const {
+
+    for ( auto e : mapD ) {
+      if ( e->contain( one ) ) {
         return true;
       }
     }
-    for ( size_t i = 0; i < recoveryD.size(); i++ ) {
-      if ( recoveryD[ i ]->contain( one ) ) {
+    for ( auto e : recoveryD ) {
+      if ( e->contain( one ) ) {
         return true;
       }
     }
+
     return false;
   }
 
@@ -260,7 +274,7 @@ private:
 
   T *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
 
-  void mapDAdd( T *D, int hashValue ) { mapD.push_back( D ); }
+  void mapDAdd( T *D ) { mapD.push_back( D ); }
 
   void recoveryDAdd( T *D ) { recoveryD.push_back( D ); }
 };
@@ -583,37 +597,6 @@ private:
   ExpandComposeStateSet<T>                  other;
 };
 
-// class IntState : public StateElem {
-// public:
-//   IntState() { value[ 0 ] = value[ 1 ] = 0; }
-//   IntState( int f, int s ) {
-//     value[ 0 ] = f;
-//     value[ 1 ] = s;
-//   }
-//   IntState( int *v ) {
-//     value[ 0 ] = v[ 0 ];
-//     value[ 1 ] = v[ 1 ];
-//   }
-
-//   int digitalFeature() const { return value[ 0 ] + value[ 1 ]; }
-
-//   bool  contain( const StateElem *other ) const {
-//     const IntState *rhs = (const IntState *) other;
-//     if ( value[ 0 ] > rhs->value[ 0 ] ) {
-//       return false;
-//     }
-//     return value[ 1 ] <= rhs->value[ 1 ];
-//   }
-//   bool equal( const StateElem *other ) const {
-//     const IntState *rhs = (const IntState *) other;
-//     return ( value[ 1 ] == rhs->value[ 1 ] ) &&
-//            ( value[ 0 ] == rhs->value[ 0 ] );
-//   }
-
-//  private:
-//   int value[ 2 ];
-// };
-
 class NIntState : public StateElem {
 
 public:
@@ -643,18 +626,20 @@ public:
   int digitalFeature() const {
     int re = 0;
     for ( int i = 0; i < n; i++ ) {
-      re += value[ i ];
+      re += value[ i ] * ( i + 1 );
     }
     return re;
   }
+  void setValue( const int *v ) { memcpy( value, v, sizeof( int ) * n ); }
 
   bool contain( const StateElem *other ) const {
 
     const NIntState *rhs = (const NIntState *) other;
 
-    if ( 0 != memcpy( value, rhs->value, start * sizeof( int ) ) ) {
+    if ( 0 != memcmp( value, rhs->value, start * sizeof( int ) ) ) {
       return false;
     }
+
     for ( int i = start; i < n; i++ ) {
       if ( value[ i ] < rhs->value[ i ] ) {
         return false;
@@ -667,15 +652,7 @@ public:
 
     const NIntState *rhs = (const NIntState *) other;
 
-    if ( 0 != memcpy( value, rhs->value, start * sizeof( int ) ) ) {
-      return false;
-    }
-    for ( int i = start; i < n; i++ ) {
-      if ( value[ i ] != rhs->value[ i ] ) {
-        return false;
-      }
-    }
-    return true;
+    return ( 0 == memcmp( value, rhs->value, n * sizeof( int ) ) );
   }
 
 private:
@@ -690,84 +667,6 @@ private:
   template <typename C, typename L, typename T> friend class TAS;
   template <typename S> friend class ReachableSet;
 };
-
-// class DoubleState : public StateElem {
-
-// public:
-//   DoubleState() { value[ 0 ] = value[ 1 ] = value[ 2 ] = 0.0; }
-//   DoubleState( double v1, double v2, double v3 ) {
-//     value[ 0 ] = v1;
-//     value[ 1 ] = v2;
-//     value[ 2 ] = v3;
-//   }
-//   DoubleState( double *d ) {
-//     value[ 0 ] = d[ 0 ];
-//     value[ 1 ] = d[ 1 ];
-//     value[ 2 ] = d[ 2 ];
-//   }
-
-//   int digitalFeature() const {
-//     return (int) ( value[ 0 ] + value[ 1 ] + value[ 2 ] );
-//   }
-
-//   bool  contain( const StateElem *other ) const {
-//     const DoubleState *rhs = (const DoubleState *) other;
-//     if ( value[ 0 ] > rhs->value[ 0 ] ) {
-//       return false;
-//     }
-//     if ( value[ 1 ] > rhs->value[ 1 ] ) {
-//       return false;
-//     }
-//     return value[ 2 ] <= rhs->value[ 2 ];
-//   }
-
-//   bool equal( const StateElem *other ) const {
-//     const DoubleState *rhs = (const DoubleState *) other;
-//     if ( ( value[ 0 ] == rhs->value[ 0 ] ) &&
-//          ( value[ 1 ] == rhs->value[ 1 ] ) &&
-//          ( value[ 2 ] == rhs->value[ 2 ] ) ) {
-//       return true;
-//     }
-//     return false;
-//   }
-//  private:
-//   double value[ 3 ];
-// };
-
-// int example( ){
-//   int id=0;
-//   int addNum=10000;
-//   //  ExpandComposeStateSet<StateElem> temp1;
-
-//   CompactComposeStateSet<StateElem> temp1;
-//   SingleCompactComposeStateSet<StateElem> one( id++);
-//   SingleSetCompactComposeStateSet<StateElem> two( id++);
-//   temp1.addCompent(one );
-//   temp1.addCompent(two );
-
-//   int oneID=0;
-//   int twoID=1;
-//   std::default_random_engine re;
-//   std::uniform_real_distribution<int> unit(0,1000000);
-//   std::uniform_real_distribution<double> unif(0,1000000);
-//   for( int i=0; i< addNum; i++){
-//     vector<pair<int, StateElem*> > dummy;
-
-//     IntState *itemp=new IntState( unit( re), unit( re));
-//     dummy.push_back( make_pair( oneID, itemp) );
-//     DoubleState* dtemp=new DoubleState( unif( re), unif( re), unif( re));
-
-//     dummy.push_back( make_pair( twoID, dtemp) );
-
-//     if(!temp1.add( dummy)){
-//       delete dummy[ 0].second;
-//       delete dummy[ 1].second;
-//     }
-//   }
-
-//   return 0;
-
-// }
 
 } // namespace graphsat
 #endif

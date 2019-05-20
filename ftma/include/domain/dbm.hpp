@@ -14,6 +14,7 @@
 #ifndef __DBM__HPP
 #define __DBM__HPP
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <limits>
@@ -42,41 +43,45 @@ template <typename C> class DBMFactory {
 
 public:
   DBMFactory( void ) {
-    n       = 0;
-    size    = 0;
-    MAX_INT = getMAX_INT( (C) 0 );
+    clock_num = 0;
+    size      = 0;
+    MAX_INT   = getMAX_INT( (C) 0 );
 
-    distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
+    distribution =
+        std::uniform_int_distribution<int>( -MAX_INT / 4 + 1, MAX_INT / 4 );
   }
 
-  DBMFactory( int nn )
-      : n( nn + 1 ) {
-    size    = n * n;
+  DBMFactory( int n )
+      : clock_num( n + 1 ) {
+    size    = clock_num * clock_num;
     MAX_INT = getMAX_INT( (C) 0 );
 
-    distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
+    distribution =
+        std::uniform_int_distribution<int>( -MAX_INT / 4 + 1, MAX_INT / 4 );
   }
 
-  DBMFactory( int nn, const vector<C> &oclockUppuerBound,
+  DBMFactory( int n, const vector<C> &oclockUppuerBound,
               const vector<ClockConstraint<C>> &odifferenceCons )
-      : n( nn + 1 ) {
-    size    = n * n;
+      : clock_num( n + 1 ) {
+    size = clock_num * clock_num;
+
     MAX_INT = getMAX_INT( (C) 0 );
 
-    distribution = std::uniform_int_distribution<int>( -MAX_INT + 1, MAX_INT );
+    distribution =
+        std::uniform_int_distribution<int>( -MAX_INT / 4 + 1, MAX_INT / 4 );
     clockUppuerBound = oclockUppuerBound;
     differenceCons   = odifferenceCons;
   }
 
-  ~DBMFactory() { n = 0; }
+  ~DBMFactory() { clock_num = 0; }
 
   void setClockNum( int num ) {
-    n    = num + 1;
-    size = n * n;
+    clock_num = num + 1;
+    size      = clock_num * clock_num;
   }
 
   C *createDBM() const {
-    C *D = new C[ size ]();
+    C *D = new C[ size ];
     fill( D, D + size, LTEQ_ZERO ); // x-x<=0
     return D;
   }
@@ -89,7 +94,7 @@ public:
    * @return
    */
   C *createDBM( const C *const D ) const {
-    C *newD = new C[ size ]();
+    C *newD = new C[ size ];
     memcpy( newD, D, sizeof( C ) * size );
     return newD;
   }
@@ -99,7 +104,7 @@ public:
   void init( C *D ) const {
     fill( D, D + size, LTEQ_ZERO ); // x-x<=0
   }
-  C *randomMatirx() {
+  C *randomDBM() {
 
     C *newD = new C[ size ]();
     for ( int i = 0; i < size; i++ ) {
@@ -108,13 +113,35 @@ public:
     return newD;
   }
   // TODO
-  C *randomFeasiableMatrix() {
-    C *D  = createDBM();
-    C *D1 = up( D );
-    delete[] D;
-
-    C *D2 = free( D1, 0 );
-    return D2;
+  C *randomFeasiableDBM() {
+    int num_cons = sqrt( clock_num ) * clock_num + 1;
+    C * D        = createDBM();
+    while ( num_cons >= 0 ) {
+      fill( D, D + size, LTEQ_ZERO ); // x-x<=0
+      upImpl( D );
+      for ( int i = 0; i < sqrt( clock_num ); i++ ) {
+        int x = abs( distribution( generator ) ) % ( clock_num );
+        if ( x > 0 ) freeImpl( D, x );
+      }
+      for ( int i = 0; i < num_cons; i++ ) {
+        int x = abs( distribution( generator ) ) % ( clock_num );
+        int y = abs( distribution( generator ) ) % ( clock_num );
+        if ( x != y ) {
+          C                  rhs = distribution( generator );
+          ClockConstraint<C> cs( x, y, rhs );
+          andImpl( D, cs );
+        }
+        x = abs( distribution( generator ) ) % ( clock_num );
+        if ( x > 0 ) freeImpl( D, x );
+        freeImpl( D, x );
+      }
+      if ( isConsistent( D ) ) {
+        return D;
+      }
+      num_cons -= 3;
+    }
+    fill( D, D + size, LTEQ_ZERO ); // x-x<=0
+    return D;
   }
 
   int getSize() const { return size; }
@@ -123,9 +150,9 @@ public:
 
     std::stringstream ss;
 
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
       ss << "[ ";
-      for ( int j = 0; j < n; j++ ) {
+      for ( int j = 0; j < clock_num; j++ ) {
         ss << " (";
         C v = D[ loc( i, j ) ];
 
@@ -135,7 +162,12 @@ public:
           ss << "<=,";
         }
         ss.width( 4 );
-        ss << std::left << (int) getRight<C>( v );
+        if ( MAX_INT == getRight<C>( v ) ) {
+          ss << std::left << ( (char) 126 );
+        } else {
+          ss << std::left << (int) getRight<C>( v );
+        }
+
         ss << ") ";
       }
       ss << "]\n";
@@ -168,9 +200,9 @@ public:
    * TODO improve efficient
    */
   void canonicalForm( C *D ) const {
-    for ( int k = 0; k < n; k++ ) {
-      for ( int i = 0; i < n; i++ ) {
-        for ( int j = 0; j < n; j++ ) {
+    for ( int k = 0; k < clock_num; k++ ) {
+      for ( int i = 0; i < clock_num; i++ ) {
+        for ( int j = 0; j < clock_num; j++ ) {
           C temp           = add( D[ loc( i, k ) ], D[ loc( k, j ) ] );
           D[ loc( i, j ) ] = D[ loc( i, j ) ] < temp ? D[ loc( i, j ) ] : temp;
         }
@@ -218,9 +250,9 @@ public:
   DF_T getIncludeFeature( const C *const D ) const {
     DF_T re = 0;
 
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
       int k = loc( i, 0 );
-      for ( int j = 0; j < n; j++ ) {
+      for ( int j = 0; j < clock_num; j++ ) {
         if ( i == j ) continue;
         re = ( 2 * re * MAX_INT + ( D[ k + j ] + MAX_INT ) );
       }
@@ -244,7 +276,7 @@ public:
   }
 
   void upImpl( C *D ) const {
-    for ( int i = 1; i < n; i++ ) {
+    for ( int i = 1; i < clock_num; i++ ) {
       D[ loc( i, 0 ) ] = MAX_INT;
     }
   }
@@ -262,9 +294,9 @@ public:
   }
 
   void downImpl( C *D ) const {
-    for ( int i = 1; i < n; i++ ) {
+    for ( int i = 1; i < clock_num; i++ ) {
       D[ i ] = LTEQ_ZERO;
-      for ( int j = 1; j < n; j++ ) {
+      for ( int j = 1; j < clock_num; j++ ) {
         int k  = loc( j, i );
         D[ i ] = D[ i ] < D[ k ] ? D[ i ] : D[ k ];
       }
@@ -293,8 +325,8 @@ public:
       newD[ 0 ] = getMatrixValue( -1, false );
     } else if ( cons.matrix_value < newD[ loc( cons.x, cons.y ) ] ) {
       newD[ loc( cons.x, cons.y ) ] = cons.matrix_value;
-      for ( int i = 0; i < n; i++ ) {
-        for ( int j = 0; j < n; j++ ) {
+      for ( int i = 0; i < clock_num; i++ ) {
+        for ( int j = 0; j < clock_num; j++ ) {
           C   temp  = add( newD[ loc( i, cons.x ) ], newD[ loc( cons.x, j ) ] );
           int k     = loc( i, j );
           newD[ k ] = newD[ k ] < temp ? newD[ k ] : temp;
@@ -319,7 +351,7 @@ public:
   }
 
   void freeImpl( C *D, const int x ) const {
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
       D[ loc( x, i ) ] = MAX_INT;
       D[ loc( i, x ) ] = D[ loc( i, 0 ) ];
     }
@@ -346,7 +378,7 @@ public:
     C   negM   = getMatrixValue( -m, false );
     int xStart = loc( x, 0 );
 
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
       D[ xStart + i ]  = add( postM, D[ i ] );
       D[ loc( i, x ) ] = add( D[ loc( i, 0 ) ], negM );
     }
@@ -367,7 +399,7 @@ public:
   }
 
   void copyImpl( C *D, const int x, const int y ) const {
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
       D[ loc( x, i ) ] = D[ loc( y, i ) ];
       D[ loc( i, x ) ] = D[ loc( i, y ) ];
     }
@@ -390,7 +422,7 @@ public:
     C postM = getMatrixValue( m, false );
     C negM  = getMatrixValue( -m, false );
 
-    for ( int i = 0; i < n; i++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
       D[ loc( x, i ) ] = add( D[ loc( x, i ), postM ] );
       D[ loc( i, x ) ] = add( D[ loc( i, x ) ], negM );
     }
@@ -422,13 +454,13 @@ public:
    */
   void norm( C *D, const vector<C> &k ) const {
 
-    for ( int i = 0; i < n; i++ ) {
-      for ( int j = 0; j < n; j++ ) {
+    for ( int i = 0; i < clock_num; i++ ) {
+      for ( int j = 0; j < clock_num; j++ ) {
         if ( D[ loc( i, j ) ] < MAX_INT ) {
           if ( D[ loc( i, j ) ] > k[ i ] ) {
             D[ loc( i, j ) ] = MAX_INT;
-          } else if ( D[ loc( i, j ) ] < k[ j + n ] ) {
-            D[ loc( i, j ) ] = k[ j + n ];
+          } else if ( D[ loc( i, j ) ] < k[ j + clock_num ] ) {
+            D[ loc( i, j ) ] = k[ j + clock_num ];
           }
         }
       }
@@ -556,7 +588,7 @@ private:
   /**
    * number of clocks
    */
-  int                                n;
+  int                                clock_num;
   int                                size; // n*n
   C                                  MAX_INT;
   std::default_random_engine         generator;
@@ -565,7 +597,9 @@ private:
 
   vector<ClockConstraint<C>> differenceCons;
 
-  inline int loc( const int row, const int col ) const { return row * n + col; }
+  inline int loc( const int row, const int col ) const {
+    return row * clock_num + col;
+  }
 
   bool contain( const vector<C *> &values, const C *const D ) const {
 

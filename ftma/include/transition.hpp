@@ -17,7 +17,7 @@
 #include "statemanager.hpp"
 
 namespace graphsat {
-using namespace std;
+using std::vector;
 template <typename C, typename CS, typename D, typename DSet> class Transition {
 
   typedef Transition<C, CS, D, DSet> Transition_t;
@@ -152,7 +152,7 @@ public:
     C *counterValue = manager.getCounterValue( re );
 
     for ( auto act : actions ) {
-      ( *act )( counterValue );
+      ( *act )( manager.getParameter( comp ), counterValue );
     }
 
     return re;

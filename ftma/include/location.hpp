@@ -13,7 +13,7 @@
 #include <vector>
 
 namespace graphsat {
-using namespace std;
+using std::vector;
 
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
@@ -34,6 +34,9 @@ public:
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
+   bool  isCommit( ) const{
+     return type==COMMIT_LOC;
+   }
   /**
    *
    * @param reachDBMS  the DManager_t set of start value in this Location
@@ -149,7 +152,6 @@ public:
       }
 
     } else {
-      dbmManager.destroyDBM( D );
       return false;
     }
 

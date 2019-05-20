@@ -9,6 +9,8 @@
  *
  */
 
+#include <random>
+
 #include "constraint/clockdiffcons.hpp"
 #include "counteraction.h"
 #include "location.hpp"
@@ -29,7 +31,7 @@
 #include <iostream>
 #include <limits>
 
-using namespace std;
+using std::vector;
 using namespace graphsat;
 
 void example1( void ) {
@@ -133,7 +135,64 @@ void example2( void ) {
 
 void example3( void ) {}
 
+std::default_random_engine         generator;
+std::uniform_int_distribution<int> distribution( 0, 1000 );
+
+NIntState *randV( int n, int s ) {
+  NIntState *re = new NIntState( n, s );
+  int *      v  = new int[ n ];
+
+  for ( int i = 0; i < n; i++ ) {
+    v[ i ] = distribution( generator );
+  }
+  re->setValue( v );
+  delete[] v;
+  return re;
+}
+
+void example5( void ) {
+  StateSet<NIntState> sets;
+  vector<NIntState *> vecs;
+  int                 n   = 20;
+  int                 s   = 4;
+  int                 num = 1000;
+  for ( int i = 0; i < num; i++ ) {
+    NIntState *temp = randV( n, s );
+    if ( sets.add( temp ) ) {
+      vecs.push_back( temp );
+    } else {
+      delete temp;
+    }
+  }
+  for ( auto e : vecs ) {
+    sets.contain( e );
+  }
+}
+
+void example6() {
+
+  vector<int *>   vecs;
+  int             n = 10;
+  DBMFactory<int> manager( n );
+  DBMset<int>     sets( manager );
+  int             num = 1000;
+
+  for ( int i = 0; i < num; i++ ) {
+    int *dbm = manager.randomFeasiableDBM();
+    if ( sets.add( dbm ) ) {
+      vecs.push_back( dbm );
+    } else {
+      manager.destroyDBM( dbm );
+    }
+  }
+  for ( auto e : vecs ) {
+    sets.contain( e );
+  }
+}
+
 int main( int argc, const char *argv[] ) {
+  example5();
+  //  return 0;
   //  State<int> s;
 
   //  UppaalParser parser( argv[ 1 ] );
@@ -149,7 +208,7 @@ int main( int argc, const char *argv[] ) {
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
   DBMManager_t exampleDBM( 4 );
-  C_t *        D = exampleDBM.randomMatirx();
+  C_t *        D = exampleDBM.randomDBM();
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
 
   cout << "========================" << endl;

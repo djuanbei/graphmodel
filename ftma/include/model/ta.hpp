@@ -10,6 +10,8 @@
 
 #ifndef __TIMED_AUTOMATA_
 #define __TIMED_AUTOMATA_
+#include <vector>
+
 #include "channel.h"
 #include "counteraction.h"
 #include "discretestate.hpp"
@@ -17,14 +19,14 @@
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
 #include "location.hpp"
+#include "parameter.h"
 #include "statemanager.hpp"
 #include "transition.hpp"
 
-#include <vector>
-
 namespace graphsat {
 
-using namespace std;
+using std::vector;
+
 using namespace raptor;
 
 typedef int                  C_t;
@@ -37,6 +39,8 @@ typedef ClockConstraint<C_t> CS_t;
 
 typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>   L_t;
 typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t> T_t;
+
+
 
 /**
  *
@@ -81,6 +85,9 @@ public:
   bool locationRun( int i, const DBMFactory<C> &manager, C *D ) const {
     return locations[ i ]( manager, D );
   }
+  bool isCommit( int id) const{
+    return locations[ id].isCommit( );
+  }
 
   bool transitionRun( int link, const DBMFactory<C> &manager, C *D ) const {
     return transitions[ link ]( manager, D );
@@ -102,6 +109,7 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
+
 
   void updateUpperAndDiff( const CS_t &cs ) {
 
@@ -213,7 +221,11 @@ public:
 
       tas[ i ].locationRun( initial_loc[ i ], manager.getClockManager( i ),
                             manager.getkDBM( i, value ) );
+      
       value->value[ i ] = initial_loc[ i ];
+      if( tas[i].isCommit( value->value[ i ] )){
+        manager.setCommitState( i, value->value[ i ],  value );
+      }
     }
   }
 

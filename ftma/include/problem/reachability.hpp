@@ -69,7 +69,7 @@ public:
     // For given target find the source which change in last step
 
     //  StateSet_t secondWaitSet;
-    bool       find = false;
+    bool find = false;
     while ( !data.waitSet.empty() ) {
 
       /**
@@ -78,14 +78,13 @@ public:
        *
        */
 
-      while( !data.waitSet.empty( ) ){
-        State_t * state=data.waitSet.front( );
-        data.waitSet.pop_front( );
+      while ( !data.waitSet.empty() ) {
+        const State_t *state = data.waitSet.front();
+        data.waitSet.pop_front();
         if ( data.oneStep( loc, cons, state ) ) {
           return true;
         }
       }
-
     }
     return false;
   }

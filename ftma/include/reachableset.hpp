@@ -9,12 +9,15 @@
  */
 #ifndef __REACH_SET_HPP
 #define __REACH_SET_HPP
+#include <algorithm>
+#include <deque>
 #include <random>
 #include <vector>
-#include <deque>
 
 namespace graphsat {
-using namespace std;
+using std::deque;
+using std::fill;
+using std::vector;
 
 template <typename SYS> class ReachableSet {
 
@@ -55,7 +58,17 @@ public:
   }
 
   bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
-                State_t *state ) {
+                const State_t *const state ) {
+    int commit_comp=-1;
+    for ( int comp = 0; comp < component_num; comp++ ) {
+      if(manager.isCommitComp(comp, state) ){
+        commit_comp=comp;
+        break;
+      }
+    }
+    if(commit_comp>-1 ){
+      return oneCompoent(commit_comp, loc, cons, state );
+    }
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
         /**
@@ -64,75 +77,16 @@ public:
          */
         continue;
       }
-      int source    = state->value[ comp ];
-      int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
-      for ( int j = 0; j < outDegree; j++ ) {
-
-        int link = sys.tas[ comp ].graph.getAdj( source, j );
-        /**
-         * Whether the jump conditions satisfies except synchronize signal
-         *
-         */
-
-        if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager,
-                                                        state ) ) {
-          continue;
-        }
-
-        const Channel &ch = sys.tas[ comp ].transitions[ link ].getChannel();
-        if ( ch.id > -1 ) {
-          vector<int> waitComp;
-          if ( CHANNEL_SEND == ch.action ) {
-            waitComp = manager.blockComponents( -ch.id, state );
-          } else if ( CHANNEL_RECEIVE == ch.action ) {
-            waitComp = manager.blockComponents( ch.id, state );
-          }
-          if ( !waitComp.empty() ) {
-            if ( ch.type == ONE2ONE ) {
-              std::uniform_int_distribution<int> distribution(
-                  0, waitComp.size() - 1 );
-              int id  = distribution( generator );
-              int cid = waitComp[ id ];
-
-              if ( unBlockOne( cid, link, state, loc, cons ) ) {
-                return true;
-              }
-            } else if ( ch.type == ONE2ALL ) {
-              for ( auto id : waitComp ) {
-                int cid = waitComp[ id ];
-                if ( unBlockOne( cid, link, state, loc, cons ) ) {
-                  return true;
-                }
-              }
-            }
-
-          } else {
-            State_t *temp = state->copy();
-            if ( CHANNEL_SEND == ch.action ) {
-              temp->value[ comp + component_num ] = ch.id;
-            } else if ( CHANNEL_RECEIVE == ch.action ) {
-              temp->value[ comp + component_num ] = -ch.id;
-            }
-
-            temp->value[ comp ] = link; // block link
-            if ( reachSet.add( temp ) ) {
-              waitSet.push_back( temp);
-            }
-          }
-
-        } else {
-          if ( oneTranision( comp, link, loc, cons, state ) ) {
-            return true;
-          }
-        }
+      if(oneCompoent(comp, loc, cons, state )){
+        return true;
       }
     }
     return false;
   }
 
 private:
-  StateSet<State_t> reachSet;
-  deque< State_t* > waitSet;
+  StateSet<State_t>      reachSet;
+  deque<const State_t *> waitSet;
 
   const SYS &    sys;
   StateManager_t manager;
@@ -161,13 +115,88 @@ private:
     return true;
   }
 
+  
+  bool oneCompoent(int comp, const vector<int> loc, const vector<vector<CS_t>> &cons,
+                const State_t *const state ) {
+    
+    int source    = state->value[ comp ];
+    
+    if(manager.isCommitComp(comp, state ) ){ //commit location
+      source=manager.getCommitLoc( comp, state);
+    }
+    
+    int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
+    for ( int j = 0; j < outDegree; j++ ) {
+
+      int link = sys.tas[ comp ].graph.getAdj( source, j );
+      /**
+       * Whether the jump conditions satisfies except synchronize signal
+       *
+       */
+
+      if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager,
+                                                      state ) ) {
+        continue;
+      }
+
+      const Channel &ch = sys.tas[ comp ].transitions[ link ].getChannel();
+      if ( ch.id > -1 ) {
+        vector<int> waitComp;
+        if ( CHANNEL_SEND == ch.action ) {
+          waitComp = manager.blockComponents( -ch.id, state );
+        } else if ( CHANNEL_RECEIVE == ch.action ) {
+          waitComp = manager.blockComponents( ch.id, state );
+        }
+        if ( !waitComp.empty() ) {
+          if ( ch.type == ONE2ONE ) {
+            std::uniform_int_distribution<int> distribution(
+                0, waitComp.size() - 1 );
+            int id  = distribution( generator );
+            int cid = waitComp[ id ];
+
+            if ( unBlockOne( cid, link, state, loc, cons ) ) {
+              return true;
+            }
+          } else if ( ch.type == ONE2ALL ) {
+            for ( auto id : waitComp ) {
+              int cid = waitComp[ id ];
+              if ( unBlockOne( cid, link, state, loc, cons ) ) {
+                return true;
+              }
+            }
+          }
+
+        } else {
+          State_t *temp = state->copy();
+          if ( CHANNEL_SEND == ch.action ) {
+            temp->value[ comp + component_num ] = ch.id;
+          } else if ( CHANNEL_RECEIVE == ch.action ) {
+            temp->value[ comp + component_num ] = -ch.id;
+          }
+
+          temp->value[ comp ] = link; // block link
+          if ( reachSet.add( temp ) ) {
+            waitSet.push_back( temp );
+          }
+        }
+
+      } else {
+        if ( oneTranision( comp, link, loc, cons, state ) ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   bool oneTranision( const int component, const int link, const vector<int> loc,
                      const vector<vector<CS_t>> &cons,
-                     const State_t *const state ) {
+                     const State_t *const        state ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
     State_t *discreteTransNext =
         sys.tas[ component ].transitions[ link ]( component, manager, state );
+    
 
     vector<DBM_t> advanceNext;
 
@@ -176,26 +205,31 @@ private:
              manager.getkDBM( component, discreteTransNext ), advanceNext ) ) {
       for ( auto next : advanceNext ) {
 
-        State_t *temp = manager.add( component, target, reachSet, next, state );
+        State_t *temp = manager.add( component, target, reachSet, next,
+                                     state ); // add to reachset
 
         if ( temp != NULL ) {
-          if ( reachSet.add( temp ) ) {
-            waitSet.push_back( temp);
+          if(sys.tas[ component ].locations[ target].isCommit( ) ){
+            manager.setCommitState( component, target, temp);
+          }
 
-            if ( 0 == memcmp( &loc[ 0 ], temp->value,
-                              component_num * sizeof( int ) ) ) {
-              if ( isReach( cons, temp ) ) {
-                return true;
-              }
+          waitSet.push_back( temp );
+
+          if ( 0 == memcmp( &loc[ 0 ], temp->value,
+                            component_num * sizeof( int ) ) ) {
+            if ( isReach( cons, temp ) ) {
+              delete discreteTransNext;
+              return true;
             }
           }
         }
       }
     }
+    delete discreteTransNext;
     return false;
   }
 
-  bool unBlockOne( const int cid, const int link, State_t *state,
+  bool unBlockOne( const int cid, const int link, const State_t *state,
                    const vector<int> loc, const vector<vector<CS_t>> &cons ) {
     const int blockChannel              = state->value[ cid + component_num ];
     state->value[ cid + component_num ] = 0;

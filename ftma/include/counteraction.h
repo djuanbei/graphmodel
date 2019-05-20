@@ -11,10 +11,12 @@
 #ifndef ACTION_HPP
 #define ACTION_HPP
 #include "counter.hpp"
+#include "parameter.h"
+
 namespace graphsat {
 class CounterAction {
 public:
-  virtual void operator()( int *value ) const = 0;
+  virtual void operator()( const Parameter &p, int *value ) const = 0;
 };
 
 } // namespace graphsat
