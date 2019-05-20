@@ -10,8 +10,9 @@
 
 #ifndef __PARAMETER_H
 #define __PARAMETER_H
-
+#include<vector>
 namespace graphsat {
+using std::vector;
 class Parameter {
 
 public:
