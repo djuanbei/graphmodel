@@ -27,7 +27,7 @@ public:
 
     manager       = sys.getStateManager();
     component_num = sys.getComponentNum();
-    State_t *D    = manager.newMatrix();
+    State_t *D    = manager.newState();
     sys.initState( manager, D );
 
     waitSet.push_back( D );
@@ -59,15 +59,15 @@ public:
 
   bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
                 const State_t *const state ) {
-    int commit_comp=-1;
+    int commit_comp = -1;
     for ( int comp = 0; comp < component_num; comp++ ) {
-      if(manager.isCommitComp(comp, state) ){
-        commit_comp=comp;
+      if ( manager.isCommitComp( comp, state ) ) {
+        commit_comp = comp;
         break;
       }
     }
-    if(commit_comp>-1 ){
-      return oneCompoent(commit_comp, loc, cons, state );
+    if ( commit_comp > -1 ) {
+      return oneCompoent( commit_comp, loc, cons, state );
     }
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
@@ -77,7 +77,7 @@ public:
          */
         continue;
       }
-      if(oneCompoent(comp, loc, cons, state )){
+      if ( oneCompoent( comp, loc, cons, state ) ) {
         return true;
       }
     }
@@ -115,16 +115,16 @@ private:
     return true;
   }
 
-  
-  bool oneCompoent(int comp, const vector<int> loc, const vector<vector<CS_t>> &cons,
-                const State_t *const state ) {
-    
-    int source    = state->value[ comp ];
-    
-    if(manager.isCommitComp(comp, state ) ){ //commit location
-      source=manager.getCommitLoc( comp, state);
+  bool oneCompoent( int comp, const vector<int> loc,
+                    const vector<vector<CS_t>> &cons,
+                    const State_t *const        state ) {
+
+    int source = state->value[ comp ];
+
+    if ( manager.isCommitComp( comp, state ) ) { // commit location
+      source = manager.getCommitLoc( comp, state );
     }
-    
+
     int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
     for ( int j = 0; j < outDegree; j++ ) {
 
@@ -134,8 +134,7 @@ private:
        *
        */
 
-      if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager,
-                                                      state ) ) {
+      if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager, state ) ) {
         continue;
       }
 
@@ -196,7 +195,6 @@ private:
     sys.tas[ component ].graph.findSnk( link, target );
     State_t *discreteTransNext =
         sys.tas[ component ].transitions[ link ]( component, manager, state );
-    
 
     vector<DBM_t> advanceNext;
 
@@ -209,8 +207,8 @@ private:
                                      state ); // add to reachset
 
         if ( temp != NULL ) {
-          if(sys.tas[ component ].locations[ target].isCommit( ) ){
-            manager.setCommitState( component, target, temp);
+          if ( sys.tas[ component ].locations[ target ].isCommit() ) {
+            manager.setCommitState( component, target, temp );
           }
 
           waitSet.push_back( temp );

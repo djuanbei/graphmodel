@@ -15,17 +15,14 @@ namespace graphsat {
 class Parameter {
 
 public:
-  Parameter()
-      : value( NULL ) {}
-  ~Parameter() { delete[] value; }
+  Parameter() {}
+  void addValue( int v ) { value.push_back( v ); }
+  void setValue( int id, const int v ) { value[ id ] = v; }
+  int  getValue( int id ) const { return value[ id ]; }
+  bool empty() const { return value.empty(); }
 
 private:
-  // Parameter(const Parameter& p){
-
-  // }
-
-  Parameter &operator=( const Parameter &p ) { return *this; }
-  int *      value;
+  vector<int> value;
 };
 } // namespace graphsat
 

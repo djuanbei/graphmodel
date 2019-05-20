@@ -28,14 +28,14 @@ public:
 
   StateManager( int comp_num, int counter_num, vector<int> clock_num,
                 vector<vector<C>>                  clockUpperBound,
-                vector<vector<ClockConstraint<C>>> differenceCons ) {
+                vector<vector<ClockConstraint<C>>> differenceCons,
+                const vector<Parameter> &          ps ) {
 
     component_num = comp_num;
 
     counter_start_loc = 2 * component_num;
 
     stateLen = 2 * component_num + counter_num;
-    ;
 
     for ( size_t i = 0; i < clock_num.size(); i++ ) {
 
@@ -48,9 +48,11 @@ public:
 
       clock_manager.push_back( temp );
     }
+
+    parameters = ps;
   }
 
-  NIntState *newMatrix() const {
+  NIntState *newState() const {
     if ( clock_start_loc.empty() ) {
       NIntState *re = new NIntState( stateLen );
       return re;
@@ -69,7 +71,7 @@ public:
     return clock_manager[ i ];
   }
   inline const Parameter &getParameter( const int i ) const {
-    return paramters[ i ];
+    return parameters[ i ];
   }
 
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
@@ -122,23 +124,23 @@ public:
 
     re->value[ id ] = target;
 
-
     if ( !stateSet.add( re ) ) {
       delete re;
       return NULL;
     }
     return re;
   }
-  inline bool  isCommitComp( const int id, const NIntState * const state) const{
-    return state->value[ id]<0;
+  inline bool isCommitComp( const int id, const NIntState *const state ) const {
+    return state->value[ id ] < 0;
   }
 
-  inline void setCommitState( const int id, const int target, NIntState * state ) const {
-    state->value[id ]=-1-state->value[id ];
+  inline void setCommitState( const int id, const int target,
+                              NIntState *state ) const {
+    state->value[ id ] = -1 - state->value[ id ];
   }
-  
-  inline  int getCommitLoc( const int id, const NIntState* const state) const{
-    return -(state->value[ id])-1;
+
+  inline int getCommitLoc( const int id, const NIntState *const state ) const {
+    return -( state->value[ id ] ) - 1;
   }
 
 private:
@@ -151,7 +153,7 @@ private:
 
   vector<DBMFactory<C>> clock_manager;
 
-  vector<Parameter> paramters;
+  vector<Parameter> parameters;
 };
 } // namespace graphsat
 #endif

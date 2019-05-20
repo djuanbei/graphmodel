@@ -23,37 +23,49 @@ using std::pair;
 using std::vector;
 
 class CounterConstraint {
-
 public:
-  CounterConstraint( const vector<pair<int, int>> &cons, int erhs,
-                     COMP_OPERATOR eop )
-      : constraint( cons )
+  virtual bool operator()( const Parameter &p, const int *valuation ) const = 0;
+};
+
+class DefaultCounterConstraint : public CounterConstraint {
+public:
+  DefaultCounterConstraint( const vector<pair<int, int>> &pcons,
+                            const vector<pair<int, int>> &cons, int erhs,
+                            COMP_OPERATOR eop )
+      : pconstraint( pcons )
+      , constraint( cons )
       , rhs( erhs )
       , op( eop ) {}
 
   bool operator()( const Parameter &p, const int *valuation ) const {
     int dummy = 0;
+    for ( auto e : pconstraint ) {
+      dummy += e.first * p.getValue( e.second );
+    }
     for ( vector<pair<int, int>>::const_iterator it = constraint.begin();
           it != constraint.end(); it++ ) {
       dummy += ( it->first ) * valuation[ it->second ];
     }
-    if ( EQ == op ) {
+    switch ( op ) {
+    case EQ:
       return dummy == rhs;
-    } else if ( LE == op ) {
+    case LE:
       return dummy <= rhs;
-    } else if ( LT == op ) {
+    case LT:
       return dummy < rhs;
-    } else if ( GE == op ) {
+    case GE:
       return dummy >= rhs;
-    } else if ( GT == op ) {
+    case GT:
       return dummy > rhs;
-    } else if ( NE == op ) {
+    case NE:
       return dummy != rhs;
+    default:
+      return false;
     }
-    return false;
   }
 
 private:
+  vector<pair<int, int>> pconstraint;
   vector<pair<int, int>> constraint;
   int                    rhs;
   COMP_OPERATOR          op;

@@ -16,6 +16,11 @@ private:
   int lb, up; // lb<= value<= up
 public:
   Counter() { value = lb = up = 0; }
+  Counter( int l, int u ) {
+    value = l;
+    lb    = l;
+    up    = u;
+  }
 };
 } // namespace graphsat
 

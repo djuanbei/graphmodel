@@ -1,3 +1,4 @@
+
 /**
  * @file   Location.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
@@ -34,9 +35,7 @@ public:
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
-   bool  isCommit( ) const{
-     return type==COMMIT_LOC;
-   }
+  bool isCommit() const { return type == COMMIT_LOC; }
   /**
    *
    * @param reachDBMS  the DManager_t set of start value in this Location

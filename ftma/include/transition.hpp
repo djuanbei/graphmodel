@@ -88,9 +88,10 @@ public:
    */
   void addReset( pair<int, int> &r ) { reset.push_back( r ); }
 
-  Transition_t &operator+=( CounterConstraint &guards ) {
+  void addCounterCons( CounterConstraint *guards ) {
     counterCons.push_back( guards );
   }
+
   /**
    * @brief Except synchronize signal, other state satisfies jump conditions
    *
@@ -124,7 +125,7 @@ public:
       const C *counterValue = manager.getCounterValue( state );
 
       for ( auto cs : counterCons ) {
-        if ( !cs( manager.getParameter( comp ), counterValue ) ) {
+        if ( !( *cs )( manager.getParameter( comp ), counterValue ) ) {
           return false;
         }
       }
@@ -163,7 +164,7 @@ private:
   // transitionedge. The index of location in tma.locations
   vector<CS> guards; // set of constraint at this transitionedge
 
-  vector<CounterConstraint>
+  vector<CounterConstraint *>
           counterCons; // counter constraint like pid ==id or id==0
   Channel channel;     // Only one synchronisation channels
 

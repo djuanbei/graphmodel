@@ -12,7 +12,7 @@
 #ifndef __REACHABILITY_HPP
 #define __REACHABILITY_HPP
 
-#include "parallel.h"
+#include "util/parallel.h"
 #include <map>
 #include <model/ta.hpp>
 #include <set>
@@ -41,7 +41,7 @@ public:
     run( loc, cons );
   }
 
-  bool reachable( const vector<int> loc ) {
+  bool reach( const vector<int> loc ) {
     vector<vector<CS_t>> cons( component_num );
     return run( loc, cons );
   }
@@ -69,23 +69,15 @@ public:
     // For given target find the source which change in last step
 
     //  StateSet_t secondWaitSet;
-    bool find = false;
+
     while ( !data.waitSet.empty() ) {
-
-      /**
-       * TODO:
-       * parallel  section
-       *
-       */
-
-      while ( !data.waitSet.empty() ) {
-        const State_t *state = data.waitSet.front();
-        data.waitSet.pop_front();
-        if ( data.oneStep( loc, cons, state ) ) {
-          return true;
-        }
+      const State_t *state = data.waitSet.front();
+      data.waitSet.pop_front();
+      if ( data.oneStep( loc, cons, state ) ) {
+        return true;
       }
     }
+
     return false;
   }
 
