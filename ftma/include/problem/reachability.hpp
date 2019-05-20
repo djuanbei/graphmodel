@@ -12,15 +12,22 @@
 #ifndef __REACHABILITY_HPP
 #define __REACHABILITY_HPP
 
-#include "util/parallel.h"
+
+
 #include <map>
-#include <model/ta.hpp>
 #include <set>
 #include <vector>
 
+#include "util/parallel.h"
+#include "property/property.h"
+#include "model/ta.hpp"
+
+
 namespace graphsat {
 
-using namespace std;
+using std::map;
+using std::set;
+using std::vector;
 
 template <typename ReachableSet> class Reachability {
 
@@ -34,17 +41,22 @@ public:
   ~Reachability() {}
 
   void computeAllReachableSet() {
-
-    vector<int>          loc( component_num, -1 );
-    vector<vector<CS_t>> cons( component_num );
-
-    run( loc, cons );
+    Property prop;
+    prop.loc.resize(component_num, -1  );
+    run( prop );
   }
 
-  bool reach( const vector<int> loc ) {
-    vector<vector<CS_t>> cons( component_num );
-    return run( loc, cons );
+  /** 
+   * @brief whether the sysyem satisfies the prop
+   * 
+   * @param prop 
+   * 
+   * @return 
+   */
+  bool satisfy( const Property& prop){
+    return run( prop );
   }
+
 
   /**
    * @param L
@@ -54,9 +66,9 @@ public:
    *
    * @return
    */
-  bool run( const vector<int> &loc, const vector<vector<CS_t>> &cons ) {
+  bool run(  const Property& prop ) {
 
-    Check_State re = data.find( loc, cons );
+    Check_State re = data.find( prop.loc, prop.cons );
 
     if ( re != UNKOWN ) {
       if ( TRUE == re ) {
@@ -73,7 +85,7 @@ public:
     while ( !data.waitSet.empty() ) {
       const State_t *state = data.waitSet.front();
       data.waitSet.pop_front();
-      if ( data.oneStep( loc, cons, state ) ) {
+      if ( data.oneStep( prop, state ) ) {
         return true;
       }
     }

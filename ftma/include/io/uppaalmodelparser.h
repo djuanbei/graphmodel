@@ -81,9 +81,20 @@ public:
   UppaalParser() {}
 
   UppaalParser( const string &xmlfile );
+  
+  const  TAS_t&  getSYS( ) const{
+    return sys;
+  }
+  
+  const Property& getProp( ) const{
+    return prop;
+  }
+  
 
 private:
   map<string, int> locationMAP;
+  TAS_t sys;
+  Property prop;
 
   int parserDeclaration( child_type declarations );
 

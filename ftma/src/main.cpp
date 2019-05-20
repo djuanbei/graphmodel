@@ -125,9 +125,9 @@ void example2( void ) {
   sys += tma1;
   R_t               data( sys );
   Reachability<R_t> reacher( data );
-  vector<int>       loc;
-  loc.push_back( 1 );
-  if ( reacher.reach( loc ) ) {
+  Property prop;
+  prop.loc.push_back( 1);
+  if ( reacher.satisfy( prop ) ) {
 
     cout << "right" << endl;
   } else {
@@ -284,10 +284,14 @@ void fisher( int n = 2 ) {
   R_t data( sys );
 
   Reachability<R_t> reacher( data );
-  vector<int>       loc;
-  loc.push_back( 3 );
-  loc.push_back( 3 );
-  if ( reacher.reach( loc ) ) {
+  Property prop;
+  for( int i=0; i< n; i++){
+    prop.loc.push_back( -1);
+  }
+  prop.loc[ 0]= 3;
+  prop.loc[1]=3;
+    
+  if ( reacher.satisfy( prop ) ) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -296,14 +300,14 @@ void fisher( int n = 2 ) {
 }
 
 int main( int argc, const char *argv[] ) {
-  fisher();
-  return 0;
-  example5();
+  ///  fisher(9);
+  //  return 0;
+  //  example5();
   //  return 0;
   //  State<int> s;
 
-  //  UppaalParser parser( argv[ 1 ] );
-  //  return 0;
+  UppaalParser parser( argv[ 1 ] );
+  return 0;
 
   example1();
   example2();

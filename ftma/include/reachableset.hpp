@@ -57,7 +57,7 @@ public:
     return UNKOWN;
   }
 
-  bool oneStep( const vector<int> loc, const vector<vector<CS_t>> &cons,
+  bool oneStep( const Property &prop,
                 const State_t *const state ) {
     int commit_comp = -1;
     for ( int comp = 0; comp < component_num; comp++ ) {
@@ -67,7 +67,7 @@ public:
       }
     }
     if ( commit_comp > -1 ) {
-      return oneCompoent( commit_comp, loc, cons, state );
+      return oneCompoent( commit_comp, prop, state );
     }
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( state->value[ comp + component_num ] != 0 ) {
@@ -77,7 +77,7 @@ public:
          */
         continue;
       }
-      if ( oneCompoent( comp, loc, cons, state ) ) {
+      if ( oneCompoent( comp, prop, state ) ) {
         return true;
       }
     }
@@ -115,8 +115,7 @@ private:
     return true;
   }
 
-  bool oneCompoent( int comp, const vector<int> loc,
-                    const vector<vector<CS_t>> &cons,
+  bool oneCompoent( int comp, const Property &prop,
                     const State_t *const        state ) {
 
     int source = state->value[ comp ];
@@ -153,13 +152,13 @@ private:
             int id  = distribution( generator );
             int cid = waitComp[ id ];
 
-            if ( unBlockOne( cid, link, state, loc, cons ) ) {
+            if ( unBlockOne( cid, link, state, prop.loc, prop.cons ) ) {
               return true;
             }
           } else if ( ch.type == ONE2ALL ) {
             for ( auto id : waitComp ) {
               int cid = waitComp[ id ];
-              if ( unBlockOne( cid, link, state, loc, cons ) ) {
+              if ( unBlockOne( cid, link, state, prop.loc, prop.cons ) ) {
                 return true;
               }
             }
@@ -180,7 +179,7 @@ private:
         }
 
       } else {
-        if ( oneTranision( comp, link, loc, cons, state ) ) {
+        if ( oneTranision( comp, link, prop.loc, prop.cons, state ) ) {
           return true;
         }
       }
