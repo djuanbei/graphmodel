@@ -125,8 +125,8 @@ void example2( void ) {
   sys += tma1;
   R_t               data( sys );
   Reachability<R_t> reacher( data );
-  Property prop;
-  prop.loc.push_back( 1);
+  Property          prop;
+  prop.loc.push_back( 1 );
   if ( reacher.satisfy( prop ) ) {
 
     cout << "right" << endl;
@@ -284,13 +284,13 @@ void fisher( int n = 2 ) {
   R_t data( sys );
 
   Reachability<R_t> reacher( data );
-  Property prop;
-  for( int i=0; i< n; i++){
-    prop.loc.push_back( -1);
+  Property          prop;
+  for ( int i = 0; i < n; i++ ) {
+    prop.loc.push_back( -1 );
   }
-  prop.loc[ 0]= 3;
-  prop.loc[1]=3;
-    
+  prop.loc[ 0 ] = 3;
+  prop.loc[ 1 ] = 3;
+
   if ( reacher.satisfy( prop ) ) {
     cout << "There is something wrong" << endl;
   } else {

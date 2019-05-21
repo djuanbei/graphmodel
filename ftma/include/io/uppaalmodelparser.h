@@ -25,6 +25,8 @@
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
 
+#include "io/uppaaldata.h"
+
 namespace graphsat {
 
 const static string NTA_STR = "nta";
@@ -81,19 +83,15 @@ public:
   UppaalParser() {}
 
   UppaalParser( const string &xmlfile );
-  
-  const  TAS_t&  getSYS( ) const{
-    return sys;
-  }
-  
-  const Property& getProp( ) const{
-    return prop;
-  }
-  
+
+  const TAS_t &getSYS() const { return sys; }
+
+  const Property &getProp() const { return prop; }
 
 private:
-  map<string, int> locationMAP;
-  TAS_t sys;
+  UppaalData data;
+
+  TAS_t    sys;
   Property prop;
 
   int parserDeclaration( child_type declarations );

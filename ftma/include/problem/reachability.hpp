@@ -12,16 +12,13 @@
 #ifndef __REACHABILITY_HPP
 #define __REACHABILITY_HPP
 
-
-
 #include <map>
 #include <set>
 #include <vector>
 
-#include "util/parallel.h"
-#include "property/property.h"
 #include "model/ta.hpp"
-
+#include "property/property.h"
+#include "util/parallel.h"
 
 namespace graphsat {
 
@@ -42,21 +39,18 @@ public:
 
   void computeAllReachableSet() {
     Property prop;
-    prop.loc.resize(component_num, -1  );
+    prop.loc.resize( component_num, -1 );
     run( prop );
   }
 
-  /** 
+  /**
    * @brief whether the sysyem satisfies the prop
-   * 
-   * @param prop 
-   * 
-   * @return 
+   *
+   * @param prop
+   *
+   * @return
    */
-  bool satisfy( const Property& prop){
-    return run( prop );
-  }
-
+  bool satisfy( const Property &prop ) { return run( prop ); }
 
   /**
    * @param L
@@ -66,7 +60,7 @@ public:
    *
    * @return
    */
-  bool run(  const Property& prop ) {
+  bool run( const Property &prop ) {
 
     Check_State re = data.find( prop.loc, prop.cons );
 

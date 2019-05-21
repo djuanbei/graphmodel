@@ -57,8 +57,7 @@ public:
     return UNKOWN;
   }
 
-  bool oneStep( const Property &prop,
-                const State_t *const state ) {
+  bool oneStep( const Property &prop, const State_t *const state ) {
     int commit_comp = -1;
     for ( int comp = 0; comp < component_num; comp++ ) {
       if ( manager.isCommitComp( comp, state ) ) {
@@ -116,7 +115,7 @@ private:
   }
 
   bool oneCompoent( int comp, const Property &prop,
-                    const State_t *const        state ) {
+                    const State_t *const state ) {
 
     int source = state->value[ comp ];
 

@@ -468,26 +468,16 @@ void yyerror(const string &s){
   printf("\nerror\n");
   
 }
-
-void parseProblem( const string &str, UppaalData* d){
-  data=d;
-  yyin=tmpfile();
-  fputs( str.c_str(), yyin);
-  rewind(yyin);
-  yyparse();
-  fclose(yyin);
-  // cout<<endl;
-  //  cout<<endl;
-  /* for( map<string, vector<int> >::iterator it=data.globalIntArray.begin( ); it!= data.globalIntArray.end( ); it++){ */
-  /*   cout<<it->first<<" "; */
-  /*   for(int i=0; i< it->second.size( ); i++){ */
-  /*     cout<<it->second[ i]<<" "; */
-  /*   } */
-  /*   cout<<endl; */
-  /* } */
-
+namespace graphsat{
+  void parseProblem( const string &str, UppaalData* d){
+    data=d;
+    yyin=tmpfile();
+    fputs( str.c_str(), yyin);
+    rewind(yyin);
+    yyparse();
+    fclose(yyin);
   
-}
- 
+  }
+} 
 
 

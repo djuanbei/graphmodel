@@ -15,8 +15,8 @@
 #include <vector>
 
 namespace graphsat {
-using std::vector;
 using std::pair;
+using std::vector;
 class CounterAction {
 public:
   virtual void operator()( const Parameter &p, int *value ) const = 0;

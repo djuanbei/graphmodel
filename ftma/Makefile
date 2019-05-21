@@ -30,7 +30,7 @@ ifeq ($(SRCSUF),cpp)
 	CC=g++  -std=c++11 
 
 	CLANG=clang++
-    CFLAGS     =  -I include -I ~/mycode/c++/raptor/include -pedantic -W -Werror   -std=c++11    -DHAVE_CONFIG_H -Wlong-long -Wno-unused-parameter
+    CFLAGS     =  -I include -I ~/mycode/c++/raptor/include -pedantic -W -Werror      -DHAVE_CONFIG_H -Wlong-long -Wno-unused-parameter #-std=c++11 
 #LFLAGS    =   -pedantic -W -Werror
 else
 	CC=gcc
@@ -99,6 +99,13 @@ lib$(LIB)_check.a:	$(filter-out */$(MAINFILE).oc, $(CCOBJS))
 lib$(LIB)_release.a:	$(filter-out */$(MAINFILE).or, $(RCOBJS))
 
 
+parser: LEX YACC
+
+LEX: src/uppaalscan.l
+	lex -o include/uppaalscan.h src/uppaalscan.l
+
+YACC: src/uppaalparser.y
+	bison  -o  src/uppaalparser.cpp  -v src/uppaalparser.y
 
 ## Build rule
 %.o %.op %.od %.or :%.$(SRCSUF)   

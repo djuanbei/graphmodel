@@ -24,7 +24,9 @@ int UppaalParser::parserDeclaration( child_type declarations ) {
         it++ ) {
     child_type name    = ( *it )->getChild( DECLARATION_STR );
     string     content = ( *it )->getValue();
-    cout << content << endl;
+    parseProblem( content, &data);
+
+    cout << "declaration: " << content << endl;
   }
 
   return 0;
@@ -80,8 +82,8 @@ vector<L_t> UppaalParser::parserLocation( child_type locations ) {
     cout << "location" << endl;
     string idstr = ( *lit )->getAttrValue( ID_STR );
     assert( idstr != "" );
-    int locationID       = locationMAP.size();
-    locationMAP[ idstr ] = locationID;
+    int locationID = data.addLoc( idstr );
+
     L_t temp( locationID );
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
@@ -117,8 +119,8 @@ vector<T_t> UppaalParser::parserTransition( child_type transitions ) {
     const XmlConfig *target    = ( *tit )->getOneChild( TARGET_STR );
     string           targetRef = target->getAttrValue( REF_STR );
 
-    int sourceId = locationMAP[ sourceRef ];
-    int targetId = locationMAP[ targetRef ];
+    int sourceId = data.getLoc( sourceRef );
+    int targetId = data.getLoc( targetRef );
 
     T_t temp( sourceId, targetId );
 
