@@ -12,8 +12,17 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   child_type queries      = xmldoc.getChild( QUERIES_STR );
   parserDeclaration( declarations );
   parserTemplate( templates );
-  parserSystem( system );
-  parserQuery( queries );
+  // parserSystem( system );
+  // parserQuery( queries );
+  int counter_num = data.getTypeNum( COUNTER_STR );
+
+  for ( int i = 0; i < counter_num; i++ ) {
+
+    Counter                          counter( 0, 1000000 );
+    const pair<string, vector<int>> &hh = data.getValue( COUNTER_STR, i );
+    counter.setValue( hh.second[ 0 ] );
+    sys += counter;
+  }
 }
 
 int UppaalParser::parserDeclaration( child_type declarations ) {
@@ -24,9 +33,7 @@ int UppaalParser::parserDeclaration( child_type declarations ) {
         it++ ) {
     child_type name    = ( *it )->getChild( DECLARATION_STR );
     string     content = ( *it )->getValue();
-    parseProblem( content, &data);
-
-    cout << "declaration: " << content << endl;
+    parseProblem( content, &data, &data );
   }
 
   return 0;
@@ -39,31 +46,55 @@ int UppaalParser::parserTemplate( child_type templates ) {
   }
 
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
+    UppaalData templateData;
 
-    const XmlConfig *nameConf = ( *it )->getOneChild( NAME_STR );
-    if ( NULL != nameConf ) {
-      cout << nameConf->getValue() << endl;
-    }
-    const XmlConfig *parameter = ( *it )->getOneChild( PARAMETER_STR );
-
+    XML_P nameConf  = ( *it )->getOneChild( NAME_STR );
+    XML_P parameter = ( *it )->getOneChild( PARAMETER_STR );
     if ( NULL != parameter ) {
-      cout << "parameter: " << parameter->getValue() << endl;
+      string         para_content = parameter->getValue();
+      vector<string> terms        = splitStr( para_content, " " );
+      templateData.addValue( PARAMETER_STR, terms.back() );
     }
 
-    const XmlConfig *declaration = ( *it )->getOneChild( DECLARATION_STR );
+    XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
+
     if ( NULL != declaration ) {
-      cout << "declaration: " << declaration->getValue() << endl;
+      string dec_content = declaration->getValue();
+      parseProblem( dec_content, &data, &templateData );
     }
 
-    child_type locations = ( *it )->getChild( LOCATION_STR );
+    child_type location_comps = ( *it )->getChild( LOCATION_STR );
 
-    vector<L_t> ls = parserLocation( locations );
+    vector<L_t> locations = parserLocation( templateData, location_comps );
 
-    int locationID = 0;
+    XML_P initConf = ( *it )->getOneChild( INIT_STR );
 
-    child_type transitions = ( *it )->getChild( TRANSITION_STR );
+    if ( NULL != initConf ) {
+      string loc = initConf->getAttrValue( REF_STR );
+      templateData.setInitialLoc( templateData.getId( LOCATION_STR, loc ) );
+    }
 
-    vector<T_t> es = parserTransition( transitions );
+    child_type transition_comps = ( *it )->getChild( TRANSITION_STR );
+
+    vector<T_t> transitions = parserTransition( templateData, transition_comps );
+
+    TA_t ta( locations , transitions, templateData.getInitialLoc(),
+             templateData.getTypeNum( CLOCK_STR ) );
+    if ( NULL != parameter ) {
+      string         para_content = parameter->getValue();
+      vector<string> terms        = splitStr( para_content, " " );
+      int            size         = terms.size();
+      size -= 2;
+      string      global_array = terms[ size ];
+      vector<int> intArray     = data.getIntArray( global_array );
+      for ( auto e : intArray ) {
+        TA_t temp = ta;
+        temp.addOnePara( e );
+        sys += temp;
+      }
+    } else {
+      sys += ta;
+    }
   }
 
   return 0;
@@ -73,18 +104,20 @@ int UppaalParser::parserSystem( child_type system ) { return 0; }
 
 int UppaalParser::parserQuery( child_type queries ) { return 0; }
 
-vector<L_t> UppaalParser::parserLocation( child_type locations ) {
-  vector<L_t> ls;
+vector<L_t> UppaalParser::parserLocation( UppaalData &templateData,
+                                          child_type  locations ) {
+  vector<L_t> return_locations;
 
   for ( child_iterator lit = locations->begin(); lit != locations->end();
         lit++ ) {
 
-    cout << "location" << endl;
-    string idstr = ( *lit )->getAttrValue( ID_STR );
-    assert( idstr != "" );
-    int locationID = data.addLoc( idstr );
+    string idStr = ( *lit )->getAttrValue( ID_STR );
+    assert( idStr != "" );
+    templateData.addValue( LOCATION_STR, idStr );
 
-    L_t temp( locationID );
+    int locationID = templateData.getId( LOCATION_STR, idStr );
+
+    L_t location( locationID );
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -94,35 +127,37 @@ vector<L_t> UppaalParser::parserLocation( child_type locations ) {
         kind        = ( *llit )->getAttrDefault( KIND_STR, kind );
 
         if ( kind == INVARIANT_STR ) {
-          string guard = ( *llit )->getValue();
-          parserConstraints( guard );
-        }
-        if ( kind != "" ) {
-          cout << "kind: " << kind << endl;
-          cout << "value: " << ( *llit )->getValue() << endl;
+          string invariants = ( *llit )->getValue();
+          parserLabel( templateData, invariants );
+          vector<void *> cons = templateData.getPoints( CLOCK_CS );
+          for ( auto cs : cons ) {
+            location += *( (CS_t *) ( cs ) );
+            delete (CS_t *) cs;
+          }
         }
       }
     }
-    ls.push_back( temp );
+    return_locations.push_back( location );
   }
-  return ls;
+  return return_locations;
 }
 
-vector<T_t> UppaalParser::parserTransition( child_type transitions ) {
-  vector<T_t> es;
+vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
+                                            child_type  transitions ) {
+  vector<T_t> return_transitions;
   for ( child_iterator tit = transitions->begin(); tit != transitions->end();
         tit++ ) {
-    cout << "transition" << endl;
-    const XmlConfig *source    = ( *tit )->getOneChild( SOURCE_STR );
-    string           sourceRef = source->getAttrValue( REF_STR );
 
-    const XmlConfig *target    = ( *tit )->getOneChild( TARGET_STR );
-    string           targetRef = target->getAttrValue( REF_STR );
+    XML_P  source    = ( *tit )->getOneChild( SOURCE_STR );
+    string sourceRef = source->getAttrValue( REF_STR );
 
-    int sourceId = data.getLoc( sourceRef );
-    int targetId = data.getLoc( targetRef );
+    XML_P  target    = ( *tit )->getOneChild( TARGET_STR );
+    string targetRef = target->getAttrValue( REF_STR );
 
-    T_t temp( sourceId, targetId );
+    int sourceId = templateData.getId( LOCATION_STR, sourceRef );
+    int targetId = templateData.getId( LOCATION_STR, targetRef );
+
+    T_t transition( sourceId, targetId );
 
     child_type labels = ( *tit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -133,26 +168,44 @@ vector<T_t> UppaalParser::parserTransition( child_type transitions ) {
         kind        = ( *llit )->getAttrValue( KIND_STR );
         if ( GUARD_STR == kind ) {
           string guard = ( *llit )->getValue();
-          cout << kind << ": " << guard << endl;
-          parserConstraints( guard );
+          parserLabel( templateData, guard );
+          vector<void *> cons = templateData.getPoints( CLOCK_CS );
+          for ( auto cs : cons ) {
+            transition += *( (CS_t *) ( cs ) );
+            delete (CS_t *) cs;
+          }
+          vector<void *> counterCs = templateData.getPoints( COUNTER_CS );
+          for ( auto cs : counterCs ) {
+            transition.addCounterCons( (CounterConstraint *) cs );
+          }
+
         } else if ( ASSIGNMENT_STR == kind ) {
-          cout << kind << ": " << ( *llit )->getValue() << endl;
+          string assign_statement = ( *llit )->getValue();
+          parserLabel( templateData, assign_statement );
+          vector<void *> updates = templateData.getPoints( COUNTER_UPDATE );
+          for ( auto u : updates ) {
+            transition.addCounterAction( (CounterAction *) u );
+          }
+          vector<void *> resets = templateData.getPoints( RESET_STR );
+          for ( auto r : resets ) {
+            transition.addReset( *( (pair<int, int> *) r ) );
+            delete (pair<int, int> *) r;
+          }
+
         } else if ( SYNCHRONISATION_STR == kind ) {
           cout << kind << ": " << ( *llit )->getValue() << endl;
         }
       }
     }
-    es.push_back( temp );
+    return_transitions.push_back( transition );
   }
-  return es;
+  return return_transitions;
 }
 
-vector<CS_t> UppaalParser::parserConstraints( string guards ) {
-  string         delimeter = "&&";
-  vector<string> guardvec  = splitStr( guards, delimeter );
-  vector<CS_t>   re;
-
-  return re;
+void UppaalParser::parserLabel( UppaalData &templateData,
+                                      string      guards ) {
+  templateData.clearPoints();
+  parseProblem( guards, &data, &templateData );
 }
 
 } // namespace graphsat

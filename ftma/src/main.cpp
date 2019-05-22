@@ -298,6 +298,14 @@ void fisher( int n = 2 ) {
   }
   //  reacher.computeAllReachableSet();
 }
+void fisher1() {
+  UppaalParser parser( "example/fischer.xml" );
+  TAS_t        sys = parser.getSYS();
+  R_t          data( sys );
+
+  Reachability<R_t> reacher( data );
+  reacher.computeAllReachableSet();
+}
 
 int main( int argc, const char *argv[] ) {
   ///  fisher(9);
@@ -305,8 +313,8 @@ int main( int argc, const char *argv[] ) {
   //  example5();
   //  return 0;
   //  State<int> s;
+  fisher1();
 
-  UppaalParser parser( argv[ 1 ] );
   return 0;
 
   example1();

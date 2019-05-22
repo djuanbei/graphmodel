@@ -34,9 +34,27 @@ public:
                    bool isStrctRef = true ) {
     x            = i;
     y            = j;
-    matrix_value = r * 2;
-    if ( !isStrctRef ) {
-      matrix_value = matrix_value | 1;
+    matrix_value = getMatrixValue( r, isStrctRef );
+  }
+  ClockConstraint( const int i, const int j, COMP_OPERATOR op, const C r ) {
+    assert( op != NE );
+    assert( op != EQ );
+    if ( LE == op ) {
+      x            = i;
+      y            = j;
+      matrix_value = getMatrixValue( r, false );
+    } else if ( LT == op ) {
+      x            = i;
+      y            = j;
+      matrix_value = getMatrixValue( r, true );
+    } else if ( GE == op ) {
+      x            = j;
+      y            = i;
+      matrix_value = getMatrixValue( -r, false ); // y-x <= -r
+    } else if ( GT == op ) {
+      x            = j;
+      y            = i;
+      matrix_value = getMatrixValue( -r, true ); // y-x < -r
     }
   }
 

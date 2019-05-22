@@ -21,6 +21,7 @@ public:
     lb    = l;
     up    = u;
   }
+  void setValue( int v ) { value = v; }
 };
 } // namespace graphsat
 

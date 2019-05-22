@@ -21,6 +21,7 @@ using namespace std;
 
 typedef map<string, string> FXML_ATTRLIST;
 class XmlConfig;
+typedef const XmlConfig *                         XML_P;
 typedef map<string, vector<const XmlConfig *>>    XML_NODE;
 typedef vector<const XmlConfig *>::const_iterator child_iterator;
 typedef const vector<const XmlConfig *> *         child_type;

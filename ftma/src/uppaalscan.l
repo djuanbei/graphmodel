@@ -49,7 +49,8 @@ int check_type();
 
 {E}       { count();
   yylval.intVal=atoi(yytext);
-  return(CONSTANT);  }
+  return(CONSTANT);
+}
 
 
 \"(\\.|[^\\"])*\"    { count(); return(STRING_LITERAL); }
@@ -173,7 +174,12 @@ int check_type()
      *    it actually will only return IDENTIFIER
      */
     yylval.identifier=new string( yytext);
-    return(IDENTIFIER);
+   if(data->hasValue(PARAMETER_STR, *yylval.identifier)){
+     return PARAM;
+   }else{
+     return(IDENTIFIER);
+   }
+   
 }
 
 

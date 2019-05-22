@@ -1,15 +1,22 @@
 %{
   #include<iostream>
   #include<string>
-#include <stdio.h>
+  #include <stdio.h>
   #include<map>
   #include<vector>
+  #include <utility>
+  
+  #include "channel.h"
 
-  #include"io/uppaaldata.h"
+  #include "util/dbmutil.hpp"
+  #include "io/uppaaldata.h"
+  #include "model/ta.hpp"
   
   using  std::string;
   using std::map;
   using std::vector;
+  using std::make_pair;
+      
   using namespace graphsat;
   
   int yydebug=1;   
@@ -18,24 +25,44 @@
   using std::cout;
   extern  int lineNum;
 
+
+  const UppaalData* uplayerData;
   UppaalData* data;
-      
+
+  
   extern void yyerror(const char *); 
   extern void yyerror(const string&);
   extern int yylex();
   extern int yyparse();
   extern FILE* yyin;
+  TYPE_T getType(string * name );
   
  %}
 
 %union{
   int intVal;
   string *identifier;
+  vector<string> * str_vec_pointer;
+  COMP_OPERATOR com_op;
+  // CS_t* cs_t;
+  
  }
 
 %token <intVal> CONSTANT
 
-%token<identifier> IDENTIFIER  
+%token<identifier> IDENTIFIER
+
+%token<identifier> PARAM
+
+
+
+%type<intVal> const_expression
+%type<intVal> type_specifier
+
+%type<str_vec_pointer> identifier_list
+
+%type<com_op> compare_relation
+//%type<cs_t > atomic_constraint
 
 %token STRING_LITERAL    URGENT BROADCAST META
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -44,7 +71,7 @@
 %token XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
 %token TYPEDEF  
-%token  INT LONG SIGNED    CONST VOLATILE VOID  CLOCK CHAN
+%token  INT     CONST  VOID  CLOCK CHAN
 %token STRUCT   ELLIPSIS
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN
@@ -57,382 +84,62 @@
 
 %%
 
-primary_expression
-: IDENTIFIER
-| CONSTANT
-| STRING_LITERAL
-| '(' expression ')'
-;
-
-postfix_expression
-: primary_expression
-| postfix_expression '[' expression ']'
-| postfix_expression '(' ')'
-| postfix_expression '(' argument_expression_list ')'
-| postfix_expression '.' IDENTIFIER
-| postfix_expression PTR_OP IDENTIFIER
-| postfix_expression INC_OP
-| postfix_expression DEC_OP
-;
-
-argument_expression_list
-: assignment_expression
-| argument_expression_list ',' assignment_expression
-;
-
-unary_expression
-: postfix_expression
-| INC_OP unary_expression
-| DEC_OP unary_expression
-| unary_operator cast_expression
-;
-
-unary_operator
-: '&'
-| '*'
-| '+'
-| '-'
-| '~'
-| '!'
-;
-
-cast_expression
-: unary_expression
-| '(' type_name ')' cast_expression
-;
-
-multiplicative_expression
-: cast_expression
-| multiplicative_expression '*' cast_expression
-| multiplicative_expression '/' cast_expression
-| multiplicative_expression '%' cast_expression
-;
-
-additive_expression
-: multiplicative_expression
-| additive_expression '+' multiplicative_expression
-| additive_expression '-' multiplicative_expression
-;
-
-shift_expression
-: additive_expression
-| shift_expression LEFT_OP additive_expression
-| shift_expression RIGHT_OP additive_expression
-;
-
-relational_expression
-: shift_expression
-| relational_expression '<' shift_expression
-| relational_expression '>' shift_expression
-| relational_expression LE_OP shift_expression
-| relational_expression GE_OP shift_expression
-;
-
-equality_expression
-: relational_expression
-| equality_expression EQ_OP relational_expression
-| equality_expression NE_OP relational_expression
-;
-
-and_expression
-: equality_expression
-| and_expression '&' equality_expression
-;
-
-exclusive_or_expression
-: and_expression
-| exclusive_or_expression '^' and_expression
-;
-
-inclusive_or_expression
-: exclusive_or_expression
-| inclusive_or_expression '|' exclusive_or_expression
-;
-
-logical_and_expression
-: inclusive_or_expression
-| logical_and_expression AND_OP inclusive_or_expression
-;
-
-logical_or_expression
-: logical_and_expression
-| logical_or_expression OR_OP logical_and_expression
-;
-
-conditional_expression
-: logical_or_expression
-| logical_or_expression '?' expression ':' conditional_expression
-;
-
-assignment_expression
-: conditional_expression
-| unary_expression assignment_operator assignment_expression
-;
-
-assignment_operator
-: '='
-| MUL_ASSIGN
-| DIV_ASSIGN
-| MOD_ASSIGN
-| ADD_ASSIGN
-| SUB_ASSIGN
-| LEFT_ASSIGN
-| RIGHT_ASSIGN
-| AND_ASSIGN
-| XOR_ASSIGN
-| OR_ASSIGN
-;
-
-expression
-: assignment_expression
-| expression ',' assignment_expression
-;
-
-constant_expression
-: conditional_expression
-;
-
-declaration
-: declaration_specifiers ';'
-| declaration_specifiers init_declarator_list ';'
-| TYPEDEF INT '[' CONSTANT ',' CONSTANT ']' IDENTIFIER ';'
-{
-  if( data->getType()== GLOBAL_DEC){
-    vector<int> temp;
-    for( int i=$4; i<=$6; i++  ){
-      temp.push_back( i);
-    }
-    data->addIntArray(*( $8),temp);
-  }else{
-    
-  }
-  delete $8;
-}
-| INT IDENTIFIER ';'
-{
-  if( data->getType( )==GLOBAL_DEC){
-    data->addCounter(*($2) );
-
-    cout<<"counter"<<endl;
-    delete $2;
-  }
-}
-
-
-;
-
-declaration_specifiers
-: storage_class_specifier
-| storage_class_specifier declaration_specifiers
-| type_specifier
-| type_specifier declaration_specifiers
-| type_qualifier
-| type_qualifier declaration_specifiers
-;
-
-init_declarator_list
-: init_declarator
-| init_declarator_list ',' init_declarator
-;
-
-init_declarator
-: declarator
-| declarator '=' initializer
-;
-
-storage_class_specifier
-: TYPEDEF
-
-;
-
 type_specifier
-: VOID
-| INT
-| struct_specifier
-| TYPE_NAME
+: INT
+{
+  $$=1;
+}
+| CLOCK
+{
+  $$=2;
+}
+| CHAN
+{
+  $$=3;
+}
 ;
 
-struct_specifier
-: STRUCT IDENTIFIER '{' struct_declaration_list '}'
-| STRUCT '{' struct_declaration_list '}'
-| STRUCT IDENTIFIER
-;
-
-struct_declaration_list
-: struct_declaration
-| struct_declaration_list struct_declaration
-;
-
-struct_declaration
-: specifier_qualifier_list struct_declarator_list ';'
-;
-
-specifier_qualifier_list
-: type_specifier specifier_qualifier_list
-| type_specifier
-| type_qualifier specifier_qualifier_list
-| type_qualifier
-;
-
-struct_declarator_list
-: struct_declarator
-| struct_declarator_list ',' struct_declarator
-;
-
-struct_declarator
-: declarator
-| ':' constant_expression
-| declarator ':' constant_expression
-;
-
-
-
-type_qualifier
-: CONST
-| URGENT
-| BROADCAST
-| META
-;
-
-declarator
-: pointer direct_declarator
-| direct_declarator
-;
-
-direct_declarator
-: IDENTIFIER
-| '(' declarator ')'
-| direct_declarator '[' constant_expression ']'
-| direct_declarator '[' ']'
-| direct_declarator '(' parameter_type_list ')'
-| direct_declarator '(' identifier_list ')'
-| direct_declarator '(' ')'
-;
-
-pointer
-: '*'
-| '*' type_qualifier_list
-| '*' pointer
-| '*' type_qualifier_list pointer
-;
-
-type_qualifier_list
-: type_qualifier
-| type_qualifier_list type_qualifier
-;
-
-
-parameter_type_list
-: parameter_list
-| parameter_list ',' ELLIPSIS
-;
-
-parameter_list
-: parameter_declaration
-| parameter_list ',' parameter_declaration
-;
-
-parameter_declaration
-: declaration_specifiers declarator
-| declaration_specifiers abstract_declarator
-| declaration_specifiers
-;
 
 identifier_list
 : IDENTIFIER
+{
+  $$=new vector<string> ( );
+  $$->push_back( *$1);
+  delete $1;
+}
 | identifier_list ',' IDENTIFIER
+{
+  $$=$1;
+  $$->push_back( *$3);
+  delete $3;
+}
 ;
 
-type_name
-: specifier_qualifier_list
-| specifier_qualifier_list abstract_declarator
-;
+compare_relation:
 
-abstract_declarator
-: pointer
-| direct_abstract_declarator
-| pointer direct_abstract_declarator
-;
-
-direct_abstract_declarator
-: '(' abstract_declarator ')'
-| '[' ']'
-| '[' constant_expression ']'
-| direct_abstract_declarator '[' ']'
-| direct_abstract_declarator '[' constant_expression ']'
-| '(' ')'
-| '(' parameter_type_list ')'
-| direct_abstract_declarator '(' ')'
-| direct_abstract_declarator '(' parameter_type_list ')'
-;
-
-initializer
-: assignment_expression
-| '{' initializer_list '}'
-| '{' initializer_list ',' '}'
-;
-
-initializer_list
-: initializer
-| initializer_list ',' initializer
-;
-
-statement
-: labeled_statement
-| compound_statement
-| expression_statement
-| selection_statement
-| iteration_statement
-| jump_statement
-;
-
-labeled_statement
-: IDENTIFIER ':' statement
-| CASE constant_expression ':' statement
-| DEFAULT ':' statement
-;
-
-compound_statement
-: '{' '}'
-| '{' statement_list '}'
-| '{' declaration_list '}'
-| '{' declaration_list statement_list '}'
-;
-
-declaration_list
-: declaration
-| declaration_list declaration
-;
-
-statement_list
-: statement
-| statement_list statement
-;
-
-expression_statement
-: ';'
-| expression ';'
-;
-
-selection_statement
-: IF '(' expression ')' statement %prec IFX
-| IF '(' expression ')' statement ELSE statement
-| SWITCH '(' expression ')' statement
-;
-
-iteration_statement
-: WHILE '(' expression ')' statement
-| DO statement WHILE '(' expression ')' ';'
-| FOR '(' expression_statement expression_statement ')' statement
-| FOR '(' expression_statement expression_statement expression ')' statement
-;
-
-jump_statement
-: CONTINUE ';'
-| BREAK ';'
-| RETURN ';'
-| RETURN expression ';'
-;
+EQ_OP{
+  $$=EQ;
+}
+|
+LE_OP{
+  $$=LE;
+}
+|
+GE_OP{
+  $$=GE;
+}
+|
+'<' {
+  $$=LT;
+}
+|
+'>'{
+  $$=GT;
+}
+|
+NE_OP{
+  $$=NE;
+}
 
 translation_unit
 : external_declaration
@@ -440,16 +147,215 @@ translation_unit
 ;
 
 external_declaration
-: function_definition
-| declaration
+: variable_declaration
+| constraint_statement
+| assign_statement
+;
+constraint_statement:
+atomic_constraint
+|
+constraint_statement AND_OP atomic_constraint
+
 ;
 
-function_definition
-: declaration_specifiers declarator declaration_list compound_statement
-| declaration_specifiers declarator compound_statement
-| declarator declaration_list compound_statement
-| declarator compound_statement
+atomic_constraint:
+
+IDENTIFIER compare_relation  const_expression 
+{
+  void *cs;
+  const  TYPE_T type=getType( $1);
+  if( type==CLOCK_T){
+    int clock_id=data->getId( CLOCK_STR, *$1)+1; //CLOCK ID START FROM 1
+    cs=new CS_t(clock_id, 0,  $2, $3 ); //x< c
+    data->addPointer( CLOCK_CS, cs);
+  }
+  else if(type==COUNTER_T ){
+    int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+    cs =new DiaFreeCounterConstraint( counter_id, $2, $3);
+    data->addPointer( COUNTER_CS, cs);
+  }
+  delete $1;
+}
+|
+IDENTIFIER compare_relation  PARAM
+{
+  const  TYPE_T type=getType( $1);
+  assert( COUNTER_T==type);
+  int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+  int param_id=data->getId( PARAMETER_STR, *$3);
+  DiaFreeCounterPConstraint *cs=new DiaFreeCounterPConstraint(counter_id, $2, param_id );
+  data->addPointer( COUNTER_CS, cs);
+}
+|
+IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
+{
+  if(getType( $1)==CLOCK_T &&getType( $3)==CLOCK_T  ){
+    int clock_id1=data->getId( CLOCK_STR, *$1)+1;
+    int clock_id2=data->getId( CLOCK_STR, *$3)+1;
+    CS_t *cs=new CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
+    data->addPointer( CLOCK_CS, cs);                     
+  }
+  else if(getType( $1)==COUNTER_T &&getType( $3)==COUNTER_T  ){
+    int counter_id1=uplayerData->getId( COUNTER_STR, *$1);
+    int counter_id2=uplayerData->getId( COUNTER_STR, *$3);
+    DiaCounterConstraint *cs=new DiaCounterConstraint( counter_id1, counter_id2, $4, $5);
+    data->addPointer( COUNTER_CS, cs);
+  }
+
+  delete $1;
+  delete $3;
+}
+
 ;
+
+assign_statement:
+single_assign_statement
+| assign_statement ',' single_assign_statement
+;
+single_assign_statement:
+IDENTIFIER '=' const_expression
+{
+  if( getType($1 )==CLOCK_T){
+    int clock_id=data->getId( CLOCK_STR, *$1 )+1;
+    pair<int, int> *pp=new pair<int,int>(clock_id, $3 );
+    data->addPointer( RESET_STR, pp);
+    
+  }else if(getType($1 )==COUNTER_T ){
+    int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+    SimpleCounterAction *cs=new SimpleCounterAction( counter_id, $3);
+    data->addPointer( COUNTER_UPDATE, cs);
+  }
+  delete $1;
+  
+}
+|
+IDENTIFIER '=' PARAM
+{
+  assert(getType($1 )==COUNTER_T );
+  int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+
+  int parameter_id=data->getId( PARAMETER_STR, *$3);
+  
+  SimpleCounterPAction *cs  =new SimpleCounterPAction( counter_id,  parameter_id);
+  data->addPointer( COUNTER_UPDATE, cs);
+  
+}
+const_expression:
+CONSTANT
+{
+  $$=$1;
+}
+|
+IDENTIFIER
+{
+  $$=0;
+  if(data->hasValue(COUNTER_STR, *$1) ){
+    $$=data->getValue(COUNTER_STR, *$1);
+  }else if ( uplayerData->hasValue(COUNTER_STR, *$1) ){
+    $$=uplayerData->getValue(COUNTER_STR, *$1);
+  }
+  delete $1;
+}
+;
+
+variable_declaration
+: type_specifier identifier_list ';'
+{
+  switch( $1){
+    case 1:
+      for( auto v: *$2){
+        data->addValue(COUNTER_STR, v);
+      }
+      delete $2;
+      break ;
+    case 2:
+      for( auto v: *$2){
+        data->addValue(CLOCK_STR, v);
+      }
+      delete $2;
+      break ;
+      
+    case 3:
+      for( auto v: *$2){
+        data->addValue(CHANNEL_STR, v, ONE2ONE);
+      }
+      delete $2;
+      break ;
+  }
+}
+
+
+| BROADCAST CHAN identifier_list ';'
+{
+  for( auto v: *$3){
+    data->addValue(CHANNEL_STR, v, ONE2ALL);  
+  }
+  delete $3;
+}
+
+| BROADCAST CHAN IDENTIFIER '[' const_expression  ']' ';'
+{
+  for( int i=0; i< $5; i++ ){
+    data->addValue(CHANNEL_STR, *$3, ONE2ALL);  
+  }
+}
+
+|  type_specifier IDENTIFIER '=' const_expression ';'
+{
+  switch( $1){
+    case 1:
+      data->addValue(COUNTER_STR, *$2, $4);
+      delete $2;
+      break;
+    case 2:
+      data->addValue(CLOCK_STR, *$2, $4);
+
+      delete $2;
+      break;
+
+    case 3:
+      data->addValue(CHANNEL_STR, *$2, $4);
+      delete $2;
+      break;
+  }
+  
+}
+| CONST type_specifier IDENTIFIER '=' const_expression ';'
+
+{
+  switch( $2){
+    case 1:
+      data->addValue(COUNTER_STR, *$3, $5);
+      delete $3;
+      break;
+    case 2:
+      data->addValue(CLOCK_STR, *$3, $5);
+      delete $3;
+
+      break;
+
+    case 3:
+      data->addValue(CHANNEL_STR, *$3, $5);
+      delete $3;
+      break;
+  }
+  
+}
+
+
+
+|  TYPEDEF INT '[' const_expression ',' const_expression ']' IDENTIFIER ';'
+{
+
+  vector<int> temp;
+  for( int i=$4; i<=$6; i++  ){
+    temp.push_back( i);
+  }
+  data->addIntArray(*( $8),temp);
+
+  delete $8;
+}
+
 
 %%
 
@@ -460,16 +366,32 @@ function_definition
 void yyerror(const char *s)
 {
     fflush(stdout);
-    printf("\nerror\n");
+    assert( false);
+    printf("\n jjj error\n");
 }
 void yyerror(const string &s){
 
   fflush(stdout);
-  printf("\nerror\n");
+  assert( false);
+  printf("\n kkk error\n");
   
 }
+
+TYPE_T getType(string * name ){
+  if(data->hasValue( CLOCK_STR, *name) ){
+    return CLOCK_T;
+  }
+  if(data->hasValue( PARAMETER_STR, *name) ){
+    return PARAMETER_T;
+  }
+  if( uplayerData->hasValue( COUNTER_STR, *name)){
+    return COUNTER_T;
+  }
+  return NO_T;
+}
 namespace graphsat{
-  void parseProblem( const string &str, UppaalData* d){
+  void parseProblem( const string &str, const UppaalData *pd,   UppaalData* d){
+    uplayerData=pd;
     data=d;
     yyin=tmpfile();
     fputs( str.c_str(), yyin);

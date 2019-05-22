@@ -19,7 +19,37 @@ using std::pair;
 using std::vector;
 class CounterAction {
 public:
-  virtual void operator()( const Parameter &p, int *value ) const = 0;
+  virtual void operator()( const Parameter &p, int *counterValue ) const = 0;
+};
+
+class SimpleCounterAction : public CounterAction {
+public:
+  SimpleCounterAction( int cid, int v ) {
+    counter_id = cid;
+    rhs        = v;
+  }
+  virtual void operator()( const Parameter &p, int *counterValue ) const {
+    counterValue[ counter_id ] = rhs;
+  }
+
+private:
+  int counter_id;
+  int rhs;
+};
+
+class SimpleCounterPAction : public CounterAction {
+public:
+  SimpleCounterPAction( int cid, int v ) {
+    counter_id = cid;
+    p_id       = v;
+  }
+  virtual void operator()( const Parameter &p, int *counterValue ) const {
+    counterValue[ counter_id ] = p.getValue( p_id );
+  }
+
+private:
+  int counter_id;
+  int p_id;
 };
 
 class DefaultCAction : public CounterAction {
@@ -27,11 +57,11 @@ public:
   DefaultCAction( vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
     relations = relations1;
   }
-  virtual void operator()( const Parameter &p, int *value ) const {
+  virtual void operator()( const Parameter &p, int *counterValue ) const {
     for ( auto e : relations ) {
-      value[ e.first ] = 0;
+      counterValue[ e.first ] = 0;
       for ( auto ee : e.second ) {
-        value[ e.first ] += ee.first * p.getValue( ee.second );
+        counterValue[ e.first ] += ee.first * p.getValue( ee.second );
       }
     }
   }
