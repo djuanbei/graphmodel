@@ -23,6 +23,9 @@
   using std::cerr;
   using std::endl;
   using std::cout;
+
+  vector<string> symbol_table;
+  
   extern  int lineNum;
 
 
@@ -35,13 +38,13 @@
   extern int yylex();
   extern int yyparse();
   extern FILE* yyin;
-  TYPE_T getType(string * name );
+  TYPE_T getType(string & name );
   
  %}
 
 %union{
   int intVal;
-  string *identifier;
+  //  string *identifier;
   vector<string> * str_vec_pointer;
   COMP_OPERATOR com_op;
   // CS_t* cs_t;
@@ -50,9 +53,9 @@
 
 %token <intVal> CONSTANT
 
-%token<identifier> IDENTIFIER
+%token<intVal> IDENTIFIER
 
-%token<identifier> PARAM
+%token<intVal> PARAM
 
 
 
@@ -104,14 +107,12 @@ identifier_list
 : IDENTIFIER
 {
   $$=new vector<string> ( );
-  $$->push_back( *$1);
-  delete $1;
+  $$->push_back( symbol_table[$1]);
 }
 | identifier_list ',' IDENTIFIER
 {
   $$=$1;
-  $$->push_back( *$3);
-  delete $3;
+  $$->push_back(symbol_table[$3]);
 }
 ;
 
@@ -163,47 +164,46 @@ atomic_constraint:
 IDENTIFIER compare_relation  const_expression 
 {
   void *cs;
-  const  TYPE_T type=getType( $1);
+  const  TYPE_T type=getType( symbol_table[$1]);
   if( type==CLOCK_T){
-    int clock_id=data->getId( CLOCK_STR, *$1)+1; //CLOCK ID START FROM 1
+    int clock_id=data->getId( CLOCK_STR, symbol_table[$1])+1; //CLOCK ID START FROM 1
     cs=new CS_t(clock_id, 0,  $2, $3 ); //x< c
     data->addPointer( CLOCK_CS, cs);
   }
   else if(type==COUNTER_T ){
-    int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+    int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
     cs =new DiaFreeCounterConstraint( counter_id, $2, $3);
     data->addPointer( COUNTER_CS, cs);
   }
-  delete $1;
+
 }
 |
 IDENTIFIER compare_relation  PARAM
 {
-  const  TYPE_T type=getType( $1);
+  const  TYPE_T type=getType(   symbol_table[$1]);
   assert( COUNTER_T==type);
-  int counter_id=uplayerData->getId( COUNTER_STR, *$1);
-  int param_id=data->getId( PARAMETER_STR, *$3);
+  int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
+  int param_id=data->getId( PARAMETER_STR, symbol_table[$3]);
   DiaFreeCounterPConstraint *cs=new DiaFreeCounterPConstraint(counter_id, $2, param_id );
   data->addPointer( COUNTER_CS, cs);
 }
 |
 IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
 {
-  if(getType( $1)==CLOCK_T &&getType( $3)==CLOCK_T  ){
-    int clock_id1=data->getId( CLOCK_STR, *$1)+1;
-    int clock_id2=data->getId( CLOCK_STR, *$3)+1;
+  if(getType( symbol_table[$1])==CLOCK_T &&getType( symbol_table[$3])==CLOCK_T  ){
+    int clock_id1=data->getId( CLOCK_STR, symbol_table[$1])+1;
+    int clock_id2=data->getId( CLOCK_STR, symbol_table[$3])+1;
     CS_t *cs=new CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
     data->addPointer( CLOCK_CS, cs);                     
   }
-  else if(getType( $1)==COUNTER_T &&getType( $3)==COUNTER_T  ){
-    int counter_id1=uplayerData->getId( COUNTER_STR, *$1);
-    int counter_id2=uplayerData->getId( COUNTER_STR, *$3);
+  else if(getType( symbol_table[$1])==COUNTER_T &&getType( symbol_table[$3])==COUNTER_T  ){
+    int counter_id1=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
+    int counter_id2=uplayerData->getId( COUNTER_STR, symbol_table[$3]);
     DiaCounterConstraint *cs=new DiaCounterConstraint( counter_id1, counter_id2, $4, $5);
     data->addPointer( COUNTER_CS, cs);
   }
 
-  delete $1;
-  delete $3;
+
 }
 
 ;
@@ -215,26 +215,25 @@ single_assign_statement
 single_assign_statement:
 IDENTIFIER '=' const_expression
 {
-  if( getType($1 )==CLOCK_T){
-    int clock_id=data->getId( CLOCK_STR, *$1 )+1;
+  if( getType( symbol_table[$1] )==CLOCK_T){
+    int clock_id=data->getId( CLOCK_STR, symbol_table[$1] )+1;
     pair<int, int> *pp=new pair<int,int>(clock_id, $3 );
     data->addPointer( RESET_STR, pp);
     
-  }else if(getType($1 )==COUNTER_T ){
-    int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+  }else if(getType( symbol_table[$1] )==COUNTER_T ){
+    int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
     SimpleCounterAction *cs=new SimpleCounterAction( counter_id, $3);
     data->addPointer( COUNTER_UPDATE, cs);
   }
-  delete $1;
   
 }
 |
 IDENTIFIER '=' PARAM
 {
-  assert(getType($1 )==COUNTER_T );
-  int counter_id=uplayerData->getId( COUNTER_STR, *$1);
+  assert(getType(symbol_table[$1] )==COUNTER_T );
+  int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
 
-  int parameter_id=data->getId( PARAMETER_STR, *$3);
+  int parameter_id=data->getId( PARAMETER_STR, symbol_table[$3]);
   
   SimpleCounterPAction *cs  =new SimpleCounterPAction( counter_id,  parameter_id);
   data->addPointer( COUNTER_UPDATE, cs);
@@ -249,12 +248,12 @@ CONSTANT
 IDENTIFIER
 {
   $$=0;
-  if(data->hasValue(COUNTER_STR, *$1) ){
-    $$=data->getValue(COUNTER_STR, *$1);
-  }else if ( uplayerData->hasValue(COUNTER_STR, *$1) ){
-    $$=uplayerData->getValue(COUNTER_STR, *$1);
+  if(data->hasValue(COUNTER_STR, symbol_table[$1]) ){
+    $$=data->getValue(COUNTER_STR,symbol_table[$1]);
+  }else if ( uplayerData->hasValue(COUNTER_STR, symbol_table[$1]) ){
+    $$=uplayerData->getValue(COUNTER_STR,   symbol_table[$1]);
   }
-  delete $1;
+
 }
 ;
 
@@ -296,7 +295,7 @@ variable_declaration
 | BROADCAST CHAN IDENTIFIER '[' const_expression  ']' ';'
 {
   for( int i=0; i< $5; i++ ){
-    data->addValue(CHANNEL_STR, *$3, ONE2ALL);  
+    data->addValue(CHANNEL_STR, symbol_table[$3], ONE2ALL);  
   }
 }
 
@@ -304,18 +303,16 @@ variable_declaration
 {
   switch( $1){
     case 1:
-      data->addValue(COUNTER_STR, *$2, $4);
-      delete $2;
+      data->addValue(COUNTER_STR, symbol_table[$2], $4);
       break;
     case 2:
-      data->addValue(CLOCK_STR, *$2, $4);
-
-      delete $2;
+      data->addValue(CLOCK_STR, symbol_table[$2], $4);
+ 
       break;
 
     case 3:
-      data->addValue(CHANNEL_STR, *$2, $4);
-      delete $2;
+      data->addValue(CHANNEL_STR, symbol_table[$2], $4);
+
       break;
   }
   
@@ -325,18 +322,17 @@ variable_declaration
 {
   switch( $2){
     case 1:
-      data->addValue(COUNTER_STR, *$3, $5);
-      delete $3;
+      data->addValue(COUNTER_STR, symbol_table[$3], $5);
+
       break;
     case 2:
-      data->addValue(CLOCK_STR, *$3, $5);
-      delete $3;
+      data->addValue(CLOCK_STR, symbol_table[$3], $5);
 
       break;
 
     case 3:
-      data->addValue(CHANNEL_STR, *$3, $5);
-      delete $3;
+      data->addValue(CHANNEL_STR, symbol_table[$3], $5);
+
       break;
   }
   
@@ -351,9 +347,7 @@ variable_declaration
   for( int i=$4; i<=$6; i++  ){
     temp.push_back( i);
   }
-  data->addIntArray(*( $8),temp);
-
-  delete $8;
+  data->addIntArray(symbol_table[ $8],temp);
 }
 
 
@@ -377,14 +371,14 @@ void yyerror(const string &s){
   
 }
 
-TYPE_T getType(string * name ){
-  if(data->hasValue( CLOCK_STR, *name) ){
+TYPE_T getType(string & name ){
+  if(data->hasValue( CLOCK_STR, name) ){
     return CLOCK_T;
   }
-  if(data->hasValue( PARAMETER_STR, *name) ){
+  if(data->hasValue( PARAMETER_STR, name) ){
     return PARAMETER_T;
   }
-  if( uplayerData->hasValue( COUNTER_STR, *name)){
+  if( uplayerData->hasValue( COUNTER_STR, name)){
     return COUNTER_T;
   }
   return NO_T;

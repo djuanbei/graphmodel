@@ -158,7 +158,14 @@ void count()
     //ECHO;
 }
 
+int findSym(const string& name ){
+   vector<string>::iterator it=find(symbol_table.begin( ), symbol_table.end( ), name );
+   if( it==symbol_table.end( )){
+     return -1;
+   }
+   return it-symbol_table.begin( );
 
+}
 int check_type()
 {
     /*OB
@@ -173,8 +180,13 @@ int check_type()
     /*
      *    it actually will only return IDENTIFIER
      */
-    yylval.identifier=new string( yytext);
-   if(data->hasValue(PARAMETER_STR, *yylval.identifier)){
+     string  sym=string( yytext);
+     yylval.intVal=findSym( sym);
+     if( yylval.intVal<0){
+        yylval.intVal=symbol_table.size( );
+        symbol_table.push_back( sym);
+     }
+   if(data->hasValue(PARAMETER_STR,sym)){
      return PARAM;
    }else{
      return(IDENTIFIER);
