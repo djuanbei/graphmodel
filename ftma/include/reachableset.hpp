@@ -58,25 +58,25 @@ public:
   }
 
   bool oneStep( const Property &prop, const State_t *const state ) {
-    int commit_comp = -1;
-    for ( int comp = 0; comp < component_num; comp++ ) {
-      if ( manager.isCommitComp( comp, state ) ) {
-        commit_comp = comp;
+    int commit_component = -1;
+    for ( int component = 0; component < component_num; component++ ) {
+      if ( manager.isCommitComp( component, state ) ) {
+        commit_component = component;
         break;
       }
     }
-    if ( commit_comp > -1 ) {
-      return oneCompoent( commit_comp, prop, state );
+    if ( commit_component > -1 ) {
+      return oneComponent( commit_component, prop, state );
     }
-    for ( int comp = 0; comp < component_num; comp++ ) {
-      if ( state->value[ comp + component_num ] != 0 ) {
+    for ( int component = 0; component < component_num; component++ ) {
+      if ( state->value[ component + component_num ] != 0 ) {
         /**
          * Waiting for synchronize signal
          *
          */
         continue;
       }
-      if ( oneCompoent( comp, prop, state ) ) {
+      if ( oneComponent( component, prop, state ) ) {
         return true;
       }
     }
@@ -114,7 +114,7 @@ private:
     return true;
   }
 
-  bool oneCompoent( int comp, const Property &prop,
+  bool oneComponent( int comp, const Property &prop,
                     const State_t *const state ) {
 
     int source = state->value[ comp ];
@@ -132,7 +132,7 @@ private:
        *
        */
 
-      if ( !sys.tas[ comp ].transitions[ link ].isOK( comp, manager, state ) ) {
+      if ( !sys.tas[ comp ].transitions[ link ].ready( comp, manager, state ) ) {
         continue;
       }
 

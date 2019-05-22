@@ -77,7 +77,7 @@ public:
    *
    * @return
    */
-  void addCounterAction( const CounterAction *a ) { actions.push_back( a ); }
+  void addCounterAction( const CounterAction *action ) { actions.push_back( action ); }
 
   /**
    * add one clock reset  to this transition
@@ -86,7 +86,7 @@ public:
    *
    * @return
    */
-  void addReset( pair<int, int> &r ) { reset.push_back( r ); }
+  void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
 
   void addCounterCons( CounterConstraint *guards ) {
     counterCons.push_back( guards );
@@ -101,12 +101,12 @@ public:
    *
    * @return
    */
-  bool isOK( const int comp, const StateManager<C> &manager,
+  bool ready( const int component, const StateManager<C> &manager,
              const NIntState *state ) const {
     if ( !guards.empty() ) {
 
-      const D &dbmManager = manager.getClockManager( comp );
-      const C *sourceDBM  = manager.getkDBM( comp, state );
+      const D &dbmManager = manager.getClockManager( component );
+      const C *sourceDBM  = manager.getkDBM( component, state );
       assert( dbmManager.isConsistent( sourceDBM ) );
       C *copyDBM = dbmManager.createDBM( sourceDBM );
 
@@ -125,7 +125,7 @@ public:
       const C *counterValue = manager.getCounterValue( state );
 
       for ( auto cs : counterCons ) {
-        if ( !( *cs )( manager.getParameter( comp ), counterValue ) ) {
+        if ( !( *cs )( manager.getParameter( component ), counterValue ) ) {
           return false;
         }
       }
@@ -134,29 +134,29 @@ public:
     return true;
   }
 
-  NIntState *operator()( const int comp, const StateManager<C> &manager,
+  NIntState *operator()( const int component, const StateManager<C> &manager,
                          const NIntState *const state ) const {
-    assert( isOK( comp, manager, state ) );
+    assert( ready ( component, manager, state ) );
 
-    NIntState *re = state->copy();
+    NIntState *re_state = state->copy();
 
-    const D &dbmManager = manager.getClockManager( comp );
+    const D &dbmManager = manager.getClockManager( component );
 
-    C *sourceDBM = manager.getkDBM( comp, re );
+    C *sourceDBM = manager.getkDBM( component, re_state );
 
-    for ( auto r : reset ) {
+    for ( auto r : resets ) {
       assert( r.first > 0 );   // clock id start from 1
       assert( r.second >= 0 ); // clock value must positive
       dbmManager.resetImpl( sourceDBM, r.first, r.second );
     }
 
-    C *counterValue = manager.getCounterValue( re );
+    C *counterValue = manager.getCounterValue( re_state );
 
     for ( auto act : actions ) {
-      ( *act )( manager.getParameter( comp ), counterValue );
+      ( *act )( manager.getParameter( component ), counterValue );
     }
 
-    return re;
+    return re_state;
   }
 
 private:
@@ -170,7 +170,7 @@ private:
 
   vector<const CounterAction *>
                          actions; // set of actions at this transitionedge
-  vector<pair<int, int>> reset;   // set of reset clock variables
+  vector<pair<int, int>> resets;   // set of reset clock variables
 };
 } // namespace graphsat
 
