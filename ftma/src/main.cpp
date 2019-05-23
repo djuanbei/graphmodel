@@ -234,9 +234,9 @@ void fisher( int n = 2 ) {
   passins.push_back( passin );
   pair<int, vector<pair<int, int>>> oneUpdate( 0, passins ); // id=1*pid
   relations.push_back( oneUpdate );
-  DefaultCAction caction( relations );
+  DefaultCAction* caction=CounterActionFactory::getInstance( ).createDefaultCAction( relations );
 
-  req_wait.addCounterAction( &caction );
+  req_wait.addCounterAction(caction );
 
   T_t wait_req( 2, 1 );
 
@@ -266,8 +266,8 @@ void fisher( int n = 2 ) {
 
   pair<int, vector<pair<int, int>>> oneUpdate1( 0, passins1 ); // id=0
   relations1.push_back( oneUpdate1 );
-  DefaultCAction caction1( relations1 );
-  cs_A.addCounterAction( &caction1 );
+  DefaultCAction* caction1=CounterActionFactory::getInstance( ).createDefaultCAction( relations1 );//( relations1 );
+  cs_A.addCounterAction( caction1 );
 
   ls.push_back( A );
   ls.push_back( req );

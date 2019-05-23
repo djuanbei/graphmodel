@@ -75,6 +75,9 @@ public:
     return parameters[ i ].getValue();
   }
 
+  inline const int *   getValue( const NIntState *const         state  ) const{
+    return state->value;
+  }
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
   inline C * getkDBM( const int k, const NIntState *const state ) const {
     return state->value + getClockStart( k );

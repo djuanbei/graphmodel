@@ -26,41 +26,49 @@ public:
 
 class SimpleCounterAction : public CounterAction {
 public:
-  SimpleCounterAction( int cid, int v ) {
-    counter_id = cid;
-    rhs        = v;
-  }
+
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const {
     counterValue[ counter_id ] = rhs;
   }
 
 private:
+  SimpleCounterAction( int cid, int v ) {
+    counter_id = cid;
+    rhs        = v;
+  }
+  ~SimpleCounterAction( ){
+    
+  }
   int counter_id;
   int rhs;
+  friend class CounterActionFactory;
 };
 
 class SimpleCounterPAction : public CounterAction {
 public:
-  SimpleCounterPAction( int cid, int v ) {
-    counter_id = cid;
-    p_id       = v;
-  }
+
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const {
     counterValue[ counter_id ] = parameterValue[ p_id ];
   }
 
 private:
+  SimpleCounterPAction( int cid, int v ) {
+    counter_id = cid;
+    p_id       = v;
+  }
+  ~SimpleCounterPAction( ){
+    
+  }
   int counter_id;
   int p_id;
+  friend class CounterActionFactory;
 };
 
 class DefaultCAction : public CounterAction {
 public:
-  DefaultCAction( vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
-    relations = relations1;
-  }
+
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const {
     for ( auto e : relations ) {
@@ -72,7 +80,14 @@ public:
   }
 
 private:
+  DefaultCAction( vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
+    relations = relations1;
+  }
+  ~DefaultCAction( ){
+    
+  }
   vector<pair<int, vector<pair<int, int>>>> relations;
+  friend class CounterActionFactory;
 };
 
 class CounterActionFactory {

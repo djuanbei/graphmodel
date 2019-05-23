@@ -222,7 +222,7 @@ IDENTIFIER '=' const_expression
     
   }else if(getType( symbol_table[$1] )==COUNTER_T ){
     int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
-    SimpleCounterAction *cs=new SimpleCounterAction( counter_id, $3);
+    SimpleCounterAction *cs=CounterActionFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
     data->addPointer( COUNTER_UPDATE, cs);
   }
   
@@ -235,7 +235,7 @@ IDENTIFIER '=' PARAM
 
   int parameter_id=data->getId( PARAMETER_STR, symbol_table[$3]);
   
-  SimpleCounterPAction *cs  =new SimpleCounterPAction( counter_id,  parameter_id);
+  SimpleCounterPAction *cs  =CounterActionFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
   data->addPointer( COUNTER_UPDATE, cs);
   
 }
