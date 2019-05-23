@@ -10,16 +10,18 @@
  */
 #ifndef ACTION_HPP
 #define ACTION_HPP
-#include "counter.hpp"
-#include "parameter.h"
+
 #include <vector>
+
+#include "util/data.hpp"
 
 namespace graphsat {
 using std::pair;
 using std::vector;
 class CounterAction {
 public:
-  virtual void operator()( const Parameter &p, int *counterValue ) const = 0;
+  virtual void operator()( const int *parameterValue,
+                           int *      counterValue ) const = 0;
 };
 
 class SimpleCounterAction : public CounterAction {
@@ -28,7 +30,8 @@ public:
     counter_id = cid;
     rhs        = v;
   }
-  virtual void operator()( const Parameter &p, int *counterValue ) const {
+  virtual void operator()( const int *parameterValue,
+                           int *      counterValue ) const {
     counterValue[ counter_id ] = rhs;
   }
 
@@ -43,8 +46,9 @@ public:
     counter_id = cid;
     p_id       = v;
   }
-  virtual void operator()( const Parameter &p, int *counterValue ) const {
-    counterValue[ counter_id ] = p.getValue( p_id );
+  virtual void operator()( const int *parameterValue,
+                           int *      counterValue ) const {
+    counterValue[ counter_id ] = parameterValue[ p_id ];
   }
 
 private:
@@ -57,17 +61,51 @@ public:
   DefaultCAction( vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
     relations = relations1;
   }
-  virtual void operator()( const Parameter &p, int *counterValue ) const {
+  virtual void operator()( const int *parameterValue,
+                           int *      counterValue ) const {
     for ( auto e : relations ) {
       counterValue[ e.first ] = 0;
       for ( auto ee : e.second ) {
-        counterValue[ e.first ] += ee.first * p.getValue( ee.second );
+        counterValue[ e.first ] += ee.first * parameterValue[ ee.second ];
       }
     }
   }
 
 private:
   vector<pair<int, vector<pair<int, int>>>> relations;
+};
+
+class CounterActionFactory {
+
+  SINGLETON( CounterActionFactory );
+ public:
+    SimpleCounterAction* createSimpleCounterAction(int cid, int v ){
+    SimpleCounterAction *re=new SimpleCounterAction( cid, v);
+    pdata.addPointer( STRING(SimpleCounterAction), re );
+    return re;
+  }
+
+  SimpleCounterPAction * createSimpleCounterPAction(int cid, int v ){
+    SimpleCounterPAction *re=new SimpleCounterPAction( cid, v);
+    pdata.addPointer( STRING(SimpleCounterPAction ), re);
+    return re;
+  }
+
+  DefaultCAction* createDefaultCAction(vector<pair<int, vector<pair<int, int>>>> &relations1  ){
+    DefaultCAction *re=new DefaultCAction(relations1 );
+    pdata.addPointer( STRING(DefaultCAction ), re);
+    return re;
+  
+  }
+  void destroy() {
+    deleteType( SimpleCounterAction );
+    deleteType( SimpleCounterPAction );
+    deleteType( DefaultCAction );
+    pdata.clear();
+  }
+  
+ private:
+  PointerData pdata;
 };
 
 } // namespace graphsat

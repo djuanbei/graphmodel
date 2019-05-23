@@ -39,8 +39,8 @@ public:
 
   void computeAllReachableSet() {
     Property prop;
-    prop.loc.resize( component_num, -1 );
-    run( prop );
+
+    run( &prop );
   }
 
   /**
@@ -50,7 +50,7 @@ public:
    *
    * @return
    */
-  bool satisfy( const Property &prop ) { return run( prop ); }
+  bool satisfy( const Property *prop ) { return run( prop ); }
 
   /**
    * @param L
@@ -60,9 +60,9 @@ public:
    *
    * @return
    */
-  bool run( const Property &prop ) {
+  bool run( const Property *prop ) {
 
-    Check_State re = data.find( prop.loc, prop.cons );
+    Check_State re = data.search( prop );
 
     if ( re != UNKOWN ) {
       if ( TRUE == re ) {

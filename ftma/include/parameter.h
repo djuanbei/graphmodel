@@ -17,10 +17,11 @@ class Parameter {
 
 public:
   Parameter() {}
-  void addValue( int v ) { value.push_back( v ); }
-  void setValue( int id, const int v ) { value[ id ] = v; }
-  int  getValue( int id ) const { return value[ id ]; }
-  bool empty() const { return value.empty(); }
+  void       addValue( int v ) { value.push_back( v ); }
+  void       setValue( int id, const int v ) { value[ id ] = v; }
+  int        getValue( int id ) const { return value[ id ]; }
+  const int *getValue() const { return &( value[ 0 ] ); }
+  bool       empty() const { return value.empty(); }
 
 private:
   vector<int> value;

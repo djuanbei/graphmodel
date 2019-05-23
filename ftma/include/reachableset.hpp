@@ -38,26 +38,19 @@ public:
 
   const SYS &getSYS( void ) const { return sys; }
 
-  Check_State find( const vector<int> &loc, const vector<vector<CS_t>> &cons ) {
-    if ( (int) loc.size() < component_num ) {
-      return UNKOWN;
-    }
+  Check_State search( const Property *prop ) {
 
     typename StateSet_t::iterator end1 = reachSet.end();
     for ( auto state : reachSet ) {
 
-      if ( 0 ==
-           memcmp( &loc[ 0 ], state->value, component_num * sizeof( int ) ) ) {
-
-        if ( isReach( cons, state ) ) {
-          return TRUE;
-        }
+      if ( isReach( prop, state ) ) {
+        return TRUE;
       }
     }
     return UNKOWN;
   }
 
-  bool oneStep( const Property &prop, const State_t *const state ) {
+  bool oneStep( const Property *prop, const State_t *const state ) {
     int commit_component = -1;
     for ( int component = 0; component < component_num; component++ ) {
       if ( manager.isCommitComp( component, state ) ) {
@@ -93,92 +86,76 @@ private:
   int                        component_num;
   std::default_random_engine generator;
 
-  bool isReach( const vector<vector<CS_t>> &cons, const State_t *state ) const {
-
-    if ( cons.empty() ) {
-      return true;
-    }
-
-    State_t *newstate = state->copy();
-    for ( int i = 0; i < component_num; i++ ) {
-      for ( auto cs : cons[ i ] ) {
-        manager.andImpl( i, cs, newstate );
-        if ( !manager.isConsistent( i, newstate ) ) {
-          delete newstate;
-          return false;
-        }
-      }
-    }
-
-    delete newstate;
-    return true;
+  bool isReach( const Property *prop, const State_t *const state ) const {
+    return ( *prop )( manager, state->value );
   }
 
-  bool oneComponent( int comp, const Property &prop,
-                    const State_t *const state ) {
+  bool oneComponent( int component, const Property *prop,
+                     const State_t *const state ) {
 
-    int source = state->value[ comp ];
+    int source = state->value[ component ];
 
-    if ( manager.isCommitComp( comp, state ) ) { // commit location
-      source = manager.getCommitLoc( comp, state );
+    if ( manager.isCommitComp( component, state ) ) { // commit location
+      source = manager.getCommitLoc( component, state );
     }
 
-    int outDegree = sys.tas[ comp ].graph.getOutDegree( source );
+    int outDegree = sys.tas[ component ].graph.getOutDegree( source );
     for ( int j = 0; j < outDegree; j++ ) {
 
-      int link = sys.tas[ comp ].graph.getAdj( source, j );
+      int link = sys.tas[ component ].graph.getAdj( source, j );
       /**
        * Whether the jump conditions satisfies except synchronize signal
        *
        */
 
-      if ( !sys.tas[ comp ].transitions[ link ].ready( comp, manager, state ) ) {
+      if ( !sys.tas[ component ].transitions[ link ].ready( component, manager,
+                                                            state ) ) {
         continue;
       }
 
-      const Channel &ch = sys.tas[ comp ].transitions[ link ].getChannel();
+      const Channel &ch = sys.tas[ component ].transitions[ link ].getChannel();
       if ( ch.id > -1 ) {
-        vector<int> waitComp;
+        vector<int> waitComponents;
         if ( CHANNEL_SEND == ch.action ) {
-          waitComp = manager.blockComponents( -ch.id, state );
+          waitComponents = manager.blockComponents( -ch.id, state );
         } else if ( CHANNEL_RECEIVE == ch.action ) {
-          waitComp = manager.blockComponents( ch.id, state );
+          waitComponents = manager.blockComponents( ch.id, state );
         }
-        if ( !waitComp.empty() ) {
+        if ( !waitComponents.empty() ) {
           if ( ch.type == ONE2ONE ) {
             std::uniform_int_distribution<int> distribution(
-                0, waitComp.size() - 1 );
+                0, waitComponents.size() - 1 );
             int id  = distribution( generator );
-            int cid = waitComp[ id ];
+            int cid = waitComponents[ id ];
 
-            if ( unBlockOne( cid, link, state, prop.loc, prop.cons ) ) {
+            if ( unBlockOne( cid, link, state, prop ) ) {
               return true;
             }
           } else if ( ch.type == ONE2ALL ) {
-            for ( auto id : waitComp ) {
-              int cid = waitComp[ id ];
-              if ( unBlockOne( cid, link, state, prop.loc, prop.cons ) ) {
+            for ( auto id : waitComponents ) {
+              int cid = waitComponents[ id ];
+              if ( unBlockOne( cid, link, state, prop ) ) {
                 return true;
               }
             }
           }
 
         } else {
-          State_t *temp = state->copy();
+          State_t *temp_state = state->copy();
           if ( CHANNEL_SEND == ch.action ) {
-            temp->value[ comp + component_num ] = ch.id;
+            temp_state->value[ component + component_num ] = ch.id;
           } else if ( CHANNEL_RECEIVE == ch.action ) {
-            temp->value[ comp + component_num ] = -ch.id;
+            temp_state->value[ component + component_num ] = -ch.id;
           }
 
-          temp->value[ comp ] = link; // block link
-          if ( reachSet.add( temp ) ) {
-            waitSet.push_back( temp );
+          temp_state->value[ component ] = link; // block link
+          if ( reachSet.add( temp_state ) ) {
+            waitSet.push_back( temp_state );
           }
         }
 
       } else {
-        if ( oneTranision( comp, link, prop.loc, prop.cons, state ) ) {
+        if ( oneTranision( component, link, prop, state ) ) {
           return true;
         }
       }
@@ -186,9 +163,8 @@ private:
     return false;
   }
 
-  bool oneTranision( const int component, const int link, const vector<int> loc,
-                     const vector<vector<CS_t>> &cons,
-                     const State_t *const        state ) {
+  bool oneTranision( const int component, const int link, const Property *prop,
+                     const State_t *const state ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
     State_t *discreteTransNext =
@@ -211,12 +187,9 @@ private:
 
           waitSet.push_back( temp );
 
-          if ( 0 == memcmp( &loc[ 0 ], temp->value,
-                            component_num * sizeof( int ) ) ) {
-            if ( isReach( cons, temp ) ) {
-              delete discreteTransNext;
-              return true;
-            }
+          if ( isReach( prop, temp ) ) {
+            delete discreteTransNext;
+            return true;
           }
         }
       }
@@ -225,8 +198,8 @@ private:
     return false;
   }
 
-  bool unBlockOne( const int cid, const int link, const State_t *state,
-                   const vector<int> loc, const vector<vector<CS_t>> &cons ) {
+  bool unBlockOne( const int cid, const int link, const State_t *const state,
+                   const Property *prop ) {
     const int blockChannel              = state->value[ cid + component_num ];
     state->value[ cid + component_num ] = 0;
     const int blockLink                 = state->value[ cid ];
@@ -234,13 +207,13 @@ private:
     sys.tas[ cid ].graph.findSrc( blockLink, blockSource );
 
     state->value[ cid ] = blockSource;
-    if ( oneTranision( cid, blockLink, loc, cons, state ) ) {
+    if ( oneTranision( cid, blockLink, prop, state ) ) {
       state->value[ cid + component_num ] = blockChannel;
       state->value[ cid ]                 = blockLink;
       return true;
     }
 
-    if ( oneTranision( cid, link, loc, cons, state ) ) {
+    if ( oneTranision( cid, link, prop, state ) ) {
       state->value[ cid + component_num ] = blockChannel;
       state->value[ cid ]                 = blockLink;
 

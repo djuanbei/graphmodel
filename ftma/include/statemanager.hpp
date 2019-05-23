@@ -67,11 +67,12 @@ public:
     }
   }
 
+  inline int                  getComponentNum() const { return component_num; }
   inline const DBMFactory<C> &getClockManager( int i ) const {
     return clock_manager[ i ];
   }
-  inline const Parameter &getParameter( const int i ) const {
-    return parameters[ i ];
+  inline const int *getParameterValue( const int i ) const {
+    return parameters[ i ].getValue();
   }
 
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
@@ -96,7 +97,7 @@ public:
 
   inline vector<int> blockComponents( const int              chid,
                                       const NIntState *const state ) const {
-    vector<int> temp;
+    vector<int> reBlockComponents;
     for ( int i = 0; i < component_num; i++ ) {
 
       /**
@@ -105,30 +106,30 @@ public:
        */
 
       if ( state->value[ i + component_num ] == chid ) {
-        temp.push_back( i );
+        reBlockComponents.push_back( i );
       }
     }
-    return temp;
+    return reBlockComponents;
   }
 
   NIntState *add( const int id, const int target, StateSet<NIntState> &stateSet,
                   const C *const dbm, const NIntState *const state ) const {
-    NIntState *re  = state->copy();
-    int        len = 0;
+    NIntState *re_state = state->copy();
+    int        len      = 0;
     if ( id + 1 < (int) clock_start_loc.size() ) {
       len = clock_start_loc[ id + 1 ] - clock_start_loc[ id ];
     } else {
       len = stateLen - clock_start_loc[ id ];
     }
-    memcpy( re->value + clock_start_loc[ id ], dbm, sizeof( C ) * len );
+    memcpy( re_state->value + clock_start_loc[ id ], dbm, sizeof( C ) * len );
 
-    re->value[ id ] = target;
+    re_state->value[ id ] = target;
 
-    if ( !stateSet.add( re ) ) {
-      delete re;
+    if ( !stateSet.add( re_state ) ) {
+      delete re_state;
       return NULL;
     }
-    return re;
+    return re_state;
   }
   inline bool isCommitComp( const int id, const NIntState *const state ) const {
     return state->value[ id ] < 0;

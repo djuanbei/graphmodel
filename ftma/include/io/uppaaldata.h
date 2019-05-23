@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 
+#include "util/data.hpp"
 namespace graphsat {
 using std::map;
 using std::pair;
@@ -36,18 +37,29 @@ const static string CLOCK_RESET = "clock_reset";
 
 const static string COUNTER_UPDATE = "counter_update";
 
+const static string INT_ARRAY = "int_array";
+
 class UppaalData {
 public:
   UppaalData() { init_loc = 0; }
   void clear() {
-    globalIntArray.clear();
-
-    variable.clear();
+    intValues.clear();
+    pointValues.clear();
   }
 
-  void addIntArray( string &key, vector<int> &v ) { globalIntArray[ key ] = v; }
+  void addIntArray( string &key, vector<int> &v ) {
+    for ( auto e : v ) {
+      addValue( INT_ARRAY, key, e );
+    }
+  }
   const vector<int> &getIntArray( string &key ) const {
-    return globalIntArray.at( key );
+    int id = getId( INT_ARRAY, key );
+    if ( id > -1 ) {
+      const pair<string, vector<int>> &pp = getValue( INT_ARRAY, id );
+      return pp.second;
+    }
+    static vector<int> dummy;
+    return dummy;
   }
 
   void setInitialLoc( int id ) { init_loc = id; }
@@ -55,94 +67,53 @@ public:
   int getInitialLoc() const { return init_loc; }
 
   void addValue( const string &type, const string &name, int v = 0 ) {
-
-    for ( size_t i = 0; i < variable[ type ].size(); i++ ) {
-      if ( variable[ type ][ i ].first == name ) {
-        variable[ type ][ i ].second.push_back( v );
-        return;
-      }
-    }
-
-    vector<int> vec_v;
-    vec_v.push_back( v );
-    variable[ type ].push_back( make_pair( name, vec_v ) );
+    intValues.addValue( type, name, v );
   }
 
   int getTypeNum( const string &type ) const {
-    if ( variable.find( type ) == variable.end() ) {
-      return 0;
-    }
-    return variable.at( type ).size();
+    return intValues.getTypeNum( type );
   }
 
   /**
    *
    *
    * @param type
-   * @param variable
+   * @param intValues
    *
-   * @return  -1 if name is not in variable
+   * @return  -1 if name is not in intValues
    */
   int getId( const string &type, const string &name ) const {
-    if ( variable.find( type ) == variable.end() ) {
-      return -1;
-    }
+    return intValues.getId( type, name );
+  }
 
-    for ( size_t i = 0; i < variable.at( type ).size(); i++ ) {
-      if ( variable.at( type )[ i ].first == name ) {
-        return i;
-      }
-    }
-    return -1;
+  const pair<string, vector<int>> &getValue( const string &type,
+                                             int           id ) const {
+    return intValues.getValue( type, id );
   }
 
   bool hasValue( const string &type, const string &name, int id = 0 ) const {
-    if ( variable.find( type ) == variable.end() ) {
-      return false;
-    }
-    for ( size_t i = 0; i < variable.at( type ).size(); i++ ) {
-      if ( variable.at( type )[ i ].first == name ) {
-        return id < (int) variable.at( type )[ i ].second.size();
-      }
-    }
-    return false;
+    return intValues.hasValue( type, name, id );
   }
 
   int getValue( const string &type, const string &name, int id = 0 ) const {
-    for ( size_t i = 0; i < variable.at( type ).size(); i++ ) {
-      if ( variable.at( type )[ i ].first == name ) {
-        return variable.at( type )[ i ].second[ id ];
-      }
-    }
-    assert( false );
-    return -1;
-  }
-  const pair<string, vector<int>> &getValue( const string &type,
-                                             int           id ) const {
-    return variable.at( type )[ id ];
+    return intValues.getValue( type, name, id );
   }
 
   void addPointer( const string &type, void *v ) {
-    pointValues[ type ].push_back( v );
+
+    pointValues.addPointer( type, v );
   }
 
   vector<void *> getPoints( const string &type ) const {
-    if ( pointValues.find( type ) == pointValues.end() ) {
-      vector<void *> temp;
-      return temp;
-    }
-    return pointValues.at( type );
+    return pointValues.getPoints( type );
   }
 
-  void clearPoints( const string &type ) { pointValues[ type ].clear(); }
+  void clearPoints( const string &type ) { pointValues.clearPoints( type ); }
   void clearPoints() { pointValues.clear(); }
 
 private:
-  map<string, vector<int>> globalIntArray;
-
-  map<string, vector<pair<string, vector<int>>>> variable;
-
-  map<string, vector<void *>> pointValues;
+  ValueData<int> intValues;
+  PointerData    pointValues;
 
   int init_loc;
 };

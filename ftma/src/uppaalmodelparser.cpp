@@ -76,9 +76,10 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type transition_comps = ( *it )->getChild( TRANSITION_STR );
 
-    vector<T_t> transitions = parserTransition( templateData, transition_comps );
+    vector<T_t> transitions =
+        parserTransition( templateData, transition_comps );
 
-    TA_t ta( locations , transitions, templateData.getInitialLoc(),
+    TA_t ta( locations, transitions, templateData.getInitialLoc(),
              templateData.getTypeNum( CLOCK_STR ) );
     if ( NULL != parameter ) {
       string         para_content = parameter->getValue();
@@ -132,7 +133,6 @@ vector<L_t> UppaalParser::parserLocation( UppaalData &templateData,
           vector<void *> cons = templateData.getPoints( CLOCK_CS );
           for ( auto cs : cons ) {
             location += *( (CS_t *) ( cs ) );
-            delete (CS_t *) cs;
           }
         }
       }
@@ -172,7 +172,6 @@ vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
           vector<void *> cons = templateData.getPoints( CLOCK_CS );
           for ( auto cs : cons ) {
             transition += *( (CS_t *) ( cs ) );
-            delete (CS_t *) cs;
           }
           vector<void *> counterCs = templateData.getPoints( COUNTER_CS );
           for ( auto cs : counterCs ) {
@@ -183,13 +182,13 @@ vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
           string assign_statement = ( *llit )->getValue();
           parserLabel( templateData, assign_statement );
           vector<void *> updates = templateData.getPoints( COUNTER_UPDATE );
-          for ( auto u : updates ) {
-            transition.addCounterAction( (CounterAction *) u );
+          for ( auto update : updates ) {
+            transition.addCounterAction( (CounterAction *) update );
           }
           vector<void *> resets = templateData.getPoints( RESET_STR );
-          for ( auto r : resets ) {
-            transition.addReset( *( (pair<int, int> *) r ) );
-            delete (pair<int, int> *) r;
+          for ( auto reset : resets ) {
+            transition.addReset( *( (pair<int, int> *) reset ) );
+            delete (pair<int, int> *) reset;
           }
 
         } else if ( SYNCHRONISATION_STR == kind ) {
@@ -202,8 +201,7 @@ vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
   return return_transitions;
 }
 
-void UppaalParser::parserLabel( UppaalData &templateData,
-                                      string      guards ) {
+void UppaalParser::parserLabel( UppaalData &templateData, string guards ) {
   templateData.clearPoints();
   parseProblem( guards, &data, &templateData );
 }

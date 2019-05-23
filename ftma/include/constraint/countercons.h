@@ -17,26 +17,25 @@
 
 #include "util/dbmutil.hpp"
 
+#include "util/data.hpp"
+
 namespace graphsat {
 
-using std::pair;
-using std::vector;
+
+
 
 class CounterConstraint {
+
 public:
-  virtual bool operator()( const Parameter &p,
-                           const int *      counterValuation ) const = 0;
+  virtual bool operator()( const int *parameterValue,
+                           const int *counterValuation ) const = 0;
 };
 
 class DiaFreeCounterConstraint : public CounterConstraint {
+
 public:
-  DiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
-    counter_id = cid;
-    op         = p;
-    rhs        = r;
-  }
-  virtual bool operator()( const Parameter &p,
-                           const int *      counterValuation ) const {
+  virtual bool operator()( const int *parameterValue,
+                           const int *counterValuation ) const {
     switch ( op ) {
     case EQ:
       return counterValuation[ counter_id ] == rhs;
@@ -56,9 +55,16 @@ public:
   }
 
 private:
+  DiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
+    counter_id = cid;
+    op         = p;
+    rhs        = r;
+  }
+  ~DiaFreeCounterConstraint() {}
   int           counter_id;
   COMP_OPERATOR op;
   int           rhs;
+  friend class CounterConstraintFactory;
 };
 
 class DiaFreeCounterPConstraint : public CounterConstraint {
@@ -68,11 +74,13 @@ public:
     op         = o;
     p_id       = p;
   }
-  virtual bool operator()( const Parameter &p,
-                           const int *      counterValuation ) const {
+  ~DiaFreeCounterPConstraint() {}
+
+  virtual bool operator()( const int *parameterValue,
+                           const int *counterValuation ) const {
 
     int diff = counterValuation[ counter_id ];
-    int rhs  = p.getValue( p_id );
+    int rhs  = parameterValue[ p_id ];
     switch ( op ) {
     case EQ:
       return diff == rhs;
@@ -95,18 +103,15 @@ private:
   int           counter_id;
   COMP_OPERATOR op;
   int           p_id;
+
+  friend class CounterConstraintFactory;
 };
 
 class DiaCounterConstraint : public CounterConstraint {
+
 public:
-  DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
-    counter_x = x;
-    counter_y = y;
-    op        = p;
-    rhs       = r;
-  }
-  virtual bool operator()( const Parameter &p,
-                           const int *      counterValuation ) const {
+  virtual bool operator()( const int *parameterValue,
+                           const int *counterValuation ) const {
     int diff = counterValuation[ counter_x ] - counterValuation[ counter_y ];
     switch ( op ) {
     case EQ:
@@ -127,13 +132,21 @@ public:
   }
 
 private:
+  DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
+    counter_x = x;
+    counter_y = y;
+    op        = p;
+    rhs       = r;
+  }
+  ~DiaCounterConstraint() {}
   int           counter_x, counter_y;
   COMP_OPERATOR op;
   int           rhs;
+  friend class CounterConstraintFactory;
 };
 
 class DefaultCounterConstraint : public CounterConstraint {
-public:
+private:
   DefaultCounterConstraint( const vector<pair<int, int>> &pcons,
                             const vector<pair<int, int>> &cons, int erhs,
                             COMP_OPERATOR eop )
@@ -141,11 +154,14 @@ public:
       , constraint( cons )
       , rhs( erhs )
       , op( eop ) {}
+  ~DefaultCounterConstraint() {}
 
-  bool operator()( const Parameter &p, const int *counterValuation ) const {
+public:
+  bool operator()( const int *parameterValue,
+                   const int *counterValuation ) const {
     int dummy = 0;
     for ( auto e : pconstraint ) {
-      dummy += e.first * p.getValue( e.second );
+      dummy += e.first * parameterValue[ e.second ];
     }
     for ( vector<pair<int, int>>::const_iterator it = constraint.begin();
           it != constraint.end(); it++ ) {
@@ -174,6 +190,54 @@ private:
   vector<pair<int, int>> constraint;
   int                    rhs;
   COMP_OPERATOR          op;
+  friend class CounterConstraintFactory;
+};
+
+class CounterConstraintFactory {
+  SINGLETON( CounterConstraintFactory );
+
+ public:
+  DefaultCounterConstraint *
+      createDefaultCounterConstraint( const vector<pair<int, int>> &pcons,
+                                      const vector<pair<int, int>> &cons,
+                                      int erhs, COMP_OPERATOR eop ) {
+    DefaultCounterConstraint *re =
+        new DefaultCounterConstraint( pcons, cons, erhs, eop );
+    pdata.addPointer( STRING( DefaultCounterConstraint ), re );
+    return re;
+  }
+
+  DiaFreeCounterPConstraint *
+      createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p ) {
+    DiaFreeCounterPConstraint *re = new DiaFreeCounterPConstraint( c, o, p );
+    pdata.addPointer( STRING( DiaFreeCounterPConstraint ), re );
+    return re;
+  }
+
+  DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
+                                                    COMP_OPERATOR p, int r ) {
+    DiaCounterConstraint *re = new DiaCounterConstraint( x, y, p, r );
+    pdata.addPointer( STRING( DiaCounterConstraint ), re );
+    return re;
+  }
+  DiaFreeCounterConstraint *
+      createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
+    DiaFreeCounterConstraint *re = new DiaFreeCounterConstraint( cid, p, r );
+    pdata.addPointer( STRING( DiaFreeCounterConstraint ), re );
+    return re;
+  }
+
+  void destroy() {
+
+    deleteType( DefaultCounterConstraint );
+    deleteType( DiaFreeCounterPConstraint );
+    deleteType( DiaCounterConstraint );
+    pdata.clear();
+  }
+
+private:
+  PointerData pdata;
+
 };
 
 } // namespace graphsat

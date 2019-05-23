@@ -126,8 +126,8 @@ void example2( void ) {
   R_t               data( sys );
   Reachability<R_t> reacher( data );
   Property          prop;
-  prop.loc.push_back( 1 );
-  if ( reacher.satisfy( prop ) ) {
+
+  if ( reacher.satisfy( &prop ) ) {
 
     cout << "right" << endl;
   } else {
@@ -213,8 +213,10 @@ void fisher( int n = 2 ) {
   vector<pair<int, int>> ps1, ps2;
   ps2.push_back( p );
 
-  DefaultCounterConstraint ccs1( ps1, ps2, 0, EQ ); // 1*id==0
-  A_req.addCounterCons( &ccs1 );
+  DefaultCounterConstraint *ccs1 =
+      CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
+          ps1, ps2, 0, EQ ); // 1*id==0
+  A_req.addCounterCons( ccs1 );
 
   pair<int, int> reset1( 1, 0 ); // x-->0
   A_req.addReset( reset1 );
@@ -240,7 +242,7 @@ void fisher( int n = 2 ) {
 
   pair<int, int> reset3( 1, 0 ); // x-->0
   wait_req.addReset( reset3 );
-  wait_req.addCounterCons( &ccs1 ); // id==0
+  wait_req.addCounterCons( ccs1 ); // id==0
 
   T_t wait_cs( 2, 3 );
 
@@ -249,8 +251,10 @@ void fisher( int n = 2 ) {
   pair<int, int>         id_id( 1, 0 ); // 1*id
   ps3.push_back( id_p );
   ps4.push_back( id_id );
-  DefaultCounterConstraint ccs2( ps3, ps4, 0, EQ ); // id==pid
-  wait_cs.addCounterCons( &ccs2 );
+  DefaultCounterConstraint *ccs2 =
+      CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
+          ps3, ps4, 0, EQ ); // id==pid
+  wait_cs.addCounterCons( ccs2 );
   CS_t cs3( 0, 1, -k ); // x> k
   wait_cs += cs3;
 
@@ -284,14 +288,9 @@ void fisher( int n = 2 ) {
   R_t data( sys );
 
   Reachability<R_t> reacher( data );
-  Property          prop;
-  for ( int i = 0; i < n; i++ ) {
-    prop.loc.push_back( -1 );
-  }
-  prop.loc[ 0 ] = 3;
-  prop.loc[ 1 ] = 3;
+  FischerMutual     prop;
 
-  if ( reacher.satisfy( prop ) ) {
+  if ( reacher.satisfy( &prop ) ) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -304,12 +303,19 @@ void fisher1() {
   R_t          data( sys );
 
   Reachability<R_t> reacher( data );
-  reacher.computeAllReachableSet();
+  FischerMutual     prop;
+  if ( reacher.satisfy( &prop ) ) {
+    cout << "There is something wrong" << endl;
+  } else {
+    cout << "fisher mutual exclusion property check right" << endl;
+  }
+  //  reacher.computeAllReachableSet();
 }
 
 int main( int argc, const char *argv[] ) {
-  ///  fisher(9);
-  //  return 0;
+
+  //  fisher(8);
+  // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

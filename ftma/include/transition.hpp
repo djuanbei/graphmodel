@@ -77,7 +77,9 @@ public:
    *
    * @return
    */
-  void addCounterAction( const CounterAction *action ) { actions.push_back( action ); }
+  void addCounterAction( const CounterAction *action ) {
+    actions.push_back( action );
+  }
 
   /**
    * add one clock reset  to this transition
@@ -102,7 +104,7 @@ public:
    * @return
    */
   bool ready( const int component, const StateManager<C> &manager,
-             const NIntState *state ) const {
+              const NIntState *state ) const {
     if ( !guards.empty() ) {
 
       const D &dbmManager = manager.getClockManager( component );
@@ -125,7 +127,8 @@ public:
       const C *counterValue = manager.getCounterValue( state );
 
       for ( auto cs : counterCons ) {
-        if ( !( *cs )( manager.getParameter( component ), counterValue ) ) {
+        if ( !( *cs )( manager.getParameterValue( component ),
+                       counterValue ) ) {
           return false;
         }
       }
@@ -136,7 +139,7 @@ public:
 
   NIntState *operator()( const int component, const StateManager<C> &manager,
                          const NIntState *const state ) const {
-    assert( ready ( component, manager, state ) );
+    assert( ready( component, manager, state ) );
 
     NIntState *re_state = state->copy();
 
@@ -153,7 +156,7 @@ public:
     C *counterValue = manager.getCounterValue( re_state );
 
     for ( auto act : actions ) {
-      ( *act )( manager.getParameter( component ), counterValue );
+      ( *act )( manager.getParameterValue( component ), counterValue );
     }
 
     return re_state;
@@ -170,7 +173,7 @@ private:
 
   vector<const CounterAction *>
                          actions; // set of actions at this transitionedge
-  vector<pair<int, int>> resets;   // set of reset clock variables
+  vector<pair<int, int>> resets;  // set of reset clock variables
 };
 } // namespace graphsat
 

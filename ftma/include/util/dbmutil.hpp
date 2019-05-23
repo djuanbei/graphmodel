@@ -156,7 +156,7 @@ template <class T> inline void writeAdd( T *a, T b ) {
   } while ( !CAS( a, oldV, newV ) );
 }
 
-std::vector<string> splitStr( const string &stringToBeSplitted,
+vector<string> splitStr( const string &stringToBeSplitted,
                               const string &delimeter );
 
 } // namespace graphsat

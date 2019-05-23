@@ -172,7 +172,7 @@ IDENTIFIER compare_relation  const_expression
   }
   else if(type==COUNTER_T ){
     int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
-    cs =new DiaFreeCounterConstraint( counter_id, $2, $3);
+    cs = CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
     data->addPointer( COUNTER_CS, cs);
   }
 
@@ -184,7 +184,7 @@ IDENTIFIER compare_relation  PARAM
   assert( COUNTER_T==type);
   int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
   int param_id=data->getId( PARAMETER_STR, symbol_table[$3]);
-  DiaFreeCounterPConstraint *cs=new DiaFreeCounterPConstraint(counter_id, $2, param_id );
+  DiaFreeCounterPConstraint *cs=CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
   data->addPointer( COUNTER_CS, cs);
 }
 |
@@ -199,7 +199,7 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
   else if(getType( symbol_table[$1])==COUNTER_T &&getType( symbol_table[$3])==COUNTER_T  ){
     int counter_id1=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
     int counter_id2=uplayerData->getId( COUNTER_STR, symbol_table[$3]);
-    DiaCounterConstraint *cs=new DiaCounterConstraint( counter_id1, counter_id2, $4, $5);
+    DiaCounterConstraint *cs=CounterConstraintFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
     data->addPointer( COUNTER_CS, cs);
   }
 
