@@ -262,8 +262,14 @@ void fisher( int n = 2 ) {
   es.push_back( wait_cs );
   es.push_back( cs_A );
   TA_t tma1( ls, es, 0, 1 );
-  tma1.addOnePara();
-  TAS_t   sys = n * tma1;
+  //tma1.addOnePara();
+  TAS_t   sys;
+  for( int i=1; i<=n; i++){
+    TA_t tma2=tma1;
+    tma2.addOnePara(i);
+    sys+=tma2;
+  }
+  //  TAS_t   sys = n * tma1;
   Counter counter( 0, 100 );
   sys += counter;
 
@@ -301,8 +307,8 @@ void fisher1() {
 
 int main( int argc, const char *argv[] ) {
 
-  //  fisher(2);
-  // return 0;
+  //  fisher(6);
+   //return 0;
   //  example5();
   //  return 0;
   //  State<int> s;
