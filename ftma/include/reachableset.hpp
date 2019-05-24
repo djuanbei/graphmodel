@@ -76,6 +76,10 @@ public:
     return false;
   }
 
+  size_t size( ) const{
+    return reachSet.size( );
+  }
+
 private:
   StateSet<State_t>      reachSet;
   deque<const State_t *> waitSet;
@@ -167,34 +171,34 @@ private:
                      const State_t *const state ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
-    State_t *discreteTransNext =
+    State_t *next_state =
         sys.tas[ component ].transitions[ link ]( component, manager, state );
 
-    vector<DBM_t> advanceNext;
-
     if ( sys.tas[ component ].locations[ target ](
-             manager.getClockManager( component ),
-             manager.getkDBM( component, discreteTransNext ), advanceNext ) ) {
-      for ( auto next : advanceNext ) {
+            manager.getClockManager( component ),
+            manager.getkDBM( component, next_state ) ) ) {
 
-        State_t *temp = manager.add( component, target, reachSet, next,
-                                     state ); // add to reachset
+      if(manager.add( component, target, reachSet,
+                      next_state)){// add to reachse
 
-        if ( temp != NULL ) {
-          if ( sys.tas[ component ].locations[ target ].isCommit() ) {
-            manager.setCommitState( component, target, temp );
-          }
-
-          waitSet.push_back( temp );
-
-          if ( isReach( prop, temp ) ) {
-            delete discreteTransNext;
-            return true;
-          }
+        if ( sys.tas[ component ].locations[ target ].isCommit() ) {
+          manager.setCommitState( component, target, next_state );
         }
+
+        waitSet.push_back( next_state );
+
+        if ( isReach( prop, next_state ) ) {
+          
+          return true;
+        }
+
+      }else{
+        delete next_state;
       }
+    }else{
+      delete next_state;
     }
-    delete discreteTransNext;
+ 
     return false;
   }
 

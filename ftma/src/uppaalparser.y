@@ -234,7 +234,7 @@ IDENTIFIER '=' PARAM
   int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
 
   int parameter_id=data->getId( PARAMETER_STR, symbol_table[$3]);
-  
+
   SimpleCounterPAction *cs  =CounterActionFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
   data->addPointer( COUNTER_UPDATE, cs);
   

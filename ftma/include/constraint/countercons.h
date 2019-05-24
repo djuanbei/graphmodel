@@ -55,10 +55,10 @@ public:
   }
 
 private:
-  DiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
-    counter_id = cid;
-    op         = p;
-    rhs        = r;
+  DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp, int right_side ) {
+    counter_id = ecounter_id;
+    op         = opp;
+    rhs        = right_side;
   }
   ~DiaFreeCounterConstraint() {}
   int           counter_id;
@@ -69,10 +69,10 @@ private:
 
 class DiaFreeCounterPConstraint : public CounterConstraint {
 public:
-  DiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p ) {
-    counter_id = c;
-    op         = o;
-    p_id       = p;
+  DiaFreeCounterPConstraint( int ecounter_id, COMP_OPERATOR opp, int parameter_id ) {
+    counter_id = ecounter_id;
+    op         = opp;
+    p_id       = parameter_id;
   }
   ~DiaFreeCounterPConstraint() {}
 

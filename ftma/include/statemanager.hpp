@@ -115,25 +115,16 @@ public:
     return reBlockComponents;
   }
 
-  NIntState *add( const int id, const int target, StateSet<NIntState> &stateSet,
-                  const C *const dbm, const NIntState *const state ) const {
-    NIntState *re_state = state->copy();
-    int        len      = 0;
-    if ( id + 1 < (int) clock_start_loc.size() ) {
-      len = clock_start_loc[ id + 1 ] - clock_start_loc[ id ];
-    } else {
-      len = stateLen - clock_start_loc[ id ];
-    }
-    memcpy( re_state->value + clock_start_loc[ id ], dbm, sizeof( C ) * len );
+  bool add( const int component_id, const int target, StateSet<NIntState> &stateSet, NIntState * state ) const {
+ 
+    state->value[ component_id ] = target;
 
-    re_state->value[ id ] = target;
-
-    if ( !stateSet.add( re_state ) ) {
-      delete re_state;
-      return NULL;
+    if ( !stateSet.add( state ) ) {
+       return false;
     }
-    return re_state;
+    return true;
   }
+  
   inline bool isCommitComp( const int id, const NIntState *const state ) const {
     return state->value[ id ] < 0;
   }

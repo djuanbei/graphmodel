@@ -13,8 +13,12 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <random>
 #include <vector>
+
+#include "util/fastHash.h"
+
 namespace graphsat {
 
 using std::cin;
@@ -22,6 +26,7 @@ using std::cout;
 using std::endl;
 using std::fill;
 using std::map;
+using std::unordered_map;
 using std::pair;
 
 using std::vector;
@@ -106,6 +111,10 @@ public:
     recoveryD.clear();
   }
 
+  size_t size( ) const{
+    return mapD.size( )+recoveryD.size( );
+  }
+
   bool empty() const { return mapD.empty() && recoveryD.empty(); }
   int  getID( void ) const { return stateId; }
 
@@ -115,7 +124,7 @@ public:
 
     int hashValue = one->digitalFeature();
 
-    typename std::pair<typename std::map<int, int>::iterator, bool> ret;
+    typename std::pair<typename std::unordered_map<int, int>::iterator, bool> ret;
     ret = passedD.insert( std::pair<int, int>( hashValue, mapD.size() ) );
 
     /**
@@ -268,7 +277,7 @@ public:
 
 private:
   int           stateId;
-  map<int, int> passedD;
+  unordered_map<int, int> passedD;
   vector<T *>   mapD;
   vector<T *>   recoveryD;
 
@@ -623,16 +632,12 @@ public:
     return re;
   }
 
-  int digitalFeature() const {
-    int re = 0;
-    for ( int i = 0; i < n; i++ ) {
-      re += value[ i ] * ( i + 1 );
-    }
-    return re;
+  inline  int digitalFeature() const {
+    return FastHash( (char*)value, n*sizeof( int) );
   }
   void setValue( const int *v ) { memcpy( value, v, sizeof( int ) * n ); }
 
-  bool contain( const StateElem *other ) const {
+  inline  bool contain( const StateElem *other ) const {
 
     const NIntState *rhs = (const NIntState *) other;
 

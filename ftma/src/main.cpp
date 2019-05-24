@@ -195,7 +195,7 @@ void example6() {
 void fisher( int n = 2 ) {
   vector<T_t> es;
   vector<L_t> ls;
-  int         k = 3;
+  int         k = 2;
 
   L_t A( 0 );
 
@@ -209,13 +209,10 @@ void fisher( int n = 2 ) {
 
   T_t A_req( 0, 1 );
 
-  pair<int, int>         p( 1, 0 ); // 1*id
-  vector<pair<int, int>> ps1, ps2;
-  ps2.push_back( p );
-
-  DefaultCounterConstraint *ccs1 =
-      CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
-          ps1, ps2, 0, EQ ); // 1*id==0
+  DiaFreeCounterConstraint *ccs1 =
+      CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint(
+         0, EQ, 0 ); // id==0
+  
   A_req.addCounterCons( ccs1 );
 
   pair<int, int> reset1( 1, 0 ); // x-->0
@@ -228,13 +225,7 @@ void fisher( int n = 2 ) {
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  vector<pair<int, vector<pair<int, int>>>> relations;
-  pair<int, int>                            passin( 1, 0 ); // 1*pid
-  vector<pair<int, int>>                    passins;
-  passins.push_back( passin );
-  pair<int, vector<pair<int, int>>> oneUpdate( 0, passins ); // id=1*pid
-  relations.push_back( oneUpdate );
-  DefaultCAction* caction=CounterActionFactory::getInstance( ).createDefaultCAction( relations );
+  SimpleCounterPAction* caction=CounterActionFactory::getInstance( ).createSimpleCounterPAction( 0, 0 );
 
   req_wait.addCounterAction(caction );
 
@@ -246,27 +237,18 @@ void fisher( int n = 2 ) {
 
   T_t wait_cs( 2, 3 );
 
-  vector<pair<int, int>> ps3, ps4;
-  pair<int, int>         id_p( -1, 0 ); //-1*pid
-  pair<int, int>         id_id( 1, 0 ); // 1*id
-  ps3.push_back( id_p );
-  ps4.push_back( id_id );
-  DefaultCounterConstraint *ccs2 =
-      CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
-          ps3, ps4, 0, EQ ); // id==pid
+  DiaFreeCounterPConstraint *ccs2 =
+      CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(
+          0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  CS_t cs3( 0, 1, -k ); // x> k
+  CS_t cs3( 0, 1, -k, true ); // x> k
   wait_cs += cs3;
 
   T_t cs_A( 3, 0 );
 
-  vector<pair<int, vector<pair<int, int>>>> relations1;
 
-  vector<pair<int, int>> passins1;
-
-  pair<int, vector<pair<int, int>>> oneUpdate1( 0, passins1 ); // id=0
-  relations1.push_back( oneUpdate1 );
-  DefaultCAction* caction1=CounterActionFactory::getInstance( ).createDefaultCAction( relations1 );//( relations1 );
+  SimpleCounterAction* caction1=CounterActionFactory::getInstance( ).createSimpleCounterAction( 0,0 );//( relations1 );
+  
   cs_A.addCounterAction( caction1 );
 
   ls.push_back( A );
@@ -282,7 +264,7 @@ void fisher( int n = 2 ) {
   TA_t tma1( ls, es, 0, 1 );
   tma1.addOnePara();
   TAS_t   sys = n * tma1;
-  Counter counter( 0, n - 1 );
+  Counter counter( 0, 100 );
   sys += counter;
 
   R_t data( sys );
@@ -290,12 +272,14 @@ void fisher( int n = 2 ) {
   Reachability<R_t> reacher( data );
   FischerMutual     prop;
 
-  if ( reacher.satisfy( &prop ) ) {
-    cout << "There is something wrong" << endl;
-  } else {
-    cout << "fisher mutual exclusion property check right" << endl;
-  }
-  //  reacher.computeAllReachableSet();
+  // if ( reacher.satisfy( &prop ) ) {
+  //   cout << "There is something wrong" << endl;
+  // } else {
+  //   cout << "fisher mutual exclusion property check right" << endl;
+  // }
+  reacher.computeAllReachableSet();
+  cout<<"reach data size: "<<data.size( )<<endl;
+
 }
 void fisher1() {
   UppaalParser parser( "example/fischer.xml" );
@@ -304,21 +288,25 @@ void fisher1() {
 
   Reachability<R_t> reacher( data );
   FischerMutual     prop;
-  if ( reacher.satisfy( &prop ) ) {
-    cout << "There is something wrong" << endl;
-  } else {
-    cout << "fisher mutual exclusion property check right" << endl;
-  }
+  //  if ( reacher.satisfy( &prop ) ) {
+  //   cout << "There is something wrong" << endl;
+  // } else {
+    
+  //   cout << "fisher mutual exclusion property check right" << endl;
+  // }
+  reacher.computeAllReachableSet();
+  cout<<"reach data size: "<<data.size( )<<endl;
   //  reacher.computeAllReachableSet();
 }
 
 int main( int argc, const char *argv[] ) {
 
-  //  fisher(8);
+  //  fisher(2);
   // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;
+  //  cout<<"xml"<<endl;
   fisher1();
 
   return 0;
@@ -357,13 +345,13 @@ int main( int argc, const char *argv[] ) {
 
   cout << "matrix dump :\n" << exampleDBM.dump( D3 ) << endl;
   /*
-      vector<L_t> locs;
+    vector<L_t> locs;
 
-      vector<T_t> es;
+    vector<T_t> es;
 
-      tma<L_t, T_t> tma1( locs, es, 0, 3 );
+    tma<L_t, T_t> tma1( locs, es, 0, 3 );
 
-      reach<C_t, L_t, T_t> RETMA( tma1 );
+    reach<C_t, L_t, T_t> RETMA( tma1 );
   */
   return 0;
 }
