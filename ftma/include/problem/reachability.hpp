@@ -74,7 +74,6 @@ public:
 
     // For given target find the source which change in last step
 
-    //  StateSet_t secondWaitSet;
 
     while ( !data.waitSet.empty() ) {
       const State_t *state = data.waitSet.front();

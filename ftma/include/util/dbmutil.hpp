@@ -157,7 +157,7 @@ template <class T> inline void writeAdd( T *a, T b ) {
 }
 
 vector<string> splitStr( const string &stringToBeSplitted,
-                              const string &delimeter );
+                         const string &delimeter );
 
 } // namespace graphsat
 

@@ -14,20 +14,13 @@
 #include <string>
 #include <vector>
 
-
-
-
-
-
 namespace graphsat {
 using std::map;
 using std::pair;
 using std::string;
 using std::vector;
 
-
 #define STRING( s ) #s
-
 
 #define SINGLETON( T )                                                         \
 private:                                                                       \
@@ -44,9 +37,6 @@ public:                                                                        \
     return instance;                                                           \
   }
 
-
-
-
 #define deleteType( T )                                                        \
   {                                                                            \
     vector<void *> dummy = pdata.getPoints( #T );                              \
@@ -54,7 +44,6 @@ public:                                                                        \
       delete (T *) e;                                                          \
     }                                                                          \
   }
-
 
 template <typename T> class ValueData {
 public:

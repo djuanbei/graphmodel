@@ -23,33 +23,32 @@ class Location {
 
 public:
 public:
-  explicit Location( int loc ) {
-    locationID = loc;
+  explicit Location( int loc_id ) {
+    locationID = loc_id;
     type       = NORMOAL_LOC;
   }
 
-  explicit Location( int loc, Location_Type t ) {
-    locationID = loc;
-    type       = t;
+  explicit Location( int loc_id, Location_Type etype ) {
+    locationID = loc_id;
+    type       = etype;
   }
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
   bool isCommit() const { return type == COMMIT_LOC; }
 
-
-  bool operator()( const DManager_t &dbmManager, C_t *D ) const {
+  bool operator()( const DManager_t &dbmManager, C_t *dbm ) const {
 
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
      *
      */
-    for( auto cs: invariants){
-      dbmManager.andImpl( D, cs );
+    for ( auto cs : invariants ) {
+      dbmManager.andImpl( dbm, cs );
     }
 
-    if ( dbmManager.isConsistent( D ) ) {
+    if ( dbmManager.isConsistent( dbm ) ) {
       /**
        * Urgent and commit locations freeze time; i.e. time is not allowed to
        * pass when a process is in an urgent location.
@@ -57,17 +56,17 @@ public:
        */
 
       if ( type != URGENT_LOC || type != COMMIT_LOC ) {
-        dbmManager.upImpl( D );
+        dbmManager.upImpl( dbm );
         /**
          * After D satisfies the invarient then do operator up on D,
          * then left the area which satisfies all invariants
          *
          */
         for ( auto cs : invariants ) {
-          dbmManager.andImpl( D, cs );
+          dbmManager.andImpl( dbm, cs );
         }
 
-        assert( dbmManager.isConsistent( D ) );
+        assert( dbmManager.isConsistent( dbm ) );
       }
       return true;
 

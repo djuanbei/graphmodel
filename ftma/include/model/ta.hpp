@@ -247,9 +247,10 @@ public:
   }
 
   StateManager<C> getStateManager() const {
-
+    
+    bool hasChannel=!channels.empty( );
     StateManager<C> re( tas.size(), counters.size(), clock_num, clockUpperBound,
-                        differenceCons, parameters );
+                        differenceCons, parameters, hasChannel );
 
     return re;
   }

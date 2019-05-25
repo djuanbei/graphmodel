@@ -147,10 +147,10 @@ public:
 
     C *sourceDBM = manager.getkDBM( component, re_state );
 
-    for ( auto r : resets ) {
-      assert( r.first > 0 );   // clock id start from 1
-      assert( r.second >= 0 ); // clock value must positive
-      dbmManager.resetImpl( sourceDBM, r.first, r.second );
+    for ( auto reset : resets ) {
+      assert( reset.first > 0 );   // clock id start from 1
+      assert( reset.second >= 0 ); // clock value must positive
+      dbmManager.resetImpl( sourceDBM, reset.first, reset.second );
     }
 
     C *counterValue = manager.getCounterValue( re_state );

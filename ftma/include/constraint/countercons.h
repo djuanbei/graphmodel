@@ -21,9 +21,6 @@
 
 namespace graphsat {
 
-
-
-
 class CounterConstraint {
 
 public:
@@ -55,7 +52,8 @@ public:
   }
 
 private:
-  DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp, int right_side ) {
+  DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp,
+                            int right_side ) {
     counter_id = ecounter_id;
     op         = opp;
     rhs        = right_side;
@@ -69,7 +67,8 @@ private:
 
 class DiaFreeCounterPConstraint : public CounterConstraint {
 public:
-  DiaFreeCounterPConstraint( int ecounter_id, COMP_OPERATOR opp, int parameter_id ) {
+  DiaFreeCounterPConstraint( int ecounter_id, COMP_OPERATOR opp,
+                             int parameter_id ) {
     counter_id = ecounter_id;
     op         = opp;
     p_id       = parameter_id;
@@ -196,7 +195,7 @@ private:
 class CounterConstraintFactory {
   SINGLETON( CounterConstraintFactory );
 
- public:
+public:
   DefaultCounterConstraint *
       createDefaultCounterConstraint( const vector<pair<int, int>> &pcons,
                                       const vector<pair<int, int>> &cons,
@@ -237,7 +236,6 @@ class CounterConstraintFactory {
 
 private:
   PointerData pdata;
-
 };
 
 } // namespace graphsat

@@ -24,18 +24,22 @@ template <typename C> class StateManager {
    *
    */
 public:
-  StateManager() { component_num = stateLen = counter_start_loc = 0; }
+  StateManager() {haveChannel=false; component_num = stateLen = counter_start_loc = 0; }
 
   StateManager( int comp_num, int counter_num, vector<int> clock_num,
                 vector<vector<C>>                  clockUpperBound,
                 vector<vector<ClockConstraint<C>>> differenceCons,
-                const vector<Parameter> &          ps ) {
-
+                const vector<Parameter> &          ps, bool haveCh ) {
+    
+    haveChannel=haveCh;
     component_num = comp_num;
-
-    counter_start_loc = 2 * component_num;
-
-    stateLen = 2 * component_num + counter_num;
+    if( haveChannel){
+          counter_start_loc = 2 * component_num;
+          stateLen = 2 * component_num + counter_num;
+    }else{
+      counter_start_loc =  component_num;
+      stateLen =  component_num + counter_num;
+    }
 
     for ( size_t i = 0; i < clock_num.size(); i++ ) {
 
@@ -43,13 +47,16 @@ public:
 
       stateLen += ( clock_num[ i ] + 1 ) * ( clock_num[ i ] + 1 );
 
-      DBMFactory<C> temp = DBMFactory<C>( clock_num[ i ], clockUpperBound[ i ],
+      DBMFactory<C> dbmManager = DBMFactory<C>( clock_num[ i ], clockUpperBound[ i ],
                                           differenceCons[ i ] );
 
-      clock_manager.push_back( temp );
+      clock_manager.push_back( dbmManager );
     }
 
     parameters = ps;
+  }
+  bool hasChannel( ) const{
+    return haveChannel;
   }
 
   NIntState *newState() const {
@@ -75,7 +82,7 @@ public:
     return parameters[ i ].getValue();
   }
 
-  inline const int *   getValue( const NIntState *const         state  ) const{
+  inline const int *getValue( const NIntState *const state ) const {
     return state->value;
   }
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
@@ -96,7 +103,7 @@ public:
   }
   inline bool isConsistent( const int id, NIntState *state ) const {
     return getClockManager( id ).isConsistent( getkDBM( id, state ) );
-  }
+  } 
 
   inline vector<int> blockComponents( const int              chid,
                                       const NIntState *const state ) const {
@@ -115,16 +122,17 @@ public:
     return reBlockComponents;
   }
 
-  bool add( const int component_id, const int target, StateSet<NIntState> &stateSet, NIntState * state ) const {
- 
+  bool add( const int component_id, const int target,
+            StateSet<NIntState> &stateSet, NIntState *state ) const {
+
     state->value[ component_id ] = target;
 
     if ( !stateSet.add( state ) ) {
-       return false;
+      return false;
     }
     return true;
   }
-  
+
   inline bool isCommitComp( const int id, const NIntState *const state ) const {
     return state->value[ id ] < 0;
   }
@@ -139,6 +147,7 @@ public:
   }
 
 private:
+  bool haveChannel;
   int component_num;
   int stateLen;
 

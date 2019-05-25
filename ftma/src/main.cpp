@@ -211,8 +211,8 @@ void fisher( int n = 2 ) {
 
   DiaFreeCounterConstraint *ccs1 =
       CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint(
-         0, EQ, 0 ); // id==0
-  
+          0, EQ, 0 ); // id==0
+
   A_req.addCounterCons( ccs1 );
 
   pair<int, int> reset1( 1, 0 ); // x-->0
@@ -225,9 +225,10 @@ void fisher( int n = 2 ) {
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  SimpleCounterPAction* caction=CounterActionFactory::getInstance( ).createSimpleCounterPAction( 0, 0 );
+  SimpleCounterPAction *caction =
+      CounterActionFactory::getInstance().createSimpleCounterPAction( 0, 0 );
 
-  req_wait.addCounterAction(caction );
+  req_wait.addCounterAction( caction );
 
   T_t wait_req( 2, 1 );
 
@@ -246,9 +247,10 @@ void fisher( int n = 2 ) {
 
   T_t cs_A( 3, 0 );
 
+  SimpleCounterAction *caction1 =
+      CounterActionFactory::getInstance().createSimpleCounterAction(
+          0, 0 ); //( relations1 );
 
-  SimpleCounterAction* caction1=CounterActionFactory::getInstance( ).createSimpleCounterAction( 0,0 );//( relations1 );
-  
   cs_A.addCounterAction( caction1 );
 
   ls.push_back( A );
@@ -262,12 +264,12 @@ void fisher( int n = 2 ) {
   es.push_back( wait_cs );
   es.push_back( cs_A );
   TA_t tma1( ls, es, 0, 1 );
-  //tma1.addOnePara();
-  TAS_t   sys;
-  for( int i=1; i<=n; i++){
-    TA_t tma2=tma1;
-    tma2.addOnePara(i);
-    sys+=tma2;
+  // tma1.addOnePara();
+  TAS_t sys;
+  for ( int i = 1; i <= n; i++ ) {
+    TA_t tma2 = tma1;
+    tma2.addOnePara( i );
+    sys += tma2;
   }
   //  TAS_t   sys = n * tma1;
   Counter counter( 0, 100 );
@@ -278,14 +280,13 @@ void fisher( int n = 2 ) {
   Reachability<R_t> reacher( data );
   FischerMutual     prop;
 
-  // if ( reacher.satisfy( &prop ) ) {
-  //   cout << "There is something wrong" << endl;
-  // } else {
-  //   cout << "fisher mutual exclusion property check right" << endl;
-  // }
+  if ( reacher.satisfy( &prop ) ) {
+    cout << "There is something wrong" << endl;
+  } else {
+    cout << "fisher mutual exclusion property check right" << endl;
+  }
   reacher.computeAllReachableSet();
-  cout<<"reach data size: "<<data.size( )<<endl;
-
+  cout << "reach data size: " << data.size() << endl;
 }
 void fisher1() {
   UppaalParser parser( "example/fischer.xml" );
@@ -297,18 +298,18 @@ void fisher1() {
   //  if ( reacher.satisfy( &prop ) ) {
   //   cout << "There is something wrong" << endl;
   // } else {
-    
+
   //   cout << "fisher mutual exclusion property check right" << endl;
   // }
   reacher.computeAllReachableSet();
-  cout<<"reach data size: "<<data.size( )<<endl;
+  cout << "reach data size: " << data.size() << endl;
   //  reacher.computeAllReachableSet();
 }
 
 int main( int argc, const char *argv[] ) {
 
-  //  fisher(6);
-   //return 0;
+  //    fisher(6);
+  //    return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

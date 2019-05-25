@@ -26,7 +26,6 @@ public:
 
 class SimpleCounterAction : public CounterAction {
 public:
-
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const {
     counterValue[ counter_id ] = rhs;
@@ -37,9 +36,7 @@ private:
     counter_id = cid;
     rhs        = v;
   }
-  ~SimpleCounterAction( ){
-    
-  }
+  ~SimpleCounterAction() {}
   int counter_id;
   int rhs;
   friend class CounterActionFactory;
@@ -47,7 +44,6 @@ private:
 
 class SimpleCounterPAction : public CounterAction {
 public:
-
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const {
     counterValue[ counter_id ] = parameterValue[ p_id ];
@@ -58,9 +54,7 @@ private:
     counter_id = cid;
     p_id       = v;
   }
-  ~SimpleCounterPAction( ){
-    
-  }
+  ~SimpleCounterPAction() {}
   int counter_id;
   int p_id;
   friend class CounterActionFactory;
@@ -68,7 +62,6 @@ private:
 
 class DefaultCAction : public CounterAction {
 public:
-
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const {
     for ( auto e : relations ) {
@@ -83,9 +76,7 @@ private:
   DefaultCAction( vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
     relations = relations1;
   }
-  ~DefaultCAction( ){
-    
-  }
+  ~DefaultCAction() {}
   vector<pair<int, vector<pair<int, int>>>> relations;
   friend class CounterActionFactory;
 };
@@ -93,24 +84,25 @@ private:
 class CounterActionFactory {
 
   SINGLETON( CounterActionFactory );
- public:
-    SimpleCounterAction* createSimpleCounterAction(int cid, int v ){
-    SimpleCounterAction *re=new SimpleCounterAction( cid, v);
-    pdata.addPointer( STRING(SimpleCounterAction), re );
+
+public:
+  SimpleCounterAction *createSimpleCounterAction( int cid, int v ) {
+    SimpleCounterAction *re = new SimpleCounterAction( cid, v );
+    pdata.addPointer( STRING( SimpleCounterAction ), re );
     return re;
   }
 
-  SimpleCounterPAction * createSimpleCounterPAction(int cid, int v ){
-    SimpleCounterPAction *re=new SimpleCounterPAction( cid, v);
-    pdata.addPointer( STRING(SimpleCounterPAction ), re);
+  SimpleCounterPAction *createSimpleCounterPAction( int cid, int v ) {
+    SimpleCounterPAction *re = new SimpleCounterPAction( cid, v );
+    pdata.addPointer( STRING( SimpleCounterPAction ), re );
     return re;
   }
 
-  DefaultCAction* createDefaultCAction(vector<pair<int, vector<pair<int, int>>>> &relations1  ){
-    DefaultCAction *re=new DefaultCAction(relations1 );
-    pdata.addPointer( STRING(DefaultCAction ), re);
+  DefaultCAction *createDefaultCAction(
+      vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
+    DefaultCAction *re = new DefaultCAction( relations1 );
+    pdata.addPointer( STRING( DefaultCAction ), re );
     return re;
-  
   }
   void destroy() {
     deleteType( SimpleCounterAction );
@@ -118,8 +110,8 @@ class CounterActionFactory {
     deleteType( DefaultCAction );
     pdata.clear();
   }
-  
- private:
+
+private:
   PointerData pdata;
 };
 

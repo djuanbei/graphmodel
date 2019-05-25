@@ -62,7 +62,8 @@ public:
       return oneComponent( commit_component, prop, state );
     }
     for ( int component = 0; component < component_num; component++ ) {
-      if ( state->value[ component + component_num ] != 0 ) {
+      
+      if (manager.hasChannel( ) && state->value[ component + component_num ] != 0 ) {
         /**
          * Waiting for synchronize signal
          *
@@ -76,9 +77,7 @@ public:
     return false;
   }
 
-  size_t size( ) const{
-    return reachSet.size( );
-  }
+  size_t size() const { return reachSet.size(); }
 
 private:
   StateSet<State_t>      reachSet;
@@ -117,28 +116,28 @@ private:
         continue;
       }
 
-      const Channel &ch = sys.tas[ component ].transitions[ link ].getChannel();
-      if ( ch.id > -1 ) {
+      const Channel &channel = sys.tas[ component ].transitions[ link ].getChannel();
+      if ( channel.id > -1 ) {
         vector<int> waitComponents;
-        if ( CHANNEL_SEND == ch.action ) {
-          waitComponents = manager.blockComponents( -ch.id, state );
-        } else if ( CHANNEL_RECEIVE == ch.action ) {
-          waitComponents = manager.blockComponents( ch.id, state );
+        if ( CHANNEL_SEND == channel.action ) {
+          waitComponents = manager.blockComponents( -channel.id, state );
+        } else if ( CHANNEL_RECEIVE == channel.action ) {
+          waitComponents = manager.blockComponents( channel.id, state );
         }
         if ( !waitComponents.empty() ) {
-          if ( ch.type == ONE2ONE ) {
+          if ( channel.type == ONE2ONE ) {
             std::uniform_int_distribution<int> distribution(
                 0, waitComponents.size() - 1 );
             int id  = distribution( generator );
-            int cid = waitComponents[ id ];
+            int block_component_id = waitComponents[ id ];
 
-            if ( unBlockOne( cid, link, state, prop ) ) {
+            if ( unBlockOne( block_component_id, link, state, prop ) ) {
               return true;
             }
-          } else if ( ch.type == ONE2ALL ) {
+          } else if ( channel.type == ONE2ALL ) {
             for ( auto id : waitComponents ) {
-              int cid = waitComponents[ id ];
-              if ( unBlockOne( cid, link, state, prop ) ) {
+              int block_component_id = waitComponents[ id ];
+              if ( unBlockOne( block_component_id, link, state, prop ) ) {
                 return true;
               }
             }
@@ -146,10 +145,10 @@ private:
 
         } else {
           State_t *temp_state = state->copy();
-          if ( CHANNEL_SEND == ch.action ) {
-            temp_state->value[ component + component_num ] = ch.id;
-          } else if ( CHANNEL_RECEIVE == ch.action ) {
-            temp_state->value[ component + component_num ] = -ch.id;
+          if ( CHANNEL_SEND == channel.action ) {
+            temp_state->value[ component + component_num ] = channel.id;
+          } else if ( CHANNEL_RECEIVE == channel.action ) {
+            temp_state->value[ component + component_num ] = -channel.id;
           }
 
           temp_state->value[ component ] = link; // block link
@@ -175,11 +174,11 @@ private:
         sys.tas[ component ].transitions[ link ]( component, manager, state );
 
     if ( sys.tas[ component ].locations[ target ](
-            manager.getClockManager( component ),
-            manager.getkDBM( component, next_state ) ) ) {
+             manager.getClockManager( component ),
+             manager.getkDBM( component, next_state ) ) ) {
 
-      if(manager.add( component, target, reachSet,
-                      next_state)){// add to reachse
+      if ( manager.add( component, target, reachSet,
+                        next_state ) ) { // add to reachse
 
         if ( sys.tas[ component ].locations[ target ].isCommit() ) {
           manager.setCommitState( component, target, next_state );
@@ -188,43 +187,43 @@ private:
         waitSet.push_back( next_state );
 
         if ( isReach( prop, next_state ) ) {
-          
+
           return true;
         }
 
-      }else{
+      } else {
         delete next_state;
       }
-    }else{
+    } else {
       delete next_state;
     }
- 
+
     return false;
   }
 
-  bool unBlockOne( const int cid, const int link, const State_t *const state,
+  bool unBlockOne( const int block_component_id, const int link, const State_t *const state,
                    const Property *prop ) {
-    const int blockChannel              = state->value[ cid + component_num ];
-    state->value[ cid + component_num ] = 0;
-    const int blockLink                 = state->value[ cid ];
+    const int blockChannel              = state->value[ block_component_id + component_num ];
+    state->value[ block_component_id + component_num ] = 0;
+    const int blockLink                 = state->value[ block_component_id ];
     int       blockSource               = 0;
-    sys.tas[ cid ].graph.findSrc( blockLink, blockSource );
+    sys.tas[ block_component_id ].graph.findSrc( blockLink, blockSource );
 
-    state->value[ cid ] = blockSource;
-    if ( oneTranision( cid, blockLink, prop, state ) ) {
-      state->value[ cid + component_num ] = blockChannel;
-      state->value[ cid ]                 = blockLink;
+    state->value[ block_component_id ] = blockSource;
+    if ( oneTranision( block_component_id, blockLink, prop, state ) ) {
+      state->value[ block_component_id + component_num ] = blockChannel;
+      state->value[ block_component_id ]                 = blockLink;
       return true;
     }
 
-    if ( oneTranision( cid, link, prop, state ) ) {
-      state->value[ cid + component_num ] = blockChannel;
-      state->value[ cid ]                 = blockLink;
+    if ( oneTranision( block_component_id, link, prop, state ) ) {
+      state->value[ block_component_id + component_num ] = blockChannel;
+      state->value[ block_component_id ]                 = blockLink;
 
       return true;
     }
-    state->value[ cid + component_num ] = blockChannel;
-    state->value[ cid ]                 = blockLink;
+    state->value[ block_component_id + component_num ] = blockChannel;
+    state->value[ block_component_id ]                 = blockLink;
     return false;
   }
 };
