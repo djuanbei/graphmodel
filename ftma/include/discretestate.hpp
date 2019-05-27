@@ -33,7 +33,7 @@ using std::vector;
 
 class StateElem {
 public:
-  virtual int  digitalFeature() const { return 0; }
+  virtual int  have_value() const { return 0; }
   virtual bool contain( const StateElem *other ) const { return false; }
   virtual bool equal( const StateElem *other ) const { return false; }
 };
@@ -41,8 +41,8 @@ public:
 class ComposeState : public StateElem {
 
 public:
-  int digitalFeature() const {
-    return left->digitalFeature() * 100 + right->digitalFeature();
+  int have_value() const {
+    return left->have_value() * 100 + right->have_value();
   }
   virtual bool contain( const StateElem *other ) const {
     const ComposeState *rhs = (const ComposeState *) other;
@@ -82,88 +82,88 @@ private:
 };
 
 template <typename T> class StateSet {
+  typedef StateSet<T> StateSet_t;
 
 public:
   class const_iterator;
   class iterator;
-  StateSet() { stateId = -1; }
-  StateSet( int id ) { stateId = id; }
+  StateSet() {
+    stateId     = -1;
+    element_len = element_start = 0;
+  }
+  StateSet( int id, int n, int s ) {
+    stateId        = id;
+    element_len    = n;
+    element_start = s;
+  }
+  void setParam( const int n, int s ) {
+    element_len    = n;
+    element_start = s;
+  }
   ~StateSet() { deleteAll(); }
-  void deleteAll() {
-
-    for ( typename vector<T *>::const_iterator it = recoveryD.begin();
-          it != recoveryD.end(); it++ ) {
-      delete ( *it );
-    }
-
-    for ( typename vector<T *>::const_iterator it = mapD.begin();
-          it != mapD.end(); it++ ) {
-      delete ( *it );
-    }
-
-    clear();
-  }
+  void deleteAll() { clear(); }
   void clear() {
-    passedD.clear();
+    passedHash.clear();
 
-    mapD.clear();
+    hasmapValue.clear();
 
-    recoveryD.clear();
+    recoveryValue.clear();
   }
 
-  size_t size() const { return mapD.size() + recoveryD.size(); }
+  size_t size() const {
+    return ( hasmapValue.size() + recoveryValue.size() ) / element_len;
+  }
 
-  bool empty() const { return mapD.empty() && recoveryD.empty(); }
-  int  getID( void ) const { return stateId; }
+  bool empty() const { return hasmapValue.empty() && recoveryValue.empty(); }
+
+  int getID( void ) const { return stateId; }
 
   void setId( int id ) { stateId = id; }
 
   bool add( T *one ) {
 
-    int hashValue = one->digitalFeature();
+    int hashV = have_value( one );
 
-    typename std::pair<typename std::unordered_map<int, int>::iterator, bool>
-        ret;
-    ret = passedD.insert( std::pair<int, int>( hashValue, mapD.size() ) );
-
+    std::unordered_map<int, int>::iterator ret = passedHash.find( hashV );
     /**
-     * check whether has elemeent is set has same digitalFeature
+     * check whether has element is set has same have_value
      *
      */
-    if ( false == ret.second ) { // has
-      T *D1 = getD( hashValue );
-      if ( !one->equal( D1 ) ) {
-        for ( typename vector<T *>::iterator it = recoveryD.begin();
-              it != recoveryD.end(); it++ ) {
-          if ( one->equal( *it ) ) {
+    if ( ret != passedHash.end() ) { // has
+      T *sameHashElemeent = getElementByHash( hashV );
 
+      if ( !equal( one, sameHashElemeent ) ) {
+        for ( size_t i = 0; i < recoveryValue.size(); i += element_len ) {
+
+          if ( equal( one, &( recoveryValue[ i ] ) ) ) {
             return false;
           }
         }
-
         if ( contain( one ) ) {
           return false;
         }
-        recoveryD.push_back( one );
+        addRecoveryValue( one );
+
         return true;
 
       } else {
         return false;
       }
     }
-    mapDAdd( one );
-    return true;
+    // if ( contain( one ) ) {
+    //   return false;
+    // }
+    return addHashValue( hashV, one );
   }
 
   bool contain( const T *const one ) const {
-
-    for ( auto e : mapD ) {
-      if ( e->contain( one ) ) {
+    for ( size_t i = 0; i < hasmapValue.size(); i += element_len ) {
+      if ( contain( &( hasmapValue[ i ] ), one ) ) {
         return true;
       }
     }
-    for ( auto e : recoveryD ) {
-      if ( e->contain( one ) ) {
+    for ( size_t i = 0; i < recoveryValue.size(); i += element_len ) {
+      if ( contain( &( recoveryValue[ i ] ), one ) ) {
         return true;
       }
     }
@@ -175,24 +175,26 @@ public:
 
   const_iterator begin() const { return const_iterator( this ); }
 
-  iterator end() { return iterator( this, mapD.size() + recoveryD.size() ); }
+  iterator end() {
+    return iterator( this, hasmapValue.size() + recoveryValue.size() );
+  }
 
   const_iterator end() const {
-    return const_iterator( this, mapD.size() + recoveryD.size() );
+    return const_iterator( this, hasmapValue.size() + recoveryValue.size() );
   }
 
   class const_iterator {
   protected:
-    const StateSet<T> *data;
-    size_t             index;
+    const StateSet_t *data;
+    size_t            index;
 
   public:
-    const_iterator( const StateSet<T> *odata )
+    const_iterator( const StateSet_t *odata )
         : data( odata ) {
       index = 0;
     }
 
-    const_iterator( const StateSet<T> *odata, size_t oindex )
+    const_iterator( const StateSet_t *odata, size_t oindex )
         : data( odata ) {
       index = oindex;
     }
@@ -203,7 +205,7 @@ public:
     }
 
     const_iterator &operator++() {
-      index++;
+      index += data->n;
       return *this;
     }
     bool operator==( const const_iterator &other ) const {
@@ -214,32 +216,33 @@ public:
     }
 
     const T *operator*() const {
-      size_t dSize = data->mapD.size();
+
+      size_t dSize = data->hasmapValue.size();
       if ( index < dSize ) {
 
-        return data->mapD[ index ];
+        return &( data->hasmapValue[ index ] );
       }
-      if ( index >= dSize + data->recoveryD.size() ) {
+      if ( index >= dSize + ( data->recoveryValue.size() ) ) {
         return NULL;
       }
 
-      return data->recoveryD[ index - dSize ];
+      return &( data->recoveryValue[ ( index - dSize ) ] );
     }
   };
 
   class iterator {
 
   protected:
-    StateSet<T> *data;
-    size_t       index;
+    StateSet_t *data;
+    size_t      index;
 
   public:
-    iterator( StateSet<T> *odata )
+    iterator( StateSet_t *odata )
         : data( odata ) {
       index = 0;
     }
 
-    iterator( StateSet<T> *odata, size_t oindex )
+    iterator( StateSet_t *odata, size_t oindex )
         : data( odata ) {
       index = oindex;
     }
@@ -249,7 +252,7 @@ public:
       index = other.index;
     }
     iterator &operator++() {
-      index++;
+      index += data->element_len;
       return *this;
     }
 
@@ -261,30 +264,61 @@ public:
     }
 
     T *operator*() {
-      size_t dSize = data->mapD.size();
+
+      size_t dSize = data->hasmapValue.size();
       if ( index < dSize ) {
 
-        return data->mapD.at( index );
+        return &( data->hasmapValue[ index ] );
       }
-      if ( index >= dSize + data->recoveryD.size() ) {
+      if ( index >= dSize + ( data->recoveryValue.size() ) ) {
         return NULL;
       }
 
-      return data->recoveryD[ index - dSize ];
+      return &( data->recoveryValue[ ( index - dSize ) ] );
     }
   };
 
 private:
   int                     stateId;
-  unordered_map<int, int> passedD;
-  vector<T *>             mapD;
-  vector<T *>             recoveryD;
+  unordered_map<int, int> passedHash;
+  vector<T>               hasmapValue;
+  vector<T>               recoveryValue;
+  int                     element_len;
+  int                     element_start;
 
-  T *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
+  T *getElementByHash( int hashV ) {
+    return &( hasmapValue[ passedHash[ hashV ] * element_len ] );
+  }
 
-  void mapDAdd( T *D ) { mapD.push_back( D ); }
+  bool addHashValue( int hashV, T *D ) {
+    int s               = passedHash.size();
+    passedHash[ hashV ] = s;
+    hasmapValue.insert( hasmapValue.end(), D, D + element_len );
 
-  void recoveryDAdd( T *D ) { recoveryD.push_back( D ); }
+    return true;
+  }
+
+  void addRecoveryValue( T *D ) {
+    recoveryValue.insert( recoveryValue.end(), D, D + element_len );
+  }
+
+  int have_value( const T *const one ) const {
+    return FastHash( (char *) one, element_len * sizeof( T ) );
+  }
+  bool equal( const T *const lhs, const T *const rhs ) const {
+    return memcmp( lhs, rhs, element_len * sizeof( T ) ) == 0;
+  }
+  bool contain( const T *const lhs, const T *const rhs ) const {
+    if ( 0 != memcmp( lhs, rhs, element_start * sizeof( T ) ) ) {
+      return false;
+    }
+    for ( int i = element_start; i < element_len; i++ ) {
+      if ( lhs[ i ] < rhs[ i ] ) {
+        return false;
+      }
+    }
+    return true;
+  }
 };
 
 template <typename T> class SingleStateSet {
@@ -336,11 +370,6 @@ protected:
   map<int, int> stateIndexMap; // id -> loc_index
 
   virtual void addCompentImpl( SingleStateSet<T> &comp ) {}
-
-  // virtual ComposeStateSet<T> & operator += (const ComposeStateSet<T> & other
-  // ){
-  //   *this;
-  // }
 };
 
 template <typename T> class ExpandComposeStateSet : public ComposeStateSet<T> {
@@ -605,72 +634,72 @@ private:
   ExpandComposeStateSet<T>                  other;
 };
 
-class NIntState : public StateElem {
+// class NIntState : public StateElem {
 
-public:
-  NIntState()
-      : n( 0 )
-      , start( 0 )
-      , value( NULL ) {}
-  NIntState( int s, int ss = 0 ) {
-    assert( s > 0 );
-    n     = s;
-    start = ss;
-    value = new int[ n ];
-    fill( value, value + n, 0 );
-  }
+// public:
+//   NIntState()
+//       : n( 0 )
+//       , start( 0 )
+//       , value( NULL ) {}
+//   NIntState( int s, int ss = 0 ) {
+//     assert( s > 0 );
+//     n     = s;
+//     start = ss;
+//     value = new int[ n ];
+//     fill( value, value + n, 0 );
+//   }
 
-  ~NIntState() {
-    delete[] value;
-    value = NULL;
-  }
+//   ~NIntState() {
+//     delete[] value;
+//     value = NULL;
+//   }
 
-  NIntState *copy() const {
-    NIntState *re = new NIntState( n, start );
-    memcpy( re->value, value, n * sizeof( int ) );
-    return re;
-  }
+//   NIntState *copy() const {
+//     NIntState *re = new NIntState( n, start );
+//     memcpy( re->value, value, n * sizeof( int ) );
+//     return re;
+//   }
 
-  inline int digitalFeature() const {
-    return FastHash( (char *) value, n * sizeof( int ) );
-  }
-  void setValue( const int *v ) { memcpy( value, v, sizeof( int ) * n ); }
+//   inline int have_value() const {
+//     return FastHash( (char *) value, n * sizeof( int ) );
+//   }
+//   void setValue( const int *v ) { memcpy( value, v, sizeof( int ) * n ); }
 
-  inline bool contain( const StateElem *other ) const {
+//   inline bool contain( const StateElem *other ) const {
 
-    const NIntState *rhs = (const NIntState *) other;
+//     const NIntState *rhs = (const NIntState *) other;
 
-    if ( 0 != memcmp( value, rhs->value, start * sizeof( int ) ) ) {
-      return false;
-    }
+//     if ( 0 != memcmp( value, rhs->value, start * sizeof( int ) ) ) {
+//       return false;
+//     }
 
-    for ( int i = start; i < n; i++ ) {
-      if ( value[ i ] < rhs->value[ i ] ) {
-        return false;
-      }
-    }
-    return true;
-  }
+//     for ( int i = start; i < n; i++ ) {
+//       if ( value[ i ] < rhs->value[ i ] ) {
+//         return false;
+//       }
+//     }
+//     return true;
+//   }
 
-  bool equal( const StateElem *other ) const {
+//   bool equal( const StateElem *other ) const {
 
-    const NIntState *rhs = (const NIntState *) other;
+//     const NIntState *rhs = (const NIntState *) other;
 
-    return ( 0 == memcmp( value, rhs->value, n * sizeof( int ) ) );
-  }
+//     return ( 0 == memcmp( value, rhs->value, n * sizeof( int ) ) );
+//   }
 
-private:
-  int  n;
-  int  start = 0;
-  int *value;
-  NIntState( const NIntState &other ) { assert( false ); }
-  NIntState &operator=( const NIntState &other ) { return *this; }
+// private:
+//   int  n;
+//   int  start = 0;
+//   int *value;
+//   NIntState( const NIntState &other ) { assert( false ); }
+//   NIntState &operator=( const NIntState &other ) { return *this; }
 
-  template <typename C> friend class StateManager;
+//   template <typename C> friend class StateManager;
 
-  template <typename C, typename L, typename T> friend class TAS;
-  template <typename S> friend class ReachableSet;
-};
+//   template <typename C, typename L, typename T> friend class TAS;
+//   template <typename S> friend class ReachableSet;
+// };
 
 } // namespace graphsat
 #endif

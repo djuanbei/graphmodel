@@ -13,32 +13,40 @@
 #include <vector>
 
 #include "discretestate.hpp"
+#include "model/ta.hpp"
 #include "parameter.h"
+
 namespace graphsat {
 
 using std::vector;
 
+typedef int State_t;
+
 template <typename C> class StateManager {
+
   /**
    * state is [loc, channel_state, counter_state, clock_state]
    *
    */
 public:
-  StateManager() {haveChannel=false; component_num = stateLen = counter_start_loc = 0; }
+  StateManager() {
+    haveChannel   = false;
+    component_num = stateLen = counter_start_loc = 0;
+  }
 
   StateManager( int comp_num, int counter_num, vector<int> clock_num,
                 vector<vector<C>>                  clockUpperBound,
                 vector<vector<ClockConstraint<C>>> differenceCons,
-                const vector<Parameter> &          ps, bool haveCh ) {
-    
-    haveChannel=haveCh;
+                const vector<Parameter> &ps, bool haveCh ) {
+
+    haveChannel   = haveCh;
     component_num = comp_num;
-    if( haveChannel){
-          counter_start_loc = 2 * component_num;
-          stateLen = 2 * component_num + counter_num;
-    }else{
-      counter_start_loc =  component_num;
-      stateLen =  component_num + counter_num;
+    if ( haveChannel ) {
+      counter_start_loc = 2 * component_num;
+      stateLen          = 2 * component_num + counter_num;
+    } else {
+      counter_start_loc = component_num;
+      stateLen          = component_num + counter_num;
     }
 
     for ( size_t i = 0; i < clock_num.size(); i++ ) {
@@ -47,32 +55,42 @@ public:
 
       stateLen += ( clock_num[ i ] + 1 ) * ( clock_num[ i ] + 1 );
 
-      DBMFactory<C> dbmManager = DBMFactory<C>( clock_num[ i ], clockUpperBound[ i ],
-                                          differenceCons[ i ] );
+      DBMFactory<C> dbmManager = DBMFactory<C>(
+          clock_num[ i ], clockUpperBound[ i ], differenceCons[ i ] );
 
       clock_manager.push_back( dbmManager );
     }
 
     parameters = ps;
   }
-  bool hasChannel( ) const{
-    return haveChannel;
-  }
+  int getStateLen() const { return stateLen; }
 
-  NIntState *newState() const {
+  int getStateStart() const { return clock_start_loc[ 0 ]; }
+
+  bool hasChannel() const { return haveChannel; }
+
+  State_t *newState() const {
     if ( clock_start_loc.empty() ) {
-      NIntState *re = new NIntState( stateLen );
-      return re;
+      State_t *re_state = new C[ stateLen ];
+      fill( re_state, re_state + stateLen, 0 );
+      return re_state;
     } else {
-
-      NIntState *re = new NIntState( stateLen, clock_start_loc[ 0 ] );
-
+      State_t *re_state = new State_t[ stateLen ];
+      fill( re_state, re_state + stateLen, 0 );
       for ( int i = 0; i < component_num; i++ ) {
-        clock_manager[ i ].init( re->value + clock_start_loc[ i ] );
+        clock_manager[ i ].init( re_state + clock_start_loc[ i ] );
       }
-      return re;
+
+      return re_state;
     }
   }
+
+  State_t *newState( const State_t *s ) const {
+    State_t *re = new State_t[ stateLen ];
+    memcpy( re, s, stateLen * sizeof( State_t ) );
+    return re;
+  }
+  void destroyState( State_t *s ) const { delete[] s; }
 
   inline int                  getComponentNum() const { return component_num; }
   inline const DBMFactory<C> &getClockManager( int i ) const {
@@ -82,31 +100,34 @@ public:
     return parameters[ i ].getValue();
   }
 
-  inline const int *getValue( const NIntState *const state ) const {
-    return state->value;
-  }
+
   inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
-  inline C * getkDBM( const int k, const NIntState *const state ) const {
-    return state->value + getClockStart( k );
-  }
-  inline C *getCounterValue( NIntState *state ) const {
-    return state->value + counter_start_loc;
+  inline C * getkDBM( const int k, State_t *state ) const {
+    return state + getClockStart( k );
   }
 
-  inline const C *getCounterValue( const NIntState *const state ) const {
-    return state->value + counter_start_loc;
+  inline const C *getkDBM( const int k, const State_t *const state ) const {
+    return state + getClockStart( k );
   }
 
-  inline void andImpl( const int id, const ClockConstraint<C> &cs,
-                       NIntState *state ) const {
-    return getClockManager( id ).andImpl( getkDBM( id, state ), cs );
+  inline C *getCounterValue( State_t *state ) const {
+    return state + counter_start_loc;
   }
-  inline bool isConsistent( const int id, NIntState *state ) const {
-    return getClockManager( id ).isConsistent( getkDBM( id, state ) );
-  } 
 
-  inline vector<int> blockComponents( const int              chid,
-                                      const NIntState *const state ) const {
+  inline const C *getCounterValue( const State_t *const state ) const {
+    return state + counter_start_loc;
+  }
+
+  inline void andImpl( const int component_id, const ClockConstraint<C> &cs,
+                       State_t *state ) const {
+    return getClockManager( component_id ).andImpl( getkDBM( component_id, state ), cs );
+  }
+  inline bool isConsistent( const int component_id, State_t *state ) const {
+    return getClockManager( component_id).isConsistent( getkDBM(component_id, state ) );
+  }
+
+  inline vector<int> blockComponents( const int            chid,
+                                      const State_t *const state ) const {
     vector<int> reBlockComponents;
     for ( int i = 0; i < component_num; i++ ) {
 
@@ -115,7 +136,7 @@ public:
        *
        */
 
-      if ( state->value[ i + component_num ] == chid ) {
+      if ( state[ i + component_num ] == chid ) {
         reBlockComponents.push_back( i );
       }
     }
@@ -123,9 +144,9 @@ public:
   }
 
   bool add( const int component_id, const int target,
-            StateSet<NIntState> &stateSet, NIntState *state ) const {
+            StateSet<State_t> &stateSet, State_t *state ) const {
 
-    state->value[ component_id ] = target;
+    state[ component_id ] = target;
 
     if ( !stateSet.add( state ) ) {
       return false;
@@ -133,23 +154,24 @@ public:
     return true;
   }
 
-  inline bool isCommitComp( const int id, const NIntState *const state ) const {
-    return state->value[ id ] < 0;
+  inline bool isCommitComp( const int            component_id,
+                            const State_t *const state ) const {
+    return state[ component_id ] < 0;
   }
 
-  inline void setCommitState( const int id, const int target,
-                              NIntState *state ) const {
-    state->value[ id ] = -1 - state->value[ id ];
+  inline void setCommitState( const int component_id, const int target,
+                              State_t *state ) const {
+    state[ component_id ] = -1 - state[ component_id ];
   }
 
-  inline int getCommitLoc( const int id, const NIntState *const state ) const {
-    return -( state->value[ id ] ) - 1;
+  inline int getCommitLoc( const int component_id, const State_t *const state ) const {
+    return -( state[component_id ] ) - 1;
   }
 
 private:
   bool haveChannel;
-  int component_num;
-  int stateLen;
+  int  component_num;
+  int  stateLen;
 
   int counter_start_loc;
 

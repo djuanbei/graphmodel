@@ -74,13 +74,15 @@ public:
 
     // For given target find the source which change in last step
 
-
     while ( !data.waitSet.empty() ) {
-      const State_t *state = data.waitSet.front();
+      State_t *state = data.waitSet.front();
       data.waitSet.pop_front();
+
       if ( data.oneStep( prop, state ) ) {
+        delete[] state;
         return true;
       }
+      delete[] state;
     }
 
     return false;

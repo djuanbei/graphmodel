@@ -104,7 +104,7 @@ public:
    * @return
    */
   bool ready( const int component, const StateManager<C> &manager,
-              const NIntState *state ) const {
+              const State_t *const state ) const {
     if ( !guards.empty() ) {
 
       const D &dbmManager = manager.getClockManager( component );
@@ -133,19 +133,32 @@ public:
         }
       }
     }
-
     return true;
   }
+  /** 
+   * 
+   *@brief  create new state
+   * 
+   * @return  a new state
+   */
 
-  NIntState *operator()( const int component, const StateManager<C> &manager,
-                         const NIntState *const state ) const {
+  C *operator()( const int component, const StateManager<C> &manager,
+                 const State_t *const state ) const {
     assert( ready( component, manager, state ) );
 
-    NIntState *re_state = state->copy();
+    C *re_state = manager.newState( state );
 
     const D &dbmManager = manager.getClockManager( component );
 
     C *sourceDBM = manager.getkDBM( component, re_state );
+    
+    /**
+     * the state which statisfied the guards can jump this transition
+     * 
+     */
+    for ( auto cs : guards ) {
+      dbmManager.andImpl( sourceDBM, cs );
+    }
 
     for ( auto reset : resets ) {
       assert( reset.first > 0 );   // clock id start from 1

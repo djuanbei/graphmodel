@@ -34,8 +34,8 @@ typedef int                  C_t;
 typedef C_t *                DBM_t;
 typedef DBMFactory<C_t>      DBMManager_t;
 typedef DBMset<C_t>          DBMSet_t;
-typedef NIntState            State_t;
-typedef StateSet<NIntState>  StateSet_t;
+typedef C_t                  State_t;
+typedef StateSet<State_t>    StateSet_t;
 typedef ClockConstraint<C_t> CS_t;
 
 typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>   L_t;
@@ -247,23 +247,23 @@ public:
   }
 
   StateManager<C> getStateManager() const {
-    
-    bool hasChannel=!channels.empty( );
+
+    bool            hasChannel = !channels.empty();
     StateManager<C> re( tas.size(), counters.size(), clock_num, clockUpperBound,
                         differenceCons, parameters, hasChannel );
 
     return re;
   }
-  void initState( const StateManager<C> &manager, NIntState *value ) const {
+  void initState( const StateManager<C> &manager, State_t *value ) const {
     int component_num = tas.size();
     for ( int i = 0; i < component_num; i++ ) {
 
       tas[ i ].locationRun( initial_loc[ i ], manager.getClockManager( i ),
                             manager.getkDBM( i, value ) );
 
-      value->value[ i ] = initial_loc[ i ];
-      if ( tas[ i ].isCommit( value->value[ i ] ) ) {
-        manager.setCommitState( i, value->value[ i ], value );
+      value[ i ] = initial_loc[ i ];
+      if ( tas[ i ].isCommit( value[ i ] ) ) {
+        manager.setCommitState( i, value[ i ], value );
       }
     }
   }

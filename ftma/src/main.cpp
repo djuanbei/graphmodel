@@ -140,26 +140,25 @@ void example3( void ) {}
 std::default_random_engine         generator;
 std::uniform_int_distribution<int> distribution( 0, 1000 );
 
-NIntState *randV( int n, int s ) {
-  NIntState *re = new NIntState( n, s );
-  int *      v  = new int[ n ];
+State_t *randV( int n, int s ) {
+
+  int *v = new int[ n ];
 
   for ( int i = 0; i < n; i++ ) {
     v[ i ] = distribution( generator );
   }
-  re->setValue( v );
-  delete[] v;
-  return re;
+
+  return v;
 }
 
 void example5( void ) {
-  StateSet<NIntState> sets;
-  vector<NIntState *> vecs;
-  int                 n   = 20;
-  int                 s   = 4;
-  int                 num = 1000;
+  StateSet<State_t> sets;
+  vector<State_t *> vecs;
+  int               n   = 20;
+  int               s   = 4;
+  int               num = 1000;
   for ( int i = 0; i < num; i++ ) {
-    NIntState *temp = randV( n, s );
+    State_t *temp = randV( n, s );
     if ( sets.add( temp ) ) {
       vecs.push_back( temp );
     } else {
@@ -278,14 +277,16 @@ void fisher( int n = 2 ) {
   R_t data( sys );
 
   Reachability<R_t> reacher( data );
-  FischerMutual     prop;
+  // FischerMutual     prop;
 
-  if ( reacher.satisfy( &prop ) ) {
-    cout << "There is something wrong" << endl;
-  } else {
-    cout << "fisher mutual exclusion property check right" << endl;
-  }
+  // if ( reacher.satisfy( &prop ) ) {
+  //   cout << "There is something wrong" << endl;
+  // } else {
+  //   cout << "fisher mutual exclusion property check right" << endl;
+  // }
   reacher.computeAllReachableSet();
+  int s = data.size();
+
   cout << "reach data size: " << data.size() << endl;
 }
 void fisher1() {
@@ -308,8 +309,8 @@ void fisher1() {
 
 int main( int argc, const char *argv[] ) {
 
-  //    fisher(6);
-  //    return 0;
+  fisher( 7 );
+  return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

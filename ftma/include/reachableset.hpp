@@ -1,9 +1,9 @@
 /**
- * @file   reachset.hpp
+ * @file   reachableset.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sat Apr 27 08:49:05 2019
  *
- * @brief  the data of reachset
+ * @brief  the data of reachableset
  *
  *
  */
@@ -25,13 +25,15 @@ public:
   ReachableSet( const SYS &outta )
       : sys( outta ) {
 
-    manager       = sys.getStateManager();
-    component_num = sys.getComponentNum();
-    State_t *D    = manager.newState();
-    sys.initState( manager, D );
+    manager        = sys.getStateManager();
+    component_num  = sys.getComponentNum();
+    State_t *state = manager.newState();
 
-    waitSet.push_back( D );
-    reachSet.add( D );
+    sys.initState( manager, state );
+    reachSet.setParam( manager.getStateLen(), manager.getStateStart() );
+    waitSet.push_back( state );
+
+    reachSet.add( state );
   }
 
   ~ReachableSet() { reachSet.clear(); }
@@ -50,7 +52,8 @@ public:
     return UNKOWN;
   }
 
-  bool oneStep( const Property *prop, const State_t *const state ) {
+  bool oneStep( const Property *prop, State_t *state ) {
+
     int commit_component = -1;
     for ( int component = 0; component < component_num; component++ ) {
       if ( manager.isCommitComp( component, state ) ) {
@@ -62,8 +65,8 @@ public:
       return oneComponent( commit_component, prop, state );
     }
     for ( int component = 0; component < component_num; component++ ) {
-      
-      if (manager.hasChannel( ) && state->value[ component + component_num ] != 0 ) {
+
+      if ( manager.hasChannel() && state[ component + component_num ] != 0 ) {
         /**
          * Waiting for synchronize signal
          *
@@ -71,6 +74,7 @@ public:
         continue;
       }
       if ( oneComponent( component, prop, state ) ) {
+
         return true;
       }
     }
@@ -80,8 +84,8 @@ public:
   size_t size() const { return reachSet.size(); }
 
 private:
-  StateSet<State_t>      reachSet;
-  deque<const State_t *> waitSet;
+  StateSet<State_t> reachSet;
+  deque<State_t *>  waitSet;
 
   const SYS &    sys;
   StateManager_t manager;
@@ -90,13 +94,12 @@ private:
   std::default_random_engine generator;
 
   bool isReach( const Property *prop, const State_t *const state ) const {
-    return ( *prop )( manager, state->value );
+    return ( *prop )( manager, state );
   }
 
-  bool oneComponent( int component, const Property *prop,
-                     const State_t *const state ) {
+  bool oneComponent( int component, const Property *prop, State_t *state ) {
 
-    int source = state->value[ component ];
+    int source = state[ component ];
 
     if ( manager.isCommitComp( component, state ) ) { // commit location
       source = manager.getCommitLoc( component, state );
@@ -113,51 +116,18 @@ private:
 
       if ( !sys.tas[ component ].transitions[ link ].ready( component, manager,
                                                             state ) ) {
+
         continue;
       }
 
-      const Channel &channel = sys.tas[ component ].transitions[ link ].getChannel();
-      if ( channel.id > -1 ) {
-        vector<int> waitComponents;
-        if ( CHANNEL_SEND == channel.action ) {
-          waitComponents = manager.blockComponents( -channel.id, state );
-        } else if ( CHANNEL_RECEIVE == channel.action ) {
-          waitComponents = manager.blockComponents( channel.id, state );
+      const Channel &channel =
+          sys.tas[ component ].transitions[ link ].getChannel();
+      
+      if ( channel.id > -1 ){
+        if(doSynchronize( component, prop, state, link, channel  )){
+          return true;
         }
-        if ( !waitComponents.empty() ) {
-          if ( channel.type == ONE2ONE ) {
-            std::uniform_int_distribution<int> distribution(
-                0, waitComponents.size() - 1 );
-            int id  = distribution( generator );
-            int block_component_id = waitComponents[ id ];
-
-            if ( unBlockOne( block_component_id, link, state, prop ) ) {
-              return true;
-            }
-          } else if ( channel.type == ONE2ALL ) {
-            for ( auto id : waitComponents ) {
-              int block_component_id = waitComponents[ id ];
-              if ( unBlockOne( block_component_id, link, state, prop ) ) {
-                return true;
-              }
-            }
-          }
-
-        } else {
-          State_t *temp_state = state->copy();
-          if ( CHANNEL_SEND == channel.action ) {
-            temp_state->value[ component + component_num ] = channel.id;
-          } else if ( CHANNEL_RECEIVE == channel.action ) {
-            temp_state->value[ component + component_num ] = -channel.id;
-          }
-
-          temp_state->value[ component ] = link; // block link
-          if ( reachSet.add( temp_state ) ) {
-            waitSet.push_back( temp_state );
-          }
-        }
-
-      } else {
+      }else {
         if ( oneTranision( component, link, prop, state ) ) {
           return true;
         }
@@ -171,14 +141,14 @@ private:
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
     State_t *next_state =
-        sys.tas[ component ].transitions[ link ]( component, manager, state );
+        sys.tas[ component ].transitions[ link ]( component, manager, state ); //new state
 
     if ( sys.tas[ component ].locations[ target ](
              manager.getClockManager( component ),
              manager.getkDBM( component, next_state ) ) ) {
 
       if ( manager.add( component, target, reachSet,
-                        next_state ) ) { // add to reachse
+                        next_state ) ) { // add to reachableSet
 
         if ( sys.tas[ component ].locations[ target ].isCommit() ) {
           manager.setCommitState( component, target, next_state );
@@ -192,39 +162,83 @@ private:
         }
 
       } else {
-        delete next_state;
+        manager.destroyState( next_state );
       }
     } else {
-      delete next_state;
+      manager.destroyState( next_state );
     }
 
     return false;
   }
 
-  bool unBlockOne( const int block_component_id, const int link, const State_t *const state,
+  bool unBlockOne( const int block_component_id, const int link, State_t *state,
                    const Property *prop ) {
-    const int blockChannel              = state->value[ block_component_id + component_num ];
-    state->value[ block_component_id + component_num ] = 0;
-    const int blockLink                 = state->value[ block_component_id ];
-    int       blockSource               = 0;
+    const int blockChannel = state[ block_component_id + component_num ];
+    state[ block_component_id + component_num ] = 0;
+    const int blockLink                         = state[ block_component_id ];
+    int       blockSource                       = 0;
     sys.tas[ block_component_id ].graph.findSrc( blockLink, blockSource );
 
-    state->value[ block_component_id ] = blockSource;
+    state[ block_component_id ] = blockSource;
     if ( oneTranision( block_component_id, blockLink, prop, state ) ) {
-      state->value[ block_component_id + component_num ] = blockChannel;
-      state->value[ block_component_id ]                 = blockLink;
+      state[ block_component_id + component_num ] = blockChannel;
+      state[ block_component_id ]                 = blockLink;
       return true;
     }
 
     if ( oneTranision( block_component_id, link, prop, state ) ) {
-      state->value[ block_component_id + component_num ] = blockChannel;
-      state->value[ block_component_id ]                 = blockLink;
+      state[ block_component_id + component_num ] = blockChannel;
+      state[ block_component_id ]                 = blockLink;
 
       return true;
     }
-    state->value[ block_component_id + component_num ] = blockChannel;
-    state->value[ block_component_id ]                 = blockLink;
+    state[ block_component_id + component_num ] = blockChannel;
+    state[ block_component_id ]                 = blockLink;
     return false;
+  }
+
+  bool doSynchronize( int component, const Property *prop, State_t *state, int link, const Channel &channel){
+    
+    vector<int> waitComponents;
+    if ( CHANNEL_SEND == channel.action ) {
+      waitComponents = manager.blockComponents( -channel.id, state );
+    } else if ( CHANNEL_RECEIVE == channel.action ) {
+      waitComponents = manager.blockComponents( channel.id, state );
+    }
+    if ( !waitComponents.empty() ) {
+      if ( channel.type == ONE2ONE ) {
+        std::uniform_int_distribution<int> distribution(
+            0, waitComponents.size() - 1 );
+        int id                 = distribution( generator );
+        int block_component_id = waitComponents[ id ];
+
+        if ( unBlockOne( block_component_id, link, state, prop ) ) {
+          return true;
+        }
+      } else if ( channel.type == ONE2ALL ) {
+        for ( auto id : waitComponents ) {
+          int block_component_id = waitComponents[ id ];
+          if ( unBlockOne( block_component_id, link, state, prop ) ) {
+            return true;
+          }
+        }
+      }
+
+    } else {
+      State_t *temp_state = manager.newState( state );
+      if ( CHANNEL_SEND == channel.action ) {
+        temp_state[ component + component_num ] = channel.id;
+      } else if ( CHANNEL_RECEIVE == channel.action ) {
+        temp_state[ component + component_num ] = -channel.id;
+      }
+
+      temp_state[ component ] = link; // block link
+      if ( reachSet.add( temp_state ) ) {
+        waitSet.push_back( temp_state );
+      }
+    }
+    return false;
+    
   }
 };
 typedef ReachableSet<TAS_t> R_t;
