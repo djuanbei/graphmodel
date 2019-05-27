@@ -78,10 +78,63 @@ void example1( void ) {
   R_t data( sys );
 
   Reachability<R_t> reacher( data );
+  vector<int>       loc;
+  loc.push_back( 3 );
+  LocReachProperty prop( loc );
 
+  reacher.satisfy( &prop ) ;
   // vector< dbmset<C_t, DBM > > reachSet;
 
-  reacher.computeAllReachableSet();
+  //reacher.computeAllReachableSet();
+}
+
+void example50( ){
+  vector<T_t> es;
+  vector<L_t> ls;
+  L_t         L0( 0 );
+  L_t         L1( 1 );
+
+  T_t            E00a( 0, 0 );
+  pair<int, int> reset1( 2, 0 );
+  E00a.addReset( reset1 );    // y-->0
+  CS_t cs1( 2, 0, 2, false ); // y<=2
+  E00a += cs1;
+
+  T_t            E00b( 0, 0 );
+  pair<int, int> reset2( 1, 0 );
+  E00b.addReset( reset2 );    // x-->0
+  CS_t cs2( 1, 0, 2, false ); // x<=2
+  E00b += cs2;
+
+  T_t E01( 0, 1 );
+
+  CS_t cs3( 2, 0, 2, false );  // y<=2
+  CS_t cs4( 0, 1, -4, false ); // x>=4
+
+  E01 += cs3;
+  E01 += cs4;
+
+  ls.push_back( L0 );
+  ls.push_back( L1 );
+
+  es.push_back( E00a );
+
+  es.push_back( E00b );
+  es.push_back( E01 );
+
+  TA_t tma1( ls, es, 0, 2 );
+  tma1.addOnePara();
+  TAS_t sys;
+
+  sys += tma1;
+  R_t               data( sys );
+  Reachability<R_t> reacher( data );
+  vector<int>       loc;
+  
+  loc.push_back( 1 );
+  LocReachProperty prop( loc );
+
+  reacher.satisfy( &prop ) ; 
 }
 
 void example2( void ) {
@@ -277,14 +330,14 @@ void fisher( int n = 2 ) {
   R_t data( sys );
 
   Reachability<R_t> reacher( data );
-  // FischerMutual     prop;
+  FischerMutual     prop;
 
-  // if ( reacher.satisfy( &prop ) ) {
-  //   cout << "There is something wrong" << endl;
-  // } else {
-  //   cout << "fisher mutual exclusion property check right" << endl;
-  // }
-  reacher.computeAllReachableSet();
+  if ( reacher.satisfy( &prop ) ) {
+    cout << "There is something wrong" << endl;
+  } else {
+    cout << "fisher mutual exclusion property check right" << endl;
+  }
+  //reacher.computeAllReachableSet();
   int s = data.size();
 
   cout << "reach data size: " << data.size() << endl;
@@ -306,10 +359,21 @@ void fisher1() {
   cout << "reach data size: " << data.size() << endl;
   //  reacher.computeAllReachableSet();
 }
+void testOP( ){
+  for( int i=0; i< 10; i++){
+
+    cout<<"<  "<<i-5<<" "<< getMatrixValue( i-5, true)<<endl;
+    cout<<"<= "<<i-5<<" "<< getMatrixValue( i-5, false)<<endl<<endl;;
+  }
+}
 
 int main( int argc, const char *argv[] ) {
-
-  fisher( 7 );
+  //  testOP( );
+  //  return 9;
+  //  example2( );
+  //  return 0;
+  
+  fisher( 2 );
   return 0;
   //  example5();
   //  return 0;
