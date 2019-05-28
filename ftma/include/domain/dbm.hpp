@@ -81,9 +81,9 @@ public:
   }
 
   C *createDBM() const {
-    C *D = new C[ size ];
-    fill( D, D + size, LTEQ_ZERO ); // x-x<=0
-    return D;
+    C *dbm = new C[ size ];
+    fill( dbm, dbm + size, LTEQ_ZERO ); // x-x<=0
+    return dbm;
   }
 
   /**
@@ -93,16 +93,16 @@ public:
    *
    * @return
    */
-  C *createDBM( const C *const D ) const {
+  C *createDBM( const C *const dbm ) const {
     C *newD = new C[ size ];
-    memcpy( newD, D, sizeof( C ) * size );
+    memcpy( newD, dbm, sizeof( C ) * size );
     return newD;
   }
 
-  void destroyDBM( C *D ) const { delete[] D; }
+  void destroyDBM( C *dbm ) const { delete[] dbm; }
 
-  void init( C *D ) const {
-    fill( D, D + size, LTEQ_ZERO ); // x-x<=0
+  void init( C *dbm ) const {
+    fill( dbm, dbm + size, LTEQ_ZERO ); // x-x<=0
   }
   C *randomDBM() {
 
@@ -112,16 +112,16 @@ public:
     }
     return newD;
   }
-  // TODO
+
   C *randomFeasiableDBM() {
     int num_cons = sqrt( clock_num ) * clock_num + 1;
-    C * D        = createDBM();
+    C * dbm        = createDBM();
     while ( num_cons >= 0 ) {
-      fill( D, D + size, LTEQ_ZERO ); // x-x<=0
-      upImpl( D );
+      init( dbm);// x-y<=0
+      upImpl( dbm );
       for ( int i = 0; i < sqrt( clock_num ); i++ ) {
         int x = abs( distribution( generator ) ) % ( clock_num );
-        if ( x > 0 ) freeImpl( D, x );
+        if ( x > 0 ) freeImpl( dbm, x );
       }
       for ( int i = 0; i < num_cons; i++ ) {
         int x = abs( distribution( generator ) ) % ( clock_num );
@@ -129,24 +129,24 @@ public:
         if ( x != y ) {
           C                  rhs = distribution( generator );
           ClockConstraint<C> cs( x, y, rhs );
-          andImpl( D, cs );
+          andImpl( dbm, cs );
         }
         x = abs( distribution( generator ) ) % ( clock_num );
-        if ( x > 0 ) freeImpl( D, x );
-        freeImpl( D, x );
+        if ( x > 0 ) freeImpl( dbm, x );
+        freeImpl( dbm, x );
       }
-      if ( isConsistent( D ) ) {
-        return D;
+      if ( isConsistent( dbm ) ) {
+        return dbm;
       }
       num_cons -= 3;
     }
-    fill( D, D + size, LTEQ_ZERO ); // x-x<=0
-    return D;
+    init( dbm);//x-y<=0
+    return dbm;
   }
 
   int getSize() const { return size; }
 
-  std::string dump( const C *const D ) const {
+  std::string dump( const C *const dbm ) const {
 
     std::stringstream ss;
 
@@ -154,7 +154,7 @@ public:
       ss << "[ ";
       for ( int j = 0; j < clock_num; j++ ) {
         ss << " (";
-        C v = D[ loc( i, j ) ];
+        C v =dbm[ loc( i, j ) ];
 
         if ( isStrict<C>( v ) ) {
           ss << "< ,";
@@ -175,8 +175,8 @@ public:
     return ss.str();
   }
 
-  uint32_t getHashValue( const C *const D ) const {
-    return FastHash( (char *) D, sizeof( C ) * size );
+  uint32_t getHashValue( const C *const dbm ) const {
+    return FastHash( (char *) dbm, sizeof( C ) * size );
   }
 
   bool MEqual( const C *lhs, const C *rhs ) const {
@@ -199,12 +199,12 @@ public:
    * Floyds algorithm for computing all shortest path
    * TODO improve efficient
    */
-  void canonicalForm( C *D ) const {
+  void canonicalForm( C *dbm ) const {
     for ( int k = 0; k < clock_num; k++ ) {
       for ( int i = 0; i < clock_num; i++ ) {
         for ( int j = 0; j < clock_num; j++ ) {
-          C temp           = add( D[ loc( i, k ) ], D[ loc( k, j ) ] );
-          D[ loc( i, j ) ] = D[ loc( i, j ) ] < temp ? D[ loc( i, j ) ] : temp;
+          C temp           = add( dbm[ loc( i, k ) ], dbm[ loc( k, j ) ] );
+          dbm[ loc( i, j ) ] = dbm[ loc( i, j ) ] < temp ? dbm[ loc( i, j ) ] : temp;
         }
       }
     }
@@ -218,7 +218,7 @@ public:
    * @return true if DBMFactory D is not empty,
    * false otherwise.
    */
-  bool isConsistent( const C *const D ) const { return D[ 0 ] >= LTEQ_ZERO; }
+  bool isConsistent( const C *const dbm ) const { return dbm[ 0 ] >= LTEQ_ZERO; }
 
   /**
    *
@@ -247,14 +247,14 @@ public:
    * @return
    */
 
-  DF_T getIncludeFeature( const C *const D ) const {
+  DF_T getIncludeFeature( const C *const dbm ) const {
     DF_T re = 0;
 
     for ( int i = 0; i < clock_num; i++ ) {
       int k = loc( i, 0 );
       for ( int j = 0; j < clock_num; j++ ) {
         if ( i == j ) continue;
-        re = ( 2 * re * MAX_INT + ( D[ k + j ] + MAX_INT ) );
+        re = ( 2 * re * MAX_INT + ( dbm[ k + j ] + MAX_INT ) );
       }
     }
     return re;
@@ -270,14 +270,14 @@ public:
    * @return true if there is a value in this domain which satisfies cons
    * false, otherwise.
    */
-  bool isSatisfied( const C *const D, const ClockConstraint<C> &cons ) const {
+  bool isSatisfied( const C *const dbm, const ClockConstraint<C> &cons ) const {
     ClockConstraint<C> negCons = cons.neg();
-    return negCons.matrix_value < D[ loc( cons.y, cons.x ) ];
+    return negCons.matrix_value < dbm[ loc( cons.y, cons.x ) ];
   }
 
-  void upImpl( C *D ) const {
+  void upImpl( C *dbm ) const {
     for ( int i = 1; i < clock_num; i++ ) {
-      D[ loc( i, 0 ) ] = MAX_INT;
+      dbm[ loc( i, 0 ) ] = MAX_INT;
     }
   }
 
@@ -287,18 +287,18 @@ public:
    * up(D)={u+d | u \in D, d\in R+ }
    *
    */
-  C *up( const C *const D ) const {
-    C *newD = createDBM( D );
+  C *up( const C *const dbm ) const {
+    C *newD = createDBM( dbm );
     upImpl( newD );
     return newD;
   }
 
-  void downImpl( C *D ) const {
+  void downImpl( C *dbm ) const {
     for ( int i = 1; i < clock_num; i++ ) {
-      D[ i ] = LTEQ_ZERO;
+      dbm[ i ] = LTEQ_ZERO;
       for ( int j = 1; j < clock_num; j++ ) {
         int k  = loc( j, i );
-        D[ i ] = D[ i ] < D[ k ] ? D[ i ] : D[ k ];
+        dbm[ i ] = dbm[ i ] < dbm[ k ] ? dbm[ i ] : dbm[ k ];
       }
     }
   }
@@ -308,8 +308,8 @@ public:
    * compute weakest precondition
    *
    */
-  C *down( const C *const D ) const {
-    C *newD = createDBM( D );
+  C *down( const C *const dbm ) const {
+    C *newD = createDBM( dbm );
     downImpl( newD );
     return newD;
   }
@@ -343,19 +343,19 @@ public:
    * The most used operation in state-space exploration in conjunction
    * @param cons
    */
-  C *And( const C *const D, const ClockConstraint<C> &cons ) const {
+  C *And( const C *const dbm, const ClockConstraint<C> &cons ) const {
 
-    C *newD = createDBM( D );
+    C *newD = createDBM( dbm );
     andImpl( newD, cons );
     return newD;
   }
 
-  void freeImpl( C *D, const int x ) const {
+  void freeImpl( C *dbm, const int x ) const {
     for ( int i = 0; i < clock_num; i++ ) {
-      D[ loc( x, i ) ] = MAX_INT;
-      D[ loc( i, x ) ] = D[ loc( i, 0 ) ];
+      dbm[ loc( x, i ) ] = MAX_INT;
+      dbm[ loc( i, x ) ] = dbm[ loc( i, 0 ) ];
     }
-    D[ loc( x, x ) ] = LTEQ_ZERO;
+    dbm[ loc( x, x ) ] = LTEQ_ZERO;
   }
 
   /**
@@ -364,13 +364,13 @@ public:
    *
    * @param x
    */
-  C *free( const C *const D, const int x ) const {
-    C *newD = createDBM( D );
+  C *free( const C *const dbm, const int x ) const {
+    C *newD = createDBM( dbm );
     freeImpl( newD, x );
     return newD;
   }
 
-  void resetImpl( C *D, const int x, const C m ) const {
+  void resetImpl( C *dbm, const int x, const C m ) const {
     // clock id start from 1
     assert( x > 0 );
     assert( m >= 0 );
@@ -379,11 +379,11 @@ public:
     int xStart = loc( x, 0 );
 
     for ( int i = 0; i < clock_num; i++ ) {
-      D[ xStart + i ]  = add( postM, D[ i ] );
-      D[ loc( i, x ) ] = add( D[ loc( i, 0 ) ], negM );
+      dbm[ xStart + i ]  = add( postM, dbm[ i ] );
+      dbm[ loc( i, x ) ] = add( dbm[ loc( i, 0 ) ], negM );
     }
 
-    D[ loc( x, x ) ] = LTEQ_ZERO;
+    dbm[ loc( x, x ) ] = LTEQ_ZERO;
   }
 
   /**
@@ -468,20 +468,20 @@ public:
     canonicalForm( D );
   }
 
-  C *corn_norm( C *D, const vector<C> &k,
-                const vector<ClockConstraint<C>> &Gd ) const {
+  C *corn_norm( C *dbm, const vector<C> &uppers,
+                const vector<ClockConstraint<C>> &differenceCons ) const {
 
     vector<ClockConstraint<C>> Gunsat;
 
-    for ( size_t i = 0; i < Gd.size(); i++ ) {
+    for ( size_t i = 0; i < differenceCons.size(); i++ ) {
       /**
        * If D and C does not satisiable then norm(D,k) and C does not
        * satisable
        *
        */
 
-      if ( !isSatisfied( D, Gd[ i ] ) ) {
-        Gunsat.push_back( Gd[ i ] );
+      if ( !isSatisfied( dbm, differenceCons[ i ] ) ) {
+        Gunsat.push_back( differenceCons[ i ] );
       }
       /**
        * If D and neg(C) does not satisiable then norm(D,k) and C does not
@@ -489,40 +489,39 @@ public:
        *
        */
 
-      if ( !isSatisfied( D, Gd[ i ].neg() ) ) {
-        Gunsat.push_back( Gd[ i ].neg() );
-        ;
+      if ( !isSatisfied( dbm, differenceCons[ i ].neg() ) ) {
+        Gunsat.push_back( differenceCons[ i ].neg() );
       }
     }
 
-    norm( D, k );
+    norm( dbm, uppers );
     for ( auto cs : Gunsat ) {
-      andImpl( D, cs.neg() );
+      andImpl( dbm, cs.neg() );
     }
-    return D;
+    return dbm;
   }
 
-  void split( C *D, const vector<ClockConstraint<C>> &Gd,
-              vector<C *> &re ) const {
-    assert( re.empty() );
+  void split( C *dbm, const vector<ClockConstraint<C>> &diffCons,
+              vector<C *> &re_vec ) const {
+    
+    assert( re_vec.empty() );
     vector<C *> waitS;
-    re.push_back( D );
+    re_vec.push_back( dbm );
 
-    for ( auto cs : Gd ) {
+    for ( auto cs : diffCons ) {
 
-      vector<bool> addToWaitS( re.size(), false );
+      vector<bool> addToWaitS(re_vec.size(), false );
 
-      int i = 0;
-      for ( size_t i = 0; i < re.size(); i++ ) {
+      for ( size_t i = 0; i < re_vec.size(); i++ ) {
         /**
          * split
          * (D and C) && (D and -C) satisfies then using C to split D
          * into two parts
          */
-        if ( isSatisfied( re[ i ], cs ) && isSatisfied( re[ i ], cs.neg() ) ) {
+        if ( isSatisfied( re_vec[ i ], cs ) && isSatisfied( re_vec[ i ], cs.neg() ) ) {
 
-          C *DandC    = And( re[ i ], cs );
-          C *DandNegC = And( re[ i ], cs.neg() );
+          C *DandC    = And( re_vec[ i ], cs );
+          C *DandNegC = And( re_vec[ i ], cs.neg() );
           if ( !contain( waitS, DandC ) ) {
             waitS.push_back( DandC );
           } else {
@@ -535,13 +534,13 @@ public:
           }
 
         } else {
-          if ( !contain( waitS, re[ i ] ) ) {
-            waitS.push_back( re[ i ] );
+          if ( !contain( waitS, re_vec[ i ] ) ) {
+            waitS.push_back( re_vec[ i ] );
             addToWaitS[ i ] = true;
           }
         }
       }
-      re.swap( waitS );
+      re_vec.swap( waitS );
       for ( size_t i = 0; i < waitS.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
           destroyDBM( waitS[ i ] );
@@ -557,8 +556,8 @@ public:
    * @param D
    * @param re
    */
-  void norm( int source, C *D, vector<C *> &re ) const {
-    return norm( D, clockUppuerBound, differenceCons, re );
+  void norm( int source, C *dbm, vector<C *> &re_vec ) const {
+    return norm( dbm, clockUppuerBound, differenceCons, re_vec );
   }
   /**
    * For automaton containing difference constraints in the guards, it is more
@@ -571,16 +570,16 @@ public:
    * @param G
    * @param re
    */
-  void norm( C *D, const vector<C> &k, const vector<ClockConstraint<C>> &Gd,
+  void norm( C *dbm, const vector<C> &upper, const vector<ClockConstraint<C>> &diffCons,
              vector<C *> &re ) const {
 
     assert( re.empty() );
 
-    vector<C *> splitDomain;
-    split( D, Gd, splitDomain );
+    vector<C *> splitDomains;
+    split( dbm, diffCons, splitDomains );
 
-    for ( auto d : splitDomain ) {
-      re.push_back( corn_norm( d, k, Gd ) );
+    for ( auto d : splitDomains ) {
+      re.push_back( corn_norm( d, upper, diffCons ) );
     }
   }
 

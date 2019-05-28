@@ -36,6 +36,8 @@ public:
   const vector<CS_t> &getInvarients() const { return invariants; }
 
   bool isCommit() const { return type == COMMIT_LOC; }
+  
+  bool isUrgent( ) const{ return type==URGENT_LOC;}
 
   void employInvariants( const DManager_t &dbmManager, C_t *dbm ) const {
     for ( auto cs : invariants ) {
@@ -68,7 +70,7 @@ public:
          * then left the area which satisfies all invariants
          *
          */
-        employInvariants( dbmManager, dbm );
+ 
         assert( dbmManager.isConsistent( dbm ) );
       }
       return true;
@@ -76,6 +78,17 @@ public:
     } else {
       return false;
     }
+  }
+
+  bool operator ( ) (  const DManager_t & dbmManager, C_t * dbm, vector<C_t*> &re_vec) const{
+    bool re=    ( *this)(dbmManager, dbm );
+    if( !re){
+      return false;
+    }
+    
+    dbmManager.norm(dbm,  re_vec);
+    
+    return (!re_vec.empty( ));
   }
 
   /**

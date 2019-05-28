@@ -35,12 +35,15 @@ public:
   }
 
   StateManager( int comp_num, int counter_num, int clock_num,
-                vector<vector<C>>                  clockUpperBound,
-                vector<vector<ClockConstraint<C>>> differenceCons,
+                const vector<C> &                 clockUpperBound,
+                const vector<ClockConstraint<C>> &edifferenceCons,
                 const vector<Parameter> &ps, bool haveCh ) {
 
     haveChannel   = haveCh;
     component_num = comp_num;
+    maximum_upper=clockUpperBound;
+    differenceConstraints=edifferenceCons;
+    
     if ( haveChannel ) {
       counter_start_loc = 2 * component_num;
       stateLen          = 2 * component_num + counter_num;
@@ -53,8 +56,7 @@ public:
 
     stateLen += ( clock_num + 1 ) * ( clock_num + 1 );
 
-    clock_manager =
-        DBMFactory<C>( clock_num, clockUpperBound[ 0 ], differenceCons[ 0 ] );
+    DBMmanager = DBMFactory<C>( clock_num, clockUpperBound, differenceConstraints );
 
     parameters = ps;
   }
@@ -74,27 +76,36 @@ public:
   State_t *newState() const {
 
     State_t *re_state = new State_t[ stateLen ];
-    fill( re_state, re_state + stateLen, 0 );
+    
+    fill( re_state, re_state + clock_start_loc, 0 );
 
-    clock_manager.init( re_state + clock_start_loc );
+    DBMmanager.init( re_state + clock_start_loc );
 
     return re_state;
   }
 
+
+  
   State_t *newState( const State_t *s ) const {
     State_t *re = new State_t[ stateLen ];
     memcpy( re, s, stateLen * sizeof( State_t ) );
     return re;
   }
+  
+
+  
   void destroyState( State_t *s ) const { delete[] s; }
 
   inline int                  getComponentNum() const { return component_num; }
-  inline const DBMFactory<C> &getClockManager() const { return clock_manager; }
+  inline const DBMFactory<C> &getClockManager() const { return DBMmanager; }
   inline const int *          getParameterValue( const int i ) const {
     return parameters[ i ].getValue();
   }
 
-  // inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
+  
+  void norm( State_t *dbm, vector<C*> &re_vec ) const{
+    DBMmanager.norm(dbm,maximum_upper,differenceConstraints, re_vec  );
+  }
 
   inline C *getDBM( State_t *state ) const { return state + clock_start_loc; }
 
@@ -111,10 +122,10 @@ public:
   }
 
   inline void andImpl( const ClockConstraint<C> &cs, State_t *state ) const {
-    return clock_manager.andImpl( getDBM( state ), cs );
+    return DBMmanager.andImpl( getDBM( state ), cs );
   }
   inline bool isConsistent( State_t *state ) const {
-    return clock_manager.isConsistent( getDBM( state ) );
+    return DBMmanager.isConsistent( getDBM( state ) );
   }
 
   inline vector<int> blockComponents( const int            chid,
@@ -167,10 +178,12 @@ private:
 
   int counter_start_loc;
   int clock_start_loc;
+  
+  vector<C> maximum_upper;
+  
+  vector<ClockConstraint<C> > differenceConstraints;
 
-  //  vector<int> clock_start_loc;
-  DBMFactory<C> clock_manager;
-  //  vector<DBMFactory<C>> clock_manager;
+  DBMFactory<C> DBMmanager;
 
   vector<Parameter> parameters;
 };

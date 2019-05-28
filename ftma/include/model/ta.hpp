@@ -51,17 +51,17 @@ template <typename C, typename L, typename T> class TAS;
 template <typename C, typename L, typename T> class TA {
 
 public:
-  TA() { initial_loc = clock_nums = -1; }
+  TA() { initial_loc = clock_num = -1; }
   TA( int init, int clockNum ) {
     initial_loc = init;
-    clock_nums  = clockNum;
+    clock_num  = clockNum;
   }
 
   TA( vector<L> &locs, vector<T> &es, int init, int vnum )
       : locations( locs )
       , transitions( es ) {
     initial_loc = init;
-    clock_nums  = vnum;
+    clock_num  = vnum;
     initial();
   }
   void addOnePara( int defaultValue = 0 ) {
@@ -95,13 +95,13 @@ public:
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
   }
-  vector<C> getClockUppuerBound() const { return clockUpperBound; }
+  vector<C> getClockMaxValue() const { return clock_max_value; }
 
   vector<ClockConstraint<C>> getDifferenceCons() const {
     return differenceCons;
   }
 
-  int getClockNum() const { return clock_nums; }
+  int getClockNum() const { return clock_num; }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
   int  getInitialLoc() const { return initial_loc; }
@@ -121,11 +121,11 @@ private:
   vector<T> transitions;
   int       initial_loc;
 
-  int clock_nums;
+  int clock_num;
 
   graph_t<int> graph;
 
-  vector<C> clockUpperBound;
+  vector<C> clock_max_value;
 
   vector<ClockConstraint<C>> differenceCons;
 
@@ -139,14 +139,14 @@ private:
     }
     C realRhs = getRight( cs.matrix_value );
     if ( cs.x > 0 ) {
-      if ( realRhs > clockUpperBound[ cs.x ] ) {
-        clockUpperBound[ cs.x ] = realRhs;
+      if ( realRhs > clock_max_value[ cs.x ] ) {
+        clock_max_value[ cs.x ] = realRhs;
       }
     }
 
     if ( cs.y > 0 ) {
-      if ( -realRhs > clockUpperBound[ cs.y ] ) {
-        clockUpperBound[ cs.y ] = -realRhs;
+      if ( -realRhs > clock_max_value[ cs.y ] ) {
+        clock_max_value[ cs.y ] = -realRhs;
       }
     }
   }
@@ -169,37 +169,23 @@ private:
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     differenceCons.clear();
-    clockUpperBound.resize( 2 * ( clock_nums + 1 ) );
-    fill( clockUpperBound.begin(), clockUpperBound.end(), 0 );
+    clock_max_value.resize( clock_num + 1 );
+
+    fill( clock_max_value.begin(), clock_max_value.end(), 0 );
 
     for ( auto l : locations ) {
-
       const vector<CS_t> &invariants = l.getInvarients();
       for ( auto cs : invariants ) {
         updateUpperAndDiff( cs );
       }
     }
+
     for ( auto t : transitions ) {
 
       const vector<CS_t> &gurads = t.getGuards();
       for ( auto cs : gurads ) {
         updateUpperAndDiff( cs );
       }
-    }
-
-    /**
-     *      x-y<= k_i
-     *      x-y< -k_{i+n+1}
-     *
-     */
-
-    for ( int i = 1; i < clock_nums + 1; i++ ) {
-      clockUpperBound[ i + clock_nums + 1 ] =
-          getMatrixValue( -clockUpperBound[ i ], true );
-    }
-
-    for ( int i = 1; i <= clock_nums + 1; i++ ) {
-      clockUpperBound[ i ] = getMatrixValue( clockUpperBound[ i ], false );
     }
   }
 };
@@ -209,31 +195,27 @@ typedef TA<C_t, L_t, T_t> TA_t;
 template <typename C, typename L, typename T> class TAS {
 
 public:
-  TAS() { clock_num = 0; }
+  TAS() {
+    clock_max_value.push_back( 0 );
+    clock_num = 0;
+  }
   TAS<C, L, T> &operator+=( const TA_t &ta ) {
 
-    tas.push_back( transfrom( ta ) );
-    initial_loc.push_back( ta.getInitialLoc() );
-    clock_nums.push_back( ta.getClockNum() );
-    clockUpperBound.push_back( ta.getClockUppuerBound() );
-    differenceCons.push_back( ta.getDifferenceCons() );
-    parameters.push_back( ta.getParameter() );
+    TA_t ta1 = transfrom( ta );
+    tas.push_back( ta1 );
+    initial_loc.push_back( ta1.getInitialLoc() );
+    vec_clock_nums.push_back( ta1.getClockNum() );
 
-    return *this;
-  }
+    for ( size_t i = 1; i < ta1.getClockMaxValue().size(); i++ ) {
+      clock_max_value.push_back( ta1.getClockMaxValue()[ i ] );
+    }
 
-  TAS<C, L, T> &operator+=( const TAS<C, L, T> &other ) {
-    tas.insert( tas.end(), other.tas.begin(), other.tas.end() );
-    initial_loc.insert( initial_loc.end(), other.initial_loc.begin(),
-                        other.initial_loc.end() );
+    differenceCons.insert( differenceCons.end(),
+                           ta1.getDifferenceCons().begin(),
+                           ta1.getDifferenceCons().end() );
 
-    clock_nums.insert( clock_nums.end(), other.clock_nums.begin(),
-                       other.clock_nums.end() );
-    clockUpperBound.insert( clockUpperBound.end(),
-                            other.clockUpperBound.begin(),
-                            other.clockUpperBound.end() );
-    differenceCons.insert( differenceCons.end(), other.differenceCons.begin(),
-                           other.differenceCons.end() );
+    parameters.push_back( ta1.getParameter() );
+
     return *this;
   }
 
@@ -250,29 +232,48 @@ public:
 
   StateManager<C> getStateManager() const {
 
-    bool            hasChannel = !channels.empty();
-    StateManager<C> re( tas.size(), counters.size(), clock_num, clockUpperBound,
-                        differenceCons, parameters, hasChannel );
+    bool      hasChannel = !channels.empty();
+    vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
+
+    for ( int i = 1; i < clock_num + 1; i++ ) {
+      temp_clock_upperbound[ i + clock_num + 1 ] =
+          getMatrixValue( -clock_max_value[ i ], true );
+    }
+
+    for ( int i = 1; i <= clock_num + 1; i++ ) {
+      temp_clock_upperbound[ i ] =
+          getMatrixValue( clock_max_value[ i ], false );
+    }
+
+    StateManager<C> re( tas.size(), counters.size(), clock_num,
+                        temp_clock_upperbound, differenceCons, parameters,
+                        hasChannel );
 
     return re;
   }
   void initState( const StateManager<C> &manager, State_t *state ) const {
     int component_num = tas.size();
+    bool withoutCommit=true;
     for ( int component = 0; component < component_num; component++ ) {
-
-      tas[ component ].locationRun( manager.getLoc( component, state ),
-                            manager.getClockManager(),
-                            manager.getDBM( state ) );
-
       state[ component ] = initial_loc[ component ];
       if ( tas[ component ].isCommit( state[ component ] ) ) {
         manager.setCommitState( component, state[ component ], state );
+        withoutCommit=false;
+      }
+    }
+    if( withoutCommit){
+      for ( int component = 0; component < component_num; component++ ) {
+        tas[ component ].locationRun( initial_loc[component ],
+                                      manager.getClockManager(),
+                                      manager.getDBM( state ) );
       }
     }
 
     for ( int component = 0; component < component_num; component++ ) {
-      tas[ component ].locations[ manager.getLoc( component, state ) ].employInvariants(
-          manager.getClockManager(), manager.getDBM( state ) );
+      tas[ component ]
+          .locations[ manager.getLoc( component, state ) ]
+          .employInvariants( manager.getClockManager(),
+                             manager.getDBM( state ) );
     }
   }
 
@@ -288,11 +289,11 @@ private:
   int clock_num;
 
   vector<int> initial_loc;
-  vector<int> clock_nums;
+  vector<int> vec_clock_nums;
 
-  vector<vector<C>>                  clockUpperBound;
-  vector<vector<ClockConstraint<C>>> differenceCons;
-  vector<Parameter>                  parameters;
+  vector<C>                  clock_max_value;
+  vector<ClockConstraint<C>> differenceCons;
+  vector<Parameter>          parameters;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
@@ -305,6 +306,9 @@ private:
 
       for ( size_t i = 0; i < ta1.transitions.size(); i++ ) {
         ta1.transitions[ i ].clockShift( clock_num );
+      }
+      for ( size_t i = 0; i < ta1.differenceCons.size(); i++ ) {
+        ta1.differenceCons[ i ].clockShift( clock_num );
       }
     }
     clock_num += ta1.getClockNum();
