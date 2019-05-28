@@ -92,12 +92,12 @@ public:
     element_len = element_start = 0;
   }
   StateSet( int id, int n, int s ) {
-    stateId        = id;
-    element_len    = n;
+    stateId       = id;
+    element_len   = n;
     element_start = s;
   }
   void setParam( const int n, int s ) {
-    element_len    = n;
+    element_len   = n;
     element_start = s;
   }
   ~StateSet() { deleteAll(); }

@@ -82,13 +82,13 @@ void example1( void ) {
   loc.push_back( 3 );
   LocReachProperty prop( loc );
 
-  reacher.satisfy( &prop ) ;
+  reacher.satisfy( &prop );
   // vector< dbmset<C_t, DBM > > reachSet;
 
-  //reacher.computeAllReachableSet();
+  // reacher.computeAllReachableSet();
 }
 
-void example50( ){
+void example50() {
   vector<T_t> es;
   vector<L_t> ls;
   L_t         L0( 0 );
@@ -130,11 +130,11 @@ void example50( ){
   R_t               data( sys );
   Reachability<R_t> reacher( data );
   vector<int>       loc;
-  
+
   loc.push_back( 1 );
   LocReachProperty prop( loc );
 
-  reacher.satisfy( &prop ) ; 
+  reacher.satisfy( &prop );
 }
 
 void example2( void ) {
@@ -337,7 +337,7 @@ void fisher( int n = 2 ) {
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
   }
-  //reacher.computeAllReachableSet();
+  // reacher.computeAllReachableSet();
   int s = data.size();
 
   cout << "reach data size: " << data.size() << endl;
@@ -359,11 +359,13 @@ void fisher1() {
   cout << "reach data size: " << data.size() << endl;
   //  reacher.computeAllReachableSet();
 }
-void testOP( ){
-  for( int i=0; i< 10; i++){
+void testOP() {
+  for ( int i = 0; i < 10; i++ ) {
 
-    cout<<"<  "<<i-5<<" "<< getMatrixValue( i-5, true)<<endl;
-    cout<<"<= "<<i-5<<" "<< getMatrixValue( i-5, false)<<endl<<endl;;
+    cout << "<  " << i - 5 << " " << getMatrixValue( i - 5, true ) << endl;
+    cout << "<= " << i - 5 << " " << getMatrixValue( i - 5, false ) << endl
+         << endl;
+    ;
   }
 }
 
@@ -372,7 +374,7 @@ int main( int argc, const char *argv[] ) {
   //  return 9;
   //  example2( );
   //  return 0;
-  
+
   fisher( 2 );
   return 0;
   //  example5();

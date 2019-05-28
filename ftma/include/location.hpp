@@ -37,6 +37,12 @@ public:
 
   bool isCommit() const { return type == COMMIT_LOC; }
 
+  void employInvariants( const DManager_t &dbmManager, C_t *dbm ) const {
+    for ( auto cs : invariants ) {
+      dbmManager.andImpl( dbm, cs );
+    }
+  }
+
   bool operator()( const DManager_t &dbmManager, C_t *dbm ) const {
 
     /**
@@ -62,10 +68,7 @@ public:
          * then left the area which satisfies all invariants
          *
          */
-        for ( auto cs : invariants ) {
-          dbmManager.andImpl( dbm, cs );
-        }
-
+        employInvariants( dbmManager, dbm );
         assert( dbmManager.isConsistent( dbm ) );
       }
       return true;
@@ -85,6 +88,12 @@ public:
   Location<C_t, CS_t, DManager_t, DBMSet_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );
     return *this;
+  }
+
+  void clockShift( int shift ) {
+    for ( size_t i = 0; i < invariants.size(); i++ ) {
+      invariants[ i ].clockShift( shift );
+    }
   }
 
 private:

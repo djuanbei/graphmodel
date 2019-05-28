@@ -57,7 +57,14 @@ public:
       matrix_value = getMatrixValue( -r, true ); // y-x < -r
     }
   }
-
+  void clockShift( int shift ) {
+    if ( x > 0 ) {
+      x += shift;
+    }
+    if ( y > 0 ) {
+      y += shift;
+    }
+  }
   ClockConstraint randConst( int num, int low, int up ) const {
     std::uniform_int_distribution<int> distribution( 0, num );
     std::default_random_engine         generator;

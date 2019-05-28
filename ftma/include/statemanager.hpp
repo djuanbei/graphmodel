@@ -34,7 +34,7 @@ public:
     component_num = stateLen = counter_start_loc = 0;
   }
 
-  StateManager( int comp_num, int counter_num, vector<int> clock_num,
+  StateManager( int comp_num, int counter_num, int clock_num,
                 vector<vector<C>>                  clockUpperBound,
                 vector<vector<ClockConstraint<C>>> differenceCons,
                 const vector<Parameter> &ps, bool haveCh ) {
@@ -49,40 +49,36 @@ public:
       stateLen          = component_num + counter_num;
     }
 
-    for ( size_t i = 0; i < clock_num.size(); i++ ) {
+    clock_start_loc = stateLen;
 
-      clock_start_loc.push_back( stateLen );
+    stateLen += ( clock_num + 1 ) * ( clock_num + 1 );
 
-      stateLen += ( clock_num[ i ] + 1 ) * ( clock_num[ i ] + 1 );
-
-      DBMFactory<C> dbmManager = DBMFactory<C>(
-          clock_num[ i ], clockUpperBound[ i ], differenceCons[ i ] );
-
-      clock_manager.push_back( dbmManager );
-    }
+    clock_manager =
+        DBMFactory<C>( clock_num, clockUpperBound[ 0 ], differenceCons[ 0 ] );
 
     parameters = ps;
   }
   int getStateLen() const { return stateLen; }
 
-  int getStateStart() const { return clock_start_loc[ 0 ]; }
+  int getStateStart() const { return clock_start_loc; }
 
   bool hasChannel() const { return haveChannel; }
 
-  State_t *newState() const {
-    if ( clock_start_loc.empty() ) {
-      State_t *re_state = new C[ stateLen ];
-      fill( re_state, re_state + stateLen, 0 );
-      return re_state;
-    } else {
-      State_t *re_state = new State_t[ stateLen ];
-      fill( re_state, re_state + stateLen, 0 );
-      for ( int i = 0; i < component_num; i++ ) {
-        clock_manager[ i ].init( re_state + clock_start_loc[ i ] );
-      }
-
-      return re_state;
+  int getLoc( int component, const State_t *const state ) const {
+    if ( isCommitComp( component, state ) ) { // commit location
+      return getCommitLoc( component, state );
     }
+    return state[ component ];
+  }
+
+  State_t *newState() const {
+
+    State_t *re_state = new State_t[ stateLen ];
+    fill( re_state, re_state + stateLen, 0 );
+
+    clock_manager.init( re_state + clock_start_loc );
+
+    return re_state;
   }
 
   State_t *newState( const State_t *s ) const {
@@ -93,21 +89,17 @@ public:
   void destroyState( State_t *s ) const { delete[] s; }
 
   inline int                  getComponentNum() const { return component_num; }
-  inline const DBMFactory<C> &getClockManager( int i ) const {
-    return clock_manager[ i ];
-  }
-  inline const int *getParameterValue( const int i ) const {
+  inline const DBMFactory<C> &getClockManager() const { return clock_manager; }
+  inline const int *          getParameterValue( const int i ) const {
     return parameters[ i ].getValue();
   }
 
+  // inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
 
-  inline int getClockStart( int i ) const { return clock_start_loc[ i ]; }
-  inline C * getkDBM( const int k, State_t *state ) const {
-    return state + getClockStart( k );
-  }
+  inline C *getDBM( State_t *state ) const { return state + clock_start_loc; }
 
-  inline const C *getkDBM( const int k, const State_t *const state ) const {
-    return state + getClockStart( k );
+  inline const C *getDBM( const State_t *const state ) const {
+    return state + clock_start_loc;
   }
 
   inline C *getCounterValue( State_t *state ) const {
@@ -118,12 +110,11 @@ public:
     return state + counter_start_loc;
   }
 
-  inline void andImpl( const int component_id, const ClockConstraint<C> &cs,
-                       State_t *state ) const {
-    return getClockManager( component_id ).andImpl( getkDBM( component_id, state ), cs );
+  inline void andImpl( const ClockConstraint<C> &cs, State_t *state ) const {
+    return clock_manager.andImpl( getDBM( state ), cs );
   }
-  inline bool isConsistent( const int component_id, State_t *state ) const {
-    return getClockManager( component_id).isConsistent( getkDBM(component_id, state ) );
+  inline bool isConsistent( State_t *state ) const {
+    return clock_manager.isConsistent( getDBM( state ) );
   }
 
   inline vector<int> blockComponents( const int            chid,
@@ -164,8 +155,9 @@ public:
     state[ component_id ] = -1 - state[ component_id ];
   }
 
-  inline int getCommitLoc( const int component_id, const State_t *const state ) const {
-    return -( state[component_id ] ) - 1;
+  inline int getCommitLoc( const int            component_id,
+                           const State_t *const state ) const {
+    return -( state[ component_id ] ) - 1;
   }
 
 private:
@@ -174,10 +166,11 @@ private:
   int  stateLen;
 
   int counter_start_loc;
+  int clock_start_loc;
 
-  vector<int> clock_start_loc;
-
-  vector<DBMFactory<C>> clock_manager;
+  //  vector<int> clock_start_loc;
+  DBMFactory<C> clock_manager;
+  //  vector<DBMFactory<C>> clock_manager;
 
   vector<Parameter> parameters;
 };

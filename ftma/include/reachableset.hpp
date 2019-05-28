@@ -99,11 +99,7 @@ private:
 
   bool oneComponent( int component, const Property *prop, State_t *state ) {
 
-    int source = state[ component ];
-
-    if ( manager.isCommitComp( component, state ) ) { // commit location
-      source = manager.getCommitLoc( component, state );
-    }
+    int source = manager.getLoc( component, state );
 
     int outDegree = sys.tas[ component ].graph.getOutDegree( source );
     for ( int j = 0; j < outDegree; j++ ) {
@@ -122,12 +118,12 @@ private:
 
       const Channel &channel =
           sys.tas[ component ].transitions[ link ].getChannel();
-      
-      if ( channel.id > -1 ){
-        if(doSynchronize( component, prop, state, link, channel  )){
+
+      if ( channel.id > -1 ) {
+        if ( doSynchronize( component, prop, state, link, channel ) ) {
           return true;
         }
-      }else {
+      } else {
         if ( oneTranision( component, link, prop, state ) ) {
           return true;
         }
@@ -140,15 +136,21 @@ private:
                      const State_t *const state ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
-    State_t *next_state =
-        sys.tas[ component ].transitions[ link ]( component, manager, state ); //new state
+    State_t *next_state = sys.tas[ component ].transitions[ link ](
+        component, manager, state ); // new state
 
     if ( sys.tas[ component ].locations[ target ](
-             manager.getClockManager( component ),
-             manager.getkDBM( component, next_state ) ) ) {
+             manager.getClockManager(), manager.getDBM( next_state ) ) ) {
 
       if ( manager.add( component, target, reachSet,
                         next_state ) ) { // add to reachableSet
+
+        for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+          sys.tas[ comp_id ]
+              .locations[ manager.getLoc( comp_id, next_state ) ]
+              .employInvariants( manager.getClockManager(),
+                                 manager.getDBM( next_state ) );
+        }
 
         if ( sys.tas[ component ].locations[ target ].isCommit() ) {
           manager.setCommitState( component, target, next_state );
@@ -197,8 +199,9 @@ private:
     return false;
   }
 
-  bool doSynchronize( int component, const Property *prop, State_t *state, int link, const Channel &channel){
-    
+  bool doSynchronize( int component, const Property *prop, State_t *state,
+                      int link, const Channel &channel ) {
+
     vector<int> waitComponents;
     if ( CHANNEL_SEND == channel.action ) {
       waitComponents = manager.blockComponents( -channel.id, state );
@@ -238,7 +241,6 @@ private:
       }
     }
     return false;
-    
   }
 };
 typedef ReachableSet<TAS_t> R_t;

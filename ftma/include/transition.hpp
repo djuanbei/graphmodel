@@ -107,8 +107,8 @@ public:
               const State_t *const state ) const {
     if ( !guards.empty() ) {
 
-      const D &dbmManager = manager.getClockManager( component );
-      const C *sourceDBM  = manager.getkDBM( component, state );
+      const D &dbmManager = manager.getClockManager();
+      const C *sourceDBM  = manager.getDBM( state );
       assert( dbmManager.isConsistent( sourceDBM ) );
       C *copyDBM = dbmManager.createDBM( sourceDBM );
 
@@ -135,10 +135,10 @@ public:
     }
     return true;
   }
-  /** 
-   * 
+  /**
+   *
    *@brief  create new state
-   * 
+   *
    * @return  a new state
    */
 
@@ -148,13 +148,13 @@ public:
 
     C *re_state = manager.newState( state );
 
-    const D &dbmManager = manager.getClockManager( component );
+    const D &dbmManager = manager.getClockManager();
 
-    C *sourceDBM = manager.getkDBM( component, re_state );
-    
+    C *sourceDBM = manager.getDBM( re_state );
+
     /**
      * the state which statisfied the guards can jump this transition
-     * 
+     *
      */
     for ( auto cs : guards ) {
       dbmManager.andImpl( sourceDBM, cs );
@@ -173,6 +173,14 @@ public:
     }
 
     return re_state;
+  }
+  void clockShift( int shift ) {
+    for ( size_t i = 0; i < guards.size(); i++ ) {
+      guards[ i ].clockShift( shift );
+    }
+    for ( size_t i = 0; i < resets.size(); i++ ) {
+      resets[ i ].first += shift;
+    }
   }
 
 private:
