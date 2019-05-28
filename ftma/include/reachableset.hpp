@@ -21,7 +21,7 @@ using std::vector;
 
 template <typename SYS> class ReachableSet {
 
- public:
+public:
   ReachableSet( const SYS &outta )
       : sys( outta ) {
 
@@ -30,14 +30,14 @@ template <typename SYS> class ReachableSet {
     State_t *state = manager.newState();
 
     sys.initState( manager, state );
-    
+
     reachSet.setParam( manager.getStateLen(), manager.getStateStart() );
-    if( manager.getClockManager( ).isConsistent( manager.getDBM( state) )){
+    if ( manager.getClockManager().isConsistent( manager.getDBM( state ) ) ) {
       waitSet.push_back( state );
 
       reachSet.add( state );
-    }else{
-      manager.destroyState( state);
+    } else {
+      manager.destroyState( state );
     }
   }
 
@@ -88,7 +88,7 @@ template <typename SYS> class ReachableSet {
 
   size_t size() const { return reachSet.size(); }
 
- private:
+private:
   StateSet<State_t> reachSet;
   deque<State_t *>  waitSet;
 
@@ -207,51 +207,51 @@ template <typename SYS> class ReachableSet {
     return false;
   }
 
-  
-
   bool oneTranision( const int component, const int link, const Property *prop,
                      const State_t *const state ) {
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
     State_t *next_state = sys.tas[ component ].transitions[ link ](
         component, manager, state ); // new state
+    next_state[ component ] = target;
 
+    bool re_bool = false;
     if ( sys.tas[ component ].locations[ target ](
-            manager.getClockManager(), manager.getDBM( next_state ) ) ) {
+             manager.getClockManager(), manager.getDBM( next_state ) ) ) {
 
       for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+
         sys.tas[ comp_id ]
             .locations[ manager.getLoc( comp_id, next_state ) ]
             .employInvariants( manager.getClockManager(),
                                manager.getDBM( next_state ) );
       }
-      if ( manager.add( component, target, reachSet,
-                        next_state ) ) { // add to reachableSet
 
-        if ( sys.tas[ component ].locations[ target ].isCommit() ) {
-          manager.setCommitState( component, target, next_state );
+      vector<C_t *> next_dbms;
+
+      manager.norm( manager.getDBM( next_state ), next_dbms );
+      bool isCommit = sys.tas[ component ].locations[ target ].isCommit();
+      for ( auto dbm : next_dbms ) {
+        State_t *dummy_state = manager.add( component, target, reachSet,
+                                            next_state, dbm, isCommit );
+        if ( NULL != dummy_state ) { // add to reachableSet
+
+          waitSet.push_back( dummy_state );
+
+          if ( isReach( prop, dummy_state ) ) {
+            re_bool = true;
+            break;
+          }
         }
-
-        waitSet.push_back( next_state );
-
-        if ( isReach( prop, next_state ) ) {
-
-          return true;
-        }
-
-      } else {
-        manager.destroyState( next_state );
       }
-    } else {
-      manager.destroyState( next_state );
+      for ( auto dbm : next_dbms ) {
+        manager.getClockManager().destroyDBM( dbm );
+      }
     }
 
-    return false;
+    manager.destroyState( next_state );
+    return re_bool;
   }
-
-
-
-
 };
 typedef ReachableSet<TAS_t> R_t;
 } // namespace graphsat

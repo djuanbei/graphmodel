@@ -8,8 +8,8 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   XmlConfig  xmldoc( xmlfile );
   child_type declarations = xmldoc.getChild( DECLARATION_STR );
   child_type templates    = xmldoc.getChild( TEMPLATE_STR );
-  child_type system       = xmldoc.getChild( SYSTEM_STR );
-  child_type queries      = xmldoc.getChild( QUERIES_STR );
+  // child_type system       = xmldoc.getChild( SYSTEM_STR );
+  // child_type queries      = xmldoc.getChild( QUERIES_STR );
   parserDeclaration( declarations );
   parserTemplate( templates );
   // parserSystem( system );
@@ -31,8 +31,8 @@ int UppaalParser::parserDeclaration( child_type declarations ) {
   }
   for ( child_iterator it = declarations->begin(); it != declarations->end();
         it++ ) {
-    child_type name    = ( *it )->getChild( DECLARATION_STR );
-    string     content = ( *it )->getValue();
+    // child_type name    = ( *it )->getChild( DECLARATION_STR );
+    string content = ( *it )->getValue();
     parseProblem( content, &data, &data );
   }
 
@@ -48,7 +48,7 @@ int UppaalParser::parserTemplate( child_type templates ) {
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
     UppaalData templateData;
 
-    XML_P nameConf  = ( *it )->getOneChild( NAME_STR );
+    // XML_P nameConf  = ( *it )->getOneChild( NAME_STR );
     XML_P parameter = ( *it )->getOneChild( PARAMETER_STR );
     if ( NULL != parameter ) {
       string         para_content = parameter->getValue();
@@ -84,7 +84,7 @@ int UppaalParser::parserTemplate( child_type templates ) {
     if ( NULL != parameter ) {
       string         para_content = parameter->getValue();
       vector<string> terms        = splitStr( para_content, " " );
-      int            size         = terms.size();
+      int            size         = (int) terms.size();
       size -= 2;
       string      global_array = terms[ size ];
       vector<int> intArray     = data.getIntArray( global_array );

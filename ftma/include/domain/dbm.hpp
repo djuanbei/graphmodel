@@ -115,9 +115,9 @@ public:
 
   C *randomFeasiableDBM() {
     int num_cons = sqrt( clock_num ) * clock_num + 1;
-    C * dbm        = createDBM();
+    C * dbm      = createDBM();
     while ( num_cons >= 0 ) {
-      init( dbm);// x-y<=0
+      init( dbm ); // x-y<=0
       upImpl( dbm );
       for ( int i = 0; i < sqrt( clock_num ); i++ ) {
         int x = abs( distribution( generator ) ) % ( clock_num );
@@ -140,7 +140,7 @@ public:
       }
       num_cons -= 3;
     }
-    init( dbm);//x-y<=0
+    init( dbm ); // x-y<=0
     return dbm;
   }
 
@@ -154,7 +154,7 @@ public:
       ss << "[ ";
       for ( int j = 0; j < clock_num; j++ ) {
         ss << " (";
-        C v =dbm[ loc( i, j ) ];
+        C v = dbm[ loc( i, j ) ];
 
         if ( isStrict<C>( v ) ) {
           ss << "< ,";
@@ -202,9 +202,11 @@ public:
   void canonicalForm( C *dbm ) const {
     for ( int k = 0; k < clock_num; k++ ) {
       for ( int i = 0; i < clock_num; i++ ) {
+        int row_index = loc( i, 0 );
         for ( int j = 0; j < clock_num; j++ ) {
-          C temp           = add( dbm[ loc( i, k ) ], dbm[ loc( k, j ) ] );
-          dbm[ loc( i, j ) ] = dbm[ loc( i, j ) ] < temp ? dbm[ loc( i, j ) ] : temp;
+          C temp = add( dbm[ row_index + k ], dbm[ loc( k, j ) ] );
+          dbm[ row_index + j ] =
+              dbm[ row_index + j ] < temp ? dbm[ row_index + j ] : temp;
         }
       }
     }
@@ -218,7 +220,9 @@ public:
    * @return true if DBMFactory D is not empty,
    * false otherwise.
    */
-  bool isConsistent( const C *const dbm ) const { return dbm[ 0 ] >= LTEQ_ZERO; }
+  bool isConsistent( const C *const dbm ) const {
+    return dbm[ 0 ] >= LTEQ_ZERO;
+  }
 
   /**
    *
@@ -297,7 +301,7 @@ public:
     for ( int i = 1; i < clock_num; i++ ) {
       dbm[ i ] = LTEQ_ZERO;
       for ( int j = 1; j < clock_num; j++ ) {
-        int k  = loc( j, i );
+        int k    = loc( j, i );
         dbm[ i ] = dbm[ i ] < dbm[ k ] ? dbm[ i ] : dbm[ k ];
       }
     }
@@ -448,69 +452,108 @@ public:
 
   /**
    * For a timed automaton and safty prperty to be checked, that contain no
-   * difference constraints. assert(k.size()==2*n) k[ i ]:= <= k_i k[i+n]:= <
-   * -k_i
-   * @param k k[i] is the maximum upper for x_i
+   * difference constraints. assert(maximum.size()==2*n) maximum[ i ]:= <= k_i
+   * maximum[i+n]:= < -k_i
+   * @param maximums maximums[i] is the maximum upper for x_i
    */
-  void norm( C *D, const vector<C> &k ) const {
-
+  void norm( C *dbm, const vector<C> &maximums ) const {
+    bool modify = false;
     for ( int i = 0; i < clock_num; i++ ) {
       for ( int j = 0; j < clock_num; j++ ) {
-        if ( D[ loc( i, j ) ] < MAX_INT ) {
-          if ( D[ loc( i, j ) ] > k[ i ] ) {
-            D[ loc( i, j ) ] = MAX_INT;
-          } else if ( D[ loc( i, j ) ] < k[ j + clock_num ] ) {
-            D[ loc( i, j ) ] = k[ j + clock_num ];
+        if ( dbm[ loc( i, j ) ] < MAX_INT ) {
+          if ( dbm[ loc( i, j ) ] > maximums[ i ] ) {
+            modify             = true;
+            dbm[ loc( i, j ) ] = MAX_INT;
+          } else if ( dbm[ loc( i, j ) ] < maximums[ j + clock_num ] ) {
+            modify             = true;
+            dbm[ loc( i, j ) ] = maximums[ j + clock_num ];
           }
         }
       }
     }
-    canonicalForm( D );
+    if ( modify ) {
+      canonicalForm( dbm );
+    }
   }
 
-  C *corn_norm( C *dbm, const vector<C> &uppers,
-                const vector<ClockConstraint<C>> &differenceCons ) const {
+  /**
+   * TODO: The difference bounds will adjust depend on source
+   *
+   * @param source
+   * @param D
+   * @param re
+   */
+  void norm( C *dbm, vector<C *> &re_vec ) const {
+    if ( differenceCons.empty() ) {
+      norm( dbm, clockUppuerBound );
+      re_vec.push_back( dbm );
+      return;
+    }
+    norm( dbm, clockUppuerBound, differenceCons, re_vec );
+  }
 
-    vector<ClockConstraint<C>> Gunsat;
+private:
+  /**
+   * number of clocks
+   */
+  int                                clock_num;
+  int                                size; // clock_num*clock_num
+  C                                  MAX_INT;
+  std::default_random_engine         generator;
+  std::uniform_int_distribution<int> distribution;
+  vector<C>                          clockUppuerBound;
 
-    for ( size_t i = 0; i < differenceCons.size(); i++ ) {
-      /**
-       * If D and C does not satisiable then norm(D,k) and C does not
-       * satisable
-       *
-       */
+  vector<ClockConstraint<C>> differenceCons;
 
-      if ( !isSatisfied( dbm, differenceCons[ i ] ) ) {
-        Gunsat.push_back( differenceCons[ i ] );
-      }
-      /**
-       * If D and neg(C) does not satisiable then norm(D,k) and C does not
-       * satisable
-       *
-       */
+  inline int loc( const int row, const int col ) const {
+    return row * clock_num + col;
+  }
 
-      if ( !isSatisfied( dbm, differenceCons[ i ].neg() ) ) {
-        Gunsat.push_back( differenceCons[ i ].neg() );
+  bool contain( const vector<C *> &values, const C *const dbm ) const {
+
+    for ( auto v : values ) {
+      if ( MEqual( v, dbm ) ) {
+        return true;
       }
     }
+    return false;
+  }
 
-    norm( dbm, uppers );
-    for ( auto cs : Gunsat ) {
-      andImpl( dbm, cs.neg() );
+  /**
+   * For automaton containing difference constraints in the guards, it is more
+   * complicated and expensive to compute the normalized zones.
+   * assert(maximums.size()==maximums*clock_num)
+   * maximums[ i ]:= <= maximums_i
+   * maximums[clock_num +n]:= < -maximums_i
+   * @param dbm D will deen destroied before return
+   * @param maximums maximums[i] is the maximum upper for x_i
+   * @param G
+   * @param re
+   */
+  void norm( C *dbm, const vector<C> &maximums,
+             const vector<ClockConstraint<C>> &diffCons,
+             vector<C *> &                     re_vec ) const {
+
+    assert( re_vec.empty() );
+
+    vector<C *> splitDomains;
+    split( dbm, diffCons, splitDomains );
+
+    for ( auto temp_dbm : splitDomains ) {
+      re_vec.push_back( corn_norm( temp_dbm, maximums, diffCons ) );
     }
-    return dbm;
   }
 
   void split( C *dbm, const vector<ClockConstraint<C>> &diffCons,
               vector<C *> &re_vec ) const {
-    
+
     assert( re_vec.empty() );
     vector<C *> waitS;
     re_vec.push_back( dbm );
 
     for ( auto cs : diffCons ) {
 
-      vector<bool> addToWaitS(re_vec.size(), false );
+      vector<bool> addToWaitS( re_vec.size(), false );
 
       for ( size_t i = 0; i < re_vec.size(); i++ ) {
         /**
@@ -518,7 +561,8 @@ public:
          * (D and C) && (D and -C) satisfies then using C to split D
          * into two parts
          */
-        if ( isSatisfied( re_vec[ i ], cs ) && isSatisfied( re_vec[ i ], cs.neg() ) ) {
+        if ( isSatisfied( re_vec[ i ], cs ) &&
+             isSatisfied( re_vec[ i ], cs.neg() ) ) {
 
           C *DandC    = And( re_vec[ i ], cs );
           C *DandNegC = And( re_vec[ i ], cs.neg() );
@@ -549,65 +593,38 @@ public:
       }
     }
   }
-  /**
-   * TODO: The difference bounds will adjust depend on source
-   *
-   * @param source
-   * @param D
-   * @param re
-   */
-  void norm( int source, C *dbm, vector<C *> &re_vec ) const {
-    return norm( dbm, clockUppuerBound, differenceCons, re_vec );
-  }
-  /**
-   * For automaton containing difference constraints in the guards, it is more
-   * complicated and expensive to compute the normalized zones.
-   * assert(k.size()==2*n)
-   * k[ i ]:= <= k_i
-   * k[i+n]:= < -k_i
-   * @param k k[i] is the maximum upper for x_i
-   * @param D D will deen destroied before return
-   * @param G
-   * @param re
-   */
-  void norm( C *dbm, const vector<C> &upper, const vector<ClockConstraint<C>> &diffCons,
-             vector<C *> &re ) const {
 
-    assert( re.empty() );
+  C *corn_norm( C *dbm, const vector<C> &maximums,
+                const vector<ClockConstraint<C>> &differenceCons ) const {
 
-    vector<C *> splitDomains;
-    split( dbm, diffCons, splitDomains );
+    vector<ClockConstraint<C>> Gunsat;
 
-    for ( auto d : splitDomains ) {
-      re.push_back( corn_norm( d, upper, diffCons ) );
-    }
-  }
+    for ( size_t i = 0; i < differenceCons.size(); i++ ) {
+      /**
+       * If D and C does not satisiable then norm(D,k) and C does not
+       * satisable
+       *
+       */
 
-private:
-  /**
-   * number of clocks
-   */
-  int                                clock_num;
-  int                                size; // n*n
-  C                                  MAX_INT;
-  std::default_random_engine         generator;
-  std::uniform_int_distribution<int> distribution;
-  vector<C>                          clockUppuerBound;
+      if ( !isSatisfied( dbm, differenceCons[ i ] ) ) {
+        Gunsat.push_back( differenceCons[ i ] );
+      }
+      /**
+       * If D and neg(C) does not satisiable then norm(D,k) and C does not
+       * satisable
+       *
+       */
 
-  vector<ClockConstraint<C>> differenceCons;
-
-  inline int loc( const int row, const int col ) const {
-    return row * clock_num + col;
-  }
-
-  bool contain( const vector<C *> &values, const C *const D ) const {
-
-    for ( auto v : values ) {
-      if ( MEqual( v, D ) ) {
-        return true;
+      if ( !isSatisfied( dbm, differenceCons[ i ].neg() ) ) {
+        Gunsat.push_back( differenceCons[ i ].neg() );
       }
     }
-    return false;
+
+    norm( dbm, maximums );
+    for ( auto cs : Gunsat ) {
+      andImpl( dbm, cs.neg() );
+    }
+    return dbm;
   }
 };
 

@@ -54,14 +54,14 @@ public:
   TA() { initial_loc = clock_num = -1; }
   TA( int init, int clockNum ) {
     initial_loc = init;
-    clock_num  = clockNum;
+    clock_num   = clockNum;
   }
 
   TA( vector<L> &locs, vector<T> &es, int init, int vnum )
       : locations( locs )
       , transitions( es ) {
     initial_loc = init;
-    clock_num  = vnum;
+    clock_num   = vnum;
     initial();
   }
   void addOnePara( int defaultValue = 0 ) {
@@ -72,25 +72,25 @@ public:
   bool             hasParam() const { return !parameter.empty(); }
   void             setParam( int p ) { parameter.setValue( 0, p ); }
 
-  friend TAS<C, L, T> operator*( int n, TA<C, L, T> &ta ) {
-    TAS<C, L, T> re;
-    for ( int i = 0; i < n; i++ ) {
-      if ( ta.hasParam() ) {
-        ta.setParam( i );
-      }
-      re += ta;
-    }
-    return re;
-  }
+  // friend TAS<C, L, T> operator*( int n, TA<C, L, T> &ta ) {
+  //   TAS<C, L, T> re;
+  //   for ( int i = 0; i < n; i++ ) {
+  //     if ( ta.hasParam() ) {
+  //       ta.setParam( i );
+  //     }
+  //     re += ta;
+  //   }
+  //   return re;
+  // }
 
-  TAS<C, L, T> operator*( int n ) const {
-    assert( n > 0 );
-    TAS<C, L, T> re;
-    for ( int i = 0; i < n; i++ ) {
-      re += ( *this );
-    }
-    return re;
-  }
+  // TAS<C, L, T> operator*( int n ) const {
+  //   assert( n > 0 );
+  //   TAS<C, L, T> re;
+  //   for ( int i = 0; i < n; i++ ) {
+  //     re += ( *this );
+  //   }
+  //   return re;
+  // }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
@@ -235,14 +235,14 @@ public:
     bool      hasChannel = !channels.empty();
     vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
-    for ( int i = 1; i < clock_num + 1; i++ ) {
-      temp_clock_upperbound[ i + clock_num + 1 ] =
-          getMatrixValue( -clock_max_value[ i ], true );
-    }
-
-    for ( int i = 1; i <= clock_num + 1; i++ ) {
+    for ( int i = 0; i < clock_num + 1; i++ ) {
       temp_clock_upperbound[ i ] =
           getMatrixValue( clock_max_value[ i ], false );
+    }
+
+    for ( int i = 0; i < clock_num + 1; i++ ) {
+      temp_clock_upperbound[ i + clock_num + 1 ] =
+          getMatrixValue( -clock_max_value[ i ], true );
     }
 
     StateManager<C> re( tas.size(), counters.size(), clock_num,
@@ -252,18 +252,18 @@ public:
     return re;
   }
   void initState( const StateManager<C> &manager, State_t *state ) const {
-    int component_num = tas.size();
-    bool withoutCommit=true;
+    int  component_num = tas.size();
+    bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
       state[ component ] = initial_loc[ component ];
       if ( tas[ component ].isCommit( state[ component ] ) ) {
         manager.setCommitState( component, state[ component ], state );
-        withoutCommit=false;
+        withoutCommit = false;
       }
     }
-    if( withoutCommit){
+    if ( withoutCommit ) {
       for ( int component = 0; component < component_num; component++ ) {
-        tas[ component ].locationRun( initial_loc[component ],
+        tas[ component ].locationRun( initial_loc[ component ],
                                       manager.getClockManager(),
                                       manager.getDBM( state ) );
       }
