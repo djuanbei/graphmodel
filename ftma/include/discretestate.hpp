@@ -150,9 +150,9 @@ public:
         return false;
       }
     }
-    // if ( contain( one ) ) {
-    //   return false;
-    // }
+    if ( contain( one ) ) {
+      return false;
+    }
     return addHashValue( hashV, one );
   }
 

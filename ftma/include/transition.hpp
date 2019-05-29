@@ -142,11 +142,9 @@ public:
    * @return  a new state
    */
 
-  C *operator()( const int component, const StateManager<C> &manager,
-                 const State_t *const state ) const {
-    assert( ready( component, manager, state ) );
-
-    C *re_state = manager.newState( state );
+  void operator()( const int component, const StateManager<C> &manager,
+                   State_t *re_state ) const {
+    assert( ready( component, manager, re_state ) );
 
     const D &dbmManager = manager.getClockManager();
 
@@ -172,7 +170,7 @@ public:
       ( *act )( manager.getParameterValue( component ), counterValue );
     }
 
-    return re_state;
+    //    return re_state;
   }
   void clockShift( int shift ) {
     for ( size_t i = 0; i < guards.size(); i++ ) {

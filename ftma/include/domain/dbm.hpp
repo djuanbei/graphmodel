@@ -33,6 +33,10 @@
 namespace graphsat {
 using namespace std;
 
+#define ADD( x, y )                                                            \
+  ( x >= MAX_INT || y >= MAX_INT ) ? MAX_INT                                   \
+                                   : ( x + y - ( ( x & 1 ) | ( y & 1 ) ) );
+
 /**
  *@param C the type of value of clock
  *@param add the operator of x+y
@@ -204,7 +208,7 @@ public:
       for ( int i = 0; i < clock_num; i++ ) {
         int row_index = loc( i, 0 );
         for ( int j = 0; j < clock_num; j++ ) {
-          C temp = add( dbm[ row_index + k ], dbm[ loc( k, j ) ] );
+          C temp = ADD( dbm[ row_index + k ], dbm[ loc( k, j ) ] );
           dbm[ row_index + j ] =
               dbm[ row_index + j ] < temp ? dbm[ row_index + j ] : temp;
         }
@@ -331,11 +335,11 @@ public:
       newD[ loc( cons.x, cons.y ) ] = cons.matrix_value;
       for ( int i = 0; i < clock_num; i++ ) {
         for ( int j = 0; j < clock_num; j++ ) {
-          C   temp  = add( newD[ loc( i, cons.x ) ], newD[ loc( cons.x, j ) ] );
+          C   temp  = ADD( newD[ loc( i, cons.x ) ], newD[ loc( cons.x, j ) ] );
           int k     = loc( i, j );
           newD[ k ] = newD[ k ] < temp ? newD[ k ] : temp;
 
-          C DandC   = add( newD[ loc( i, cons.y ) ], newD[ loc( cons.y, j ) ] );
+          C DandC   = ADD( newD[ loc( i, cons.y ) ], newD[ loc( cons.y, j ) ] );
           newD[ k ] = newD[ k ] < DandC ? newD[ k ] : DandC;
         }
       }
@@ -383,8 +387,8 @@ public:
     int xStart = loc( x, 0 );
 
     for ( int i = 0; i < clock_num; i++ ) {
-      dbm[ xStart + i ]  = add( postM, dbm[ i ] );
-      dbm[ loc( i, x ) ] = add( dbm[ loc( i, 0 ) ], negM );
+      dbm[ xStart + i ]  = ADD( postM, dbm[ i ] );
+      dbm[ loc( i, x ) ] = ADD( dbm[ loc( i, 0 ) ], negM );
     }
 
     dbm[ loc( x, x ) ] = LTEQ_ZERO;
@@ -427,8 +431,8 @@ public:
     C negM  = getMatrixValue( -m, false );
 
     for ( int i = 0; i < clock_num; i++ ) {
-      D[ loc( x, i ) ] = add( D[ loc( x, i ), postM ] );
-      D[ loc( i, x ) ] = add( D[ loc( i, x ) ], negM );
+      D[ loc( x, i ) ] = ADD( D[ loc( x, i ) ], postM );
+      D[ loc( i, x ) ] = ADD( D[ loc( i, x ) ], negM );
     }
 
     D[ loc( x, x ) ] = LTEQ_ZERO;
@@ -491,6 +495,8 @@ public:
     }
     norm( dbm, clockUppuerBound, differenceCons, re_vec );
   }
+
+  void norm( C *dbm ) const { norm( dbm, clockUppuerBound ); }
 
 private:
   /**

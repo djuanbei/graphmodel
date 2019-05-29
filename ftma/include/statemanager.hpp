@@ -84,6 +84,9 @@ public:
 
     return re_state;
   }
+  void copy( State_t *des_state, const State_t *const source_state ) const {
+    memcpy( des_state, source_state, stateLen * sizeof( C ) );
+  }
 
   State_t *newState( const State_t *s ) const {
     State_t *re = new State_t[ stateLen ];
@@ -99,10 +102,12 @@ public:
     return parameters[ i ].getValue();
   }
 
-  void norm( const State_t *const dbm, vector<C *> &re_vec ) const {
+  void norm( const C *const dbm, vector<C *> &re_vec ) const {
     State_t *newDBM = dbmManager.createDBM( dbm );
     dbmManager.norm( newDBM, re_vec );
   }
+
+  void norm( C *dbm ) { dbmManager.norm( dbm ); }
 
   inline C *getDBM( State_t *state ) const { return state + clock_start_loc; }
 
@@ -142,10 +147,11 @@ public:
     return reBlockComponents;
   }
 
-  State_t *add( const int component_id, const int target,
-                StateSet<State_t> &stateSet, const State_t *const state, C *dbm,
-                bool isCommit ) const {
-    State_t *re_state = newState( state );
+  bool add( const int component_id, const int target,
+            StateSet<State_t> &stateSet, const State_t *const state, C *dbm,
+            bool isCommit, State_t *re_state ) const {
+
+    memcpy( re_state, state, clock_start_loc * sizeof( C ) );
 
     re_state[ component_id ] = target;
     memcpy( re_state + clock_start_loc, dbm,
@@ -154,14 +160,26 @@ public:
       setCommitState( component_id, target, re_state );
     }
 
-    // #ifndef CHECK_MEMORY
+#ifndef CHECK_MEMORY
     if ( !stateSet.add( re_state ) ) {
-      destroyState( re_state );
-      return NULL;
+      return false;
     }
-    // #endif
+#endif
+    return true;
+  }
 
-    return re_state;
+  bool add( const int component_id, const int target,
+            StateSet<State_t> &stateSet, State_t *state, bool isCommit ) const {
+    state[ component_id ] = target;
+    if ( isCommit ) {
+      setCommitState( component_id, target, state );
+    }
+#ifndef CHECK_MEMORY
+    if ( !stateSet.add( state ) ) {
+      return false;
+    }
+#endif
+    return true;
   }
 
   inline bool isCommitComp( const int            component_id,
@@ -178,6 +196,7 @@ public:
                            const State_t *const state ) const {
     return -( state[ component_id ] ) - 1;
   }
+  bool hasDiffCons() const { return !differenceConstraints.empty(); }
 
 private:
   bool haveChannel;

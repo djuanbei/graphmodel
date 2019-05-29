@@ -8,6 +8,7 @@
  *
  *
  */
+//#define CHECK_MEMORY 1
 
 #include <random>
 
@@ -33,8 +34,6 @@
 
 using std::vector;
 using namespace graphsat;
-
-#define CHECK_MEMORY 1
 
 void example1( void ) {
   // x:1 y:2 z:3
@@ -377,7 +376,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 6 );
+  fisher( 4 );
   return 0;
   //  example5();
   //  return 0;

@@ -25,23 +25,32 @@ public:
   ReachableSet( const SYS &outta )
       : sys( outta ) {
 
-    manager        = sys.getStateManager();
-    component_num  = sys.getComponentNum();
-    State_t *state = manager.newState();
+    manager       = sys.getStateManager();
+    component_num = sys.getComponentNum();
 
-    sys.initState( manager, state );
+    cache_state = manager.newState();
+    next_state  = manager.newState();
+
+    sys.initState( manager, cache_state );
 
     reachSet.setParam( manager.getStateLen(), manager.getStateStart() );
-    if ( manager.getClockManager().isConsistent( manager.getDBM( state ) ) ) {
-      waitSet.push_back( state );
-
-      reachSet.add( state );
-    } else {
-      manager.destroyState( state );
+    if ( manager.getClockManager().isConsistent(
+             manager.getDBM( cache_state ) ) ) {
+      reachSet.add( cache_state );
+      addToWait( cache_state );
     }
   }
 
-  ~ReachableSet() { reachSet.clear(); }
+  ~ReachableSet() {
+    reachSet.clear();
+    manager.destroyState( cache_state );
+    manager.destroyState( next_state );
+    while ( !waitSet.empty() ) {
+      State_t *temp_state = waitSet.front();
+      waitSet.pop_front();
+      manager.destroyState( temp_state );
+    }
+  }
 
   const SYS &getSYS( void ) const { return sys; }
 
@@ -87,11 +96,17 @@ public:
   }
 
   size_t size() const { return reachSet.size(); }
+  void   addToWait( const State_t *const state ) {
+    State_t *newState = manager.newState( state );
+    waitSet.push_back( newState );
+  }
 
 private:
   StateSet<State_t> reachSet;
   deque<State_t *>  waitSet;
 
+  State_t *      cache_state;
+  State_t *      next_state;
   const SYS &    sys;
   StateManager_t manager;
   template <typename R1> friend class Reachability;
@@ -201,19 +216,24 @@ private:
 
       temp_state[ component ] = link; // block link
       if ( reachSet.add( temp_state ) ) {
-        waitSet.push_back( temp_state );
+        addToWait( temp_state );
       }
+      manager.destroyState( temp_state );
     }
     return false;
   }
 
   bool oneTranision( const int component, const int link, const Property *prop,
                      const State_t *const state ) {
+    manager.copy( next_state, state );
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
-    State_t *next_state = sys.tas[ component ].transitions[ link ](
-        component, manager, state ); // new state
+
+    sys.tas[ component ].transitions[ link ]( component, manager,
+                                              next_state ); // update state
+
     next_state[ component ] = target;
+    bool isCommit = sys.tas[ component ].locations[ target ].isCommit();
 
     bool re_bool = false;
     if ( sys.tas[ component ].locations[ target ](
@@ -226,30 +246,36 @@ private:
             .employInvariants( manager.getClockManager(),
                                manager.getDBM( next_state ) );
       }
+      if ( manager.hasDiffCons() ) {
 
-      vector<C_t *> next_dbms;
+        vector<C_t *> next_dbms;
+        manager.norm( manager.getDBM( next_state ), next_dbms );
 
-      manager.norm( manager.getDBM( next_state ), next_dbms );
-      bool isCommit = sys.tas[ component ].locations[ target ].isCommit();
-      for ( auto dbm : next_dbms ) {
-        State_t *dummy_state = manager.add( component, target, reachSet,
-                                            next_state, dbm, isCommit );
-        if ( NULL != dummy_state ) { // add to reachableSet
+        for ( auto dbm : next_dbms ) {
 
-          waitSet.push_back( dummy_state );
-
-          if ( isReach( prop, dummy_state ) ) {
-            re_bool = true;
-            break;
+          if ( manager.add( component, target, reachSet, next_state, dbm,
+                            isCommit, cache_state ) ) { // add to reachableSet
+            addToWait( cache_state );
+            if ( isReach( prop, cache_state ) ) {
+              re_bool = true;
+              break;
+            }
+          }
+        }
+        for ( auto dbm : next_dbms ) {
+          manager.getClockManager().destroyDBM( dbm );
+        }
+      } else {
+        manager.norm( manager.getDBM( next_state ) );
+        if ( manager.add( component, target, reachSet, next_state,
+                          isCommit ) ) { // add to reachableSet
+          addToWait( next_state );
+          if ( isReach( prop, next_state ) ) {
+            return true;
           }
         }
       }
-      for ( auto dbm : next_dbms ) {
-        manager.getClockManager().destroyDBM( dbm );
-      }
     }
-
-    manager.destroyState( next_state );
     return re_bool;
   }
 };

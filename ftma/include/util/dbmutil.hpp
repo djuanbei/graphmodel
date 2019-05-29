@@ -90,7 +90,7 @@ template <typename C> C getMAX_INT( const C c ) {
   return std::numeric_limits<C>::max() / 2 - 2;
 }
 
-template <typename C> C add( const C x, const C y ) {
+template <typename C> C add123( const C x, const C y ) {
   static C MAX_INT = getMAX_INT( x );
   if ( x >= MAX_INT || y >= MAX_INT ) {
     return MAX_INT;
