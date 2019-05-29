@@ -150,9 +150,9 @@ public:
         return false;
       }
     }
-    // if ( contain( one ) ) {
-    //   return false;
-    // }
+    if ( contain( one ) ) {
+      return false;
+    }
     return addHashValue( hashV, one );
   }
 
@@ -291,8 +291,8 @@ private:
   }
 
   bool addHashValue( int hashV, T *D ) {
-    int s               = passedHash.size();
-    passedHash[ hashV ] = s;
+    int size               = passedHash.size();
+    passedHash[ hashV ] = size;
     hashmapValue.insert( hashmapValue.end(), D, D + element_len );
 
     return true;
