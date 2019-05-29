@@ -376,7 +376,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 4 );
+  fisher( 6 );
   return 0;
   //  example5();
   //  return 0;

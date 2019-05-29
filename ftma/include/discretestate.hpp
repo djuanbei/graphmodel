@@ -33,7 +33,7 @@ using std::vector;
 
 class StateElem {
 public:
-  virtual int  have_value() const { return 0; }
+  virtual int  hash_value() const { return 0; }
   virtual bool contain( const StateElem *other ) const { return false; }
   virtual bool equal( const StateElem *other ) const { return false; }
 };
@@ -41,8 +41,8 @@ public:
 class ComposeState : public StateElem {
 
 public:
-  int have_value() const {
-    return left->have_value() * 100 + right->have_value();
+  int hash_value() const {
+    return left->hash_value() * 100 + right->hash_value();
   }
   virtual bool contain( const StateElem *other ) const {
     const ComposeState *rhs = (const ComposeState *) other;
@@ -105,16 +105,16 @@ public:
   void clear() {
     passedHash.clear();
 
-    hasmapValue.clear();
+    hashmapValue.clear();
 
     recoveryValue.clear();
   }
 
   size_t size() const {
-    return ( hasmapValue.size() + recoveryValue.size() ) / element_len;
+    return ( hashmapValue.size() + recoveryValue.size() ) / element_len;
   }
 
-  bool empty() const { return hasmapValue.empty() && recoveryValue.empty(); }
+  bool empty() const { return hashmapValue.empty() && recoveryValue.empty(); }
 
   int getID( void ) const { return stateId; }
 
@@ -122,11 +122,11 @@ public:
 
   bool add( T *one ) {
 
-    int hashV = have_value( one );
+    int hashV = hash_value( one );
 
     std::unordered_map<int, int>::iterator ret = passedHash.find( hashV );
     /**
-     * check whether has element is set has same have_value
+     * check whether has element is set has same hash_value
      *
      */
     if ( ret != passedHash.end() ) { // has
@@ -150,15 +150,15 @@ public:
         return false;
       }
     }
-    if ( contain( one ) ) {
-      return false;
-    }
+    // if ( contain( one ) ) {
+    //   return false;
+    // }
     return addHashValue( hashV, one );
   }
 
   bool contain( const T *const one ) const {
-    for ( size_t i = 0; i < hasmapValue.size(); i += element_len ) {
-      if ( contain( &( hasmapValue[ i ] ), one ) ) {
+    for ( size_t i = 0; i < hashmapValue.size(); i += element_len ) {
+      if ( contain( &( hashmapValue[ i ] ), one ) ) {
         return true;
       }
     }
@@ -176,11 +176,11 @@ public:
   const_iterator begin() const { return const_iterator( this ); }
 
   iterator end() {
-    return iterator( this, hasmapValue.size() + recoveryValue.size() );
+    return iterator( this, hashmapValue.size() + recoveryValue.size() );
   }
 
   const_iterator end() const {
-    return const_iterator( this, hasmapValue.size() + recoveryValue.size() );
+    return const_iterator( this, hashmapValue.size() + recoveryValue.size() );
   }
 
   class const_iterator {
@@ -217,10 +217,10 @@ public:
 
     const T *operator*() const {
 
-      size_t dSize = data->hasmapValue.size();
+      size_t dSize = data->hashmapValue.size();
       if ( index < dSize ) {
 
-        return &( data->hasmapValue[ index ] );
+        return &( data->hashmapValue[ index ] );
       }
       if ( index >= dSize + ( data->recoveryValue.size() ) ) {
         return NULL;
@@ -265,10 +265,10 @@ public:
 
     T *operator*() {
 
-      size_t dSize = data->hasmapValue.size();
+      size_t dSize = data->hashmapValue.size();
       if ( index < dSize ) {
 
-        return &( data->hasmapValue[ index ] );
+        return &( data->hashmapValue[ index ] );
       }
       if ( index >= dSize + ( data->recoveryValue.size() ) ) {
         return NULL;
@@ -281,19 +281,19 @@ public:
 private:
   int                     stateId;
   unordered_map<int, int> passedHash;
-  vector<T>               hasmapValue;
+  vector<T>               hashmapValue;
   vector<T>               recoveryValue;
   int                     element_len;
   int                     element_start;
 
   T *getElementByHash( int hashV ) {
-    return &( hasmapValue[ passedHash[ hashV ] * element_len ] );
+    return &( hashmapValue[ passedHash[ hashV ] * element_len ] );
   }
 
   bool addHashValue( int hashV, T *D ) {
     int s               = passedHash.size();
     passedHash[ hashV ] = s;
-    hasmapValue.insert( hasmapValue.end(), D, D + element_len );
+    hashmapValue.insert( hashmapValue.end(), D, D + element_len );
 
     return true;
   }
@@ -302,7 +302,7 @@ private:
     recoveryValue.insert( recoveryValue.end(), D, D + element_len );
   }
 
-  int have_value( const T *const one ) const {
+  int hash_value( const T *const one ) const {
     return FastHash( (char *) one, element_len * sizeof( T ) );
   }
   bool equal( const T *const lhs, const T *const rhs ) const {
@@ -660,7 +660,7 @@ private:
 //     return re;
 //   }
 
-//   inline int have_value() const {
+//   inline int hash_value() const {
 //     return FastHash( (char *) value, n * sizeof( int ) );
 //   }
 //   void setValue( const int *v ) { memcpy( value, v, sizeof( int ) * n ); }
