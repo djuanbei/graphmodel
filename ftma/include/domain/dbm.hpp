@@ -37,6 +37,9 @@ using namespace std;
   ( x >= MAX_INT || y >= MAX_INT ) ? MAX_INT                                   \
                                    : ( x + y - ( ( x & 1 ) | ( y & 1 ) ) );
 
+#define LOC(  row,  col )  (row) * (clock_num) + (col)
+ 
+
 /**
  *@param C the type of value of clock
  *@param add the operator of x+y
@@ -48,7 +51,7 @@ template <typename C> class DBMFactory {
 public:
   DBMFactory( void ) {
     clock_num = 0;
-    size      = 0;
+    matrix_size      = 0;
     MAX_INT   = getMAX_INT( (C) 0 );
 
     distribution =
@@ -57,7 +60,7 @@ public:
 
   DBMFactory( int n )
       : clock_num( n + 1 ) {
-    size    = clock_num * clock_num;
+    matrix_size    = clock_num * clock_num;
     MAX_INT = getMAX_INT( (C) 0 );
 
     distribution =
@@ -67,7 +70,7 @@ public:
   DBMFactory( int n, const vector<C> &oclockUppuerBound,
               const vector<ClockConstraint<C>> &odifferenceCons )
       : clock_num( n + 1 ) {
-    size = clock_num * clock_num;
+    matrix_size = clock_num * clock_num;
 
     MAX_INT = getMAX_INT( (C) 0 );
 
@@ -81,12 +84,12 @@ public:
 
   void setClockNum( int num ) {
     clock_num = num + 1;
-    size      = clock_num * clock_num;
+    matrix_size      = clock_num * clock_num;
   }
 
   C *createDBM() const {
-    C *dbm = new C[ size ];
-    fill( dbm, dbm + size, LTEQ_ZERO ); // x-x<=0
+    C *dbm = new C[ matrix_size ];
+    fill( dbm, dbm + matrix_size, LTEQ_ZERO ); // x-y<=0
     return dbm;
   }
 
@@ -98,20 +101,20 @@ public:
    * @return
    */
   C *createDBM( const C *const dbm ) const {
-    C *newD = new C[ size ];
-    memcpy( newD, dbm, sizeof( C ) * size );
+    C *newD = new C[ matrix_size ];
+    memcpy( newD, dbm, sizeof( C ) * matrix_size );
     return newD;
   }
 
   void destroyDBM( C *dbm ) const { delete[] dbm; }
 
   void init( C *dbm ) const {
-    fill( dbm, dbm + size, LTEQ_ZERO ); // x-x<=0
+    fill( dbm, dbm + matrix_size, LTEQ_ZERO ); // x-y<=0
   }
   C *randomDBM() {
 
-    C *newD = new C[ size ]();
-    for ( int i = 0; i < size; i++ ) {
+    C *newD = new C[ matrix_size ]();
+    for ( int i = 0; i < matrix_size; i++ ) {
       newD[ i ] = distribution( generator );
     }
     return newD;
@@ -148,7 +151,7 @@ public:
     return dbm;
   }
 
-  int getSize() const { return size; }
+  int getSize() const { return matrix_size; }
 
   std::string dump( const C *const dbm ) const {
 
@@ -158,7 +161,7 @@ public:
       ss << "[ ";
       for ( int j = 0; j < clock_num; j++ ) {
         ss << " (";
-        C v = dbm[ loc( i, j ) ];
+        C v = dbm[ LOC( i, j ) ];
 
         if ( isStrict<C>( v ) ) {
           ss << "<  ";
@@ -181,11 +184,11 @@ public:
   }
 
   uint32_t getHashValue( const C *const dbm ) const {
-    return FastHash( (char *) dbm, sizeof( C ) * size );
+    return FastHash( (char *) dbm, sizeof( C ) * matrix_size );
   }
 
-  bool MEqual( const C *lhs, const C *rhs ) const {
-    return 0 == memcmp( lhs, rhs, size * sizeof( C ) );
+  bool equal( const C *lhs, const C *rhs ) const {
+    return 0 == memcmp( lhs, rhs, matrix_size * sizeof( C ) );
   }
 
   /**
@@ -207,9 +210,9 @@ public:
   void canonicalForm( C *dbm ) const {
     for ( int k = 0; k < clock_num; k++ ) {
       for ( int i = 0; i < clock_num; i++ ) {
-        int row_index = loc( i, 0 );
+        int row_index = LOC( i, 0 );
         for ( int j = 0; j < clock_num; j++ ) {
-          C temp = ADD( dbm[ row_index + k ], dbm[ loc( k, j ) ] );
+          C temp = ADD( dbm[ row_index + k ], dbm[ LOC( k, j ) ] );
           dbm[ row_index + j ] =
               dbm[ row_index + j ] < temp ? dbm[ row_index + j ] : temp;
         }
@@ -239,7 +242,7 @@ public:
    */
   bool include( const C *const lhs, const C *const rhs ) const {
 
-    for ( int i = 0; i < size; i++ ) {
+    for ( int i = 0; i < matrix_size; i++ ) {
       if ( lhs[ i ] < rhs[ i ] ) {
         return false;
       }
@@ -260,7 +263,7 @@ public:
     DF_T re = 0;
 
     for ( int i = 0; i < clock_num; i++ ) {
-      int k = loc( i, 0 );
+      int k = LOC( i, 0 );
       for ( int j = 0; j < clock_num; j++ ) {
         if ( i == j ) continue;
         re = ( 2 * re * MAX_INT + ( dbm[ k + j ] + MAX_INT ) );
@@ -280,13 +283,12 @@ public:
    * false, otherwise.
    */
   bool isSatisfied( const C *const dbm, const ClockConstraint<C> &cons ) const {
-    ClockConstraint<C> negCons = cons.neg();
-    return negCons.matrix_value < dbm[ loc( cons.y, cons.x ) ];
+    return  cons.matrix_value+dbm[ LOC( cons.y, cons.x ) ]>LTEQ_ZERO;
   }
 
   void upImpl( C *dbm ) const {
     for ( int i = 1; i < clock_num; i++ ) {
-      dbm[ loc( i, 0 ) ] = MAX_INT;
+      dbm[ LOC( i, 0 ) ] = MAX_INT;
     }
   }
 
@@ -306,7 +308,7 @@ public:
     for ( int i = 1; i < clock_num; i++ ) {
       dbm[ i ] = LTEQ_ZERO;
       for ( int j = 1; j < clock_num; j++ ) {
-        int k    = loc( j, i );
+        int k    = LOC( j, i );
         dbm[ i ] = dbm[ i ] < dbm[ k ] ? dbm[ i ] : dbm[ k ];
       }
     }
@@ -328,17 +330,17 @@ public:
       return;
     }
 
-    if ( cons.matrix_value+ newD[ loc( cons.y, cons.x ) ]<=LTEQ_ZERO ) {
+    if ( cons.matrix_value+ newD[ LOC( cons.y, cons.x ) ]<=LTEQ_ZERO ) {
       newD[ 0 ] = getMatrixValue( -1, false );
-    } else if ( cons.matrix_value < newD[ loc( cons.x, cons.y ) ] ) {
-      newD[ loc( cons.x, cons.y ) ] = cons.matrix_value;
+    } else if ( cons.matrix_value < newD[ LOC( cons.x, cons.y ) ] ) {
+      newD[ LOC( cons.x, cons.y ) ] = cons.matrix_value;
       for ( int i = 0; i < clock_num; i++ ) {
         for ( int j = 0; j < clock_num; j++ ) {
-          C   temp  = ADD( newD[ loc( i, cons.x ) ], newD[ loc( cons.x, j ) ] );
-          int k     = loc( i, j );
+          C   temp  = ADD( newD[ LOC( i, cons.x ) ], newD[ LOC( cons.x, j ) ] );
+          int k     = LOC( i, j );
           newD[ k ] = newD[ k ] < temp ? newD[ k ] : temp;
 
-          C DandC   = ADD( newD[ loc( i, cons.y ) ], newD[ loc( cons.y, j ) ] );
+          C DandC   = ADD( newD[ LOC( i, cons.y ) ], newD[ LOC( cons.y, j ) ] );
           newD[ k ] = newD[ k ] < DandC ? newD[ k ] : DandC;
         }
       }
@@ -359,10 +361,10 @@ public:
 
   void freeImpl( C *dbm, const int x ) const {
     for ( int i = 0; i < clock_num; i++ ) {
-      dbm[ loc( x, i ) ] = MAX_INT;
-      dbm[ loc( i, x ) ] = dbm[ loc( i, 0 ) ];
+      dbm[ LOC( x, i ) ] = MAX_INT;
+      dbm[ LOC( i, x ) ] = dbm[ LOC( i, 0 ) ];
     }
-    dbm[ loc( x, x ) ] = LTEQ_ZERO;
+    dbm[ LOC( x, x ) ] = LTEQ_ZERO;
   }
 
   /**
@@ -383,14 +385,14 @@ public:
     assert( m >= 0 );
     C   postM  = getMatrixValue( m, false );
     C   negM   = getMatrixValue( -m, false );
-    int xStart = loc( x, 0 );
+    int xStart = LOC( x, 0 );
 
     for ( int i = 0; i < clock_num; i++ ) {
       dbm[ xStart + i ]  = ADD( postM, dbm[ i ] );
-      dbm[ loc( i, x ) ] = ADD( dbm[ loc( i, 0 ) ], negM );
+      dbm[ LOC( i, x ) ] = ADD( dbm[ LOC( i, 0 ) ], negM );
     }
 
-    dbm[ loc( x, x ) ] = LTEQ_ZERO;
+    dbm[ LOC( x, x ) ] = LTEQ_ZERO;
   }
 
   /**
@@ -399,18 +401,18 @@ public:
    * @param x
    * @param m
    */
-  C *reset( const C *const D, const int x, const C m ) const {
-    C *newD = createDBM( D );
+  C *reset( const C *const dbm, const int x, const C m ) const {
+    C *newD = createDBM( dbm );
     resetImpl( newD, x, m );
     return newD;
   }
 
-  void copyImpl( C *D, const int x, const int y ) const {
+  void copyImpl( C *dbm, const int x, const int y ) const {
     for ( int i = 0; i < clock_num; i++ ) {
-      D[ loc( x, i ) ] = D[ loc( y, i ) ];
-      D[ loc( i, x ) ] = D[ loc( i, y ) ];
+      dbm[ LOC( x, i ) ] = dbm[ LOC( y, i ) ];
+      dbm[ LOC( i, x ) ] = dbm[ LOC( i, y ) ];
     }
-    D[ loc( x, x ) ] = D[ loc( x, y ) ] = D[ loc( y, x ) ] = LTEQ_ZERO;
+    dbm[ LOC( x, x ) ] = dbm[ LOC( x, y ) ] = dbm[ LOC( y, x ) ] = LTEQ_ZERO;
   }
   /**
    * This is another operation used in forwards state space exporation.
@@ -418,44 +420,45 @@ public:
    * @param x
    * @param y
    */
-  C *copy( const C *const D, const int x, const int y ) const {
-    C *newD = createDBM( D );
+  C *copy( const C *const dbm, const int x, const int y ) const {
+    C *newD = createDBM( dbm );
     copyImpl( newD, x, y );
     return newD;
   }
 
-  C *shiftImpl( C *D, const int x, const C m ) const {
+  C *shiftImpl( C *dbm, const int x, const C m ) const {
 
     C postM = getMatrixValue( m, false );
     C negM  = getMatrixValue( -m, false );
 
     for ( int i = 0; i < clock_num; i++ ) {
-      D[ loc( x, i ) ] = ADD( D[ loc( x, i ) ], postM );
-      D[ loc( i, x ) ] = ADD( D[ loc( i, x ) ], negM );
+      dbm[ LOC( x, i ) ] = ADD( dbm[ LOC( x, i ) ], postM );
+      dbm[ LOC( i, x ) ] = ADD( dbm[ LOC( i, x ) ], negM );
     }
 
-    D[ loc( x, x ) ] = LTEQ_ZERO;
-    int temp         = loc( x, 0 );
-    D[ temp ]        = D[ temp ] > LTEQ_ZERO ? D[ temp ] : LTEQ_ZERO;
-    D[ x ]           = D[ x ] < LTEQ_ZERO ? D[ x ] : LTEQ_ZERO;
+    dbm[ LOC( x, x ) ] = LTEQ_ZERO;
+    int temp         = LOC( x, 0 );
+    dbm[ temp ]        = dbm[ temp ] > LTEQ_ZERO ? dbm[ temp ] : LTEQ_ZERO;
+    dbm[ x ]           = dbm[ x ] < LTEQ_ZERO ? dbm[ x ] : LTEQ_ZERO;
   }
 
   /**
+   *@brief x-> x+m
    * The last reset operation is shifting a clock, i.e. adding or substracting
    * a clock with an integer value.
    *
    * @param x
    * @param m
    */
-  C *shift( const C *const D, const int x, const C m ) const {
-    C *newD = createDBM( D );
-    shiftImpl( newD, x, m );
+  C *shift( const C *const dbm, const int x, const C m ) const {
+    C *newD = createDBM( dbm );
+    shiftImpl( newD, x, dbm );
     return newD;
   }
 
   /**
    * For a timed automaton and safty prperty to be checked, that contain no
-   * difference constraints. assert(maximum.size()==2*n) maximum[ i ]:= <= k_i
+   * difference constraints. assert(maximum.matrix_size()==2*n) maximum[ i ]:= <= k_i
    * maximum[i+n]:= < -k_i
    * @param maximums maximums[i] is the maximum upper for x_i
    */
@@ -463,13 +466,13 @@ public:
     bool modify = false;
     for ( int i = 0; i < clock_num; i++ ) {
       for ( int j = 0; j < clock_num; j++ ) {
-        if ( dbm[ loc( i, j ) ] < MAX_INT ) {
-          if ( dbm[ loc( i, j ) ] > maximums[ i ] ) {
+        if ( dbm[ LOC( i, j ) ] < MAX_INT ) {
+          if ( dbm[ LOC( i, j ) ] > maximums[ i ] ) {
             modify             = true;
-            dbm[ loc( i, j ) ] = MAX_INT;
-          } else if ( dbm[ loc( i, j ) ] < maximums[ j + clock_num ] ) {
+            dbm[ LOC( i, j ) ] = MAX_INT;
+          } else if ( dbm[ LOC( i, j ) ] < maximums[ j + clock_num ] ) {
             modify             = true;
-            dbm[ loc( i, j ) ] = maximums[ j + clock_num ];
+            dbm[ LOC( i, j ) ] = maximums[ j + clock_num ];
           }
         }
       }
@@ -502,7 +505,7 @@ private:
    * number of clocks
    */
   int                                clock_num;
-  int                                size; // clock_num*clock_num
+  int                                matrix_size; // clock_num*clock_num
   C                                  MAX_INT;
   std::default_random_engine         generator;
   std::uniform_int_distribution<int> distribution;
@@ -510,14 +513,12 @@ private:
 
   vector<ClockConstraint<C>> differenceCons;
 
-  inline int loc( const int row, const int col ) const {
-    return row * clock_num + col;
-  }
+
 
   bool contain( const vector<C *> &values, const C *const dbm ) const {
 
     for ( auto v : values ) {
-      if ( MEqual( v, dbm ) ) {
+      if ( equal( v, dbm ) ) {
         return true;
       }
     }
@@ -527,7 +528,7 @@ private:
   /**
    * For automaton containing difference constraints in the guards, it is more
    * complicated and expensive to compute the normalized zones.
-   * assert(maximums.size()==maximums*clock_num)
+   * assert(maximums.matrix_size()==maximums*clock_num)
    * maximums[ i ]:= <= maximums_i
    * maximums[clock_num +n]:= < -maximums_i
    * @param dbm D will deen destroied before return

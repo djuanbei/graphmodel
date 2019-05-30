@@ -59,11 +59,11 @@ public:
       // hashValue has in passedD
       C *D1 = getD( hashValue );
 
-      if ( !dbmManager.MEqual( DM, D1 ) ) {
+      if ( !dbmManager.equal( DM, D1 ) ) {
         bool have = false;
         for ( typename vector<C *>::iterator it = recoveryD.begin();
               it != recoveryD.end(); it++ ) {
-          if ( dbmManager.MEqual( DM, *it ) ) {
+          if ( dbmManager.equal( DM, *it ) ) {
             have = true;
             break;
           }
