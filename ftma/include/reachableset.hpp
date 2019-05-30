@@ -67,7 +67,12 @@ public:
   }
 
   bool oneStep( const Property *prop, State_t *state ) {
-
+#ifdef PRINT_STATE
+    for( int i=0; i< component_num;i++){
+      cout<<state[ i] <<" ";
+    }
+    cout<<endl<<manager.getClockManager( ).dump(manager.getDBM( state))<<endl;
+#endif
     int commit_component = -1;
     for ( int component = 0; component < component_num; component++ ) {
       if ( manager.isCommitComp( component, state ) ) {

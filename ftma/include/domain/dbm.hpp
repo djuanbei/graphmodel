@@ -161,15 +161,16 @@ public:
         C v = dbm[ loc( i, j ) ];
 
         if ( isStrict<C>( v ) ) {
-          ss << "< ,";
+          ss << "<  ";
         } else {
-          ss << "<=,";
+          ss << "<= ";
         }
         ss.width( 4 );
-        if ( MAX_INT == getRight<C>( v ) ) {
+        C right=getRight<C>( v ) ;
+        if (right>= MAX_INT/2) {
           ss << std::left << ( (char) 126 );
         } else {
-          ss << std::left << (int) getRight<C>( v );
+          ss << std::left << (int) right;
         }
 
         ss << ") ";
@@ -327,9 +328,7 @@ public:
       return;
     }
 
-    ClockConstraint<C> negCons = cons.neg();
-
-    if ( negCons.matrix_value >= newD[ loc( cons.y, cons.x ) ] ) {
+    if ( cons.matrix_value+ newD[ loc( cons.y, cons.x ) ]<=LTEQ_ZERO ) {
       newD[ 0 ] = getMatrixValue( -1, false );
     } else if ( cons.matrix_value < newD[ loc( cons.x, cons.y ) ] ) {
       newD[ loc( cons.x, cons.y ) ] = cons.matrix_value;

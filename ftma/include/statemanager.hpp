@@ -170,6 +170,7 @@ public:
 
   bool add( const int component_id, const int target,
             StateSet<State_t> &stateSet, State_t *state, bool isCommit ) const {
+
     state[ component_id ] = target;
     if ( isCommit ) {
       setCommitState( component_id, target, state );

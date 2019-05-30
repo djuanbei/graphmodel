@@ -9,7 +9,7 @@
  *
  */
 //#define CHECK_MEMORY 1
-
+#define PRINT_STATE 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -34,6 +34,7 @@
 
 using std::vector;
 using namespace graphsat;
+
 
 void example1( void ) {
   // x:1 y:2 z:3
@@ -376,7 +377,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 5 );
+  fisher( 2 );
   return 0;
   //  example5();
   //  return 0;
