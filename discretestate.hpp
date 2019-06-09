@@ -88,52 +88,47 @@ public:
   class const_iterator;
   class iterator;
   StateSet() {
-    addELementNum=0;
-    stateId     = -1;
-    element_len = element_start =second_part_len= 0;
+    addELementNum = 0;
+    stateId       = -1;
+    element_len = first_part_len = second_part_len = 0;
   }
   StateSet( int id, int n, int s ) {
-    addELementNum=0;
-    stateId       = id;
-    element_len   = n;
-    element_start = s;
-    second_part_len=n-s;
+    addELementNum   = 0;
+    stateId         = id;
+    element_len     = n;
+    first_part_len  = s;
+    second_part_len = n - s;
   }
   void setParam( const int n, int s ) {
-    addELementNum=0;
-    element_len   = n;
-    element_start = s;
-    second_part_len=n-s;
+    addELementNum   = 0;
+    element_len     = n;
+    first_part_len  = s;
+    second_part_len = n - s;
   }
   ~StateSet() { deleteAll(); }
   void deleteAll() { clear(); }
-  void clear() {
-    passedElement.clear();
+  void clear() { secondPartElements.clear(); }
 
-  }
+  size_t size() const { return addELementNum; }
 
-  size_t size() const {
-    return addELementNum;
-  }
-
-  bool empty() const { return 0==size( );
-  }
+  bool empty() const { return 0 == size(); }
 
   int getID( void ) const { return stateId; }
 
   void setId( int id ) { stateId = id; }
 
-  bool add( T *one ) {
-    int id=addHead( one);
-    T *oneSecondPart=one+element_start;
-    
+  bool add( const T *const one ) {
+    int id            = addHead( one );
+    T * oneSecondPart = one + first_part_len;
+
     /**
      * check whether has element is set has same hash_value
      *
      */
 
-    for( size_t i=0; i< passedElement[ id].size( ); i+=second_part_len  ){
-      if(contain(&(passedElement[ id][ i]), oneSecondPart ) ){
+    for ( size_t i = 0; i < secondPartElements[ id ].size();
+          i += second_part_len ) {
+      if ( contain( &( secondPartElements[ id ][ i ] ), oneSecondPart ) ) {
         return false;
       }
     }
@@ -145,12 +140,13 @@ public:
   bool contain( const T *const one ) const {
 
     int id = containHead( one );
-    if( id>-1){
+    if ( id > -1 ) {
 
-      const T *oneSecondPart=one+element_start;
+      const T *oneSecondPart = one + first_part_len;
 
-      for( size_t i=0; i< passedElement[ id].size( ); i+=second_part_len  ){
-        if(contain(&(passedElement[ id][ i]), oneSecondPart ) ){
+      for ( size_t i = 0; i < secondPartElements[ id ].size();
+            i += second_part_len ) {
+        if ( contain( &( secondPartElements[ id ][ i ] ), oneSecondPart ) ) {
           return true;
         }
       }
@@ -158,192 +154,253 @@ public:
 
     return false;
   }
-  
 
   iterator begin() { return iterator( this ); }
 
   const_iterator begin() const { return const_iterator( this ); }
 
-  iterator end() {
-    return iterator( this, passedElement.end( ), 0 );
-  }
+  iterator end() { return iterator( this, passedHeads.end(), 0, 0 ); }
 
   const_iterator end() const {
-    return const_iterator( this,passedElement.end( ), 0);
+    return const_iterator( this, passedHeads.end(), 0, 0 );
   }
 
   class const_iterator {
   protected:
-    const StateSet_t *data;
-    typename unordered_map<int, vector<T> >::const_iterator it;
-    size_t            index;
-    vector<T> temp_vec;
+    const StateSet_t *                                        data;
+    typename unordered_map<int, pair<vector<T>, vector<int>>> it;
+    size_t                                                    first_index;
+    size_t                                                    second_index;
+    vector<T>                                                 temp_vec;
 
   public:
-    const_iterator( const StateSet_t *odata )
-        : data( odata ) {
-      it=odata->passedElement.begin( );
-      index = 0;
+    const_iterator( const StateSet_t *out_data )
+        : data( out_data ) {
+      it           = out_data->passedHeads.begin();
+      first_index  = 0;
+      second_index = 0;
     }
 
-    const_iterator( const StateSet_t *odata,     unordered_map<int, vector<int> >::const_iterator oit, size_t oindex )
-        : data( odata ) {
-      it=oit;
-      index = oindex;
+    const_iterator( const StateSet_t *                               out_data,
+                    unordered_map<int, pair<vector<T>, vector<int>>> out_it,
+                    size_t out_first_index, size_t out_second_index )
+        : data( out_data ) {
+      it           = out_it;
+      first_index  = out_first_index;
+      second_index = out_second_index;
     }
 
     const_iterator( const const_iterator &other )
         : data( other.data ) {
-      it=other.it;
-      index = other.index;
+      it           = other.it;
+      first_index  = other.first_index;
+      second_index = other.second_index;
     }
 
     const_iterator &operator++() {
-      index += data->second_part_len;
-      if(index== it->second( ).size( )){
-        it++;
-        index=0;
+
+      second_index += data->second_part_len; // +second_part_len simply using 
+      int secondId = it->second.second[ first_index ];
+
+      if ( second_index >= data->secondPartElements[ secondId ].size() ) {
+        second_index = 0;
+        first_index++;
+        if ( first_index >= it->second.second.size() ) {
+          first_index = 0;
+          it++;
+        }
       }
+
       return *this;
     }
     bool operator==( const const_iterator &other ) const {
-      return (it==other.it) &&(index == other.index);
+      return ( data == other.data ) && ( it == other.it ) &&
+             ( index == other.index );
     }
-    
+
     bool operator!=( const const_iterator &other ) const {
-      return (it!=other.it)|| (index != other.index);
+      return ( data != other.data ) || ( it != other.it ) ||
+             ( index != other.index );
     }
 
     const T *operator*() const {
-      
-      temp_vec.clear( );
-      temp_vec.insert(temp_vec.begin( ), it->first.begin( ), it->first.end( ) );
-      temp_vec.insert( temp_vec.end( ), &(it->second[ index]),&(it->second[ index+data->second_part_len])  );
-      return &(temp_vec[ 0]);
-      
+
+      int secondId = it->second.second[ first_index ];
+      temp_vec.insert( temp_vec.begin(),
+                       it->second.first.begin() +
+                           first_index * ( data->first_part_len ),
+                       it->second.first.begin() +
+                           ( first_index + 1 ) * ( data->first_part_len ) );
+
+      temp_vec.insert( temp_vec.begin( )+data->first_part_len,
+                       data->secondPartElements[ secondId ].begin() +
+                           second_index,
+                       data->secondPartElements[ secondId ].begin() +
+                           second_index + data->second_part_len );
+
+      return &( temp_vec[ 0 ] );
     }
   };
 
   class iterator {
 
   protected:
-    StateSet_t *data;
-    typename unordered_map<int, vector<T> >::iterator it;
-    size_t      index;
-    vector<T> temp_vec;
+    StateSet_t *                                     data;
+    typename unordered_map<int, pair<vector<T>, vector<int>>> it;
+    size_t                                                    first_index;
+    size_t                                                    second_index;
+    vector<T>                                                 temp_vec;
+
+
   public:
-    iterator( StateSet_t *odata )
-        : data( odata ) {
-      it=odata->passedElement.begin( );
-      index = 0;
+    iterator( StateSet_t *out_data )
+        : data( out_data ) {
+      it           = out_data->passedHeads.begin();
+      first_index  = 0;
+      second_index = 0;
+      
     }
 
-    iterator( StateSet_t *odata,unordered_map<int, vector<int> >::iterator oit,  size_t oindex )
-        : data( odata ) {
-      it=oit;
-      index = oindex;
+    iterator( StateSet_t *out_data, unordered_map<int, vector<int>>::iterator out_it,
+              size_t out_first_index, size_t out_second_index )
+        : data( out_data ) {
+      it           = out_it;
+      first_index  = out_first_index;
+      second_index = out_second_index;
+
     }
 
     iterator( const iterator &other )
         : data( other.data ) {
-      it=other.it;
-      index = other.index;
+      it           = other.it;
+      first_index  = other.first_index;
+      second_index = other.second_index;
+      
     }
     iterator &operator++() {
-      index += data->second_part_len;
-      if(index== it->second( ).size( )){
-        it++;
-        index=0;
+            second_index += data->second_part_len; // +second_part_len simply using 
+      int secondId = it->second.second[ first_index ];
+
+      if ( second_index >= data->secondPartElements[ secondId ].size() ) {
+        second_index = 0;
+        first_index++;
+        if ( first_index >= it->second.second.size() ) {
+          first_index = 0;
+          it++;
+        }
       }
       return *this;
     }
 
     bool operator==( const iterator &other ) const {
-      return (it==other.it) &&(index == other.index);
-      
+      return ( data == other.data ) && ( it == other.it ) &&
+          ( index == other.index );
+
     }
     bool operator!=( const iterator &other ) const {
-      return (it!=other.it)|| (index != other.index);
+      return ( data != other.data ) || ( it != other.it ) ||
+          ( index != other.index );
     }
 
     T *operator*() {
-      temp_vec.clear( );
-      temp_vec.insert(temp_vec.begin( ), it->first.begin( ), it->first.end( ) );
-      temp_vec.insert( temp_vec.end( ), &(it->second[ index]),&(it->second[ index+data->second_part_len])  );
-      return &(temp_vec[ 0]);
+
+      int secondId = it->second.second[ first_index ];
+      temp_vec.insert( temp_vec.begin(),
+                       it->second.first.begin() +
+                       first_index * ( data->first_part_len ),
+                       it->second.first.begin() +
+                       ( first_index + 1 ) * ( data->first_part_len ) );
+
+      temp_vec.insert( temp_vec.begin( )+data->first_part_len,
+                       data->secondPartElements[ secondId ].begin() +
+                       second_index,
+                       data->secondPartElements[ secondId ].begin() +
+                       second_index + data->second_part_len );
+
+      return &( temp_vec[ 0 ] );
     }
   };
 
 private:
-  int                     stateId;
-  
-  vector< vector<T > > passedElement;
-  
-  unordered_map<int, pair<vector<T >, vector<int> >  > passedHead;
-  
-  
-  int                     addELementNum;
-  int                     element_len;
-  
-  int                     element_start;
-  int       second_part_len;
+  int stateId;
 
+  vector<vector<T>> secondPartElements;
 
-  int addHead(T * head ){
-    
+  unordered_map<int, pair<vector<T>, vector<int>>> passedHeads;
+
+  int addELementNum;
+  int element_len;
+
+  int first_part_len;
+  int second_part_len;
+
+  int addHead( T *head ) {
+
     int hashV = hash_value( head );
-    
-    std::unordered_map<int, pair<vector<T >, vector<int> >  >::iterator ret = passedHead.find( hashV );
-    if( ret!=passedHead){
-      for(size_t i=0; i< ret->second.second.size( ); i++  ){
-        if(0== memcmp( head,&(ret->second.first[ i*element_start]),element_start*sizeof(T))){
-          return ret->second.second[ i];
+
+    std::unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
+        passedHeads.find( hashV );
+    if ( ret != passedHeads.end() ) {
+      for ( size_t i = 0; i < ret->second.second.size(); i++ ) {
+        if ( 0 == memcmp( head, &( ret->second.first[ i * first_part_len ] ),
+                          first_part_len * sizeof( T ) ) ) {
+          return ret->second.second[ i ];
         }
       }
     }
-    
-    passedHead[hashV].first.insert( passedHead[hashV].first.end( ),head, head+element_start );
-    passedHead[hashV].second.push_back(passedElement.size( ) );
-    
-    int re=passedElement.size( );
+
+    passedHeads[ hashV ].first.insert( passedHeads[ hashV ].first.end(), head,
+                                       head + first_part_len );
+    passedHeads[ hashV ].second.push_back( secondPartElements.size() );
+
+    int       re = secondPartElements.size();
     vector<T> temp;
-    passedElement.push_back( temp);
-    
+    secondPartElements.push_back( temp );
+
     return re;
   }
 
+  /**
+   *
+   *
+   * @param head  the value which needs to find location in passedHeads
+   *
+   * @return  >=0, if find the head in passedHeads
+   * -1, otherwise.
+   */
+  int containHead( const T *const head ) const {
 
-  int containHead(T * head ) const{
-    
     int hashV = hash_value( head );
-    
-    std::unordered_map<int, pair<vector<T >, vector<int> >  >::iterator ret = passedHead.find( hashV );
-    if( ret!=passedHead){
-      for(size_t i=0; i< ret->second.second.size( ); i++  ){
-        if(0== memcmp( head,&(ret->second.first[ i*element_start]),element_start*sizeof(T))){
-          return ret->second.second[ i];
+
+    std::unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
+        passedHeads.find( hashV );
+    if ( ret != passedHeads.end() ) {
+      for ( size_t i = 0; i < ret->second.second.size(); i++ ) {
+        if ( 0 == memcmp( head, &( ret->second.first[ i * first_part_len ] ),
+                          first_part_len * sizeof( T ) ) ) {
+          return ret->second.second[ i ];
         }
       }
     }
     return -1;
   }
 
-  bool addValue( int id, T *D ) {
-    passedElement[id].insert( passedElement[id].end(), D, D + second_part_len );
+  bool addValue( int id, T *one ) {
+    secondPartElements[ id ].insert( secondPartElements[ id ].end(), one,
+                                     one + second_part_len );
     addELementNum++;
     return true;
   }
 
-
   int hash_value( const T *const one ) const {
-    return FastHash( (char *) one, element_start * sizeof( T ) );
+    return FastHash( (char *) one, first_part_len * sizeof( T ) );
   }
   bool equal( const T *const lhs, const T *const rhs ) const {
     return memcmp( lhs, rhs, element_len * sizeof( T ) ) == 0;
   }
   bool contain( const T *const lhs, const T *const rhs ) const {
 
-    for ( int i = 0; i <second_part_len; i++ ) {
+    for ( int i = 0; i < second_part_len; i++ ) {
       if ( lhs[ i ] < rhs[ i ] ) {
         return false;
       }
