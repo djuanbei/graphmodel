@@ -35,7 +35,6 @@
 using std::vector;
 using namespace graphsat;
 
-
 void example1( void ) {
   // x:1 y:2 z:3
   vector<T_t> es;

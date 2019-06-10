@@ -32,10 +32,8 @@ public:
     locationID = loc_id;
     type       = etype;
   }
-  
-  void setName( const string &n){
-    name=n;
-  }
+
+  void setName( const string &n ) { name = n; }
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
@@ -119,7 +117,7 @@ public:
 private:
   vector<CS_t>  invariants; // set of invariants  in this Location
   int           locationID;
-  string name;
+  string        name;
   Location_Type type;
 };
 } // namespace graphsat

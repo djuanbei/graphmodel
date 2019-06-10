@@ -37,8 +37,7 @@ using namespace std;
   ( x >= MAX_INT || y >= MAX_INT ) ? MAX_INT                                   \
                                    : ( x + y - ( ( x & 1 ) | ( y & 1 ) ) );
 
-#define LOC(  row,  col )  (row) * (clock_num) + (col)
- 
+#define LOC( row, col ) ( row ) * ( clock_num ) + ( col )
 
 /**
  *@param C the type of value of clock
@@ -50,9 +49,9 @@ template <typename C> class DBMFactory {
 
 public:
   DBMFactory( void ) {
-    clock_num = 0;
-    matrix_size      = 0;
-    MAX_INT   = getMAX_INT( (C) 0 );
+    clock_num   = 0;
+    matrix_size = 0;
+    MAX_INT     = getMAX_INT( (C) 0 );
 
     distribution =
         std::uniform_int_distribution<int>( -MAX_INT / 4 + 1, MAX_INT / 4 );
@@ -60,8 +59,8 @@ public:
 
   DBMFactory( int n )
       : clock_num( n + 1 ) {
-    matrix_size    = clock_num * clock_num;
-    MAX_INT = getMAX_INT( (C) 0 );
+    matrix_size = clock_num * clock_num;
+    MAX_INT     = getMAX_INT( (C) 0 );
 
     distribution =
         std::uniform_int_distribution<int>( -MAX_INT / 4 + 1, MAX_INT / 4 );
@@ -83,8 +82,8 @@ public:
   ~DBMFactory() { clock_num = 0; }
 
   void setClockNum( int num ) {
-    clock_num = num + 1;
-    matrix_size      = clock_num * clock_num;
+    clock_num   = num + 1;
+    matrix_size = clock_num * clock_num;
   }
 
   C *createDBM() const {
@@ -169,8 +168,8 @@ public:
           ss << "<= ";
         }
         ss.width( 4 );
-        C right=getRight<C>( v ) ;
-        if (right>= MAX_INT/2) {
+        C right = getRight<C>( v );
+        if ( right >= MAX_INT / 2 ) {
           ss << std::left << ( (char) 126 );
         } else {
           ss << std::left << (int) right;
@@ -283,7 +282,7 @@ public:
    * false, otherwise.
    */
   bool isSatisfied( const C *const dbm, const ClockConstraint<C> &cons ) const {
-    return  cons.matrix_value+dbm[ LOC( cons.y, cons.x ) ]>LTEQ_ZERO;
+    return cons.matrix_value + dbm[ LOC( cons.y, cons.x ) ] > LTEQ_ZERO;
   }
 
   void upImpl( C *dbm ) const {
@@ -330,7 +329,7 @@ public:
       return;
     }
 
-    if ( cons.matrix_value+ newD[ LOC( cons.y, cons.x ) ]<=LTEQ_ZERO ) {
+    if ( cons.matrix_value + newD[ LOC( cons.y, cons.x ) ] <= LTEQ_ZERO ) {
       newD[ 0 ] = getMatrixValue( -1, false );
     } else if ( cons.matrix_value < newD[ LOC( cons.x, cons.y ) ] ) {
       newD[ LOC( cons.x, cons.y ) ] = cons.matrix_value;
@@ -437,7 +436,7 @@ public:
     }
 
     dbm[ LOC( x, x ) ] = LTEQ_ZERO;
-    int temp         = LOC( x, 0 );
+    int temp           = LOC( x, 0 );
     dbm[ temp ]        = dbm[ temp ] > LTEQ_ZERO ? dbm[ temp ] : LTEQ_ZERO;
     dbm[ x ]           = dbm[ x ] < LTEQ_ZERO ? dbm[ x ] : LTEQ_ZERO;
   }
@@ -458,8 +457,8 @@ public:
 
   /**
    * For a timed automaton and safty prperty to be checked, that contain no
-   * difference constraints. assert(maximum.matrix_size()==2*n) maximum[ i ]:= <= k_i
-   * maximum[i+n]:= < -k_i
+   * difference constraints. assert(maximum.matrix_size()==2*n) maximum[ i ]:=
+   * <= k_i maximum[i+n]:= < -k_i
    * @param maximums maximums[i] is the maximum upper for x_i
    */
   void norm( C *dbm, const vector<C> &maximums ) const {
@@ -512,8 +511,6 @@ private:
   vector<C>                          clockUppuerBound;
 
   vector<ClockConstraint<C>> differenceCons;
-
-
 
   bool contain( const vector<C *> &values, const C *const dbm ) const {
 

@@ -88,83 +88,64 @@ public:
   class const_iterator;
   class iterator;
   StateSet() {
-    stateId     = -1;
-    element_len = element_start = 0;
+    addELementNum = 0;
+    element_len = head_part_len = body_part_len = 0;
   }
   StateSet( int id, int n, int s ) {
-    stateId       = id;
+    addELementNum = 0;
     element_len   = n;
-    element_start = s;
+    head_part_len = s;
+    body_part_len = n - s;
   }
   void setParam( const int n, int s ) {
+    addELementNum = 0;
     element_len   = n;
-    element_start = s;
+    head_part_len = s;
+    body_part_len = n - s;
   }
   ~StateSet() { deleteAll(); }
   void deleteAll() { clear(); }
   void clear() {
-    passedHash.clear();
-
-    hashmapValue.clear();
-
-    recoveryValue.clear();
+    headPartElements.clear();
+    bodyPartElements.clear();
+    addELementNum = 0;
   }
 
-  size_t size() const {
-    return ( hashmapValue.size() + recoveryValue.size() ) / element_len;
-  }
+  size_t size() const { return addELementNum; }
 
-  bool empty() const { return hashmapValue.empty() && recoveryValue.empty(); }
+  bool empty() const { return 0 == size(); }
 
-  int getID( void ) const { return stateId; }
+  bool add( const T *const one ) {
+    int      id       = addHead( one );
+    const T *bodyPart = one + head_part_len;
 
-  void setId( int id ) { stateId = id; }
-
-  bool add( T *one ) {
-
-    int hashV = hash_value( one );
-
-    std::unordered_map<int, int>::iterator ret = passedHash.find( hashV );
     /**
      * check whether has element is set has same hash_value
      *
      */
-    if ( ret != passedHash.end() ) { // has
-      T *sameHashElemeent = getElementByHash( hashV );
 
-      if ( !equal( one, sameHashElemeent ) ) {
-        for ( size_t i = 0; i < recoveryValue.size(); i += element_len ) {
-
-          if ( equal( one, &( recoveryValue[ i ] ) ) ) {
-            return false;
-          }
-        }
-        if ( contain( one ) ) {
-          return false;
-        }
-        addRecoveryValue( one );
-
-        return true;
-
-      } else {
+    for ( size_t i = 0; i < bodyPartElements[ id ].size();
+          i += body_part_len ) {
+      if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
         return false;
       }
     }
-    if ( contain( one ) ) {
-      return false;
-    }
-    return addHashValue( hashV, one );
+
+    addValue( id, bodyPart );
+    return true;
   }
 
   bool contain( const T *const one ) const {
-    for ( size_t i = 0; i < hashmapValue.size(); i += element_len ) {
-      if ( contain( &( hashmapValue[ i ] ), one ) ) {
-        return true;
-      }
-    }
-    for ( size_t i = 0; i < recoveryValue.size(); i += element_len ) {
-      if ( contain( &( recoveryValue[ i ] ), one ) ) {
-        return true;
+
+    int id = containHead( one );
+    if ( id > -1 ) { // find
+      const T *bodyPart = one + head_part_len;
+
+      for ( size_t i = 0; i < bodyPartElements[ id ].size();
+            i += body_part_len ) {
+        if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
+          return true;
+        }
       }
     }
 
@@ -175,144 +156,248 @@ public:
 
   const_iterator begin() const { return const_iterator( this ); }
 
-  iterator end() {
-    return iterator( this, hashmapValue.size() + recoveryValue.size() );
-  }
+  iterator end() { return iterator( this, headPartElements.end(), 0, 0 ); }
 
   const_iterator end() const {
-    return const_iterator( this, hashmapValue.size() + recoveryValue.size() );
+    return const_iterator( this, headPartElements.end(), 0, 0 );
   }
 
   class const_iterator {
   protected:
     const StateSet_t *data;
-    size_t            index;
+    typename unordered_map<int, pair<vector<T>, vector<int>>>::const_iterator
+              it;
+    size_t    first_index;
+    size_t    second_index;
+    vector<T> temp_vec;
 
   public:
-    const_iterator( const StateSet_t *odata )
-        : data( odata ) {
-      index = 0;
+    const_iterator( const StateSet_t *out_data )
+        : data( out_data ) {
+      it           = out_data->headPartElements.begin();
+      first_index  = 0;
+      second_index = 0;
     }
 
-    const_iterator( const StateSet_t *odata, size_t oindex )
-        : data( odata ) {
-      index = oindex;
+    const_iterator( const StateSet_t *out_data,
+                    typename unordered_map<int, pair<vector<T>, vector<int>>>::
+                        const_iterator out_it,
+                    size_t out_first_index, size_t out_second_index )
+        : data( out_data ) {
+      it           = out_it;
+      first_index  = out_first_index;
+      second_index = out_second_index;
     }
 
     const_iterator( const const_iterator &other )
         : data( other.data ) {
-      index = other.index;
+      it           = other.it;
+      first_index  = other.first_index;
+      second_index = other.second_index;
     }
 
     const_iterator &operator++() {
-      index += data->n;
+
+      second_index += data->body_part_len; // +body_part_len simply using
+      int secondId = it->second.second[ first_index ];
+
+      if ( second_index >= data->bodyPartElements[ secondId ].size() ) {
+        second_index = 0;
+        first_index++;
+        if ( first_index >= it->second.second.size() ) {
+          first_index = 0;
+          it++;
+        }
+      }
+
       return *this;
     }
     bool operator==( const const_iterator &other ) const {
-      return index == other.index;
+      return ( data == other.data ) && ( it == other.it ) &&
+             ( index == other.index );
     }
+
     bool operator!=( const const_iterator &other ) const {
-      return index != other.index;
+      return ( data != other.data ) || ( it != other.it ) ||
+             ( index != other.index );
     }
 
     const T *operator*() const {
 
-      size_t dSize = data->hashmapValue.size();
-      if ( index < dSize ) {
+      int secondId = it->second.second[ first_index ];
+      temp_vec.insert( temp_vec.begin(),
+                       it->second.first.begin() +
+                           first_index * ( data->head_part_len ),
+                       it->second.first.begin() +
+                           ( first_index + 1 ) * ( data->head_part_len ) );
 
-        return &( data->hashmapValue[ index ] );
-      }
-      if ( index >= dSize + ( data->recoveryValue.size() ) ) {
-        return NULL;
-      }
+      temp_vec.insert( temp_vec.begin() + data->head_part_len,
+                       data->bodyPartElements[ secondId ].begin() +
+                           second_index,
+                       data->bodyPartElements[ secondId ].begin() +
+                           second_index + data->body_part_len );
 
-      return &( data->recoveryValue[ ( index - dSize ) ] );
+      return &( temp_vec[ 0 ] );
     }
   };
 
   class iterator {
 
   protected:
-    StateSet_t *data;
-    size_t      index;
+    StateSet_t *                                                        data;
+    typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator it;
+    size_t    first_index;
+    size_t    second_index;
+    vector<T> temp_vec;
 
   public:
-    iterator( StateSet_t *odata )
-        : data( odata ) {
-      index = 0;
+    iterator( StateSet_t *out_data )
+        : data( out_data ) {
+      it           = out_data->headPartElements.begin();
+      first_index  = 0;
+      second_index = 0;
     }
 
-    iterator( StateSet_t *odata, size_t oindex )
-        : data( odata ) {
-      index = oindex;
+    iterator(
+        StateSet_t *out_data,
+        typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator
+               out_it,
+        size_t out_first_index, size_t out_second_index )
+        : data( out_data ) {
+      it           = out_it;
+      first_index  = out_first_index;
+      second_index = out_second_index;
     }
 
     iterator( const iterator &other )
         : data( other.data ) {
-      index = other.index;
+      it           = other.it;
+      first_index  = other.first_index;
+      second_index = other.second_index;
     }
     iterator &operator++() {
-      index += data->element_len;
+      second_index += data->body_part_len; // +body_part_len simply using
+      int secondId = it->second.second[ first_index ];
+
+      if ( second_index >= data->bodyPartElements[ secondId ].size() ) {
+        second_index = 0;
+        first_index++;
+        if ( first_index >= it->second.second.size() ) {
+          first_index = 0;
+          it++;
+        }
+      }
       return *this;
     }
 
     bool operator==( const iterator &other ) const {
-      return index == other.index;
+      return ( data == other.data ) && ( it == other.it ) &&
+             ( first_index == other.first_index ) &&
+             ( second_index == other.second_index );
     }
     bool operator!=( const iterator &other ) const {
-      return index != other.index;
+      return ( data != other.data ) || ( it != other.it ) ||
+             ( first_index != other.first_index ) ||
+             ( second_index != other.second_index );
     }
 
     T *operator*() {
 
-      size_t dSize = data->hashmapValue.size();
-      if ( index < dSize ) {
+      int secondId = it->second.second[ first_index ];
+      temp_vec.insert( temp_vec.begin(),
+                       it->second.first.begin() +
+                           first_index * ( data->head_part_len ),
+                       it->second.first.begin() +
+                           ( first_index + 1 ) * ( data->head_part_len ) );
 
-        return &( data->hashmapValue[ index ] );
-      }
-      if ( index >= dSize + ( data->recoveryValue.size() ) ) {
-        return NULL;
-      }
+      temp_vec.insert( temp_vec.begin() + data->head_part_len,
+                       data->bodyPartElements[ secondId ].begin() +
+                           second_index,
+                       data->bodyPartElements[ secondId ].begin() +
+                           second_index + data->body_part_len );
 
-      return &( data->recoveryValue[ ( index - dSize ) ] );
+      return &( temp_vec[ 0 ] );
     }
   };
 
 private:
-  int                     stateId;
-  unordered_map<int, int> passedHash;
-  vector<T>               hashmapValue;
-  vector<T>               recoveryValue;
-  int                     element_len;
-  int                     element_start;
+  unordered_map<int, pair<vector<T>, vector<int>>> headPartElements;
 
-  T *getElementByHash( int hashV ) {
-    return &( hashmapValue[ passedHash[ hashV ] * element_len ] );
+  vector<vector<T>> bodyPartElements;
+
+  int addELementNum;
+  int element_len;
+
+  int head_part_len;
+  int body_part_len;
+
+  int addHead( const T *const head ) {
+
+    int hashV = hash_value( head );
+
+    typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
+        headPartElements.find( hashV );
+    if ( ret != headPartElements.end() ) {
+      for ( size_t i = 0; i < ret->second.second.size(); i++ ) {
+        if ( 0 == memcmp( head, &( ret->second.first[ i * head_part_len ] ),
+                          head_part_len * sizeof( T ) ) ) {
+          return ret->second.second[ i ];
+        }
+      }
+    }
+
+    headPartElements[ hashV ].first.insert(
+        headPartElements[ hashV ].first.end(), head, head + head_part_len );
+    headPartElements[ hashV ].second.push_back( bodyPartElements.size() );
+
+    int       re = bodyPartElements.size();
+    vector<T> temp;
+    bodyPartElements.push_back( temp );
+
+    return re;
   }
 
-  bool addHashValue( int hashV, T *D ) {
-    int size               = passedHash.size();
-    passedHash[ hashV ] = size;
-    hashmapValue.insert( hashmapValue.end(), D, D + element_len );
+  /**
+   *
+   *
+   * @param head  the value which needs to find location in headPartElements
+   *
+   * @return  >=0, if find the head in headPartElements
+   * -1, otherwise.
+   */
+  int containHead( const T *const head ) const {
 
+    int hashV = hash_value( head );
+
+    typename unordered_map<int, pair<vector<T>, vector<int>>>::const_iterator
+        ret = headPartElements.find( hashV );
+    if ( ret != headPartElements.end() ) {
+      for ( size_t i = 0; i < ret->second.second.size(); i++ ) {
+        if ( 0 == memcmp( head, &( ret->second.first[ i * head_part_len ] ),
+                          head_part_len * sizeof( T ) ) ) {
+          return ret->second.second[ i ];
+        }
+      }
+    }
+    return -1;
+  }
+
+  bool addValue( int id, const T *const body ) {
+    bodyPartElements[ id ].insert( bodyPartElements[ id ].end(), body,
+                                   body + body_part_len );
+    addELementNum++;
     return true;
   }
 
-  void addRecoveryValue( T *D ) {
-    recoveryValue.insert( recoveryValue.end(), D, D + element_len );
-  }
-
-  int hash_value( const T *const one ) const {
-    return FastHash( (char *) one, element_len * sizeof( T ) );
+  int hash_value( const T *const head ) const {
+    return FastHash( (char *) head, head_part_len * sizeof( T ) );
   }
   bool equal( const T *const lhs, const T *const rhs ) const {
     return memcmp( lhs, rhs, element_len * sizeof( T ) ) == 0;
   }
   bool contain( const T *const lhs, const T *const rhs ) const {
-    if ( 0 != memcmp( lhs, rhs, element_start * sizeof( T ) ) ) {
-      return false;
-    }
-    for ( int i = element_start; i < element_len; i++ ) {
+
+    for ( int i = 0; i < body_part_len; i++ ) {
       if ( lhs[ i ] < rhs[ i ] ) {
         return false;
       }
