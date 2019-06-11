@@ -22,6 +22,8 @@ using std::vector;
 template <typename SYS> class ReachableSet {
 
 public:
+  typedef SYS                 SYS_t;
+  typedef typename SYS_t::C_t C_t;
   ReachableSet( const SYS &outta )
       : sys( outta ) {
 
@@ -46,7 +48,7 @@ public:
     manager.destroyState( cache_state );
     manager.destroyState( next_state );
     while ( !waitSet.empty() ) {
-      State_t *temp_state = waitSet.front();
+      C_t *temp_state = waitSet.front();
       waitSet.pop_front();
       manager.destroyState( temp_state );
     }
@@ -56,7 +58,7 @@ public:
 
   Check_State search( const Property *prop ) {
 
-    typename StateSet_t::iterator end1 = reachSet.end();
+    typename SYS::StateSet_t::iterator end1 = reachSet.end();
     for ( auto state : reachSet ) {
 
       if ( isReach( prop, state ) ) {
@@ -66,7 +68,7 @@ public:
     return UNKOWN;
   }
 
-  bool oneStep( const Property *prop, State_t *state ) {
+  bool oneStep( const Property *prop, C_t *state ) {
 #ifdef PRINT_STATE
     for ( int i = 0; i < component_num; i++ ) {
       cout << state[ i ] << " ";
@@ -102,28 +104,28 @@ public:
   }
 
   size_t size() const { return reachSet.size(); }
-  void   addToWait( const State_t *const state ) {
-    State_t *newState = manager.newState( state );
+  void   addToWait( const C_t *const state ) {
+    C_t *newState = manager.newState( state );
     waitSet.push_back( newState );
   }
 
 private:
-  StateSet<State_t> reachSet;
-  deque<State_t *>  waitSet;
+  StateSet<C_t> reachSet;
+  deque<C_t *>  waitSet;
 
-  State_t *      cache_state;
-  State_t *      next_state;
-  const SYS &    sys;
-  StateManager_t manager;
+  C_t *                        cache_state;
+  C_t *                        next_state;
+  const SYS &                  sys;
+  typename SYS::StateManager_t manager;
   template <typename R1> friend class Reachability;
   int                        component_num;
   std::default_random_engine generator;
 
-  bool isReach( const Property *prop, const State_t *const state ) const {
+  bool isReach( const Property *prop, const C_t *const state ) const {
     return ( *prop )( manager, state );
   }
 
-  bool oneComponent( int component, const Property *prop, State_t *state ) {
+  bool oneComponent( int component, const Property *prop, C_t *state ) {
 
     int source = manager.getLoc( component, state );
 
@@ -158,7 +160,7 @@ private:
     return false;
   }
 
-  bool unBlockOne( const int block_component_id, const int link, State_t *state,
+  bool unBlockOne( const int block_component_id, const int link, C_t *state,
                    const Property *prop ) {
     const int blockChannel = state[ block_component_id + component_num ];
     state[ block_component_id + component_num ] = 0;
@@ -184,8 +186,8 @@ private:
     return false;
   }
 
-  bool doSynchronize( int component, const Property *prop, State_t *state,
-                      int link, const Channel &channel ) {
+  bool doSynchronize( int component, const Property *prop, C_t *state, int link,
+                      const Channel &channel ) {
 
     vector<int> waitComponents;
     if ( CHANNEL_SEND == channel.action ) {
@@ -213,7 +215,7 @@ private:
       }
 
     } else {
-      State_t *temp_state = manager.newState( state );
+      C_t *temp_state = manager.newState( state );
       if ( CHANNEL_SEND == channel.action ) {
         temp_state[ component + component_num ] = channel.id;
       } else if ( CHANNEL_RECEIVE == channel.action ) {
@@ -230,7 +232,7 @@ private:
   }
 
   bool oneTranision( const int component, const int link, const Property *prop,
-                     const State_t *const state ) {
+                     const C_t *const state ) {
     manager.copy( next_state, state );
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );
@@ -254,7 +256,7 @@ private:
       }
       if ( manager.hasDiffCons() ) {
 
-        vector<C_t *> next_dbms;
+        vector<typename SYS::C_t *> next_dbms;
         manager.norm( manager.getDBM( next_state ), next_dbms );
 
         for ( auto dbm : next_dbms ) {
@@ -285,7 +287,7 @@ private:
     return re_bool;
   }
 };
-typedef ReachableSet<TAS_t> R_t;
+// typedef ReachableSet< TAS_t> R_t;
 } // namespace graphsat
 
 #endif

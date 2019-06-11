@@ -65,7 +65,8 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type location_comps = ( *it )->getChild( LOCATION_STR );
 
-    vector<L_t> locations = parserLocation( templateData, location_comps );
+    vector<typename INT_TAS_t::L_t> locations =
+        parserLocation( templateData, location_comps );
 
     XML_P initConf = ( *it )->getOneChild( INIT_STR );
 
@@ -76,11 +77,12 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type transition_comps = ( *it )->getChild( TRANSITION_STR );
 
-    vector<T_t> transitions =
+    vector<typename INT_TAS_t::T_t> transitions =
         parserTransition( templateData, transition_comps );
 
-    TA_t ta( locations, transitions, templateData.getInitialLoc(),
-             templateData.getTypeNum( CLOCK_STR ) );
+    typename INT_TAS_t::TA_t ta( locations, transitions,
+                                 templateData.getInitialLoc(),
+                                 templateData.getTypeNum( CLOCK_STR ) );
     if ( NULL != parameter ) {
       string         para_content = parameter->getValue();
       vector<string> terms        = splitStr( para_content, " " );
@@ -89,7 +91,7 @@ int UppaalParser::parserTemplate( child_type templates ) {
       string      global_array = terms[ size ];
       vector<int> intArray     = data.getIntArray( global_array );
       for ( auto e : intArray ) {
-        TA_t temp = ta;
+        INT_TAS_t::TA_t temp = ta;
         temp.addOnePara( e );
         sys += temp;
       }
@@ -105,9 +107,9 @@ int UppaalParser::parserSystem( child_type system ) { return 0; }
 
 int UppaalParser::parserQuery( child_type queries ) { return 0; }
 
-vector<L_t> UppaalParser::parserLocation( UppaalData &templateData,
-                                          child_type  locations ) {
-  vector<L_t> return_locations;
+vector<INT_TAS_t::L_t> UppaalParser::parserLocation( UppaalData &templateData,
+                                                     child_type  locations ) {
+  vector<INT_TAS_t::L_t> return_locations;
 
   for ( child_iterator lit = locations->begin(); lit != locations->end();
         lit++ ) {
@@ -118,7 +120,7 @@ vector<L_t> UppaalParser::parserLocation( UppaalData &templateData,
 
     int locationID = templateData.getId( LOCATION_STR, idStr );
 
-    L_t location( locationID );
+    INT_TAS_t::L_t location( locationID );
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -132,7 +134,7 @@ vector<L_t> UppaalParser::parserLocation( UppaalData &templateData,
           parserLabel( templateData, invariants );
           vector<void *> cons = templateData.getPoints( CLOCK_CS );
           for ( auto cs : cons ) {
-            location += *( (CS_t *) ( cs ) );
+            location += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
         }
       }
@@ -142,9 +144,10 @@ vector<L_t> UppaalParser::parserLocation( UppaalData &templateData,
   return return_locations;
 }
 
-vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
-                                            child_type  transitions ) {
-  vector<T_t> return_transitions;
+vector<INT_TAS_t::T_t>
+    UppaalParser::parserTransition( UppaalData &templateData,
+                                    child_type  transitions ) {
+  vector<INT_TAS_t::T_t> return_transitions;
   for ( child_iterator tit = transitions->begin(); tit != transitions->end();
         tit++ ) {
 
@@ -157,7 +160,7 @@ vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
     int sourceId = templateData.getId( LOCATION_STR, sourceRef );
     int targetId = templateData.getId( LOCATION_STR, targetRef );
 
-    T_t transition( sourceId, targetId );
+    INT_TAS_t::T_t transition( sourceId, targetId );
 
     child_type labels = ( *tit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -171,7 +174,7 @@ vector<T_t> UppaalParser::parserTransition( UppaalData &templateData,
           parserLabel( templateData, guard );
           vector<void *> cons = templateData.getPoints( CLOCK_CS );
           for ( auto cs : cons ) {
-            transition += *( (CS_t *) ( cs ) );
+            transition += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
           vector<void *> counterCs = templateData.getPoints( COUNTER_CS );
           for ( auto cs : counterCs ) {

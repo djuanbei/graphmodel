@@ -30,25 +30,20 @@ using std::vector;
 
 using namespace raptor;
 
-typedef int                  C_t;
-typedef C_t *                DBM_t;
-typedef DBMFactory<C_t>      DBMManager_t;
-typedef DBMset<C_t>          DBMSet_t;
-typedef C_t                  State_t;
-typedef StateSet<State_t>    StateSet_t;
-typedef ClockConstraint<C_t> CS_t;
-
-typedef Location<C_t, CS_t, DBMManager_t, DBMSet_t>   L_t;
-typedef Transition<C_t, CS_t, DBMManager_t, DBMSet_t> T_t;
-
 template <typename C, typename L, typename T> class TAS;
+
 /**
  *
- *  TA has multi-components
+ *  TA has one-component
  *
  */
 
 template <typename C, typename L, typename T> class TA {
+
+private:
+  typedef C C_t;
+
+  typedef ClockConstraint<C_t> CS_t;
 
 public:
   TA() { initial_loc = clock_num = -1; }
@@ -64,6 +59,7 @@ public:
     clock_num   = vnum;
     initial();
   }
+
   void addOnePara( int defaultValue = 0 ) {
     parameter.addValue( defaultValue );
   }
@@ -71,26 +67,6 @@ public:
   const Parameter &getParameter() const { return parameter; }
   bool             hasParam() const { return !parameter.empty(); }
   void             setParam( int p ) { parameter.setValue( 0, p ); }
-
-  // friend TAS<C, L, T> operator*( int n, TA<C, L, T> &ta ) {
-  //   TAS<C, L, T> re;
-  //   for ( int i = 0; i < n; i++ ) {
-  //     if ( ta.hasParam() ) {
-  //       ta.setParam( i );
-  //     }
-  //     re += ta;
-  //   }
-  //   return re;
-  // }
-
-  // TAS<C, L, T> operator*( int n ) const {
-  //   assert( n > 0 );
-  //   TAS<C, L, T> re;
-  //   for ( int i = 0; i < n; i++ ) {
-  //     re += ( *this );
-  //   }
-  //   return re;
-  // }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
@@ -190,16 +166,32 @@ private:
   }
 };
 
-typedef TA<C_t, L_t, T_t> TA_t;
-
 template <typename C, typename L, typename T> class TAS {
 
 public:
+  typedef C                    C_t;
+  typedef C_t *                DBM_t;
+  typedef DBMFactory<C_t>      DBMManager_t;
+  typedef DBMset<C_t>          DBMSet_t;
+  typedef C_t                  State_t;
+  typedef StateSet<State_t>    StateSet_t;
+  typedef ClockConstraint<C_t> CS_t;
+
+  typedef L L_t;
+
+  typedef T T_t;
+
+  typedef TA<C, L, T> TA_t;
+
+  typedef StateManager<C_t> StateManager_t;
+
+  typedef TAS<C, L, T> TAS_t;
+
   TAS() {
     clock_max_value.push_back( 0 );
     clock_num = 0;
   }
-  TAS<C, L, T> &operator+=( const TA_t &ta ) {
+  TAS_t &operator+=( const TA_t &ta ) {
 
     TA_t ta1 = transfrom( ta );
     tas.push_back( ta1 );
@@ -219,17 +211,17 @@ public:
     return *this;
   }
 
-  int           getComponentNum() const { return tas.size(); }
-  TAS<C, L, T> &operator+=( Channel &ch ) {
+  TAS_t &operator+=( Channel &ch ) {
     channels.push_back( ch );
     return *this;
   }
 
-  TAS<C, L, T> &operator+=( Counter &c ) {
+  TAS_t &operator+=( Counter &c ) {
     counters.push_back( c );
     return *this;
   }
 
+  int             getComponentNum() const { return tas.size(); }
   StateManager<C> getStateManager() const {
 
     bool      hasChannel = !channels.empty();
@@ -316,9 +308,18 @@ private:
   }
 };
 
-typedef StateManager<C_t> StateManager_t;
+typedef int C_t1;
 
-typedef TAS<C_t, L_t, T_t> TAS_t;
+typedef DBMFactory<C_t1> DBMManager_t1;
+typedef DBMset<C_t1>     DBMSet_t1;
+
+typedef ClockConstraint<C_t1> CS_t1;
+
+typedef Location<C_t1, CS_t1, DBMManager_t1, DBMSet_t1> L_t1;
+
+typedef Transition<C_t1, CS_t1, DBMManager_t1, DBMSet_t1> T_t1;
+
+typedef TAS<C_t1, L_t1, T_t1> INT_TAS_t;
 
 } // namespace graphsat
 

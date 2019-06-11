@@ -35,30 +35,32 @@
 using std::vector;
 using namespace graphsat;
 
+typedef ReachableSet<INT_TAS_t> R_t;
+
 void example1( void ) {
   // x:1 y:2 z:3
-  vector<T_t> es;
-  vector<L_t> ls;
-  L_t         S0( 0 );
-  L_t         S1( 1 );
-  L_t         S2( 2 );
-  L_t         S3( 3 );
+  vector<typename INT_TAS_t::T_t> es;
+  vector<typename INT_TAS_t::L_t> ls;
+  typename INT_TAS_t::L_t         S0( 0 );
+  typename INT_TAS_t::L_t         S1( 1 );
+  typename INT_TAS_t::L_t         S2( 2 );
+  typename INT_TAS_t::L_t         S3( 3 );
 
-  T_t            e01( 0, 1 );
-  pair<int, int> rest1( 3, 0 );
+  typename INT_TAS_t::T_t e01( 0, 1 );
+  pair<int, int>          rest1( 3, 0 );
   e01.addReset( rest1 );
   // e01.reset.push_back( 3 ); // z -->0
-  T_t e12( 1, 2 );
+  typename INT_TAS_t::T_t e12( 1, 2 );
 
-  CS_t cs1( 0, 2, -2, true ); // 0-y < -2
+  typename INT_TAS_t::CS_t cs1( 0, 2, -2, true ); // 0-y < -2
   e12 += cs1;
   pair<int, int> rest2( 2, 0 );
   e12.addReset( rest2 ); // y --> 0
 
-  T_t e23( 2, 3 );
+  typename INT_TAS_t::T_t e23( 2, 3 );
 
-  CS_t cs2( 1, 3, 1, true ); // x-z < 1
-  CS_t cs3( 3, 2, 1, true ); // z-y < 1
+  typename INT_TAS_t::CS_t cs2( 1, 3, 1, true ); // x-z < 1
+  typename INT_TAS_t::CS_t cs3( 3, 2, 1, true ); // z-y < 1
   e23 += cs2;
   // e23.cons.push_back( cs2 );
   e23 += cs3;
@@ -72,9 +74,9 @@ void example1( void ) {
   es.push_back( e01 );
   es.push_back( e12 );
   es.push_back( e23 );
-  TA_t tma1( ls, es, 0, 3 );
+  typename INT_TAS_t::TA_t tma1( ls, es, 0, 3 );
 
-  TAS_t sys;
+  INT_TAS_t sys;
   sys += tma1;
   R_t data( sys );
 
@@ -90,27 +92,27 @@ void example1( void ) {
 }
 
 void example50() {
-  vector<T_t> es;
-  vector<L_t> ls;
-  L_t         L0( 0 );
-  L_t         L1( 1 );
+  vector<typename INT_TAS_t::T_t> es;
+  vector<typename INT_TAS_t::L_t> ls;
+  typename INT_TAS_t::L_t         L0( 0 );
+  typename INT_TAS_t::L_t         L1( 1 );
 
-  T_t            E00a( 0, 0 );
-  pair<int, int> reset1( 2, 0 );
-  E00a.addReset( reset1 );    // y-->0
-  CS_t cs1( 2, 0, 2, false ); // y<=2
+  typename INT_TAS_t::T_t E00a( 0, 0 );
+  pair<int, int>          reset1( 2, 0 );
+  E00a.addReset( reset1 );                        // y-->0
+  typename INT_TAS_t::CS_t cs1( 2, 0, 2, false ); // y<=2
   E00a += cs1;
 
-  T_t            E00b( 0, 0 );
-  pair<int, int> reset2( 1, 0 );
-  E00b.addReset( reset2 );    // x-->0
-  CS_t cs2( 1, 0, 2, false ); // x<=2
+  typename INT_TAS_t::T_t E00b( 0, 0 );
+  pair<int, int>          reset2( 1, 0 );
+  E00b.addReset( reset2 );                        // x-->0
+  typename INT_TAS_t::CS_t cs2( 1, 0, 2, false ); // x<=2
   E00b += cs2;
 
-  T_t E01( 0, 1 );
+  typename INT_TAS_t::T_t E01( 0, 1 );
 
-  CS_t cs3( 2, 0, 2, false );  // y<=2
-  CS_t cs4( 0, 1, -4, false ); // x>=4
+  typename INT_TAS_t::CS_t cs3( 2, 0, 2, false );  // y<=2
+  typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -123,9 +125,9 @@ void example50() {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  TA_t tma1( ls, es, 0, 2 );
+  typename INT_TAS_t::TA_t tma1( ls, es, 0, 2 );
   tma1.addOnePara();
-  TAS_t sys;
+  INT_TAS_t sys;
 
   sys += tma1;
   R_t               data( sys );
@@ -139,27 +141,27 @@ void example50() {
 }
 
 void example2( void ) {
-  vector<T_t> es;
-  vector<L_t> ls;
-  L_t         L0( 0 );
-  L_t         L1( 1 );
+  vector<typename INT_TAS_t::T_t> es;
+  vector<typename INT_TAS_t::L_t> ls;
+  typename INT_TAS_t::L_t         L0( 0 );
+  typename INT_TAS_t::L_t         L1( 1 );
 
-  T_t            E00a( 0, 0 );
-  pair<int, int> reset1( 2, 0 );
-  E00a.addReset( reset1 );    // y-->0
-  CS_t cs1( 2, 0, 2, false ); // y<=2
+  typename INT_TAS_t::T_t E00a( 0, 0 );
+  pair<int, int>          reset1( 2, 0 );
+  E00a.addReset( reset1 );                        // y-->0
+  typename INT_TAS_t::CS_t cs1( 2, 0, 2, false ); // y<=2
   E00a += cs1;
 
-  T_t            E00b( 0, 0 );
-  pair<int, int> reset2( 1, 0 );
-  E00b.addReset( reset2 );    // x-->0
-  CS_t cs2( 1, 0, 2, false ); // x<=2
+  typename INT_TAS_t::T_t E00b( 0, 0 );
+  pair<int, int>          reset2( 1, 0 );
+  E00b.addReset( reset2 );                        // x-->0
+  typename INT_TAS_t::CS_t cs2( 1, 0, 2, false ); // x<=2
   E00b += cs2;
 
-  T_t E01( 0, 1 );
+  typename INT_TAS_t::T_t E01( 0, 1 );
 
-  CS_t cs3( 2, 0, 2, false );  // y<=2
-  CS_t cs4( 0, 1, -4, false ); // x>=4
+  typename INT_TAS_t::CS_t cs3( 2, 0, 2, false );  // y<=2
+  typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -172,9 +174,9 @@ void example2( void ) {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  TA_t tma1( ls, es, 0, 2 );
+  typename INT_TAS_t::TA_t tma1( ls, es, 0, 2 );
   tma1.addOnePara();
-  TAS_t sys;
+  INT_TAS_t sys;
 
   sys += tma1;
   R_t               data( sys );
@@ -194,9 +196,9 @@ void example3( void ) {}
 std::default_random_engine         generator;
 std::uniform_int_distribution<int> distribution( 0, 1000 );
 
-State_t *randV( int n, int s ) {
+INT_TAS_t::C_t *randV( int n, int s ) {
 
-  int *v = new int[ n ];
+  INT_TAS_t::C_t *v = new INT_TAS_t::C_t[ n ];
 
   for ( int i = 0; i < n; i++ ) {
     v[ i ] = distribution( generator );
@@ -206,13 +208,13 @@ State_t *randV( int n, int s ) {
 }
 
 void example5( void ) {
-  StateSet<State_t> sets;
-  vector<State_t *> vecs;
-  int               n   = 20;
-  int               s   = 4;
-  int               num = 1000;
+  StateSet<INT_TAS_t::C_t> sets;
+  vector<INT_TAS_t::C_t *> vecs;
+  int                      n   = 20;
+  int                      s   = 4;
+  int                      num = 1000;
   for ( int i = 0; i < num; i++ ) {
-    State_t *temp = randV( n, s );
+    INT_TAS_t::C_t *temp = randV( n, s );
     if ( sets.add( temp ) ) {
       vecs.push_back( temp );
     } else {
@@ -246,21 +248,21 @@ void example6() {
 }
 
 void fisher( int n = 2 ) {
-  vector<T_t> es;
-  vector<L_t> ls;
-  int         k = 2;
+  vector<typename INT_TAS_t::T_t> es;
+  vector<typename INT_TAS_t::L_t> ls;
+  int                             k = 2;
 
-  L_t A( 0 );
+  typename INT_TAS_t::L_t A( 0 );
 
-  L_t  req( 1 );
-  CS_t cs1( 1, 0, k, false ); // x <= k
+  typename INT_TAS_t::L_t  req( 1 );
+  typename INT_TAS_t::CS_t cs1( 1, 0, k, false ); // x <= k
   req += cs1;
 
-  L_t wait( 2 );
+  typename INT_TAS_t::L_t wait( 2 );
 
-  L_t cs( 3 );
+  typename INT_TAS_t::L_t cs( 3 );
 
-  T_t A_req( 0, 1 );
+  typename INT_TAS_t::T_t A_req( 0, 1 );
 
   DiaFreeCounterConstraint *ccs1 =
       CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint(
@@ -271,8 +273,8 @@ void fisher( int n = 2 ) {
   pair<int, int> reset1( 1, 0 ); // x-->0
   A_req.addReset( reset1 );
 
-  T_t  req_wait( 1, 2 );
-  CS_t cs2( 1, 0, k, false ); // x <= k
+  typename INT_TAS_t::T_t  req_wait( 1, 2 );
+  typename INT_TAS_t::CS_t cs2( 1, 0, k, false ); // x <= k
   req_wait += cs2;
 
   pair<int, int> reset2( 1, 0 ); // x-->0
@@ -283,22 +285,22 @@ void fisher( int n = 2 ) {
 
   req_wait.addCounterAction( caction );
 
-  T_t wait_req( 2, 1 );
+  typename INT_TAS_t::T_t wait_req( 2, 1 );
 
   pair<int, int> reset3( 1, 0 ); // x-->0
   wait_req.addReset( reset3 );
   wait_req.addCounterCons( ccs1 ); // id==0
 
-  T_t wait_cs( 2, 3 );
+  typename INT_TAS_t::T_t wait_cs( 2, 3 );
 
   DiaFreeCounterPConstraint *ccs2 =
       CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(
           0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  CS_t cs3( 0, 1, -k, true ); // x> k
+  typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
   wait_cs += cs3;
 
-  T_t cs_A( 3, 0 );
+  typename INT_TAS_t::T_t cs_A( 3, 0 );
 
   SimpleCounterAction *caction1 =
       CounterActionFactory::getInstance().createSimpleCounterAction(
@@ -316,15 +318,15 @@ void fisher( int n = 2 ) {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  TA_t tma1( ls, es, 0, 1 );
+  typename INT_TAS_t::TA_t tma1( ls, es, 0, 1 );
   // tma1.addOnePara();
-  TAS_t sys;
+  INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
-    TA_t tma2 = tma1;
+    typename INT_TAS_t::TA_t tma2 = tma1;
     tma2.addOnePara( i );
     sys += tma2;
   }
-  //  TAS_t   sys = n * tma1;
+  //  INT_TAS_t   sys = n * tma1;
   Counter counter( 0, 100 );
   sys += counter;
 
@@ -345,7 +347,7 @@ void fisher( int n = 2 ) {
 }
 void fisher1() {
   UppaalParser parser( "example/fischer.xml" );
-  TAS_t        sys = parser.getSYS();
+  INT_TAS_t    sys = parser.getSYS();
   R_t          data( sys );
 
   Reachability<R_t> reacher( data );
@@ -376,7 +378,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 2 );
+  fisher( 6 );
   return 0;
   //  example5();
   //  return 0;
@@ -389,14 +391,14 @@ int main( int argc, const char *argv[] ) {
   example1();
   example2();
   return 0;
-  CS_t cons( 1, 2, 2, false );
+  typename INT_TAS_t::CS_t cons( 1, 2, 2, false );
 
   cout << "constrain: " << cons << endl;
 
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
-  DBMManager_t exampleDBM( 4 );
-  C_t *        D = exampleDBM.randomDBM();
+  typename INT_TAS_t::DBMManager_t exampleDBM( 4 );
+  typename INT_TAS_t::C_t *        D = exampleDBM.randomDBM();
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
 
   cout << "========================" << endl;
@@ -408,15 +410,17 @@ int main( int argc, const char *argv[] ) {
   cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
   std::cout << "Hello, World!\n";
 
-  C_t *D1 = exampleDBM.createDBM();
+  typename INT_TAS_t::C_t *D1 = exampleDBM.createDBM();
   cout << "matrix dump :\n" << exampleDBM.dump( D1 ) << endl;
-  C_t *D2 = exampleDBM.reset( D1, 1, (C_t) 10 );
+  typename INT_TAS_t::C_t *D2 =
+      exampleDBM.reset( D1, 1, (typename INT_TAS_t::C_t) 10 );
   cout << "matrix dump :\n" << exampleDBM.dump( D2 ) << endl;
 
   // cout<<"constrain: "<<cons<<endl;
 
   // //C_t*  D3=exampleDBM.And( D2, cons.neg( ));
-  C_t *D3 = exampleDBM.reset( D2, 2, (C_t) 10 );
+  typename INT_TAS_t::C_t *D3 =
+      exampleDBM.reset( D2, 2, (typename INT_TAS_t::C_t) 10 );
 
   cout << "matrix dump :\n" << exampleDBM.dump( D3 ) << endl;
   /*

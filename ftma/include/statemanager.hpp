@@ -20,7 +20,7 @@ namespace graphsat {
 
 using std::vector;
 
-typedef int State_t;
+// typedef int C;
 
 template <typename C> class StateManager {
 
@@ -67,16 +67,16 @@ public:
 
   bool hasChannel() const { return haveChannel; }
 
-  int getLoc( int component, const State_t *const state ) const {
+  int getLoc( int component, const C *const state ) const {
     if ( isCommitComp( component, state ) ) { // commit location
       return getCommitLoc( component, state );
     }
     return state[ component ];
   }
 
-  State_t *newState() const {
+  C *newState() const {
 
-    State_t *re_state = new State_t[ stateLen ];
+    C *re_state = new C[ stateLen ];
 
     fill( re_state, re_state + clock_start_loc, 0 );
 
@@ -84,17 +84,17 @@ public:
 
     return re_state;
   }
-  void copy( State_t *des_state, const State_t *const source_state ) const {
+  void copy( C *des_state, const C *const source_state ) const {
     memcpy( des_state, source_state, stateLen * sizeof( C ) );
   }
 
-  State_t *newState( const State_t *s ) const {
-    State_t *re = new State_t[ stateLen ];
-    memcpy( re, s, stateLen * sizeof( State_t ) );
+  C *newState( const C *s ) const {
+    C *re = new C[ stateLen ];
+    memcpy( re, s, stateLen * sizeof( C ) );
     return re;
   }
 
-  void destroyState( State_t *s ) const { delete[] s; }
+  void destroyState( C *s ) const { delete[] s; }
 
   inline int                  getComponentNum() const { return component_num; }
   inline const DBMFactory<C> &getClockManager() const { return dbmManager; }
@@ -103,35 +103,35 @@ public:
   }
 
   void norm( const C *const dbm, vector<C *> &re_vec ) const {
-    State_t *newDBM = dbmManager.createDBM( dbm );
+    C *newDBM = dbmManager.createDBM( dbm );
     dbmManager.norm( newDBM, re_vec );
   }
 
   void norm( C *dbm ) { dbmManager.norm( dbm ); }
 
-  inline C *getDBM( State_t *state ) const { return state + clock_start_loc; }
+  inline C *getDBM( C *state ) const { return state + clock_start_loc; }
 
-  inline const C *getDBM( const State_t *const state ) const {
+  inline const C *getDBM( const C *const state ) const {
     return state + clock_start_loc;
   }
 
-  inline C *getCounterValue( State_t *state ) const {
+  inline C *getCounterValue( C *state ) const {
     return state + counter_start_loc;
   }
 
-  inline const C *getCounterValue( const State_t *const state ) const {
+  inline const C *getCounterValue( const C *const state ) const {
     return state + counter_start_loc;
   }
 
-  inline void andImpl( const ClockConstraint<C> &cs, State_t *state ) const {
+  inline void andImpl( const ClockConstraint<C> &cs, C *state ) const {
     return dbmManager.andImpl( getDBM( state ), cs );
   }
-  inline bool isConsistent( State_t *state ) const {
+  inline bool isConsistent( C *state ) const {
     return dbmManager.isConsistent( getDBM( state ) );
   }
 
-  inline vector<int> blockComponents( const int            chid,
-                                      const State_t *const state ) const {
+  inline vector<int> blockComponents( const int      chid,
+                                      const C *const state ) const {
     vector<int> reBlockComponents;
     for ( int i = 0; i < component_num; i++ ) {
 
@@ -147,9 +147,8 @@ public:
     return reBlockComponents;
   }
 
-  bool add( const int component_id, const int target,
-            StateSet<State_t> &stateSet, const State_t *const state, C *dbm,
-            bool isCommit, State_t *re_state ) const {
+  bool add( const int component_id, const int target, StateSet<C> &stateSet,
+            const C *const state, C *dbm, bool isCommit, C *re_state ) const {
 
     memcpy( re_state, state, clock_start_loc * sizeof( C ) );
 
@@ -168,8 +167,8 @@ public:
     return true;
   }
 
-  bool add( const int component_id, const int target,
-            StateSet<State_t> &stateSet, State_t *state, bool isCommit ) const {
+  bool add( const int component_id, const int target, StateSet<C> &stateSet,
+            C *state, bool isCommit ) const {
 
     state[ component_id ] = target;
     if ( isCommit ) {
@@ -183,18 +182,18 @@ public:
     return true;
   }
 
-  inline bool isCommitComp( const int            component_id,
-                            const State_t *const state ) const {
+  inline bool isCommitComp( const int      component_id,
+                            const C *const state ) const {
     return state[ component_id ] < 0;
   }
 
   inline void setCommitState( const int component_id, const int target,
-                              State_t *state ) const {
+                              C *state ) const {
     state[ component_id ] = -1 - state[ component_id ];
   }
 
-  inline int getCommitLoc( const int            component_id,
-                           const State_t *const state ) const {
+  inline int getCommitLoc( const int      component_id,
+                           const C *const state ) const {
     return -( state[ component_id ] ) - 1;
   }
   bool hasDiffCons() const { return !differenceConstraints.empty(); }

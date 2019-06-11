@@ -34,8 +34,8 @@ namespace graphsat {
 using namespace std;
 
 #define ADD( x, y )                                                            \
-  ( x >= MAX_INT || y >= MAX_INT ) ? MAX_INT                                   \
-                                   : ( x + y - ( ( x & 1 ) | ( y & 1 ) ) );
+  ( (x) >= MAX_INT || (y) >= MAX_INT ) ? MAX_INT                        \
+  : ( (x) + (y) - ( ( (x) & 1 ) | ( (y) & 1 ) ) );
 
 #define LOC( row, col ) ( row ) * ( clock_num ) + ( col )
 

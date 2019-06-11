@@ -44,10 +44,8 @@
 
 %union{
   int intVal;
-  //  string *identifier;
   vector<string> * str_vec_pointer;
   COMP_OPERATOR com_op;
-  // CS_t* cs_t;
   
  }
 
@@ -65,7 +63,6 @@
 %type<str_vec_pointer> identifier_list
 
 %type<com_op> compare_relation
-//%type<cs_t > atomic_constraint
 
 %token STRING_LITERAL    URGENT BROADCAST META
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -167,7 +164,7 @@ IDENTIFIER compare_relation  const_expression
   const  TYPE_T type=getType( symbol_table[$1]);
   if( type==CLOCK_T){
     int clock_id=data->getId( CLOCK_STR, symbol_table[$1])+1; //CLOCK ID START FROM 1
-    cs=new CS_t(clock_id, 0,  $2, $3 ); //x< c
+    cs=new      INT_TAS_t::CS_t(clock_id, 0,  $2, $3 ); //x< c
     data->addPointer( CLOCK_CS, cs);
   }
   else if(type==COUNTER_T ){
@@ -193,7 +190,7 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
   if(getType( symbol_table[$1])==CLOCK_T &&getType( symbol_table[$3])==CLOCK_T  ){
     int clock_id1=data->getId( CLOCK_STR, symbol_table[$1])+1;
     int clock_id2=data->getId( CLOCK_STR, symbol_table[$3])+1;
-    CS_t *cs=new CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
+    INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
     data->addPointer( CLOCK_CS, cs);                     
   }
   else if(getType( symbol_table[$1])==COUNTER_T &&getType( symbol_table[$3])==COUNTER_T  ){

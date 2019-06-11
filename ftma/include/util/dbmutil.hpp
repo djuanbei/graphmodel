@@ -85,27 +85,27 @@ enum TYPE_T { CLOCK_T, COUNTER_T, PARAMETER_T, NO_T };
  *  Both have compare < and <=
  *
  */
-
-template <typename C> C getMAX_INT( const C c ) {
+template <typename C> inline C getMAX_INT( const C c ) {
   return std::numeric_limits<C>::max() / 2 - 2;
 }
 
-template <typename C> C add123( const C x, const C y ) {
-  static C MAX_INT = getMAX_INT( x );
-  if ( x >= MAX_INT || y >= MAX_INT ) {
-    return MAX_INT;
-  }
-  return x + y - ( ( x & 1 ) | ( y & 1 ) );
-}
+// template <typename C> C add123( const C x, const C y ) {
+//   static C MAX_INT = getMAX_INT( x );
+//   if ( x >= MAX_INT || y >= MAX_INT ) {
+//     return MAX_INT;
+//   }
+//   return x + y - ( ( x & 1 ) | ( y & 1 ) );
+// }
 
-template <typename C> C getMatrixValue( C realRight, bool isStrct = true ) {
+template <typename C> inline C getMatrixValue( C realRight, bool isStrct = true ) {
   C right = realRight * 2;
   if ( !isStrct ) {
     right = right | 1;
   }
   return right;
 }
-template <typename C> bool isStrict( const C c ) { return ( c & 1 ) == 0; }
+
+template <typename C> inline bool isStrict( const C c ) { return ( c & 1 ) == 0; }
 
 template <typename C> std::string getComp( const C x ) {
   if ( x & 1 ) {
@@ -115,9 +115,9 @@ template <typename C> std::string getComp( const C x ) {
   }
 }
 
-template <typename C> C getRight( const C c ) { return c >> 1; }
+template <typename C> inline  C getRight( const C c ) { return c >> 1; }
 
-template <typename C> C negMatrixValue( C matrix_value ) {
+template <typename C> inline  C negMatrixValue( C matrix_value ) {
   bool strict = isStrict( matrix_value );
 
   return getMatrixValue( -getRight( matrix_value ), strict );

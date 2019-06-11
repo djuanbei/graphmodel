@@ -104,7 +104,7 @@ public:
    * @return
    */
   bool ready( const int component, const StateManager<C> &manager,
-              const State_t *const state ) const {
+              const C *const state ) const {
     if ( !guards.empty() ) {
 
       const D &dbmManager = manager.getClockManager();
@@ -143,7 +143,7 @@ public:
    */
 
   void operator()( const int component, const StateManager<C> &manager,
-                   State_t *re_state ) const {
+                   C *re_state ) const {
     assert( ready( component, manager, re_state ) );
 
     const D &dbmManager = manager.getClockManager();

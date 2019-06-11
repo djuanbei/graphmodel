@@ -74,14 +74,14 @@ public:
 
     while ( !data.waitSet.empty() ) {
 
-      State_t *state = data.waitSet.front();
+      typename ReachableSet::C_t *state = data.waitSet.front();
       data.waitSet.pop_front();
 #ifdef CHECK_MEMORY
 
       if ( data.waitSet.size() > 100 ) {
         int num = data.waitSet.size() - 100;
         for ( int i = 0; i < num; i++ ) {
-          State_t *temp_state = data.waitSet.front();
+          typename ReachableSet::C_t *temp_state = data.waitSet.front();
           data.waitSet.pop_front();
           delete[] temp_state;
         }
@@ -99,8 +99,8 @@ public:
   }
 
 private:
-  ReachableSet &data;
-  const TAS_t & sys;
+  ReachableSet &                      data;
+  const typename ReachableSet::SYS_t &sys;
 };
 } // namespace graphsat
 
