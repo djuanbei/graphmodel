@@ -28,6 +28,8 @@
 
 #include "discretestate.hpp"
 
+#include "util/datacompression.h"
+
 #include <cstdint>
 #include <iostream>
 #include <limits>
@@ -372,7 +374,34 @@ void testOP() {
   }
 }
 
+void testcompression( ){
+  const  int len=10;
+  Compression data( len);
+  int low=-6;
+  int up=10;
+  for( int i=0; i< len; i++){
+    data.setBound( i, low, up);
+  }
+  std::default_random_engine         generator;
+  std::uniform_int_distribution<int> distribution( low, up-1 );
+  data.update( );
+  int d[ len];
+  for( int i=0; i< 10000; i++){
+    for( int j=0; j< len; j++){
+      d[ j]=distribution( generator );
+    }
+    uint * cd=data.encode( d);
+    int *dd=data.decode( cd);
+    for( int j=0; j< len; j++){
+      assert( dd[ j]==d[ j]);
+    }
+  }
+  
+}
+
 int main( int argc, const char *argv[] ) {
+  testcompression( );
+  return 0;
   //  testOP( );
   //  return 9;
   //  example2( );

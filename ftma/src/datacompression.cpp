@@ -4,24 +4,34 @@ namespace graphsat {
 
 uint *Compression::encode( int *data ) {
   fill( uintValue.begin(), uintValue.end(), 0 );
-
+  int j=0;
+  uint base=1;
   for ( int i = 0; i < row_len; i++ ) {
     assert( data[ i ] >= bounds[ i ].first );
-    assert( data[ i ] <= bounds[ i ].second );
-    uint temp = data[ i ] - bounds[ i ].first;
-    temp <<= shift[ i ].second;
-    uintValue[ shift[ i ].first ] += temp;
+    assert( data[ i ] < bounds[ i ].second );
+    if(shift[ i] ){
+      j++;
+      base=1;
+    }
+    uintValue[ j]+=(data[ i]-bounds[ i].first)*base;
+    base*=domain[i];
   }
   return &( uintValue[ 0 ] );
 }
 
 int *Compression::decode( uint *data ) {
+  int j=0;
+  uint dummy=data[ 0];
   for ( int i = 0; i < row_len; i++ ) {
-    uint temp = data[ shift[ i ].first ];
-    int  high = shift[ i ].second + nbit[ i ];
-    temp <<= sizeof( uint ) - high;
-    temp >>= ( sizeof( uint ) - nbit[ i ] );
-    intValue[ i ] = temp;
+    if( shift[ i]){
+      j++;
+      dummy=data[ j];
+    }
+    
+    intValue[ i ] = (dummy% domain[ i])+bounds[ i].first;
+    
+    dummy/= domain[ i];
+
   }
   return &( intValue[ 0 ] );
 }

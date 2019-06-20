@@ -26,14 +26,14 @@ public:
   Compression( int len )
       : row_len( len )
       , bounds( len )
-      , nbit( len, sizeof( uint ) )
+      , domain( len, numeric_limits<uint>::max( )  )
       , uintValue( len )
       , intValue( len )
-      , shift( len ) {
+      , shift( len, true ) {
     for ( int i = 0; i < len; i++ ) {
       bounds[ i ].first  = numeric_limits<int>::min();
       bounds[ i ].second = numeric_limits<int>::max();
-      shift[ i ]         = make_pair( i, 0 );
+      //      shift[ i ]         = make_pair( i, 0 );
     }
   }
 
@@ -42,25 +42,19 @@ public:
     bounds[ id ].first  = low;
     bounds[ id ].second = up;
     uint bound          = up - low;
-    int  len            = log2( bound );
-    uint temp           = 1 << len;
-    if ( bound > temp ) {
-      len++;
-    }
-    nbit[ id ] = len;
+    domain[ id ] = bound;
+
   }
   void update() {
-    int uintId    = 0;
-    int temp      = 0;
-    int uint_size = sizeof( uint );
-
+    fill(shift.begin( ),shift.end( ), false );
+    
+    uint dummy=numeric_limits<uint>::max( );
     for ( int i = 0; i < row_len; i++ ) {
-      if ( temp + nbit[ i ] >= uint_size ) {
-        uintId++;
-        temp = 0;
+      if(dummy<domain[ i ] ){
+        shift[ i]=true;
+        dummy=numeric_limits<uint>::max( );
       }
-      shift[ i ] = make_pair( uintId, temp );
-      temp += nbit[ i ];
+      dummy/=domain[ i ];
     }
   }
 
@@ -76,10 +70,10 @@ private:
    */
 
   vector<pair<int, int>> bounds;
-  vector<int>            nbit;
+  vector<uint>            domain;
   vector<uint>           uintValue;
   vector<int>            intValue;
-  vector<pair<int, int>> shift;
+  vector<bool> shift;
 };
 } // namespace graphsat
 
