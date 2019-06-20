@@ -26,6 +26,8 @@ template <typename C> class StateManager {
 
   /**
    * state is [loc, channel_state, counter_state, clock_state]
+   * is the corresponding loc is negative integer then this location a commit location
+   * the corresponding channel_state is the block channel. The channel state is positive then it is a send channel, and when the value is nonegative integer it is a receive channel.
    *
    */
 public:

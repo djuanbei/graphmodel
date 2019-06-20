@@ -12,17 +12,20 @@
 #define CHANNEL_H
 namespace graphsat {
 
-enum CHANNEL_TYPE { ONE2ONE, ONE2ALL };
+enum CHANNEL_TYPE { ONE2ONE_CH, BROADCAST_CH };
 
 enum CHANNEL_ACTION { CHANNEL_SEND, CHANNEL_RECEIVE };
+
 
 struct Channel {
   int            id; // start from 1
   CHANNEL_TYPE   type;
+  bool isUrgent;  
   CHANNEL_ACTION action;
+
   Channel()
       : id( -1 )
-      , type( ONE2ONE ) {}
+      , type( ONE2ONE_CH ), isUrgent( false) {}
 };
 
 } // namespace graphsat

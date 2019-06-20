@@ -273,7 +273,7 @@ variable_declaration
       
     case 3:
       for( auto v: *$2){
-        data->addValue(CHANNEL_STR, v, ONE2ONE);
+        data->addValue(CHANNEL_STR, v, ONE2ONE_CH);
       }
       delete $2;
       break ;
@@ -284,7 +284,7 @@ variable_declaration
 | BROADCAST CHAN identifier_list ';'
 {
   for( auto v: *$3){
-    data->addValue(CHANNEL_STR, v, ONE2ALL);  
+    data->addValue(CHANNEL_STR, v, BROADCAST_CH);  
   }
   delete $3;
 }
@@ -292,7 +292,7 @@ variable_declaration
 | BROADCAST CHAN IDENTIFIER '[' const_expression  ']' ';'
 {
   for( int i=0; i< $5; i++ ){
-    data->addValue(CHANNEL_STR, symbol_table[$3], ONE2ALL);  
+    data->addValue(CHANNEL_STR, symbol_table[$3], BROADCAST_CH);  
   }
 }
 

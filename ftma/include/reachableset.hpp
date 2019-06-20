@@ -196,7 +196,7 @@ private:
       waitComponents = manager.blockComponents( channel.id, state );
     }
     if ( !waitComponents.empty() ) {
-      if ( channel.type == ONE2ONE ) {
+      if ( channel.type == ONE2ONE_CH ) {
         std::uniform_int_distribution<int> distribution(
             0, waitComponents.size() - 1 );
         int id                 = distribution( generator );
@@ -205,7 +205,7 @@ private:
         if ( unBlockOne( block_component_id, link, state, prop ) ) {
           return true;
         }
-      } else if ( channel.type == ONE2ALL ) {
+      } else if ( channel.type == BROADCAST_CH ) {
         for ( auto id : waitComponents ) {
           int block_component_id = waitComponents[ id ];
           if ( unBlockOne( block_component_id, link, state, prop ) ) {
