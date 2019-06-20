@@ -33,7 +33,7 @@ public:
     for ( int i = 0; i < len; i++ ) {
       bounds[ i ].first  = numeric_limits<int>::min();
       bounds[ i ].second = numeric_limits<int>::max();
-      //      shift[ i ]         = make_pair( i, 0 );
+
     }
   }
 
@@ -43,16 +43,19 @@ public:
     bounds[ id ].second = up;
     uint bound          = up - low;
     domain[ id ] = bound;
-
+  }
+  int getCompressionSize( ) const{
+    return compressionSize;
   }
   void update() {
     fill(shift.begin( ),shift.end( ), false );
-    
+    compressionSize=1;
     uint dummy=numeric_limits<uint>::max( );
     for ( int i = 0; i < row_len; i++ ) {
       if(dummy<domain[ i ] ){
         shift[ i]=true;
         dummy=numeric_limits<uint>::max( );
+        compressionSize++;
       }
       dummy/=domain[ i ];
     }
@@ -74,6 +77,7 @@ private:
   vector<uint>           uintValue;
   vector<int>            intValue;
   vector<bool> shift;
+  int compressionSize;
 };
 } // namespace graphsat
 
