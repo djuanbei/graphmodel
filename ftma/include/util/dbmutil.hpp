@@ -97,7 +97,8 @@ template <typename C> inline C getMAX_INT( const C c ) {
 //   return x + y - ( ( x & 1 ) | ( y & 1 ) );
 // }
 
-template <typename C> inline C getMatrixValue( C realRight, bool isStrct = true ) {
+template <typename C>
+inline C getMatrixValue( C realRight, bool isStrct = true ) {
   C right = realRight * 2;
   if ( !isStrct ) {
     right = right | 1;
@@ -105,7 +106,9 @@ template <typename C> inline C getMatrixValue( C realRight, bool isStrct = true 
   return right;
 }
 
-template <typename C> inline bool isStrict( const C c ) { return ( c & 1 ) == 0; }
+template <typename C> inline bool isStrict( const C c ) {
+  return ( c & 1 ) == 0;
+}
 
 template <typename C> std::string getComp( const C x ) {
   if ( x & 1 ) {
@@ -115,9 +118,9 @@ template <typename C> std::string getComp( const C x ) {
   }
 }
 
-template <typename C> inline  C getRight( const C c ) { return c >> 1; }
+template <typename C> inline C getRight( const C c ) { return c >> 1; }
 
-template <typename C> inline  C negMatrixValue( C matrix_value ) {
+template <typename C> inline C negMatrixValue( C matrix_value ) {
   bool strict = isStrict( matrix_value );
 
   return getMatrixValue( -getRight( matrix_value ), strict );
