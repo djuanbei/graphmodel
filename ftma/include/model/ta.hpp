@@ -224,7 +224,7 @@ public:
   int             getComponentNum() const { return tas.size(); }
   StateManager<C> getStateManager() const {
 
-    bool      hasChannel = !channels.empty();
+    //    bool      hasChannel = !channels.empty();
     vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
     for ( int i = 0; i < clock_num + 1; i++ ) {
@@ -236,10 +236,14 @@ public:
       temp_clock_upperbound[ i + clock_num + 1 ] =
           getMatrixValue( -clock_max_value[ i ], true );
     }
+    vector<int> node_n;
+    for( size_t i=0; i< tas.size(); i++){
+      node_n.push_back( tas[ i].graph.getVertex_num( ));
+    }
 
     StateManager<C> re( tas.size(), counters.size(), clock_num,
-                        temp_clock_upperbound, differenceCons, parameters,
-                        hasChannel );
+                        temp_clock_upperbound, differenceCons, parameters, node_n,
+                        channels.size( ) );
 
     return re;
   }

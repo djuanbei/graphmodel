@@ -123,8 +123,7 @@ public:
      * check whether has element is set has same hash_value
      *
      */
-
-n    for ( size_t i = 0; i < bodyPartElements[ id ].size();
+    for ( size_t i = 0; i < bodyPartElements[ id ].size();
           i += body_part_len ) {
       if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
         return false;

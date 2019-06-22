@@ -87,20 +87,23 @@ public:
   StateManager() {
 
     component_num = stateLen = counter_start_loc = 0;
-    haveChannel   = false;
+    channel_num=0;
+
   }
 
   StateManager( int comp_num, int counter_num, int clock_num,
                 const vector<C> &                 clockUpperBounds,
                 const vector<ClockConstraint<C>> &edifferenceCons,
-                const vector<Parameter> &ps, bool haveCh ) {
+                const vector<Parameter> &ps, const vector<int> & nodes, int channel_n ) {
  
     component_num         = comp_num;
 
     differenceConstraints = edifferenceCons;
-    haveChannel           = haveCh;
+    nodeNums=nodes;
+    
+    channel_num           = channel_n;
    
-    if ( haveChannel ) {
+    if ( channel_num>0 ) {
       counter_start_loc = 2 * component_num;
       stateLen          = 2 * component_num + counter_num;
     } else {
@@ -121,24 +124,29 @@ public:
 
   int getClockStart() const { return clock_start_loc; }
 
-  // StateConvert<C> getStateConvert( ) const{
-  //   return stateConvert;
-  // }
-  
   Compression<C>  getHeadCompression( ) const{
-    Compression<C> re(clock_start_loc );
-    re.update( );
-    return re;
+    Compression<C> re_comp(clock_start_loc );
+    for( int i=0; i< component_num; i++){
+      re_comp.setBound(i, -nodeNums[ i]-1,nodeNums[ i]+1 );
+    }
+    if(channel_num>0 ){
+      for( int i=0; i< component_num; i++){
+       re_comp.setBound(i+component_num, -channel_num, channel_num+1 );
+      }
+    }
+    
+    re_comp.update( );
+    return re_comp;
   }
   
   Compression<C> getBodyCompression( ) const{
     
-    Compression<C> re(stateLen-clock_start_loc );
-    re.update( );
-    return re;
+    Compression<C> re_comp(stateLen-clock_start_loc );
+    re_comp.update( );
+    return re_comp;
   }
 
-  bool hasChannel() const { return haveChannel; }
+  bool hasChannel() const { return channel_num>0; }
 
   int getLoc( int component, const C *const state ) const {
     if ( isCommitComp( component, state ) ) { // commit location
@@ -274,22 +282,20 @@ public:
   bool hasDiffCons() const { return !differenceConstraints.empty(); }
 
 private:
-  bool haveChannel;
+  bool channel_num;
   int  component_num;
   int  stateLen;
   
   int counter_start_loc;
   int clock_start_loc;
 
-
-
   vector<ClockConstraint<C>> differenceConstraints;
 
   DBMFactory<C> dbmManager;
 
   vector<Parameter> parameters;
+  vector<int> nodeNums;
   
-  //  StateConvert<C> stateConvert;
 
 };
 } // namespace graphsat

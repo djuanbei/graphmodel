@@ -160,7 +160,6 @@ private:
 
       if ( !sys.tas[ component ].transitions[ link ].ready( component, manager,
                                                             state ) ) {
-
         continue;
       }
 
