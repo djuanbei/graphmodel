@@ -376,7 +376,7 @@ void testOP() {
 
 void testcompression( ){
   const  int len=10;
-  Compression data( len);
+  Compression<int> data( len);
   int low=-6;
   int up=10;
   for( int i=0; i< len; i++){
@@ -400,15 +400,15 @@ void testcompression( ){
 }
 
 int main( int argc, const char *argv[] ) {
-  testcompression( );
-  return 0;
+  //  testcompression( );
+  //  return 0;
   //  testOP( );
   //  return 9;
   //  example2( );
   //  return 0;
 
-  //  fisher( 6 );
-  //  return 0;
+  fisher( 2 );
+  return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

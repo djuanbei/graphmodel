@@ -18,9 +18,11 @@ namespace graphsat {
 using std::deque;
 using std::fill;
 using std::vector;
+using std::copy;
+
+
 
 template <typename SYS> class ReachableSet {
-
 public:
   typedef SYS                 SYS_t;
   typedef typename SYS_t::C_t C_t;
@@ -35,10 +37,15 @@ public:
 
     sys.initState( manager, cache_state );
 
-    reachSet.setParam( manager.getStateLen(), manager.getStateStart() );
+    reachSet.setParam( manager.getStateLen(), manager.getClockStart());
+    int bodyLen=manager.getStateLen()-manager.getClockStart();
+    // stateConvert=manager.getStateConvert();
+    stateConvert=    StateConvert<C_t>(manager.getClockStart(),bodyLen, manager.getHeadCompression( ), manager.getBodyCompression( ) );
+    
     if ( manager.getClockManager().isConsistent(
              manager.getDBM( cache_state ) ) ) {
-      reachSet.add( cache_state );
+
+      addToReachableSet(cache_state );
       addToWait( cache_state );
     }
   }
@@ -55,13 +62,18 @@ public:
   }
 
   const SYS &getSYS( void ) const { return sys; }
+  C_t *next( ){
+    C_t * state=waitSet.front();
+    waitSet.pop_front();
+    return state;
+  }
 
   Check_State search( const Property *prop ) {
 
-    typename SYS::StateSet_t::iterator end1 = reachSet.end();
+    StateSet<UINT>::iterator end1 = reachSet.end();
     for ( auto state : reachSet ) {
-
-      if ( isReach( prop, state ) ) {
+      C_t *temp=stateConvert.decode( state);
+      if ( isReach( prop, temp ) ) {
         return TRUE;
       }
     }
@@ -109,8 +121,14 @@ public:
     waitSet.push_back( newState );
   }
 
+  inline bool addToReachableSet( const C_t *const state  ){
+    UINT *temp=stateConvert.encode( state);
+    return reachSet.add( temp);
+  }
+  
+
 private:
-  StateSet<C_t> reachSet;
+  StateSet<UINT> reachSet;
   deque<C_t *>  waitSet;
 
   C_t *                        cache_state;
@@ -120,6 +138,8 @@ private:
   template <typename R1> friend class Reachability;
   int                        component_num;
   std::default_random_engine generator;
+  StateConvert<C_t> stateConvert;
+
 
   bool isReach( const Property *prop, const C_t *const state ) const {
     return ( *prop )( manager, state );
@@ -223,7 +243,7 @@ private:
       }
 
       temp_state[ component ] = link; // block link
-      if ( reachSet.add( temp_state ) ) {
+      if ( addToReachableSet( temp_state ) ) {
         addToWait( temp_state );
       }
       manager.destroyState( temp_state );
@@ -261,7 +281,7 @@ private:
 
         for ( auto dbm : next_dbms ) {
 
-          if ( manager.add( component, target, reachSet, next_state, dbm,
+          if ( manager.add( component, target, reachSet, stateConvert, next_state, dbm,
                             isCommit, cache_state ) ) { // add to reachableSet
             addToWait( cache_state );
             if ( isReach( prop, cache_state ) ) {
@@ -275,7 +295,7 @@ private:
         }
       } else {
         manager.norm( manager.getDBM( next_state ) );
-        if ( manager.add( component, target, reachSet, next_state,
+        if ( manager.add( component, target, reachSet, stateConvert, next_state,
                           isCommit ) ) { // add to reachableSet
           addToWait( next_state );
           if ( isReach( prop, next_state ) ) {

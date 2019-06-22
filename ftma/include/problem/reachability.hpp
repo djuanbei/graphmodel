@@ -74,15 +74,13 @@ public:
 
     while ( !data.waitSet.empty() ) {
 
-      typename ReachableSet::C_t *state = data.waitSet.front();
-      data.waitSet.pop_front();
+      typename ReachableSet::C_t *state = data.next( );
 #ifdef CHECK_MEMORY
 
       if ( data.waitSet.size() > 100 ) {
         int num = data.waitSet.size() - 100;
         for ( int i = 0; i < num; i++ ) {
-          typename ReachableSet::C_t *temp_state = data.waitSet.front();
-          data.waitSet.pop_front();
+          typename ReachableSet::C_t *temp_state = data.next();
           delete[] temp_state;
         }
       }

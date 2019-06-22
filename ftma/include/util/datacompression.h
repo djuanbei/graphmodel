@@ -15,18 +15,21 @@
 #include <limits>
 #include <vector>
 namespace graphsat {
-typedef unsigned int uint;
+typedef unsigned int UINT;
 using std::make_pair;
 using std::numeric_limits;
 using std::pair;
 using std::vector;
-
+template<typename T>
 class Compression {
 public:
+  Compression( ){
+    row_len=0;
+  }
   Compression( int len )
       : row_len( len )
       , bounds( len )
-      , domain( len, numeric_limits<uint>::max( )  )
+      , domain( len, numeric_limits<UINT>::max( )  )
       , uintValue( len )
       , intValue( len )
       , shift( len, true ) {
@@ -41,7 +44,7 @@ public:
     assert( up > low );
     bounds[ id ].first  = low;
     bounds[ id ].second = up;
-    uint bound          = up - low;
+    UINT bound          = up - low;
     domain[ id ] = bound;
   }
   int getCompressionSize( ) const{
@@ -50,32 +53,63 @@ public:
   void update() {
     fill(shift.begin( ),shift.end( ), false );
     compressionSize=1;
-    uint dummy=numeric_limits<uint>::max( );
+    UINT dummy=numeric_limits<UINT>::max( );
     for ( int i = 0; i < row_len; i++ ) {
       if(dummy<domain[ i ] ){
         shift[ i]=true;
-        dummy=numeric_limits<uint>::max( );
+        dummy=numeric_limits<UINT>::max( );
         compressionSize++;
       }
       dummy/=domain[ i ];
     }
   }
 
-  uint *encode( int *data );
+  UINT *encode(const T * const data ){
 
-  int *decode( uint *data );
+    fill( uintValue.begin(), uintValue.end(), 0 );
+    int j=0;
+    UINT base=1;
+    for ( int i = 0; i < row_len; i++ ) {
+      assert( data[ i ] >= bounds[ i ].first );
+      assert( data[ i ] < bounds[ i ].second );
+      if(shift[ i] ){
+        j++;
+        base=1;
+      }
+      uintValue[ j]+=(data[ i]-bounds[ i].first)*base;
+      base*=domain[i];
+    }
+    return &( uintValue[ 0 ] );
+  }
 
-private:
+  T *decode(const UINT * const data ){
+    int j=0;
+    UINT dummy=data[ 0];
+    for ( int i = 0; i < row_len; i++ ) {
+      if( shift[ i]){
+        j++;
+        dummy=data[ j];
+      }
+    
+      intValue[ i ] = (dummy% domain[ i])+bounds[ i].first;
+    
+      dummy/= domain[ i];
+
+    }
+    return &( intValue[ 0 ] );
+  }
+
+ private:
   int row_len;
   /**
    * bounds[ i].frist  <= value[ i] < bounds[ i].second
    *
    */
 
-  vector<pair<int, int>> bounds;
-  vector<uint>            domain;
-  vector<uint>           uintValue;
-  vector<int>            intValue;
+  vector<pair<T, T>> bounds;
+  vector<UINT>            domain;
+  vector<UINT>           uintValue;
+  vector<T>            intValue;
   vector<bool> shift;
   int compressionSize;
 };
