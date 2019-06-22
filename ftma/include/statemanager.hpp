@@ -127,13 +127,14 @@ public:
   
   Compression<C>  getHeadCompression( ) const{
     Compression<C> re(clock_start_loc );
+    re.update( );
     return re;
   }
   
   Compression<C> getBodyCompression( ) const{
     
     Compression<C> re(stateLen-clock_start_loc );
-    
+    re.update( );
     return re;
   }
 

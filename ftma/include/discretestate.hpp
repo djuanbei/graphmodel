@@ -124,7 +124,7 @@ public:
      *
      */
 
-    for ( size_t i = 0; i < bodyPartElements[ id ].size();
+n    for ( size_t i = 0; i < bodyPartElements[ id ].size();
           i += body_part_len ) {
       if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
         return false;
