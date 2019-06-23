@@ -382,16 +382,18 @@ void testcompression( ){
   for( int i=0; i< len; i++){
     data.setBound( i, low, up);
   }
+  UINT cd[ len];
+  int dd[ len];
   std::default_random_engine         generator;
   std::uniform_int_distribution<int> distribution( low, up-1 );
-  data.update( );
+
   int d[ len];
   for( int i=0; i< 10000; i++){
     for( int j=0; j< len; j++){
       d[ j]=distribution( generator );
     }
-    uint * cd=data.encode( d);
-    int *dd=data.decode( cd);
+    data.encode( d, cd);
+    data.decode( cd, dd  );
     for( int j=0; j< len; j++){
       assert( dd[ j]==d[ j]);
     }

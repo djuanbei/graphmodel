@@ -17,93 +17,80 @@
 #include "parameter.h"
 #include "util/datacompression.h"
 
-
 namespace graphsat {
 
 using std::vector;
 
+template <typename C> class StateConvert {
 
-template<typename C>
-class StateConvert{
+public:
+  StateConvert() {
+    headLen         = 0;
+    headComp        = 0;
+    compressionSize = 0;
+  }
+  StateConvert( int hLen, int bLen, Compression<C> hCom, Compression<C> bCom ) {
+    headLen = hLen;
 
- public:
-  StateConvert( ){
-    headLen=0;
-    bodyLen=0;
-    headComp=0;
-    bodyComp=0;
-  }
-  StateConvert(int hLen, int bLen, Compression<C> hCom, Compression<C> bCom ){
-    headLen=hLen;
-    bodyLen=bLen;
-    comHeadLen=hCom.getCompressionSize( );
-    comBodyLen=bCom.getCompressionSize( );
-    
-    headComp=hCom;
-    bodyComp=bCom;
-    
-    uintValue.resize( comHeadLen+comBodyLen, 0);
-    
-    value.resize( hLen+bLen, 0);
-  }
-  
-  UINT* encode( const  C *  data ){
-    UINT * temp=headComp.encode( data);
-    copy( temp,  temp+ comHeadLen,  uintValue.begin( ));
-    UINT * temp1=bodyComp.encode( data+headLen);
-    copy( temp1, temp1+comBodyLen,  uintValue.begin( )+comHeadLen );
-    return &( uintValue[ 0]);
+    comHeadLen = hCom.getCompressionSize();
+
+    compressionSize = hCom.getCompressionSize() + bCom.getCompressionSize();
+    headComp        = hCom;
+    bodyComp        = bCom;
   }
 
-  C* decode(  const UINT  *  data){
-    C* temp=headComp.decode( data);
-    copy( temp, temp+headLen,  value.begin( ));
-    C* temp1=bodyComp.decode( data+comHeadLen);
-    copy(temp1, temp1+ bodyLen,  value.begin( )+ headLen);
-    return &( value[ 0]);
+  void encode( const C *data, UINT *out ) const {
+    headComp.encode( data, out );
+    bodyComp.encode( data + headLen, out + comHeadLen );
   }
 
- private:
+  void decode( const UINT *data, C *out ) const {
+    headComp.decode( data, out );
+    bodyComp.decode( data + comHeadLen, out + headLen );
+  }
+  int getCompressionSize() const { return compressionSize; }
+
+private:
   int headLen;
-  int bodyLen;
+
   int comHeadLen;
-  int comBodyLen;
+
+  int            compressionSize;
   Compression<C> headComp;
   Compression<C> bodyComp;
-  vector<UINT>  uintValue;
-  vector<C> value;
-  
 };
 
 template <typename C> class StateManager {
 
   /**
    * state is [loc, channel_state, counter_state, clock_state]
-   * is the corresponding loc is negative integer then this location a commit location
-   * the corresponding channel_state is the block channel. The channel state is positive then it is a send channel, and when the value is nonegative integer it is a receive channel.
+   * is the corresponding loc is negative integer then this location a commit
+   * location the corresponding channel_state is the block channel. The channel
+   * state is positive then it is a send channel, and when the value is
+   * nonegative integer it is a receive channel.
    *
    */
 public:
   StateManager() {
 
     component_num = stateLen = counter_start_loc = 0;
-    channel_num=0;
-
+    channel_num                                  = 0;
   }
 
   StateManager( int comp_num, int counter_num, int clock_num,
                 const vector<C> &                 clockUpperBounds,
                 const vector<ClockConstraint<C>> &edifferenceCons,
-                const vector<Parameter> &ps, const vector<int> & nodes, int channel_n ) {
- 
-    component_num         = comp_num;
+                const vector<Parameter> &ps, const vector<int> &nodes,
+                int channel_n ) {
+
+    component_num = comp_num;
 
     differenceConstraints = edifferenceCons;
-    nodeNums=nodes;
-    
-    channel_num           = channel_n;
-   
-    if ( channel_num>0 ) {
+    nodeNums              = nodes;
+
+    channel_num = channel_n;
+
+    if ( channel_num > 0 ) {
       counter_start_loc = 2 * component_num;
       stateLen          = 2 * component_num + counter_num;
     } else {
@@ -124,29 +111,27 @@ public:
 
   int getClockStart() const { return clock_start_loc; }
 
-  Compression<C>  getHeadCompression( ) const{
-    Compression<C> re_comp(clock_start_loc );
-    for( int i=0; i< component_num; i++){
-      re_comp.setBound(i, -nodeNums[ i]-1,nodeNums[ i]+1 );
+  Compression<C> getHeadCompression() const {
+    Compression<C> re_comp( clock_start_loc );
+    for ( int i = 0; i < component_num; i++ ) {
+      re_comp.setBound( i, -nodeNums[ i ] - 1, nodeNums[ i ] + 1 );
     }
-    if(channel_num>0 ){
-      for( int i=0; i< component_num; i++){
-       re_comp.setBound(i+component_num, -channel_num, channel_num+1 );
+    if ( channel_num > 0 ) {
+      for ( int i = 0; i < component_num; i++ ) {
+        re_comp.setBound( i + component_num, -channel_num, channel_num + 1 );
       }
     }
-    
-    re_comp.update( );
-    return re_comp;
-  }
-  
-  Compression<C> getBodyCompression( ) const{
-    
-    Compression<C> re_comp(stateLen-clock_start_loc );
-    re_comp.update( );
     return re_comp;
   }
 
-  bool hasChannel() const { return channel_num>0; }
+  Compression<C> getBodyCompression() const {
+
+    Compression<C> re_comp( stateLen - clock_start_loc );
+
+    return re_comp;
+  }
+
+  bool hasChannel() const { return channel_num > 0; }
 
   int getLoc( int component, const C *const state ) const {
     if ( isCommitComp( component, state ) ) { // commit location
@@ -228,8 +213,9 @@ public:
     return reBlockComponents;
   }
 
-  bool add( const int component_id, const int target, StateSet<UINT> &stateSet, StateConvert<C> & stateConvert,
-            const C *const state, C *dbm, bool isCommit, C *re_state ) const {
+  inline void constructState( const int component_id, const int target,
+                       const C *const state, C *dbm, bool isCommit,
+                       C *re_state ) const {
 
     memcpy( re_state, state, clock_start_loc * sizeof( C ) );
 
@@ -239,31 +225,27 @@ public:
     if ( isCommit ) {
       setCommitState( component_id, target, re_state );
     }
-
-#ifndef CHECK_MEMORY
-    UINT* temp=stateConvert.encode( re_state);
-    if ( !stateSet.add( temp ) ) {
-      return false;
-    }
-#endif
-    return true;
   }
 
-  bool add( const int component_id, const int target, StateSet<UINT> &stateSet, StateConvert<C> & stateConvert,
-            C *state, bool isCommit ) const {
-
+  inline void constructState( const int component_id, const int target,
+                              bool isCommit, C *state ) {
     state[ component_id ] = target;
     if ( isCommit ) {
       setCommitState( component_id, target, state );
     }
+  }
+
+  inline bool add( StateSet<UINT> &stateSet, UINT *compressionState ) const {
+
 #ifndef CHECK_MEMORY
-    UINT* temp=stateConvert.encode( state);
-    if ( !stateSet.add( temp ) ) {
+
+    if ( !stateSet.add( compressionState ) ) {
       return false;
     }
 #endif
     return true;
   }
+
 
   inline bool isCommitComp( const int      component_id,
                             const C *const state ) const {
@@ -285,7 +267,7 @@ private:
   bool channel_num;
   int  component_num;
   int  stateLen;
-  
+
   int counter_start_loc;
   int clock_start_loc;
 
@@ -294,9 +276,7 @@ private:
   DBMFactory<C> dbmManager;
 
   vector<Parameter> parameters;
-  vector<int> nodeNums;
-  
-
+  vector<int>       nodeNums;
 };
 } // namespace graphsat
 #endif

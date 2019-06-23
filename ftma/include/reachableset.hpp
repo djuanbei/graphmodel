@@ -15,12 +15,10 @@
 #include <vector>
 
 namespace graphsat {
+using std::copy;
 using std::deque;
 using std::fill;
 using std::vector;
-using std::copy;
-
-
 
 template <typename SYS> class ReachableSet {
 public:
@@ -35,17 +33,22 @@ public:
     cache_state = manager.newState();
     next_state  = manager.newState();
 
+    convertC_t = manager.newState();
+
     sys.initState( manager, cache_state );
 
-    reachSet.setParam( manager.getStateLen(), manager.getClockStart());
-    int bodyLen=manager.getStateLen()-manager.getClockStart();
-    // stateConvert=manager.getStateConvert();
-    stateConvert=    StateConvert<C_t>(manager.getClockStart(),bodyLen, manager.getHeadCompression( ), manager.getBodyCompression( ) );
-    
+    reachSet.setParam( manager.getStateLen(), manager.getClockStart() );
+    int bodyLen = manager.getStateLen() - manager.getClockStart();
+
+    compressState = StateConvert<C_t>( manager.getClockStart(), bodyLen,
+                                       manager.getHeadCompression(),
+                                       manager.getBodyCompression() );
+    convertUINT   = new UINT[ compressState.getCompressionSize() ]();
+
     if ( manager.getClockManager().isConsistent(
              manager.getDBM( cache_state ) ) ) {
 
-      addToReachableSet(cache_state );
+      addToReachableSet( cache_state );
       addToWait( cache_state );
     }
   }
@@ -54,6 +57,9 @@ public:
     reachSet.clear();
     manager.destroyState( cache_state );
     manager.destroyState( next_state );
+    manager.destroyState( convertC_t );
+
+    delete[] convertUINT;
     while ( !waitSet.empty() ) {
       C_t *temp_state = waitSet.front();
       waitSet.pop_front();
@@ -62,8 +68,8 @@ public:
   }
 
   const SYS &getSYS( void ) const { return sys; }
-  C_t *next( ){
-    C_t * state=waitSet.front();
+  C_t *      next() {
+    C_t *state = waitSet.front();
     waitSet.pop_front();
     return state;
   }
@@ -72,8 +78,8 @@ public:
 
     StateSet<UINT>::iterator end1 = reachSet.end();
     for ( auto state : reachSet ) {
-      C_t *temp=stateConvert.decode( state);
-      if ( isReach( prop, temp ) ) {
+      compressState.decode( state, convertC_t );
+      if ( isReach( prop, convertC_t ) ) {
         return TRUE;
       }
     }
@@ -121,15 +127,14 @@ public:
     waitSet.push_back( newState );
   }
 
-  inline bool addToReachableSet( const C_t *const state  ){
-    UINT *temp=stateConvert.encode( state);
-    return reachSet.add( temp);
+  inline bool addToReachableSet( const C_t *const state ) {
+    compressState.encode( state, convertUINT );
+    return reachSet.add( convertUINT );
   }
-  
 
 private:
   StateSet<UINT> reachSet;
-  deque<C_t *>  waitSet;
+  deque<C_t *>   waitSet;
 
   C_t *                        cache_state;
   C_t *                        next_state;
@@ -138,8 +143,9 @@ private:
   template <typename R1> friend class Reachability;
   int                        component_num;
   std::default_random_engine generator;
-  StateConvert<C_t> stateConvert;
-
+  StateConvert<C_t>          compressState;
+  UINT *                     convertUINT;
+  C_t *                      convertC_t;
 
   bool isReach( const Property *prop, const C_t *const state ) const {
     return ( *prop )( manager, state );
@@ -205,6 +211,10 @@ private:
     return false;
   }
 
+  /**
+   * TODO: urgent chan 
+   * 
+   */
   bool doSynchronize( int component, const Property *prop, C_t *state, int link,
                       const Channel &channel ) {
 
@@ -220,7 +230,7 @@ private:
             0, waitComponents.size() - 1 );
         int id                 = distribution( generator );
         int block_component_id = waitComponents[ id ];
-
+        
         if ( unBlockOne( block_component_id, link, state, prop ) ) {
           return true;
         }
@@ -261,10 +271,10 @@ private:
 
     next_state[ component ] = target;
     bool isCommit = sys.tas[ component ].locations[ target ].isCommit();
-
+ 
     bool re_bool = false;
     if ( sys.tas[ component ].locations[ target ](
-             manager.getClockManager(), manager.getDBM( next_state ) ) ) {
+            manager.getClockManager(), manager.getDBM( next_state ) ) ) {
 
       for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
 
@@ -279,9 +289,10 @@ private:
         manager.norm( manager.getDBM( next_state ), next_dbms );
 
         for ( auto dbm : next_dbms ) {
-
-          if ( manager.add( component, target, reachSet, stateConvert, next_state, dbm,
-                            isCommit, cache_state ) ) { // add to reachableSet
+          manager.constructState( component, target, next_state, dbm,
+                                  isCommit,  cache_state);
+          compressState.encode( cache_state, convertUINT );
+          if ( manager.add( reachSet, convertUINT ) ) { // add to reachableSet
             addToWait( cache_state );
             if ( isReach( prop, cache_state ) ) {
               re_bool = true;
@@ -294,8 +305,9 @@ private:
         }
       } else {
         manager.norm( manager.getDBM( next_state ) );
-        if ( manager.add( component, target, reachSet, stateConvert, next_state,
-                          isCommit ) ) { // add to reachableSet
+        manager.constructState( component, target, isCommit, next_state );
+        compressState.encode( next_state, convertUINT );
+        if ( manager.add( reachSet, convertUINT ) ) { // add to reachableSet
           addToWait( next_state );
           if ( isReach( prop, next_state ) ) {
             return true;

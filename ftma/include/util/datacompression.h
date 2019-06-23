@@ -30,14 +30,13 @@ public:
       : row_len( len )
       , bounds( len )
       , domain( len, numeric_limits<UINT>::max( )  )
-      , uintValue( len )
-      , intValue( len )
       , shift( len, true ) {
     for ( int i = 0; i < len; i++ ) {
       bounds[ i ].first  = numeric_limits<int>::min();
       bounds[ i ].second = numeric_limits<int>::max();
 
     }
+    update( );
   }
 
   void setBound( int id, int low, int up ) {
@@ -46,10 +45,56 @@ public:
     bounds[ id ].second = up;
     UINT bound          = up - low;
     domain[ id ] = bound;
+    update( );
   }
   int getCompressionSize( ) const{
     return compressionSize;
   }
+
+
+  void encode(const T * const data, UINT * out ) const{
+    fill(out, out+row_len,0);    
+    int j=0;
+    UINT base=1;
+    for ( int i = 0; i < row_len; i++ ) {
+      assert( data[ i ] >= bounds[ i ].first );
+      assert( data[ i ] < bounds[ i ].second );
+      if(shift[ i] ){
+        j++;
+        base=1;
+      }
+      out[ j]+=(data[ i]-bounds[ i].first)*base;
+      base*=domain[i];
+    }
+  }
+
+  void decode(const UINT * const data, T * out ) const{
+    int j=0;
+    UINT dummy=data[ 0];
+    for ( int i = 0; i < row_len; i++ ) {
+      if( shift[ i]){
+        j++;
+        dummy=data[ j];
+      }
+      out[ i ] = (dummy% domain[ i])+bounds[ i].first;
+      dummy/= domain[ i];
+    }
+
+  }
+
+ private:
+  int row_len;
+  /**
+   * bounds[ i].frist  <= value[ i] < bounds[ i].second
+   *
+   */
+
+  vector<pair<T, T>> bounds;
+  vector<UINT>            domain;
+
+  vector<bool> shift;
+  int compressionSize;
+
   void update() {
     fill(shift.begin( ),shift.end( ), false );
     compressionSize=1;
@@ -63,55 +108,6 @@ public:
       dummy/=domain[ i ];
     }
   }
-
-  UINT *encode(const T * const data ){
-
-    fill( uintValue.begin(), uintValue.end(), 0 );
-    int j=0;
-    UINT base=1;
-    for ( int i = 0; i < row_len; i++ ) {
-      assert( data[ i ] >= bounds[ i ].first );
-      assert( data[ i ] < bounds[ i ].second );
-      if(shift[ i] ){
-        j++;
-        base=1;
-      }
-      uintValue[ j]+=(data[ i]-bounds[ i].first)*base;
-      base*=domain[i];
-    }
-    return &( uintValue[ 0 ] );
-  }
-
-  T *decode(const UINT * const data ){
-    int j=0;
-    UINT dummy=data[ 0];
-    for ( int i = 0; i < row_len; i++ ) {
-      if( shift[ i]){
-        j++;
-        dummy=data[ j];
-      }
-    
-      intValue[ i ] = (dummy% domain[ i])+bounds[ i].first;
-    
-      dummy/= domain[ i];
-
-    }
-    return &( intValue[ 0 ] );
-  }
-
- private:
-  int row_len;
-  /**
-   * bounds[ i].frist  <= value[ i] < bounds[ i].second
-   *
-   */
-
-  vector<pair<T, T>> bounds;
-  vector<UINT>            domain;
-  vector<UINT>           uintValue;
-  vector<T>            intValue;
-  vector<bool> shift;
-  int compressionSize;
 };
 } // namespace graphsat
 

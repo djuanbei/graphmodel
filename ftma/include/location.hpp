@@ -41,22 +41,20 @@ public:
 
   bool isUrgent() const { return type == URGENT_LOC; }
 
-  void employInvariants( const DManager_t &dbmManager, C_t *dbm ) const {
+  inline void employInvariants( const DManager_t &dbmManager, C_t *dbm ) const {
     for ( auto cs : invariants ) {
       dbmManager.andImpl( dbm, cs );
     }
   }
 
-  bool operator()( const DManager_t &dbmManager, C_t *dbm ) const {
+  inline bool operator()( const DManager_t &dbmManager, C_t *dbm ) const {
 
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
      *
      */
-    for ( auto cs : invariants ) {
-      dbmManager.andImpl( dbm, cs );
-    }
+    employInvariants(dbmManager, dbm );
 
     if ( dbmManager.isConsistent( dbm ) ) {
       /**

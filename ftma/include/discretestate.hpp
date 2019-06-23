@@ -395,12 +395,14 @@ private:
     return memcmp( lhs, rhs, element_len * sizeof( T ) ) == 0;
   }
   bool contain( const T *const lhs, const T *const rhs ) const {
-
+    //   bool r= memcmp(lhs, rhs, body_part_len*sizeof( T) )>=0;
     for ( int i = 0; i < body_part_len; i++ ) {
       if ( lhs[ i ] < rhs[ i ] ) {
+        //        assert( !r);
         return false;
       }
     }
+    //    assert( r);
     return true;
   }
 };
