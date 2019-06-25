@@ -74,7 +74,7 @@ public:
 
     while ( !data.waitSet.empty() ) {
 
-      typename ReachableSet::C_t *state = data.next( );
+      typename ReachableSet::C_t *state = data.next();
 #ifdef CHECK_MEMORY
 
       if ( data.waitSet.size() > 100 ) {

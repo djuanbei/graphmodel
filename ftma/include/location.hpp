@@ -54,7 +54,7 @@ public:
      * this Location
      *
      */
-    employInvariants(dbmManager, dbm );
+    employInvariants( dbmManager, dbm );
 
     if ( dbmManager.isConsistent( dbm ) ) {
       /**

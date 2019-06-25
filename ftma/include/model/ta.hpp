@@ -237,13 +237,13 @@ public:
           getMatrixValue( -clock_max_value[ i ], true );
     }
     vector<int> node_n;
-    for( size_t i=0; i< tas.size(); i++){
-      node_n.push_back( tas[ i].graph.getVertex_num( ));
+    for ( size_t i = 0; i < tas.size(); i++ ) {
+      node_n.push_back( tas[ i ].graph.getVertex_num() );
     }
 
     StateManager<C> re( tas.size(), counters.size(), clock_num,
-                        temp_clock_upperbound, differenceCons, parameters, node_n,
-                        channels.size( ) );
+                        temp_clock_upperbound, differenceCons, parameters,
+                        node_n, channels.size() );
 
     return re;
   }

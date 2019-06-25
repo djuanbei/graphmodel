@@ -128,8 +128,12 @@ public:
   }
 
   inline bool addToReachableSet( const C_t *const state ) {
+
+#ifndef CHECK_MEMORY
     compressState.encode( state, convertUINT );
     return reachSet.add( convertUINT );
+#endif
+    return true;
   }
 
 private:
@@ -212,8 +216,8 @@ private:
   }
 
   /**
-   * TODO: urgent chan 
-   * 
+   * TODO: urgent chan
+   *
    */
   bool doSynchronize( int component, const Property *prop, C_t *state, int link,
                       const Channel &channel ) {
@@ -230,7 +234,7 @@ private:
             0, waitComponents.size() - 1 );
         int id                 = distribution( generator );
         int block_component_id = waitComponents[ id ];
-        
+
         if ( unBlockOne( block_component_id, link, state, prop ) ) {
           return true;
         }
@@ -271,10 +275,10 @@ private:
 
     next_state[ component ] = target;
     bool isCommit = sys.tas[ component ].locations[ target ].isCommit();
- 
+
     bool re_bool = false;
     if ( sys.tas[ component ].locations[ target ](
-            manager.getClockManager(), manager.getDBM( next_state ) ) ) {
+             manager.getClockManager(), manager.getDBM( next_state ) ) ) {
 
       for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
 
@@ -289,10 +293,9 @@ private:
         manager.norm( manager.getDBM( next_state ), next_dbms );
 
         for ( auto dbm : next_dbms ) {
-          manager.constructState( component, target, next_state, dbm,
-                                  isCommit,  cache_state);
-          compressState.encode( cache_state, convertUINT );
-          if ( manager.add( reachSet, convertUINT ) ) { // add to reachableSet
+          manager.constructState( component, target, next_state, dbm, isCommit,
+                                  cache_state );
+          if ( addToReachableSet( cache_state ) ) { // add to reachableSet
             addToWait( cache_state );
             if ( isReach( prop, cache_state ) ) {
               re_bool = true;
@@ -306,8 +309,8 @@ private:
       } else {
         manager.norm( manager.getDBM( next_state ) );
         manager.constructState( component, target, isCommit, next_state );
-        compressState.encode( next_state, convertUINT );
-        if ( manager.add( reachSet, convertUINT ) ) { // add to reachableSet
+
+        if ( addToReachableSet( next_state ) ) { // add to reachableSet
           addToWait( next_state );
           if ( isReach( prop, next_state ) ) {
             return true;

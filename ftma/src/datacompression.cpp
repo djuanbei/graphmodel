@@ -27,9 +27,9 @@
 //       j++;
 //       dummy=data[ j];
 //     }
-    
+
 //     intValue[ i ] = (dummy% domain[ i])+bounds[ i].first;
-    
+
 //     dummy/= domain[ i];
 
 //   }

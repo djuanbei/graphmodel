@@ -214,8 +214,8 @@ public:
   }
 
   inline void constructState( const int component_id, const int target,
-                       const C *const state, C *dbm, bool isCommit,
-                       C *re_state ) const {
+                              const C *const state, C *dbm, bool isCommit,
+                              C *re_state ) const {
 
     memcpy( re_state, state, clock_start_loc * sizeof( C ) );
 
@@ -234,18 +234,6 @@ public:
       setCommitState( component_id, target, state );
     }
   }
-
-  inline bool add( StateSet<UINT> &stateSet, UINT *compressionState ) const {
-
-#ifndef CHECK_MEMORY
-
-    if ( !stateSet.add( compressionState ) ) {
-      return false;
-    }
-#endif
-    return true;
-  }
-
 
   inline bool isCommitComp( const int      component_id,
                             const C *const state ) const {

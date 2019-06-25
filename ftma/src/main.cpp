@@ -374,31 +374,30 @@ void testOP() {
   }
 }
 
-void testcompression( ){
-  const  int len=10;
-  Compression<int> data( len);
-  int low=-6;
-  int up=10;
-  for( int i=0; i< len; i++){
-    data.setBound( i, low, up);
+void testcompression() {
+  const int        len = 10;
+  Compression<int> data( len );
+  int              low = -6;
+  int              up  = 10;
+  for ( int i = 0; i < len; i++ ) {
+    data.setBound( i, low, up );
   }
-  UINT cd[ len];
-  int dd[ len];
+  UINT                               cd[ len ];
+  int                                dd[ len ];
   std::default_random_engine         generator;
-  std::uniform_int_distribution<int> distribution( low, up-1 );
+  std::uniform_int_distribution<int> distribution( low, up - 1 );
 
-  int d[ len];
-  for( int i=0; i< 10000; i++){
-    for( int j=0; j< len; j++){
-      d[ j]=distribution( generator );
+  int d[ len ];
+  for ( int i = 0; i < 10000; i++ ) {
+    for ( int j = 0; j < len; j++ ) {
+      d[ j ] = distribution( generator );
     }
-    data.encode( d, cd);
-    data.decode( cd, dd  );
-    for( int j=0; j< len; j++){
-      assert( dd[ j]==d[ j]);
+    data.encode( d, cd );
+    data.decode( cd, dd );
+    for ( int j = 0; j < len; j++ ) {
+      assert( dd[ j ] == d[ j ] );
     }
   }
-  
 }
 
 int main( int argc, const char *argv[] ) {
@@ -409,7 +408,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 6 );
+  fisher( 2 );
   return 0;
   //  example5();
   //  return 0;
