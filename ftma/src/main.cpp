@@ -9,7 +9,7 @@
  *
  */
 //#define CHECK_MEMORY 1
-//#define PRINT_STATE 1
+#define PRINT_STATE 1
 #include <random>
 
 #include "action/counteraction.h"
