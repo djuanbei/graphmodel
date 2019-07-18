@@ -9,7 +9,7 @@
  *
  */
 //#define CHECK_MEMORY 1
-#define PRINT_STATE 1
+//#define PRINT_STATE 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -408,7 +408,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 2 );
+  fisher( 6 );
   return 0;
   //  example5();
   //  return 0;

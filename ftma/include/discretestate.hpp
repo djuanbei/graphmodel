@@ -123,7 +123,8 @@ public:
      * check whether has element is set has same hash_value
      *
      */
-    for ( size_t i = 0; i < bodyPartElements[ id ].size();
+    size_t bodySize=bodyPartElements[ id ].size();
+    for ( size_t i = 0; i < bodySize;
           i += body_part_len ) {
       if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
         return false;
@@ -337,7 +338,8 @@ private:
     typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
         headPartElements.find( hashV );
     if ( ret != headPartElements.end() ) {
-      for ( size_t i = 0; i < ret->second.second.size(); i++ ) {
+      size_t headSize=ret->second.second.size();
+      for ( size_t i = 0; i < headSize; i++ ) {
         if ( 0 == memcmp( head, &( ret->second.first[ i * head_part_len ] ),
                           head_part_len * sizeof( T ) ) ) {
           return ret->second.second[ i ];
