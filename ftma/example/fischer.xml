@@ -1,0 +1,85 @@
+
+<nta>
+	<declaration>// Fischer's mutual exclusion protocol.
+
+typedef int[1,2] id_t;
+int id;</declaration>
+	<template>
+		<name x="16" y="-8">P</name>
+		<parameter>const id_t pid</parameter>
+		<declaration>clock x;
+const int k = 2;</declaration>
+		<location id="id0" x="34" y="76">
+			<name x="51" y="93">wait</name>
+		</location>
+		<location id="id1" x="34" y="-52">
+			<name x="34" y="-84">req</name>
+			<label kind="invariant" x="56" y="-66">x&lt;=k</label>
+		</location>
+		<location id="id2" x="-119" y="-51">
+			<name x="-144" y="-102">A</name>
+		</location>
+		<location id="id3" x="-119" y="76">
+			<name x="-127" y="92">cs</name>
+		</location>
+		<init ref="id2"/>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-93" y="-76">id== 0</label>
+			<label kind="assignment" x="-22" y="-76">x = 0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-34" y="-26">x&lt;=k</label>
+			<label kind="assignment" x="-38" y="4">x = 0,
+id = pid</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="82" y="20">id== 0</label>
+			<label kind="assignment" x="82" y="-12">x = 0</label>
+			<nail x="69" y="46"/>
+			<nail x="69" y="-18"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-85" y="84">x&gt;k &amp;&amp; id==pid</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="-174" y="-20">id = 0</label>
+		</transition>
+	</template>
+	<system>system P;</system>
+	<queries>
+		<query>
+			<formula>
+			</formula>
+			<comment>Fischer's mutual exclusion protocol.
+			</comment>
+		</query>
+		<query>
+			<formula>A[] forall (i:id_t) forall (j:id_t) P(i).cs &amp;&amp; P(j).cs imply i == j
+			</formula>
+			<comment>Mutex requirement.
+			</comment>
+		</query>
+		<query>
+			<formula>A[] not deadlock
+			</formula>
+			<comment>The system is deadlock free.
+			</comment>
+		</query>
+		<query>
+			<formula>P(1).req --&gt; P(1).wait
+			</formula>
+			<comment>Whenever P(1) requests access to the critical section it will eventually enter the wait state.
+			</comment>
+		</query>
+	</queries>
+</nta>
