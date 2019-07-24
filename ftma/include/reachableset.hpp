@@ -76,7 +76,6 @@ public:
 
   Check_State search( const Property *prop ) {
 
-    StateSet<UINT>::iterator end1 = reachSet.end();
     for ( auto state : reachSet ) {
       compressState.decode( state, convertC_t );
       if ( isReach( prop, convertC_t ) ) {
@@ -122,6 +121,32 @@ public:
   }
 
   size_t size() const { return reachSet.size(); }
+  
+  void  project( int m, vector<vector<C_t>> & re){
+    re.clear( );
+    int clock_start_loc= manager.getClockStart();
+             
+    for ( auto state : reachSet ) {
+      
+      compressState.decode( state, convertC_t );
+      // for ( int i = 0; i < component_num; i++ ) {
+      //   cout << convertC_t[ i ] << " ";
+      // }
+      // cout << endl
+      //      << manager.getClockManager().dump( manager.getDBM( convertC_t ) ) << endl;
+      vector<C_t> dummy;
+      for( int i=0; i< m; i++){
+        dummy.push_back( convertC_t[ i]);
+      }
+      for( int i=0; i<=m ; i++){
+        for( int j=0; j<=m; j++){
+          dummy.push_back(convertC_t[i*(component_num+1)+j+clock_start_loc] );
+        }
+      }
+
+      re.push_back( dummy);
+    }    
+  }
   void   addToWait( const C_t *const state ) {
     C_t *newState = manager.newState( state );
     waitSet.push_back( newState );
@@ -131,6 +156,7 @@ public:
 
 #ifndef CHECK_MEMORY
     compressState.encode( state, convertUINT );
+
     return reachSet.add( convertUINT );
 #endif
     return true;

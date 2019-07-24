@@ -347,6 +347,163 @@ void fisher( int n = 2 ) {
 
   cout << "reach data size: " << data.size() << endl;
 }
+
+void incrementalTest( ){
+  int n=3;
+  vector<typename INT_TAS_t::T_t> es;
+  vector<typename INT_TAS_t::L_t> ls;
+  int                             k = 2;
+
+  typename INT_TAS_t::L_t A( 0 );
+
+  typename INT_TAS_t::L_t  req( 1 );
+  typename INT_TAS_t::CS_t cs1( 1, 0, k, false ); // x <= k
+  req += cs1;
+
+  typename INT_TAS_t::L_t wait( 2 );
+
+  typename INT_TAS_t::L_t cs( 3 );
+
+  typename INT_TAS_t::T_t A_req( 0, 1 );
+
+  DiaFreeCounterConstraint *ccs1 =
+      CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint(
+          0, EQ, 0 ); // id==0
+
+  A_req.addCounterCons( ccs1 );
+
+  pair<int, int> reset1( 1, 0 ); // x-->0
+  A_req.addReset( reset1 );
+
+  typename INT_TAS_t::T_t  req_wait( 1, 2 );
+  typename INT_TAS_t::CS_t cs2( 1, 0, k, false ); // x <= k
+  req_wait += cs2;
+
+  pair<int, int> reset2( 1, 0 ); // x-->0
+  req_wait.addReset( reset2 );
+
+  SimpleCounterPAction *caction =
+      CounterActionFactory::getInstance().createSimpleCounterPAction( 0, 0 );
+
+  req_wait.addCounterAction( caction );
+
+  typename INT_TAS_t::T_t wait_req( 2, 1 );
+
+  pair<int, int> reset3( 1, 0 ); // x-->0
+  wait_req.addReset( reset3 );
+  wait_req.addCounterCons( ccs1 ); // id==0
+
+  typename INT_TAS_t::T_t wait_cs( 2, 3 );
+
+  DiaFreeCounterPConstraint *ccs2 =
+      CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(
+          0, EQ, 0 ); // id==pid
+  wait_cs.addCounterCons( ccs2 );
+  typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
+  wait_cs += cs3;
+
+  typename INT_TAS_t::T_t cs_A( 3, 0 );
+
+  SimpleCounterAction *caction1 =
+      CounterActionFactory::getInstance().createSimpleCounterAction(
+          0, 0 ); //( relations1 );
+
+  cs_A.addCounterAction( caction1 );
+
+  ls.push_back( A );
+  ls.push_back( req );
+  ls.push_back( wait );
+  ls.push_back( cs );
+
+  es.push_back( A_req );
+  es.push_back( req_wait );
+  es.push_back( wait_req );
+  es.push_back( wait_cs );
+  es.push_back( cs_A );
+  typename INT_TAS_t::TA_t tma1( ls, es, 0, 1 );
+  // tma1.addOnePara();
+  INT_TAS_t sys;
+  for ( int i = 1; i <= n; i++ ) {
+    typename INT_TAS_t::TA_t tma2 = tma1;
+    tma2.addOnePara( i );
+    sys += tma2;
+  }
+  //  INT_TAS_t   sys = n * tma1;
+  Counter counter( 0, 100 );
+  sys += counter;
+
+  R_t data( sys );
+
+  Reachability<R_t> reacher( data );
+  FischerMutual     prop;
+
+  if ( reacher.satisfy( &prop ) ) {
+    cout << "There is something wrong" << endl;
+  } else {
+    cout << "fisher mutual exclusion property check right" << endl;
+  }
+  // reacher.computeAllReachableSet();
+  int s = data.size();
+  cout << "reach data size: " << data.size() << endl;
+  vector<vector<INT_TAS_t::C_t> > project;
+  data.project( 2, project);
+
+
+  INT_TAS_t sys1;
+  for ( int i = 1; i <= 2; i++ ) {
+    typename INT_TAS_t::TA_t tma2 = tma1;
+    tma2.addOnePara( i );
+    sys1 += tma2;
+  }
+
+  sys1 += counter;
+
+  R_t data1( sys1 );
+
+  Reachability<R_t> reacher1( data1 );
+  FischerMutual     prop1;
+
+  if ( reacher1.satisfy( &prop1 ) ) {
+    cout << "There is something wrong" << endl;
+  } else {
+    cout << "fisher mutual exclusion property check right" << endl;
+  }
+
+  cout << "reach data size: " << data1.size() << endl;
+  vector<vector<INT_TAS_t::C_t> > project1;
+  data1.project( 2, project1);
+  int num=0;
+  size_t mm=project[ 0].size( );
+  for( size_t i=0; i< project.size( ); i++){
+    size_t j=0;
+    for( ;j< project1.size( ); j++){
+      size_t k=0; 
+      for( ; k<2; k++){
+        if( project[ i][ k]!= project1[ j][ k]){
+          //   cout<<k<<" "<<project[ i][ k]<<" "<<project1[ j][ k]<<endl;
+          break;
+        }
+        
+      }
+      if( k==2){
+        for( ;k<mm; k++){
+          if( project[ i][ k]> project1[ j][ k]){
+            //   cout<<k<<" "<<project[ i][ k]<<" "<<project1[ j][ k]<<endl;
+            break;
+          }
+        }
+      }
+      if( k==mm){
+        break;
+      }
+    }
+    if( j==project1.size( )){
+
+      cout<<num++<<endl;
+      cout<<"Can not hold"<<endl;
+    }
+  }
+}
 void fisher1() {
   UppaalParser parser( "example/fischer.xml" );
   INT_TAS_t    sys = parser.getSYS();
@@ -364,6 +521,7 @@ void fisher1() {
   cout << "reach data size: " << data.size() << endl;
   //  reacher.computeAllReachableSet();
 }
+
 void testOP() {
   for ( int i = 0; i < 10; i++ ) {
 
@@ -401,6 +559,8 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
+    incrementalTest( );
+    return 0;
   //  testcompression( );
   //  return 0;
   //  testOP( );
@@ -408,7 +568,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 6 );
+  fisher( 3 );
   return 0;
   //  example5();
   //  return 0;
