@@ -9,7 +9,7 @@
  *
  */
 //#define CHECK_MEMORY 1
-//#define PRINT_STATE 1
+#define PRINT_STATE 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -346,6 +346,8 @@ void fisher( int n = 2 ) {
   int s = data.size();
 
   cout << "reach data size: " << data.size() << endl;
+  data.generatorDot( "test.gv");
+  
 }
 
 void incrementalTest( ){
@@ -559,8 +561,8 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
-    incrementalTest( );
-    return 0;
+  //    incrementalTest( );
+  // return 0;
   //  testcompression( );
   //  return 0;
   //  testOP( );

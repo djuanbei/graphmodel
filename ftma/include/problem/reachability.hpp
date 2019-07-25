@@ -72,13 +72,13 @@ public:
 
     // For given target find the source which change in last step
 
-    while ( !data.waitSet.empty() ) {
+    while ( !data.waitEmpty() ) {
 
       typename ReachableSet::C_t *state = data.next();
 #ifdef CHECK_MEMORY
 
-      if ( data.waitSet.size() > 100 ) {
-        int num = data.waitSet.size() - 100;
+      if ( data.waitSize() > 100 ) {
+        int num = data.waitSize() - 100;
         for ( int i = 0; i < num; i++ ) {
           typename ReachableSet::C_t *temp_state = data.next();
           delete[] temp_state;

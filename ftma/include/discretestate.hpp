@@ -88,17 +88,18 @@ public:
   class const_iterator;
   class iterator;
   StateSet() {
-    addELementNum = 0;
+    addElementNum = 0;
     element_len = head_part_len = body_part_len = 0;
   }
   StateSet( int id, int n, int s ) {
-    addELementNum = 0;
+    addElementNum = 0;
     element_len   = n;
     head_part_len = s;
     body_part_len = n - s;
+    
   }
   void setParam( const int n, int s ) {
-    addELementNum = 0;
+    addElementNum = 0;
     element_len   = n;
     head_part_len = s;
     body_part_len = n - s;
@@ -108,31 +109,31 @@ public:
   void clear() {
     headPartElements.clear();
     bodyPartElements.clear();
-    addELementNum = 0;
+    addElementNum = 0;
   }
 
-  size_t size() const { return addELementNum; }
+  int size() const { return addElementNum; }
 
   bool empty() const { return 0 == size(); }
 
-  bool add( const T *const one ) {
-    int      id       = addHead( one );
+  int add( const T *const one ) {
+    
+    int      headId       = addHead( one );
     const T *bodyPart = one + head_part_len;
 
     /**
      * check whether has element is set has same hash_value
      *
      */
-    size_t bodySize=bodyPartElements[ id ].size();
+    size_t bodySize=bodyPartElements[ headId ].size();
     for ( size_t i = 0; i < bodySize;
           i += body_part_len ) {
-      if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
-        return false;
+      if ( containBody( &( bodyPartElements[ headId ][ i ] ), bodyPart ) ) {
+        return -1;
       }
     }
 
-    addValue( id, bodyPart );
-    return true;
+    return addBodyValue( headId, bodyPart );
   }
 
   bool contain( const T *const one ) const {
@@ -143,7 +144,7 @@ public:
 
       for ( size_t i = 0; i < bodyPartElements[ id ].size();
             i += body_part_len ) {
-        if ( contain( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
+        if ( containBody( &( bodyPartElements[ id ][ i ] ), bodyPart ) ) {
           return true;
         }
       }
@@ -321,11 +322,17 @@ public:
   };
 
 private:
+  
+  /** head1, head2,...,headn have same hash_value
+   * hash_value(head*) --> ((head1, head2,...,headn),
+   * the corresponding bodyPart location in bodyPartElements)
+   * 
+   */
   unordered_map<int, pair<vector<T>, vector<int>>> headPartElements;
 
   vector<vector<T>> bodyPartElements;
 
-  int addELementNum;
+  int addElementNum;
   int element_len;
 
   int head_part_len;
@@ -349,9 +356,8 @@ private:
 
     headPartElements[ hashV ].first.insert(
         headPartElements[ hashV ].first.end(), head, head + head_part_len );
-    headPartElements[ hashV ].second.push_back( bodyPartElements.size() );
-
-    int       re = bodyPartElements.size();
+    int re=bodyPartElements.size( );
+    headPartElements[ hashV ].second.push_back( re );
     vector<T> temp;
     bodyPartElements.push_back( temp );
 
@@ -382,22 +388,23 @@ private:
     }
     return -1;
   }
-
-  bool addValue( int id, const T *const body ) {
-    bodyPartElements[ id ].insert( bodyPartElements[ id ].end(), body,
+  
+  inline  int addBodyValue( int headId, const T *const body ) {
+    
+    bodyPartElements[ headId ].insert( bodyPartElements[ headId ].end(), body,
                                    body + body_part_len );
-    addELementNum++;
-    return true;
+    addElementNum++;
+    return addElementNum;
   }
 
-  int hash_value( const T *const head ) const {
+  inline int hash_value( const T *const head ) const {
     return FastHash( (char *) head, head_part_len * sizeof( T ) );
   }
-  bool equal( const T *const lhs, const T *const rhs ) const {
+  inline bool equal( const T *const lhs, const T *const rhs ) const {
     return memcmp( lhs, rhs, element_len * sizeof( T ) ) == 0;
   }
-  bool contain( const T *const lhs, const T *const rhs ) const {
-
+  inline  bool containBody( const T *const lhs, const T *const rhs ) const {
+    
     for ( int i = 0; i < body_part_len; i++ ) {
       if ( lhs[ i ] < rhs[ i ] ) {
         return false;

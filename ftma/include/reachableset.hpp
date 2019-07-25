@@ -13,12 +13,16 @@
 #include <deque>
 #include <random>
 #include <vector>
+#include<fstream>
+#include<iostream>
+
 
 namespace graphsat {
 using std::copy;
 using std::deque;
 using std::fill;
 using std::vector;
+using std::ofstream;
 
 template <typename SYS> class ReachableSet {
 public:
@@ -26,6 +30,10 @@ public:
   typedef typename SYS_t::C_t C_t;
   ReachableSet( const SYS &outta )
       : sys( outta ) {
+
+#ifdef PRINT_STATE
+    current_parent=-1;
+#endif
 
     manager       = sys.getStateManager();
     component_num = sys.getComponentNum();
@@ -51,6 +59,7 @@ public:
       addToReachableSet( cache_state );
       addToWait( cache_state );
     }
+
   }
 
   ~ReachableSet() {
@@ -73,6 +82,12 @@ public:
     waitSet.pop_front();
     return state;
   }
+  bool waitEmpty(  ) const{
+    return waitSet.empty( );
+  }
+  size_t waitSize(  ) const{
+    return waitSet.size( );
+  }
 
   Check_State search( const Property *prop ) {
 
@@ -87,6 +102,7 @@ public:
 
   bool oneStep( const Property *prop, C_t *state ) {
 #ifdef PRINT_STATE
+    current_parent++;
     for ( int i = 0; i < component_num; i++ ) {
       cout << state[ i ] << " ";
     }
@@ -129,11 +145,7 @@ public:
     for ( auto state : reachSet ) {
       
       compressState.decode( state, convertC_t );
-      // for ( int i = 0; i < component_num; i++ ) {
-      //   cout << convertC_t[ i ] << " ";
-      // }
-      // cout << endl
-      //      << manager.getClockManager().dump( manager.getDBM( convertC_t ) ) << endl;
+
       vector<C_t> dummy;
       for( int i=0; i< m; i++){
         dummy.push_back( convertC_t[ i]);
@@ -147,9 +159,41 @@ public:
       re.push_back( dummy);
     }    
   }
+  
+  void generatorDot( const string& filename){
+#ifdef PRINT_STATE
+    ofstream fout( filename);
+    fout<<"digraph G {"<<endl;    
+    int len=compressState.getCompressionSize();
+    for( size_t i=1; i< stateParent.size( ); i++){
+      int parent=stateParent[ i];
+      
+      compressState.decode(&(processStates[ parent*len]), cache_state );
+      compressState.decode(&(processStates[ i*len]), convertC_t );
+      fout<<"\t"<<stateParent[ i]<<" -> "<<i<<"  [label=\"";
+      for( int j=0; j< component_num; j++){
+        if( cache_state[ j]!= convertC_t[ j]){
+          fout<<j<<" ";
+        }
+      }
+
+      fout<<"\"];"<<endl;
+      
+
+    }
+    fout<<"}";
+    fout.close( );
+#endif
+  }
+  
   void   addToWait( const C_t *const state ) {
     C_t *newState = manager.newState( state );
     waitSet.push_back( newState );
+#ifdef PRINT_STATE
+    compressState.encode( state, convertUINT );
+    processStates.insert(processStates.end( ), convertUINT, convertUINT+ compressState.getCompressionSize());
+    stateParent.push_back(current_parent );
+#endif
   }
 
   inline bool addToReachableSet( const C_t *const state ) {
@@ -157,7 +201,7 @@ public:
 #ifndef CHECK_MEMORY
     compressState.encode( state, convertUINT );
 
-    return reachSet.add( convertUINT );
+    return reachSet.add( convertUINT )>-1;
 #endif
     return true;
   }
@@ -176,6 +220,12 @@ private:
   StateConvert<C_t>          compressState;
   UINT *                     convertUINT;
   C_t *                      convertC_t;
+
+#ifdef PRINT_STATE
+  vector<UINT>  processStates;
+  vector<int> stateParent;
+  int current_parent;
+#endif
 
   bool isReach( const Property *prop, const C_t *const state ) const {
     return ( *prop )( manager, state );

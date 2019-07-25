@@ -52,7 +52,6 @@ public:
 
 private:
   int headLen;
-
   int comHeadLen;
 
   int            compressionSize;
@@ -97,11 +96,11 @@ public:
       counter_start_loc = component_num;
       stateLen          = component_num + counter_num;
     }
-
     clock_start_loc = stateLen;
 
     stateLen += ( clock_num + 1 ) * ( clock_num + 1 );
 
+          
     dbmManager =
         DBMFactory<C>( clock_num, clockUpperBounds, differenceConstraints );
 
@@ -150,6 +149,8 @@ public:
 
     return re_state;
   }
+
+  
   void copy( C *des_state, const C *const source_state ) const {
     memcpy( des_state, source_state, stateLen * sizeof( C ) );
   }
