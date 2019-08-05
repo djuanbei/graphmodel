@@ -9,7 +9,8 @@
  *
  */
 //#define CHECK_MEMORY 1
-#define PRINT_STATE 1
+//#define PRINT_STATE 1
+#define DRAW_GRAPH 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -346,12 +347,11 @@ void fisher( int n = 2 ) {
   int s = data.size();
 
   cout << "reach data size: " << data.size() << endl;
-  data.generatorDot( "test.gv");
-  
+  data.generatorDot( "test.gv" );
 }
 
-void incrementalTest( ){
-  int n=3;
+void incrementalTest() {
+  int                             n = 3;
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   int                             k = 2;
@@ -447,9 +447,8 @@ void incrementalTest( ){
   // reacher.computeAllReachableSet();
   int s = data.size();
   cout << "reach data size: " << data.size() << endl;
-  vector<vector<INT_TAS_t::C_t> > project;
-  data.project( 2, project);
-
+  vector<vector<INT_TAS_t::C_t>> project;
+  data.project( 2, project );
 
   INT_TAS_t sys1;
   for ( int i = 1; i <= 2; i++ ) {
@@ -472,37 +471,36 @@ void incrementalTest( ){
   }
 
   cout << "reach data size: " << data1.size() << endl;
-  vector<vector<INT_TAS_t::C_t> > project1;
-  data1.project( 2, project1);
-  int num=0;
-  size_t mm=project[ 0].size( );
-  for( size_t i=0; i< project.size( ); i++){
-    size_t j=0;
-    for( ;j< project1.size( ); j++){
-      size_t k=0; 
-      for( ; k<2; k++){
-        if( project[ i][ k]!= project1[ j][ k]){
+  vector<vector<INT_TAS_t::C_t>> project1;
+  data1.project( 2, project1 );
+  int    num = 0;
+  size_t mm  = project[ 0 ].size();
+  for ( size_t i = 0; i < project.size(); i++ ) {
+    size_t j = 0;
+    for ( ; j < project1.size(); j++ ) {
+      size_t k = 0;
+      for ( ; k < 2; k++ ) {
+        if ( project[ i ][ k ] != project1[ j ][ k ] ) {
           //   cout<<k<<" "<<project[ i][ k]<<" "<<project1[ j][ k]<<endl;
           break;
         }
-        
       }
-      if( k==2){
-        for( ;k<mm; k++){
-          if( project[ i][ k]> project1[ j][ k]){
+      if ( k == 2 ) {
+        for ( ; k < mm; k++ ) {
+          if ( project[ i ][ k ] > project1[ j ][ k ] ) {
             //   cout<<k<<" "<<project[ i][ k]<<" "<<project1[ j][ k]<<endl;
             break;
           }
         }
       }
-      if( k==mm){
+      if ( k == mm ) {
         break;
       }
     }
-    if( j==project1.size( )){
+    if ( j == project1.size() ) {
 
-      cout<<num++<<endl;
-      cout<<"Can not hold"<<endl;
+      cout << num++ << endl;
+      cout << "Can not hold" << endl;
     }
   }
 }

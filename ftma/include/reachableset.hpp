@@ -11,18 +11,17 @@
 #define __REACH_SET_HPP
 #include <algorithm>
 #include <deque>
+#include <fstream>
+#include <iostream>
 #include <random>
 #include <vector>
-#include<fstream>
-#include<iostream>
-
 
 namespace graphsat {
 using std::copy;
 using std::deque;
 using std::fill;
-using std::vector;
 using std::ofstream;
+using std::vector;
 
 template <typename SYS> class ReachableSet {
 public:
@@ -31,8 +30,8 @@ public:
   ReachableSet( const SYS &outta )
       : sys( outta ) {
 
-#ifdef PRINT_STATE
-    current_parent=-1;
+#ifdef DRAW_GRAPH
+    current_parent = -1;
 #endif
 
     manager       = sys.getStateManager();
@@ -59,7 +58,6 @@ public:
       addToReachableSet( cache_state );
       addToWait( cache_state );
     }
-
   }
 
   ~ReachableSet() {
@@ -77,17 +75,17 @@ public:
   }
 
   const SYS &getSYS( void ) const { return sys; }
+  /** 
+   * BFS
+   * @return 
+   */
   C_t *      next() {
     C_t *state = waitSet.front();
     waitSet.pop_front();
     return state;
   }
-  bool waitEmpty(  ) const{
-    return waitSet.empty( );
-  }
-  size_t waitSize(  ) const{
-    return waitSet.size( );
-  }
+  bool   waitEmpty() const { return waitSet.empty(); }
+  size_t waitSize() const { return waitSet.size(); }
 
   Check_State search( const Property *prop ) {
 
@@ -101,8 +99,12 @@ public:
   }
 
   bool oneStep( const Property *prop, C_t *state ) {
-#ifdef PRINT_STATE
+#ifdef DRAW_GRAPH
     current_parent++;
+#endif
+    
+#ifdef PRINT_STATE
+
     for ( int i = 0; i < component_num; i++ ) {
       cout << state[ i ] << " ";
     }
@@ -137,62 +139,62 @@ public:
   }
 
   size_t size() const { return reachSet.size(); }
-  
-  void  project( int m, vector<vector<C_t>> & re){
-    re.clear( );
-    int clock_start_loc= manager.getClockStart();
-             
+
+  void project( int m, vector<vector<C_t>> &re ) {
+    re.clear();
+    int clock_start_loc = manager.getClockStart();
+
     for ( auto state : reachSet ) {
-      
+
       compressState.decode( state, convertC_t );
 
       vector<C_t> dummy;
-      for( int i=0; i< m; i++){
-        dummy.push_back( convertC_t[ i]);
+      for ( int i = 0; i < m; i++ ) {
+        dummy.push_back( convertC_t[ i ] );
       }
-      for( int i=0; i<=m ; i++){
-        for( int j=0; j<=m; j++){
-          dummy.push_back(convertC_t[i*(component_num+1)+j+clock_start_loc] );
+      for ( int i = 0; i <= m; i++ ) {
+        for ( int j = 0; j <= m; j++ ) {
+          dummy.push_back(
+              convertC_t[ i * ( component_num + 1 ) + j + clock_start_loc ] );
         }
       }
 
-      re.push_back( dummy);
-    }    
-  }
-  
-  void generatorDot( const string& filename){
-#ifdef PRINT_STATE
-    ofstream fout( filename);
-    fout<<"digraph G {"<<endl;    
-    int len=compressState.getCompressionSize();
-    for( size_t i=1; i< stateParent.size( ); i++){
-      int parent=stateParent[ i];
-      
-      compressState.decode(&(processStates[ parent*len]), cache_state );
-      compressState.decode(&(processStates[ i*len]), convertC_t );
-      fout<<"\t"<<stateParent[ i]<<" -> "<<i<<"  [label=\"";
-      for( int j=0; j< component_num; j++){
-        if( cache_state[ j]!= convertC_t[ j]){
-          fout<<j<<" ";
-        }
-      }
-
-      fout<<"\"];"<<endl;
-      
-
+      re.push_back( dummy );
     }
-    fout<<"}";
-    fout.close( );
+  }
+
+  void generatorDot( const string &filename ) {
+#ifdef DRAW_GRAPH
+    ofstream fout( filename );
+    fout << "digraph G {" << endl;
+    int len = compressState.getCompressionSize();
+    for ( size_t i = 1; i < stateParent.size(); i++ ) {
+      int parent = stateParent[ i ];
+
+      compressState.decode( &( processStates[ parent * len ] ), cache_state );
+      compressState.decode( &( processStates[ i * len ] ), convertC_t );
+      fout << "\t" << stateParent[ i ] << " -> " << i << "  [label=\"";
+      for ( int j = 0; j < component_num; j++ ) {
+        if ( cache_state[ j ] != convertC_t[ j ] ) {
+          fout << j << " ";
+        }
+      }
+
+      fout << "\"];" << endl;
+    }
+    fout << "}";
+    fout.close();
 #endif
   }
-  
-  void   addToWait( const C_t *const state ) {
+
+  void addToWait( const C_t *const state ) {
     C_t *newState = manager.newState( state );
     waitSet.push_back( newState );
-#ifdef PRINT_STATE
+#ifdef DRAW_GRAPH
     compressState.encode( state, convertUINT );
-    processStates.insert(processStates.end( ), convertUINT, convertUINT+ compressState.getCompressionSize());
-    stateParent.push_back(current_parent );
+    processStates.insert( processStates.end(), convertUINT,
+                          convertUINT + compressState.getCompressionSize() );
+    stateParent.push_back( current_parent );
 #endif
   }
 
@@ -201,7 +203,7 @@ public:
 #ifndef CHECK_MEMORY
     compressState.encode( state, convertUINT );
 
-    return reachSet.add( convertUINT )>-1;
+    return reachSet.add( convertUINT ) > -1;
 #endif
     return true;
   }
@@ -221,10 +223,10 @@ private:
   UINT *                     convertUINT;
   C_t *                      convertC_t;
 
-#ifdef PRINT_STATE
-  vector<UINT>  processStates;
-  vector<int> stateParent;
-  int current_parent;
+#ifdef DRAW_GRAPH
+  vector<UINT> processStates;
+  vector<int>  stateParent;
+  int          current_parent;
 #endif
 
   bool isReach( const Property *prop, const C_t *const state ) const {

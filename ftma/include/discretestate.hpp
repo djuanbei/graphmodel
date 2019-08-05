@@ -96,7 +96,6 @@ public:
     element_len   = n;
     head_part_len = s;
     body_part_len = n - s;
-    
   }
   void setParam( const int n, int s ) {
     addElementNum = 0;
@@ -117,17 +116,16 @@ public:
   bool empty() const { return 0 == size(); }
 
   int add( const T *const one ) {
-    
-    int      headId       = addHead( one );
+
+    int      headId   = addHead( one );
     const T *bodyPart = one + head_part_len;
 
     /**
      * check whether has element is set has same hash_value
      *
      */
-    size_t bodySize=bodyPartElements[ headId ].size();
-    for ( size_t i = 0; i < bodySize;
-          i += body_part_len ) {
+    size_t bodySize = bodyPartElements[ headId ].size();
+    for ( size_t i = 0; i < bodySize; i += body_part_len ) {
       if ( containBody( &( bodyPartElements[ headId ][ i ] ), bodyPart ) ) {
         return -1;
       }
@@ -322,11 +320,10 @@ public:
   };
 
 private:
-  
   /** head1, head2,...,headn have same hash_value
    * hash_value(head*) --> ((head1, head2,...,headn),
    * the corresponding bodyPart location in bodyPartElements)
-   * 
+   *
    */
   unordered_map<int, pair<vector<T>, vector<int>>> headPartElements;
 
@@ -345,7 +342,7 @@ private:
     typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
         headPartElements.find( hashV );
     if ( ret != headPartElements.end() ) {
-      size_t headSize=ret->second.second.size();
+      size_t headSize = ret->second.second.size();
       for ( size_t i = 0; i < headSize; i++ ) {
         if ( 0 == memcmp( head, &( ret->second.first[ i * head_part_len ] ),
                           head_part_len * sizeof( T ) ) ) {
@@ -356,7 +353,7 @@ private:
 
     headPartElements[ hashV ].first.insert(
         headPartElements[ hashV ].first.end(), head, head + head_part_len );
-    int re=bodyPartElements.size( );
+    int re = bodyPartElements.size();
     headPartElements[ hashV ].second.push_back( re );
     vector<T> temp;
     bodyPartElements.push_back( temp );
@@ -388,11 +385,11 @@ private:
     }
     return -1;
   }
-  
-  inline  int addBodyValue( int headId, const T *const body ) {
-    
+
+  inline int addBodyValue( int headId, const T *const body ) {
+
     bodyPartElements[ headId ].insert( bodyPartElements[ headId ].end(), body,
-                                   body + body_part_len );
+                                       body + body_part_len );
     addElementNum++;
     return addElementNum;
   }
@@ -403,8 +400,8 @@ private:
   inline bool equal( const T *const lhs, const T *const rhs ) const {
     return memcmp( lhs, rhs, element_len * sizeof( T ) ) == 0;
   }
-  inline  bool containBody( const T *const lhs, const T *const rhs ) const {
-    
+  inline bool containBody( const T *const lhs, const T *const rhs ) const {
+
     for ( int i = 0; i < body_part_len; i++ ) {
       if ( lhs[ i ] < rhs[ i ] ) {
         return false;
