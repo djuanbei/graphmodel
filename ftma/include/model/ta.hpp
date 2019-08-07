@@ -99,7 +99,7 @@ private:
 
   int clock_num;
 
-  graph_t<int> graph;
+  Graph_t<int> graph;
 
   vector<C> clock_max_value;
 
