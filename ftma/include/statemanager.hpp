@@ -62,11 +62,13 @@ private:
 template <typename C> class StateManager {
 
   /**
-   * state is [loc, channel_state, counter_state, clock_state]
-   * is the corresponding loc is negative integer then this location a commit
-   * location the corresponding channel_state is the block channel. The channel
-   * state is positive then it is a send channel, and when the value is
-   * nonegative integer it is a receive channel.
+   * state is [loc, channel_state, counter_state, clock_state] loc is a vector with
+   * length  the number of components, channel_state is aslo a vector
+   * whose length equals to the number of component. If the corresponding loc is
+   * negative integer then this location is a commit location the corresponding
+   * channel_state is the block channel. The channel state is positive then it
+   * is a send channel,  when the value is nonegative integer it is a receive
+   * channel. When channel equals to 0 then there is no channel in this transition.
    *
    */
 public:
@@ -222,7 +224,7 @@ public:
     memcpy( re_state + clock_start_loc, dbm,
             ( stateLen - clock_start_loc ) * sizeof( C ) );
     if ( isCommit ) {
-      setCommitState( component_id, target, re_state );
+      setCommitState( component_id, re_state );
     }
   }
 
@@ -230,7 +232,7 @@ public:
                               bool isCommit, C *state ) {
     state[ component_id ] = target;
     if ( isCommit ) {
-      setCommitState( component_id, target, state );
+      setCommitState( component_id, state );
     }
   }
 
@@ -239,8 +241,14 @@ public:
     return state[ component_id ] < 0;
   }
 
-  inline void setCommitState( const int component_id, const int target,
-                              C *state ) const {
+  /**
+   * @brief  comonent_id in a commit location
+   *
+   * @param component_id
+   * @param target
+   * @param state
+   */
+  inline void setCommitState( const int component_id, C *state ) const {
     state[ component_id ] = -1 - state[ component_id ];
   }
 

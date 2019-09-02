@@ -253,7 +253,7 @@ public:
     for ( int component = 0; component < component_num; component++ ) {
       state[ component ] = initial_loc[ component ];
       if ( tas[ component ].isCommit( state[ component ] ) ) {
-        manager.setCommitState( component, state[ component ], state );
+        manager.setCommitState( component, state );
         withoutCommit = false;
       }
     }

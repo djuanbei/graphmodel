@@ -101,7 +101,8 @@ public:
    * @param manager
    * @param state
    *
-   * @return
+   * @return true if the gurad on this tranisition is true under state, false
+   * otherwise.
    */
   bool ready( const int component, const StateManager<C> &manager,
               const C *const state ) const {

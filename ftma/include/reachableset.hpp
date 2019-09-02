@@ -75,11 +75,11 @@ public:
   }
 
   const SYS &getSYS( void ) const { return sys; }
-  /** 
+  /**
    * BFS
-   * @return 
+   * @return
    */
-  C_t *      next() {
+  C_t *next() {
     C_t *state = waitSet.front();
     waitSet.pop_front();
     return state;
@@ -102,7 +102,7 @@ public:
 #ifdef DRAW_GRAPH
     current_parent++;
 #endif
-    
+
 #ifdef PRINT_STATE
 
     for ( int i = 0; i < component_num; i++ ) {
@@ -123,7 +123,7 @@ public:
     }
     for ( int component = 0; component < component_num; component++ ) {
 
-      if ( manager.hasChannel() && state[ component + component_num ] != 0 ) {
+      if ( manager.hasChannel() && state[ component + component_num ] != NO_CHANNEL ) {
         /**
          * Waiting for synchronize signal
          *
@@ -229,9 +229,26 @@ private:
   int          current_parent;
 #endif
 
+  /**
+   *
+   *
+   * @param prop  verifies property
+   * @param state one reachable state
+   *
+   * @return ture if prop is true under state, false otherwise.
+   */
   bool isReach( const Property *prop, const C_t *const state ) const {
     return ( *prop )( manager, state );
   }
+
+  /**
+   *
+   * @param component one step component
+   * @param prop  the verifies property
+   * @param state  the current state
+   *
+   * @return ture if prop satisfied by child state of state
+   */
 
   bool oneComponent( int component, const Property *prop, C_t *state ) {
 
@@ -267,30 +284,175 @@ private:
     return false;
   }
 
-  bool unBlockOne( const int block_component_id, const int link, C_t *state,
-                   const Property *prop ) {
-    const int blockChannel = state[ block_component_id + component_num ];
-    state[ block_component_id + component_num ] = 0;
-    const int blockLink                         = state[ block_component_id ];
-    int       blockSource                       = 0;
-    sys.tas[ block_component_id ].graph.findSrc( blockLink, blockSource );
+  /**
+   * TODO: first do send counter action then do receive action
+   * @param component current run component
+   * @param block_component_id blocked  component id
+   * @param link  the block transition
+   * @param state the current state
+   * @param prop
+   * @param isSend ture if block_component_id is send part, false otherwise.
+   *
+   * @return  true the next state make prop true, false otherwise.
+   */
+  bool unBlockOne( const int current_component, const int block_component_id,
+                   const int link, C_t *state, const Property *prop,
+                   bool isSend ) {
 
-    state[ block_component_id ] = blockSource;
-    if ( oneTranision( block_component_id, blockLink, prop, state ) ) {
-      state[ block_component_id + component_num ] = blockChannel;
-      state[ block_component_id ]                 = blockLink;
-      return true;
+    manager.copy( next_state, state );
+    next_state[ block_component_id + component_num ] = NO_CHANNEL;
+
+    const int block_link  = next_state[ block_component_id ];
+    int       blockSource = 0;
+    sys.tas[ block_component_id ].graph.findSrc( block_link, blockSource );
+
+    next_state[ block_component_id ] = blockSource;
+    int send_component_id            = current_component;
+    int send_link                    = link;
+    int receive_component_id         = block_component_id;
+    int receive_link                 = block_link;
+
+    if ( !isSend ) {
+      send_component_id    = block_component_id;
+      send_link            = block_link;
+      receive_component_id = current_component;
+      receive_link         = link;
     }
 
-    if ( oneTranision( block_component_id, link, prop, state ) ) {
-      state[ block_component_id + component_num ] = blockChannel;
-      state[ block_component_id ]                 = blockLink;
+    // send do firstly
+    /**
+     *  has some problems
+     * TODO: need rewrite bellow code
+     */
+    sys.tas[ send_component_id ].transitions[ send_link ](
+        send_component_id, manager,
+        next_state ); // send part firstly update state
 
-      return true;
+    sys.tas[ receive_component_id ].transitions[ receive_link ](
+        receive_component_id, manager, next_state );
+
+    int send_target = 0;
+    sys.tas[ send_component_id ].graph.findSnk( send_link, send_target );
+    next_state[ send_component_id ] = send_target;
+
+    bool is_send_commit =
+        sys.tas[ send_component_id ].locations[ send_target ].isCommit();
+
+    int receive_target = 0;
+
+    sys.tas[ receive_component_id ].graph.findSnk( receive_link,
+                                                   receive_target );
+    next_state[ receive_component_id ] = receive_target;
+
+    bool is_receive_commit =
+        sys.tas[ receive_component_id ].locations[ receive_target ].isCommit();
+
+    bool re_bool = false;
+
+    // can not stay on current_target and block_target locations when
+    //send_target or receive_target is a commit or urgent location.
+    
+    if ( is_send_commit || is_receive_commit ) {
+      for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+        sys.tas[ comp_id ]
+            .locations[ manager.getLoc( comp_id, next_state ) ]
+            .employInvariants( manager.getClockManager(),
+                               manager.getDBM( next_state ) );
+      }
+      if ( manager.hasDiffCons() ) {
+        vector<typename SYS::C_t *> next_dbms;
+        manager.norm( manager.getDBM( next_state ), next_dbms );
+
+        for ( auto dbm : next_dbms ) {
+          manager.constructState( send_component_id, send_target, next_state,
+                                  dbm, false, cache_state );
+          if ( is_send_commit ) {
+            manager.setCommitState( send_component_id, cache_state );
+          }
+          if ( is_receive_commit ) {
+            manager.setCommitState( receive_component_id, cache_state );
+          }
+
+          if ( addToReachableSet( cache_state ) ) { // add to reachableSet
+            addToWait( cache_state );
+            if ( isReach( prop, cache_state ) ) {
+              re_bool = true;
+              break;
+            }
+          }
+        }
+        for ( auto dbm : next_dbms ) {
+          manager.getClockManager().destroyDBM( dbm );
+        }
+      } else {
+
+        manager.norm( manager.getDBM( next_state ) );
+
+        manager.constructState(  send_component_id, send_target, false,
+                                next_state );
+
+        if ( is_send_commit ) {
+          manager.setCommitState( send_component_id, cache_state );
+        }
+        if ( is_receive_commit ) {
+          manager.setCommitState( receive_component_id, cache_state );
+        }
+          
+        if ( addToReachableSet( next_state ) ) { // add to reachableSet
+          addToWait( next_state );
+          if ( isReach( prop, next_state ) ) {
+            return true;
+          }
+        }
+      }
+    }else{
+       
+      if ( sys.tas[ send_component_id ].locations[ send_target ](
+              manager.getClockManager(), manager.getDBM( next_state ) ) ) {
+
+        for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+
+          sys.tas[ comp_id ]
+              .locations[ manager.getLoc( comp_id, next_state ) ]
+              .employInvariants( manager.getClockManager(),
+                                 manager.getDBM( next_state ) );
+        }
+        if ( manager.hasDiffCons() ) {
+
+          vector<typename SYS::C_t *> next_dbms;
+          manager.norm( manager.getDBM( next_state ), next_dbms );
+
+          for ( auto dbm : next_dbms ) {
+            manager.constructState( send_component_id, send_target, next_state, dbm, false,
+                                    cache_state );
+            if ( addToReachableSet( cache_state ) ) { // add to reachableSet
+              addToWait( cache_state );
+              if ( isReach( prop, cache_state ) ) {
+                re_bool = true;
+                break;
+              }
+            }
+          }
+          for ( auto dbm : next_dbms ) {
+            manager.getClockManager().destroyDBM( dbm );
+          }
+        } else {
+          manager.norm( manager.getDBM( next_state ) );
+          manager.constructState( send_component_id, send_target, false, next_state );
+
+          if ( addToReachableSet( next_state ) ) { // add to reachableSet
+            addToWait( next_state );
+            if ( isReach( prop, next_state ) ) {
+              return true;
+            }
+          }
+        }
+      }
+      
     }
-    state[ block_component_id + component_num ] = blockChannel;
-    state[ block_component_id ]                 = blockLink;
-    return false;
+
+
+    return re_bool;
   }
 
   /**
@@ -301,9 +463,11 @@ private:
                       const Channel &channel ) {
 
     vector<int> waitComponents;
+    bool        isSend = true;
     if ( CHANNEL_SEND == channel.action ) {
       waitComponents = manager.blockComponents( -channel.id, state );
     } else if ( CHANNEL_RECEIVE == channel.action ) {
+      isSend         = false;
       waitComponents = manager.blockComponents( channel.id, state );
     }
     if ( !waitComponents.empty() ) {
@@ -313,37 +477,51 @@ private:
         int id                 = distribution( generator );
         int block_component_id = waitComponents[ id ];
 
-        if ( unBlockOne( block_component_id, link, state, prop ) ) {
+        if ( unBlockOne( component, block_component_id, link, state, prop,
+                         isSend ) ) {
           return true;
         }
       } else if ( channel.type == BROADCAST_CH ) {
         for ( auto id : waitComponents ) {
           int block_component_id = waitComponents[ id ];
-          if ( unBlockOne( block_component_id, link, state, prop ) ) {
+          if ( unBlockOne( component, block_component_id, link, state, prop,
+                           isSend ) ) {
             return true;
           }
         }
       }
 
     } else {
-      C_t *temp_state = manager.newState( state );
+      manager.copy( cache_state, state );
+
       if ( CHANNEL_SEND == channel.action ) {
-        temp_state[ component + component_num ] = channel.id;
+        cache_state[ component + component_num ] = channel.id;
       } else if ( CHANNEL_RECEIVE == channel.action ) {
-        temp_state[ component + component_num ] = -channel.id;
+        cache_state[ component + component_num ] = -channel.id;
       }
 
-      temp_state[ component ] = link; // block link
-      if ( addToReachableSet( temp_state ) ) {
-        addToWait( temp_state );
+      cache_state[ component ] = link; // block link
+      if ( addToReachableSet( cache_state ) ) {
+        addToWait( cache_state );
       }
-      manager.destroyState( temp_state );
     }
     return false;
   }
 
+  /**
+   *
+   *
+   * @param component Current compoent id
+   * @param link  Current transition id
+   * @param prop  verifying property
+   * @param state  Current state
+   *
+   * @return  true if find a state makes prop true, false otherwise.
+   */
+
   bool oneTranision( const int component, const int link, const Property *prop,
                      const C_t *const state ) {
+
     manager.copy( next_state, state );
     int target = 0;
     sys.tas[ component ].graph.findSnk( link, target );

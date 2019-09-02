@@ -37,9 +37,26 @@ public:
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
-  bool isCommit() const { return type == COMMIT_LOC; }
+  /**
+   * @brief  the commit freeze time. Semantically, urgent locations are
+   * equivalent to:
+   * 1.  adding sn extra clock x, that is reset on every  incomming edge, and
+   * 2. adding an invariant x<=0 to the location
+   *
+   * @return  true if this location is urgent location, false otherwise.
+   */
 
   bool isUrgent() const { return type == URGENT_LOC; }
+
+  /**
+   * @brief  the commit freeze time. Furthermore, if any process is in a
+   * committed location, the next transition must involve an edge from one of
+   * the committed locations.
+   *
+   *
+   * @return true if this location is a commit, false otherwise.
+   */
+  bool isCommit() const { return type == COMMIT_LOC; }
 
   inline void employInvariants( const DManager_t &dbmManager, C_t *dbm ) const {
     for ( auto cs : invariants ) {
@@ -63,7 +80,7 @@ public:
        *
        */
 
-      if ( type != URGENT_LOC || type != COMMIT_LOC ) {
+      if ( ( type != URGENT_LOC ) && ( type != COMMIT_LOC ) ) {
         dbmManager.upImpl( dbm );
         /**
          * After D satisfies the invarient then do operator up on D,
