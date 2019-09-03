@@ -68,7 +68,7 @@ public:
     if ( values.find( type ) == values.end() ) {
       return 0;
     }
-    return values.at( type ).size();
+    return (int) values.at( type ).size();
   }
 
   /**
@@ -86,7 +86,7 @@ public:
 
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
       if ( values.at( type )[ i ].first == name ) {
-        return i;
+        return (int) i;
       }
     }
     return -1;

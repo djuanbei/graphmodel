@@ -93,15 +93,15 @@ public:
   }
   StateSet( int id, int n, int s ) {
     add_element_num = 0;
-    element_len   = n;
-    head_part_len = s;
-    body_part_len = n - s;
+    element_len     = n;
+    head_part_len   = s;
+    body_part_len   = n - s;
   }
   void setParam( const int n, int s ) {
     add_element_num = 0;
-    element_len   = n;
-    head_part_len = s;
-    body_part_len = n - s;
+    element_len     = n;
+    head_part_len   = s;
+    body_part_len   = n - s;
   }
   ~StateSet() { deleteAll(); }
   void deleteAll() { clear(); }
@@ -388,8 +388,8 @@ private:
 
   inline int addBodyValue( int headId, const T *const body ) {
 
-    body_part_elements[ headId ].insert( body_part_elements[ headId ].end(), body,
-                                       body + body_part_len );
+    body_part_elements[ headId ].insert( body_part_elements[ headId ].end(),
+                                         body, body + body_part_len );
     add_element_num++;
     return add_element_num;
   }

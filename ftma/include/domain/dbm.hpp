@@ -76,8 +76,8 @@ public:
 
     distribution =
         std::uniform_int_distribution<int>( -MAX_INT / 4 + 1, MAX_INT / 4 );
-    clockUppuerBound = oclockUppuerBound;
-    differenceCons   = odifferenceCons;
+    clock_uppuer_bound = oclockUppuerBound;
+    difference_cons    = odifferenceCons;
   }
 
   ~DBMFactory() { clock_num = 0; }
@@ -490,15 +490,15 @@ public:
    * @param re
    */
   void norm( C *dbm, vector<C *> &re_vec ) const {
-    if ( differenceCons.empty() ) {
-      norm( dbm, clockUppuerBound );
+    if ( difference_cons.empty() ) {
+      norm( dbm, clock_uppuer_bound );
       re_vec.push_back( dbm );
       return;
     }
-    norm( dbm, clockUppuerBound, differenceCons, re_vec );
+    norm( dbm, clock_uppuer_bound, difference_cons, re_vec );
   }
 
-  void norm( C *dbm ) const { norm( dbm, clockUppuerBound ); }
+  void norm( C *dbm ) const { norm( dbm, clock_uppuer_bound ); }
 
 private:
   /**
@@ -509,9 +509,9 @@ private:
   C                                  MAX_INT;
   std::default_random_engine         generator;
   std::uniform_int_distribution<int> distribution;
-  vector<C>                          clockUppuerBound;
+  vector<C>                          clock_uppuer_bound;
 
-  vector<ClockConstraint<C>> differenceCons;
+  vector<ClockConstraint<C>> difference_cons;
 
   bool contain( const vector<C *> &values, const C *const dbm ) const {
 
@@ -535,16 +535,16 @@ private:
    * @param re
    */
   void norm( C *dbm, const vector<C> &maximums,
-             const vector<ClockConstraint<C>> &diffCons,
+             const vector<ClockConstraint<C>> &diff_cons,
              vector<C *> &                     re_vec ) const {
 
     assert( re_vec.empty() );
 
-    vector<C *> splitDomains;
-    split( dbm, diffCons, splitDomains );
+    vector<C *> split_domains;
+    split( dbm, diff_cons, split_domains );
 
-    for ( auto temp_dbm : splitDomains ) {
-      re_vec.push_back( corn_norm( temp_dbm, maximums, diffCons ) );
+    for ( auto temp_dbm : split_domains ) {
+      re_vec.push_back( corn_norm( temp_dbm, maximums, diff_cons ) );
     }
   }
 
@@ -552,7 +552,7 @@ private:
               vector<C *> &re_vec ) const {
 
     assert( re_vec.empty() );
-    vector<C *> waitS;
+    vector<C *> wait_s;
     re_vec.push_back( dbm );
 
     for ( auto cs : diffCons ) {
@@ -568,50 +568,50 @@ private:
         if ( isSatisfied( re_vec[ i ], cs ) &&
              isSatisfied( re_vec[ i ], cs.neg() ) ) {
 
-          C *DandC    = And( re_vec[ i ], cs );
-          C *DandNegC = And( re_vec[ i ], cs.neg() );
-          if ( !contain( waitS, DandC ) ) {
-            waitS.push_back( DandC );
+          C *D_and_C     = And( re_vec[ i ], cs );
+          C *D_and_neg_C = And( re_vec[ i ], cs.neg() );
+          if ( !contain( wait_s, D_and_C ) ) {
+            wait_s.push_back( D_and_C );
           } else {
-            destroyDBM( DandC );
+            destroyDBM( D_and_C );
           }
-          if ( !contain( waitS, DandNegC ) ) {
-            waitS.push_back( DandNegC );
+          if ( !contain( wait_s, D_and_neg_C ) ) {
+            wait_s.push_back( D_and_neg_C );
           } else {
-            destroyDBM( DandNegC );
+            destroyDBM( D_and_neg_C );
           }
 
         } else {
-          if ( !contain( waitS, re_vec[ i ] ) ) {
-            waitS.push_back( re_vec[ i ] );
+          if ( !contain( wait_s, re_vec[ i ] ) ) {
+            wait_s.push_back( re_vec[ i ] );
             addToWaitS[ i ] = true;
           }
         }
       }
-      re_vec.swap( waitS );
-      for ( size_t i = 0; i < waitS.size(); i++ ) {
+      re_vec.swap( wait_s );
+      for ( size_t i = 0; i < wait_s.size(); i++ ) {
         if ( !addToWaitS[ i ] ) {
-          destroyDBM( waitS[ i ] );
+          destroyDBM( wait_s[ i ] );
         }
-        waitS.clear();
+        wait_s.clear();
       }
     }
   }
 
   C *corn_norm( C *dbm, const vector<C> &maximums,
-                const vector<ClockConstraint<C>> &differenceCons ) const {
+                const vector<ClockConstraint<C>> &difference_cons ) const {
 
-    vector<ClockConstraint<C>> Gunsat;
+    vector<ClockConstraint<C>> G_unsat;
 
-    for ( size_t i = 0; i < differenceCons.size(); i++ ) {
+    for ( size_t i = 0; i < difference_cons.size(); i++ ) {
       /**
        * If D and C does not satisiable then norm(D,k) and C does not
        * satisable
        *
        */
 
-      if ( !isSatisfied( dbm, differenceCons[ i ] ) ) {
-        Gunsat.push_back( differenceCons[ i ] );
+      if ( !isSatisfied( dbm, difference_cons[ i ] ) ) {
+        G_unsat.push_back( difference_cons[ i ] );
       }
       /**
        * If D and neg(C) does not satisiable then norm(D,k) and C does not
@@ -619,13 +619,13 @@ private:
        *
        */
 
-      if ( !isSatisfied( dbm, differenceCons[ i ].neg() ) ) {
-        Gunsat.push_back( differenceCons[ i ].neg() );
+      if ( !isSatisfied( dbm, difference_cons[ i ].neg() ) ) {
+        G_unsat.push_back( difference_cons[ i ].neg() );
       }
     }
 
     norm( dbm, maximums );
-    for ( auto cs : Gunsat ) {
+    for ( auto cs : G_unsat ) {
       andImpl( dbm, cs.neg() );
     }
     return dbm;

@@ -24,13 +24,13 @@ class Location {
 public:
 public:
   explicit Location( int loc_id ) {
-    locationID = loc_id;
-    type       = NORMOAL_LOC;
+    location_id = loc_id;
+    type        = NORMOAL_LOC;
   }
 
   explicit Location( int loc_id, Location_Type etype ) {
-    locationID = loc_id;
-    type       = etype;
+    location_id = loc_id;
+    type        = etype;
   }
 
   void setName( const string &n ) { name = n; }
@@ -151,7 +151,7 @@ public:
 
 private:
   vector<CS_t>  invariants; // set of invariants  in this Location
-  int           locationID;
+  int           location_id;
   string        name;
   Location_Type type;
 };

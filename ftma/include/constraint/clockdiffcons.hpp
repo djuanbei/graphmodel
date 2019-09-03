@@ -31,10 +31,10 @@ public:
   C matrix_value;
 
   ClockConstraint( const int i, const int j, const C r,
-                   bool isStrctRef = true ) {
+                   bool is_strict_ref = true ) {
     x            = i;
     y            = j;
-    matrix_value = getMatrixValue( r, isStrctRef );
+    matrix_value = getMatrixValue( r, is_strict_ref );
   }
   ClockConstraint( const int i, const int j, COMP_OPERATOR op, const C r ) {
     assert( op != NE );

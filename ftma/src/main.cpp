@@ -9,8 +9,8 @@
  *
  */
 //#define CHECK_MEMORY 1
-#define PRINT_STATE 1
-#define DRAW_GRAPH 1
+//#define PRINT_STATE 1
+//#define DRAW_GRAPH 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -344,7 +344,6 @@ void fisher( int n = 2 ) {
     cout << "fisher mutual exclusion property check right" << endl;
   }
   // reacher.computeAllReachableSet();
-  int s = data.size();
 
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
@@ -445,7 +444,7 @@ void incrementalTest() {
     cout << "fisher mutual exclusion property check right" << endl;
   }
   // reacher.computeAllReachableSet();
-  int s = data.size();
+
   cout << "reach data size: " << data.size() << endl;
   vector<vector<INT_TAS_t::C_t>> project;
   data.project( 2, project );
@@ -505,12 +504,13 @@ void incrementalTest() {
   }
 }
 void fisher1() {
-  UppaalParser parser( "example/fischer.xml" );
-  INT_TAS_t    sys = parser.getSYS();
-  R_t          data( sys );
+  UppaalParser parser(
+      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+  INT_TAS_t sys = parser.getSYS();
+  R_t       data( sys );
 
   Reachability<R_t> reacher( data );
-//  FischerMutual     prop;
+  //  FischerMutual     prop;
   //  if ( reacher.satisfy( &prop ) ) {
   //   cout << "There is something wrong" << endl;
   // } else {
@@ -568,8 +568,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 3 );
-  return 0;
+  // fisher( 6 );
+  // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

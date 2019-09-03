@@ -24,28 +24,28 @@ namespace graphsat {
 class CounterConstraint {
 
 public:
-  virtual bool operator()( const int *parameterValue,
-                           const int *counterValuation ) const = 0;
+  virtual bool operator()( const int *parameter_value,
+                           const int *counter_value ) const = 0;
 };
 
 class DiaFreeCounterConstraint : public CounterConstraint {
 
 public:
-  virtual bool operator()( const int *parameterValue,
-                           const int *counterValuation ) const {
+  virtual bool operator()( const int *parameter_value,
+                           const int *counter_value ) const {
     switch ( op ) {
     case EQ:
-      return counterValuation[ counter_id ] == rhs;
+      return counter_value[ counter_id ] == rhs;
     case LE:
-      return counterValuation[ counter_id ] <= rhs;
+      return counter_value[ counter_id ] <= rhs;
     case LT:
-      return counterValuation[ counter_id ] < rhs;
+      return counter_value[ counter_id ] < rhs;
     case GE:
-      return counterValuation[ counter_id ] >= rhs;
+      return counter_value[ counter_id ] >= rhs;
     case GT:
-      return counterValuation[ counter_id ] > rhs;
+      return counter_value[ counter_id ] > rhs;
     case NE:
-      return counterValuation[ counter_id ] != rhs;
+      return counter_value[ counter_id ] != rhs;
     default:
       return false;
     }
@@ -75,11 +75,11 @@ public:
   }
   ~DiaFreeCounterPConstraint() {}
 
-  virtual bool operator()( const int *parameterValue,
-                           const int *counterValuation ) const {
+  virtual bool operator()( const int *parameter_value,
+                           const int *counter_value ) const {
 
-    int diff = counterValuation[ counter_id ];
-    int rhs  = parameterValue[ p_id ];
+    int diff = counter_value[ counter_id ];
+    int rhs  = parameter_value[ p_id ];
     switch ( op ) {
     case EQ:
       return diff == rhs;
@@ -109,9 +109,9 @@ private:
 class DiaCounterConstraint : public CounterConstraint {
 
 public:
-  virtual bool operator()( const int *parameterValue,
-                           const int *counterValuation ) const {
-    int diff = counterValuation[ counter_x ] - counterValuation[ counter_y ];
+  virtual bool operator()( const int *parameter_value,
+                           const int *counter_value ) const {
+    int diff = counter_value[ counter_x ] - counter_value[ counter_y ];
     switch ( op ) {
     case EQ:
       return diff == rhs;
@@ -156,15 +156,15 @@ private:
   ~DefaultCounterConstraint() {}
 
 public:
-  bool operator()( const int *parameterValue,
-                   const int *counterValuation ) const {
+  bool operator()( const int *parameter_value,
+                   const int *counter_Value ) const {
     int dummy = 0;
     for ( auto e : pconstraint ) {
-      dummy += e.first * parameterValue[ e.second ];
+      dummy += e.first * parameter_value[ e.second ];
     }
     for ( vector<pair<int, int>>::const_iterator it = constraint.begin();
           it != constraint.end(); it++ ) {
-      dummy += ( it->first ) * counterValuation[ it->second ];
+      dummy += ( it->first ) * counter_Value[ it->second ];
     }
     switch ( op ) {
     case EQ:

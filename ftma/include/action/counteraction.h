@@ -27,8 +27,8 @@ public:
 class SimpleCounterAction : public CounterAction {
 public:
   virtual void operator()( const int *parameterValue,
-                           int *      counterValue ) const {
-    counterValue[ counter_id ] = rhs;
+                           int *      counter_value ) const {
+    counter_value[ counter_id ] = rhs;
   }
 
 private:
@@ -44,9 +44,9 @@ private:
 
 class SimpleCounterPAction : public CounterAction {
 public:
-  virtual void operator()( const int *parameterValue,
+  virtual void operator()( const int *parameter_value,
                            int *      counterValue ) const {
-    counterValue[ counter_id ] = parameterValue[ p_id ];
+    counterValue[ counter_id ] = parameter_value[ p_id ];
   }
 
 private:
@@ -62,12 +62,12 @@ private:
 
 class DefaultCAction : public CounterAction {
 public:
-  virtual void operator()( const int *parameterValue,
-                           int *      counterValue ) const {
+  virtual void operator()( const int *parameter_value,
+                           int *      counter_value ) const {
     for ( auto e : relations ) {
-      counterValue[ e.first ] = 0;
+      counter_value[ e.first ] = 0;
       for ( auto ee : e.second ) {
-        counterValue[ e.first ] += ee.first * parameterValue[ ee.second ];
+        counter_value[ e.first ] += ee.first * parameter_value[ ee.second ];
       }
     }
   }

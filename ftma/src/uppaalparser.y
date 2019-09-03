@@ -74,7 +74,7 @@
 %token  INT     CONST  VOID  CLOCK CHAN
 %token STRUCT   ELLIPSIS
 
-%token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN
+%token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN 
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -142,6 +142,7 @@ NE_OP{
 translation_unit
 : external_declaration
 | translation_unit external_declaration
+| comment_list
 ;
 
 external_declaration
@@ -154,6 +155,11 @@ atomic_constraint
 |
 constraint_statement AND_OP atomic_constraint
 
+;
+comment_list:
+COMMENT
+|
+comment_list COMMENT
 ;
 
 atomic_constraint:

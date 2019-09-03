@@ -49,8 +49,8 @@ public:
     body_comp.decode( data + com_head_length, out + head_length );
   }
   int getCompressionSize() const { return compression_size; }
-    
-  int getCompressionHeadSize() const {return head_comp.getCompressionSize(); }
+
+  int getCompressionHeadSize() const { return head_comp.getCompressionSize(); }
 
 private:
   int head_length;
@@ -84,14 +84,13 @@ public:
         0;
     channel_num = 0;
   }
-	
 
-  StateManager( int comp_num, const  vector<Counter> &ecounters, int clock_num,
+  StateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
                 const vector<C> &                 clock_upper_bounds,
                 const vector<ClockConstraint<C>> &edifference_cons,
                 const vector<Parameter> &ps, const vector<int> &nodes,
                 int channel_n ) {
-    state_length=0;
+    state_length  = 0;
     component_num = comp_num;
 
     difference_constraints = edifference_cons;
@@ -115,7 +114,7 @@ public:
 
     dbm_manager =
         DBMFactory<C>( clock_num, clock_upper_bounds, difference_constraints );
-    counters=ecounters;
+    counters = ecounters;
 
     parameters = ps;
   }
@@ -135,12 +134,12 @@ public:
         re_comp.setBound( i + component_num, -channel_num, channel_num + 1 );
       }
     }
-    int k=0;
-    for(int i=counter_start_loc; i< freeze_location_index; i++){
-        re_comp.setBound(i, counters[ k].getLB( ), counters[ k].getUP( ));
-        k++;
+    int k = 0;
+    for ( int i = counter_start_loc; i < freeze_location_index; i++ ) {
+      re_comp.setBound( i, counters[ k ].getLB(), counters[ k ].getUP() );
+      k++;
     }
-      
+
     /**
      * At most all the component in freeze location
      *
@@ -153,7 +152,6 @@ public:
   Compression<C> getBodyCompression() const {
 
     Compression<C> re_comp( state_length - clock_start_loc );
-    
 
     return re_comp;
   }
@@ -272,7 +270,6 @@ public:
    * @brief  comonent_id in a commit location
    *
    * @param component_id
-   * @param target
    * @param state
    */
   inline void setCommitState( const int component_id, C *state ) const {
@@ -287,17 +284,17 @@ public:
 
 private:
   int channel_num;
-  int  component_num;
-  int  state_length;
-  int  freeze_location_index;
+  int component_num;
+  int state_length;
+  int freeze_location_index;
 
   int counter_start_loc;
   int clock_start_loc;
 
   vector<ClockConstraint<C>> difference_constraints;
 
-  DBMFactory<C> dbm_manager;
-  vector<Counter> counters;
+  DBMFactory<C>     dbm_manager;
+  vector<Counter>   counters;
   vector<Parameter> parameters;
   vector<int>       node_nums;
 };

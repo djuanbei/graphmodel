@@ -21,13 +21,13 @@ const int NO_CHANNEL = 0;
 struct Channel {
   int            id; // start from 1
   CHANNEL_TYPE   type;
-  bool           isUrgent;
+  bool           is_urgent;
   CHANNEL_ACTION action;
 
   Channel()
       : id( -1 )
       , type( ONE2ONE_CH )
-      , isUrgent( false ) {}
+      , is_urgent( false ) {}
 };
 
 } // namespace graphsat

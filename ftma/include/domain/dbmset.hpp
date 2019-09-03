@@ -26,7 +26,7 @@ public:
 
   class const_iterator;
 
-  DBMset( DBMFactory<C> &manager ) { dbmManager = manager; }
+  DBMset( DBMFactory<C> &manager ) { dbm_manager = manager; }
   ~DBMset() { deleteAll(); }
 
   iterator begin() { return iterator( this ); }
@@ -35,12 +35,12 @@ public:
 
   iterator end() {
 
-    return iterator( this, mapD.size() + recoveryD.size() );
+    return iterator( this, map_data.size() + recovery_data.size() );
     /**/
   }
 
   const_iterator end() const {
-    return const_iterator( this, mapD.size() + recoveryD.size() );
+    return const_iterator( this, map_data.size() + recovery_data.size() );
     /**/
   }
 
@@ -51,19 +51,20 @@ public:
    * false otherwise. DM does not destory in function
    */
   bool add( C *DM ) {
-    uint32_t hashValue = dbmManager.getHashValue( DM );
+    uint32_t hashValue = dbm_manager.getHashValue( DM );
     typename std::pair<typename std::map<uint32_t, int>::iterator, bool> ret;
-    ret = passedD.insert( std::pair<uint32_t, int>( hashValue, mapD.size() ) );
-    DF_T featrue = dbmManager.getIncludeFeature( DM );
+    ret = passed_data.insert(
+        std::pair<uint32_t, int>( hashValue, map_data.size() ) );
+    DF_T featrue = dbm_manager.getIncludeFeature( DM );
     if ( false == ret.second ) {
       // hashValue has in passedD
       C *D1 = getD( hashValue );
 
-      if ( !dbmManager.equal( DM, D1 ) ) {
+      if ( !dbm_manager.equal( DM, D1 ) ) {
         bool have = false;
-        for ( typename vector<C *>::iterator it = recoveryD.begin();
-              it != recoveryD.end(); it++ ) {
-          if ( dbmManager.equal( DM, *it ) ) {
+        for ( typename vector<C *>::iterator it = recovery_data.begin();
+              it != recovery_data.end(); it++ ) {
+          if ( dbm_manager.equal( DM, *it ) ) {
             have = true;
             break;
           }
@@ -88,31 +89,31 @@ public:
   }
   bool contain( const C *const DM ) const {
 
-    DF_T featrue = dbmManager.getIncludeFeature( DM );
+    DF_T featrue = dbm_manager.getIncludeFeature( DM );
     return include( DM, featrue );
   }
 
-  size_t size() const { return passedD.size() + recoveryD.size(); }
+  size_t size() const { return passed_data.size() + recovery_data.size(); }
 
   void clear( void ) {
-    passedD.clear();
+    passed_data.clear();
 
-    mapD.clear();
-    mapDFeature.clear();
+    map_data.clear();
+    map_data_feature.clear();
 
-    recoveryD.clear();
-    recoveryDFeature.clear();
+    recovery_data.clear();
+    recovery_data_feature.clear();
   }
 
   void deleteAll( void ) {
 
-    for ( typename vector<C *>::const_iterator it = mapD.begin();
-          it != mapD.end(); it++ ) {
+    for ( typename vector<C *>::const_iterator it = map_data.begin();
+          it != map_data.end(); it++ ) {
       delete[] * it;
     }
 
-    for ( typename vector<C *>::iterator it = recoveryD.begin();
-          it != recoveryD.end(); it++ ) {
+    for ( typename vector<C *>::iterator it = recovery_data.begin();
+          it != recovery_data.end(); it++ ) {
       delete[] * it;
     }
     clear();
@@ -120,14 +121,14 @@ public:
 
   void And( DBMset<C> &other ) {
 
-    for ( typename vector<C *>::iterator it = other.mapD.begin();
-          it != other.mapD.end(); it++ ) {
-      add( dbmManager, *it );
+    for ( typename vector<C *>::iterator it = other.map_data.begin();
+          it != other.map_data.end(); it++ ) {
+      add( dbm_manager, *it );
     }
 
-    for ( typename vector<C *>::iterator it = other.recoveryD.begin();
-          it != other.recoveryD.end(); it++ ) {
-      add( dbmManager, *it );
+    for ( typename vector<C *>::iterator it = other.recovery_data.begin();
+          it != other.recovery_data.end(); it++ ) {
+      add( dbm_manager, *it );
     }
     other.clear();
   }
@@ -226,38 +227,38 @@ public:
   };
 
 private:
-  DBMFactory<C>      dbmManager;
-  map<uint32_t, int> passedD;
-  vector<C *>        mapD;
-  vector<DF_T>       mapDFeature;
+  DBMFactory<C>      dbm_manager;
+  map<uint32_t, int> passed_data;
+  vector<C *>        map_data;
+  vector<DF_T>       map_data_feature;
 
-  vector<C *>  recoveryD;
-  vector<DF_T> recoveryDFeature;
+  vector<C *>  recovery_data;
+  vector<DF_T> recovery_data_feature;
 
-  C *getD( uint32_t hashValue ) { return mapD[ passedD[ hashValue ] ]; }
+  C *getD( uint32_t hashValue ) { return map_data[ passed_data[ hashValue ] ]; }
 
   void mapDAdd( C *D, DF_T &value ) {
-    mapD.push_back( D );
-    mapDFeature.push_back( value );
+    map_data.push_back( D );
+    map_data_feature.push_back( value );
   }
 
   void recoveryDAdd( C *D, DF_T &value ) {
-    recoveryD.push_back( D );
-    recoveryDFeature.push_back( value );
+    recovery_data.push_back( D );
+    recovery_data_feature.push_back( value );
   }
 
   bool include( const C *const DM, DF_T &featrue ) const {
 
-    for ( size_t i = 0; i < mapD.size(); i++ ) {
-      if ( ( mapDFeature[ i ] >= featrue ) &&
-           dbmManager.include( mapD[ i ], DM ) ) {
+    for ( size_t i = 0; i < map_data.size(); i++ ) {
+      if ( ( map_data_feature[ i ] >= featrue ) &&
+           dbm_manager.include( map_data[ i ], DM ) ) {
         return true;
       }
     }
 
-    for ( size_t i = 0; i < recoveryD.size(); i++ ) {
-      if ( ( recoveryDFeature[ i ] >= featrue ) &&
-           dbmManager.include( recoveryD[ i ], DM ) ) {
+    for ( size_t i = 0; i < recovery_data.size(); i++ ) {
+      if ( ( recovery_data_feature[ i ] >= featrue ) &&
+           dbm_manager.include( recovery_data[ i ], DM ) ) {
         return true;
       }
     }

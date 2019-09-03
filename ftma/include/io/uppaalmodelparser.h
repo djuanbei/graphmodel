@@ -61,7 +61,7 @@ private:
   vector<typename INT_TAS_t::T_t> parserTransition( UppaalData &tempData,
                                                     child_type  transitions );
 
-  void parserLabel( UppaalData &data, string guards );
+  void parser_label( UppaalData &data, string guards );
 };
 
 } // namespace graphsat

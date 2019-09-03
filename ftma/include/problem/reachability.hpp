@@ -51,10 +51,7 @@ public:
   bool satisfy( const Property *prop ) { return run( prop ); }
 
   /**
-   * @param L
-   * @param TA
-   * @param C
-   * @param reachSet
+   * @param prop
    *
    * @return
    */

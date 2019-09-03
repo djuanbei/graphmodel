@@ -44,15 +44,14 @@ public:
 
     sys.initState( manager, cache_state );
 
-   
     int body_length = manager.getStateLen() - manager.getClockStart();
 
     compress_state = StateConvert<C_t>( manager.getClockStart(), body_length,
                                         manager.getHeadCompression(),
                                         manager.getBodyCompression() );
     convert_UINT   = new UINT[ compress_state.getCompressionSize() ]();
-    reach_set.setParam( compress_state.getCompressionSize(), compress_state.getCompressionHeadSize());
-          
+    reach_set.setParam( compress_state.getCompressionSize(),
+                        compress_state.getCompressionHeadSize() );
 
     if ( manager.getClockManager().isConsistent(
              manager.getDBM( cache_state ) ) ) {
@@ -114,13 +113,13 @@ public:
          << manager.getClockManager().dump( manager.getDBM( state ) ) << endl;
 #endif
     int commit_component = -1;
-    if(state[manager.getFreezeLocation()]>0){
-        for ( int component = 0; component < component_num; component++ ) {
-            if ( manager.isCommitComp( component, state ) ) {
-                commit_component = component;
-                break;
-            }
+    if ( state[ manager.getFreezeLocation() ] > 0 ) {
+      for ( int component = 0; component < component_num; component++ ) {
+        if ( manager.isCommitComp( component, state ) ) {
+          commit_component = component;
+          break;
         }
+      }
     }
     if ( commit_component > -1 ) {
       return oneComponent( commit_component, prop, state );
@@ -273,13 +272,15 @@ private:
         continue;
       }
 
-      const Channel &channel =
-          sys.tas[ component ].transitions[ link ].getChannel();
+      if ( sys.tas[ component ].transitions[ link ].hasChannel() ) {
+        const Channel &channel =
+            sys.tas[ component ].transitions[ link ].getChannel();
+        // channel.id start from 1
 
-      if ( channel.id > -1 ) {
         if ( doSynchronize( component, prop, state, link, channel ) ) {
           return true;
         }
+
       } else {
         if ( oneTranision( component, link, prop, state ) ) {
           return true;
@@ -351,7 +352,6 @@ private:
     bool is_receive_commit =
         sys.tas[ receive_component_id ].locations[ receive_target ].isCommit();
 
-
     // if ( is_send_commit ) {
     //   manager.setCommitState( send_component_id, next_state );
     // }
@@ -371,7 +371,7 @@ private:
       next_state[ manager.getFreezeLocation() ]++;
       assert( next_state[ manager.getFreezeLocation() ] <= component_num );
     }
-    
+
     sys.tas[ receive_component_id ].graph.findSrcSnk( receive_link, source,
                                                       target );
 
@@ -407,7 +407,7 @@ private:
     if ( CHANNEL_SEND == channel.action ) {
       wait_components = manager.blockComponents( -channel.id, state );
     } else if ( CHANNEL_RECEIVE == channel.action ) {
-      is_send        = false;
+      is_send         = false;
       wait_components = manager.blockComponents( channel.id, state );
     }
     if ( !wait_components.empty() ) {
@@ -416,11 +416,8 @@ private:
             0, wait_components.size() - 1 );
         int id                 = distribution( generator );
         int block_component_id = wait_components[ id ];
-
-        if ( unBlockOne( component, block_component_id, link, state, prop,
-                         is_send ) ) {
-          return true;
-        }
+        return unBlockOne( component, block_component_id, link, state, prop,
+                           is_send );
       } else if ( channel.type == BROADCAST_CH ) {
         for ( auto id : wait_components ) {
           int block_component_id = wait_components[ id ];
@@ -433,11 +430,11 @@ private:
 
     } else {
       manager.copy( cache_state, state );
-
+      assert( channel.id > 0 );
       if ( CHANNEL_SEND == channel.action ) {
-        cache_state[ component + component_num ] = channel.id;
+        cache_state[ component + component_num ] = channel.id; // send part
       } else if ( CHANNEL_RECEIVE == channel.action ) {
-        cache_state[ component + component_num ] = -channel.id;
+        cache_state[ component + component_num ] = -channel.id; // receive part
       }
 
       cache_state[ component ] = link; // block link
@@ -491,7 +488,9 @@ private:
              manager.getClockManager(), manager.getDBM( state ) ) ) {
       return false;
     }
-
+    /**
+     Whether there is some component in freeze location
+     */
     if ( 0 == state[ manager.getFreezeLocation() ] ) {
       sys.tas[ component ].locations[ target ]( manager.getClockManager(),
                                                 manager.getDBM( state ) );
@@ -506,12 +505,13 @@ private:
     bool is_commit = sys.tas[ component ].locations[ target ].isCommit();
 
     bool re_bool = false;
-
-    for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
-      sys.tas[ comp_id ]
-          .locations[ manager.getLoc( comp_id, state ) ]
-          .employInvariants( manager.getClockManager(),
-                             manager.getDBM( state ) );
+    if ( 0 == state[ manager.getFreezeLocation() ] ) {
+      for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+        sys.tas[ comp_id ]
+            .locations[ manager.getLoc( comp_id, state ) ]
+            .employInvariants( manager.getClockManager(),
+                               manager.getDBM( state ) );
+      }
     }
     if ( manager.hasDiffCons() ) {
 
@@ -545,7 +545,7 @@ private:
     }
     return re_bool;
   }
-};
+}; // namespace graphsat
 // typedef ReachableSet< TAS_t> R_t;
 } // namespace graphsat
 

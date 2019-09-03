@@ -13,7 +13,7 @@
 #include <map>
 #include <string>
 #include <vector>
-
+#include "model/ta.hpp"
 #include "util/data.hpp"
 namespace graphsat {
 using std::map;
@@ -43,8 +43,8 @@ class UppaalData {
 public:
   UppaalData() { init_loc = 0; }
   void clear() {
-    intValues.clear();
-    pointValues.clear();
+    int_values.clear();
+    point_values.clear();
   }
 
   void addIntArray( string &key, vector<int> &v ) {
@@ -67,53 +67,55 @@ public:
   int getInitialLoc() const { return init_loc; }
 
   void addValue( const string &type, const string &name, int v = 0 ) {
-    intValues.addValue( type, name, v );
+    int_values.addValue( type, name, v );
   }
 
   int getTypeNum( const string &type ) const {
-    return intValues.getTypeNum( type );
+    return int_values.getTypeNum( type );
   }
 
   /**
    *
    *
    * @param type
-   * @param intValues
+   * @param int_values
    *
-   * @return  -1 if name is not in intValues
+   * @return  -1 if name is not in int_values
    */
   int getId( const string &type, const string &name ) const {
-    return intValues.getId( type, name );
+    return int_values.getId( type, name );
   }
 
   const pair<string, vector<int>> &getValue( const string &type,
                                              int           id ) const {
-    return intValues.getValue( type, id );
+    return int_values.getValue( type, id );
   }
 
   bool hasValue( const string &type, const string &name, int id = 0 ) const {
-    return intValues.hasValue( type, name, id );
+    return int_values.hasValue( type, name, id );
   }
 
   int getValue( const string &type, const string &name, int id = 0 ) const {
-    return intValues.getValue( type, name, id );
+    return int_values.getValue( type, name, id );
   }
 
   void addPointer( const string &type, void *v ) {
 
-    pointValues.addPointer( type, v );
+    point_values.addPointer( type, v );
   }
 
   vector<void *> getPoints( const string &type ) const {
-    return pointValues.getPoints( type );
+    return point_values.getPoints( type );
   }
 
-  void clearPoints( const string &type ) { pointValues.clearPoints( type ); }
-  void clearPoints() { pointValues.clear(); }
-
+  void clearPoints( const string &type ) { point_values.clearPoints( type ); }
+  void clearPoints() { point_values.clear(); }
+  
+  vector<ParaElement> para_list;
 private:
-  ValueData<int> intValues;
-  PointerData    pointValues;
+  ValueData<int> int_values;
+  PointerData    point_values;
+
 
   int init_loc;
 };

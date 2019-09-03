@@ -3,26 +3,26 @@
 namespace graphsat {
 extern string trim( std::string s );
 
-std::vector<string> splitStr( const string &stringToBeSplitted,
+std::vector<string> splitStr( const string &string_to_splitted,
                               const string &delimeter ) {
-  vector<string> splitString;
-  size_t         startIndex = 0;
-  size_t         found      = stringToBeSplitted.find( delimeter, startIndex );
+  vector<string> split_string;
+  size_t         start_index = 0;
+  size_t         found = string_to_splitted.find( delimeter, start_index );
   while ( found != string::npos ) {
     string val =
-        trim( stringToBeSplitted.substr( startIndex, found - startIndex ) );
+        trim( string_to_splitted.substr( start_index, found - start_index ) );
     if ( val != "" ) {
-      splitString.push_back( val );
+      split_string.push_back( val );
     }
-    startIndex = found + delimeter.size();
-    found      = stringToBeSplitted.find( delimeter, startIndex );
+    start_index = found + delimeter.size();
+    found       = string_to_splitted.find( delimeter, start_index );
   }
-  if ( startIndex < stringToBeSplitted.size() ) {
-    string val = trim( stringToBeSplitted.substr( startIndex ) );
+  if ( start_index < string_to_splitted.size() ) {
+    string val = trim( string_to_splitted.substr( start_index ) );
     if ( val != "" ) {
-      splitString.push_back( val );
+      split_string.push_back( val );
     }
   }
-  return splitString;
+  return split_string;
 }
 } // namespace graphsat

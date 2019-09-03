@@ -10,8 +10,8 @@
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
 namespace graphsat {
-    
-const int MAX_COUNTER_VALUE=255;
+
+const int MAX_COUNTER_VALUE = 255;
 class Counter {
 private:
   int value;
@@ -24,12 +24,8 @@ public:
     up    = u;
   }
   void setValue( int v ) { value = v; }
-  int getLB( ) const{
-    return lb;
-  }
-  int getUP( ) const{
-    return up;
-  }
+  int  getLB() const { return lb; }
+  int  getUP() const { return up; }
 };
 } // namespace graphsat
 

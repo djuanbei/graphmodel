@@ -23,7 +23,10 @@ template <typename C, typename CS, typename D, typename DSet> class Transition {
   typedef Transition<C, CS, D, DSet> Transition_t;
 
 public:
-  Transition() { source = target = -1; }
+  Transition() {
+    source = target = -1;
+    has_channel     = false;
+  }
   Transition( int s, int t ) {
     source = s;
     target = t;
@@ -65,9 +68,16 @@ public:
     return *this;
   }
 
-  void setChannel( const Channel &ch ) { channel = ch; }
+  void setChannel( const Channel &ch ) {
+    channel = ch;
+    if ( ch.id > NO_CHANNEL ) {
+      has_channel = true;
+    }
+  }
 
   const Channel &getChannel() const { return channel; }
+
+  bool hasChannel() const { return has_channel; }
 
   /**
    *
@@ -91,7 +101,7 @@ public:
   void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
 
   void addCounterCons( CounterConstraint *guards ) {
-    counterCons.push_back( guards );
+    counter_cons.push_back( guards );
   }
 
   /**
@@ -108,28 +118,28 @@ public:
               const C *const state ) const {
     if ( !guards.empty() ) {
 
-      const D &dbmManager = manager.getClockManager();
-      const C *sourceDBM  = manager.getDBM( state );
-      assert( dbmManager.isConsistent( sourceDBM ) );
-      C *copyDBM = dbmManager.createDBM( sourceDBM );
+      const D &dbm_manager = manager.getClockManager();
+      const C *source_DBM  = manager.getDBM( state );
+      assert( dbm_manager.isConsistent( source_DBM ) );
+      C *copy_DBM = dbm_manager.createDBM( source_DBM );
 
       for ( auto cs : guards ) {
-        dbmManager.andImpl( copyDBM, cs );
+        dbm_manager.andImpl( copy_DBM, cs );
       }
 
-      if ( !dbmManager.isConsistent( copyDBM ) ) {
-        dbmManager.destroyDBM( copyDBM );
+      if ( !dbm_manager.isConsistent( copy_DBM ) ) {
+        dbm_manager.destroyDBM( copy_DBM );
         return false;
       }
-      dbmManager.destroyDBM( copyDBM );
+      dbm_manager.destroyDBM( copy_DBM );
     }
 
-    if ( !counterCons.empty() ) {
-      const C *counterValue = manager.getCounterValue( state );
+    if ( !counter_cons.empty() ) {
+      const C *counter_value = manager.getCounterValue( state );
 
-      for ( auto cs : counterCons ) {
+      for ( auto cs : counter_cons ) {
         if ( !( *cs )( manager.getParameterValue( component ),
-                       counterValue ) ) {
+                       counter_value ) ) {
           return false;
         }
       }
@@ -147,22 +157,22 @@ public:
                    C *re_state ) const {
     assert( ready( component, manager, re_state ) );
 
-    const D &dbmManager = manager.getClockManager();
+    const D &dbm_manager = manager.getClockManager();
 
-    C *sourceDBM = manager.getDBM( re_state );
+    C *source_DBM = manager.getDBM( re_state );
 
     /**
      * the state which statisfied the guards can jump this transition
      *
      */
     for ( auto cs : guards ) {
-      dbmManager.andImpl( sourceDBM, cs );
+      dbm_manager.andImpl( source_DBM, cs );
     }
 
     for ( auto reset : resets ) {
       assert( reset.first > 0 );   // clock id start from 1
       assert( reset.second >= 0 ); // clock value must positive
-      dbmManager.resetImpl( sourceDBM, reset.first, reset.second );
+      dbm_manager.resetImpl( source_DBM, reset.first, reset.second );
     }
 
     C *counterValue = manager.getCounterValue( re_state );
@@ -188,8 +198,9 @@ private:
   vector<CS> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint *>
-          counterCons; // counter constraint like pid ==id or id==0
-  Channel channel;     // Only one synchronisation channels
+          counter_cons; // counter constraint like pid ==id or id==0
+  Channel channel;      // Only one synchronisation channels
+  bool    has_channel;
 
   vector<const CounterAction *>
                          actions; // set of actions at this transitionedge

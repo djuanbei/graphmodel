@@ -27,7 +27,7 @@ RCOBJS     = $(addsuffix r,  $(COBJS))
 
 ifeq ($(SRCSUF),cpp)
 
-	CC=g++  -std=c++11 
+	CC=g++  -std=c++11  -Wno-deprecated-register
 
 	CLANG=clang++
     CFLAGS     =  -I include -I ~/mycode/c++/raptor/include -pedantic -W -Werror      -DHAVE_CONFIG_H -Wlong-long -Wno-unused-parameter #-std=c++11 

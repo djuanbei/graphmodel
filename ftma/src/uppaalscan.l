@@ -16,8 +16,8 @@ int check_type();
 %}
 
 %%
-"/*"            { comment(); }
-"//"              { commentLine(); }
+"/*"            { comment();  return (COMMENT); }
+"//"              { commentLine(); return (COMMENT); }
 
 
 
@@ -134,10 +134,7 @@ void comment()
 void commentLine()
 {
     char c;
-    
-   
     while ((c = yyinput()) != '\n' && c != 0);
-
  }
         
 

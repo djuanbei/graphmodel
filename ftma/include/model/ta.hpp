@@ -38,6 +38,22 @@ template <typename C, typename L, typename T> class TAS;
  *
  */
 
+enum ParaType {
+  BOOL_T,
+  BOOL_REF_T,
+  CHANNEL_T,
+  CHANNEL_REF_T,
+  URGENT_CHANNEL_T,
+  URGENT_CHANNEL_REF_T,
+  INT_T,
+  INT_REF_T,
+  SCALAR_T
+};
+struct ParaElement {
+  ParaType type;
+  string   name;
+};
+
 template <typename C, typename L, typename T> class TA {
 
 private:
@@ -207,8 +223,8 @@ public:
     }
 
     difference_cons.insert( difference_cons.end(),
-                           ta1.getDifferenceCons().begin(),
-                           ta1.getDifferenceCons().end() );
+                            ta1.getDifferenceCons().begin(),
+                            ta1.getDifferenceCons().end() );
 
     parameters.push_back( ta1.getParameter() );
 
@@ -244,9 +260,8 @@ public:
       node_n.push_back( tas[ i ].graph.getVertex_num() );
     }
 
-    StateManager<C> re( tas.size(), counters, clock_num,
-                        temp_clock_upperbound, difference_cons, parameters,
-                        node_n,  channels.size() );
+    StateManager<C> re( tas.size(), counters, clock_num, temp_clock_upperbound,
+                        difference_cons, parameters, node_n, channels.size() );
 
     return re;
   }
