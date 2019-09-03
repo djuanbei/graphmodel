@@ -40,17 +40,19 @@ public:
     cache_state = manager.newState();
     next_state  = manager.newState();
 
-    convertC_t = manager.newState();
+    convert_C_t = manager.newState();
 
     sys.initState( manager, cache_state );
 
-    reachSet.setParam( manager.getStateLen(), manager.getClockStart() );
-    int bodyLen = manager.getStateLen() - manager.getClockStart();
+   
+    int body_length = manager.getStateLen() - manager.getClockStart();
 
-    compressState = StateConvert<C_t>( manager.getClockStart(), bodyLen,
-                                       manager.getHeadCompression(),
-                                       manager.getBodyCompression() );
-    convertUINT   = new UINT[ compressState.getCompressionSize() ]();
+    compress_state = StateConvert<C_t>( manager.getClockStart(), body_length,
+                                        manager.getHeadCompression(),
+                                        manager.getBodyCompression() );
+    convert_UINT   = new UINT[ compress_state.getCompressionSize() ]();
+    reach_set.setParam( compress_state.getCompressionSize(), compress_state.getCompressionHeadSize());
+          
 
     if ( manager.getClockManager().isConsistent(
              manager.getDBM( cache_state ) ) ) {
@@ -61,15 +63,15 @@ public:
   }
 
   ~ReachableSet() {
-    reachSet.clear();
+    reach_set.clear();
     manager.destroyState( cache_state );
     manager.destroyState( next_state );
-    manager.destroyState( convertC_t );
+    manager.destroyState( convert_C_t );
 
-    delete[] convertUINT;
-    while ( !waitSet.empty() ) {
-      C_t *temp_state = waitSet.front();
-      waitSet.pop_front();
+    delete[] convert_UINT;
+    while ( !wait_set.empty() ) {
+      C_t *temp_state = wait_set.front();
+      wait_set.pop_front();
       manager.destroyState( temp_state );
     }
   }
@@ -80,18 +82,18 @@ public:
    * @return
    */
   C_t *next() {
-    C_t *state = waitSet.front();
-    waitSet.pop_front();
+    C_t *state = wait_set.front();
+    wait_set.pop_front();
     return state;
   }
-  bool   waitEmpty() const { return waitSet.empty(); }
-  size_t waitSize() const { return waitSet.size(); }
+  bool   waitEmpty() const { return wait_set.empty(); }
+  size_t waitSize() const { return wait_set.size(); }
 
   Check_State search( const Property *prop ) {
 
-    for ( auto state : reachSet ) {
-      compressState.decode( state, convertC_t );
-      if ( isReach( prop, convertC_t ) ) {
+    for ( auto state : reach_set ) {
+      compress_state.decode( state, convert_C_t );
+      if ( isReach( prop, convert_C_t ) ) {
         return TRUE;
       }
     }
@@ -112,18 +114,21 @@ public:
          << manager.getClockManager().dump( manager.getDBM( state ) ) << endl;
 #endif
     int commit_component = -1;
-    for ( int component = 0; component < component_num; component++ ) {
-      if ( manager.isCommitComp( component, state ) ) {
-        commit_component = component;
-        break;
-      }
+    if(state[manager.getFreezeLocation()]>0){
+        for ( int component = 0; component < component_num; component++ ) {
+            if ( manager.isCommitComp( component, state ) ) {
+                commit_component = component;
+                break;
+            }
+        }
     }
     if ( commit_component > -1 ) {
       return oneComponent( commit_component, prop, state );
     }
     for ( int component = 0; component < component_num; component++ ) {
 
-      if ( manager.hasChannel() && state[ component + component_num ] != NO_CHANNEL ) {
+      if ( manager.hasChannel() &&
+           state[ component + component_num ] != NO_CHANNEL ) {
         /**
          * Waiting for synchronize signal
          *
@@ -138,24 +143,24 @@ public:
     return false;
   }
 
-  size_t size() const { return reachSet.size(); }
+  size_t size() const { return reach_set.size(); }
 
   void project( int m, vector<vector<C_t>> &re ) {
     re.clear();
     int clock_start_loc = manager.getClockStart();
 
-    for ( auto state : reachSet ) {
+    for ( auto state : reach_set ) {
 
-      compressState.decode( state, convertC_t );
+      compress_state.decode( state, convert_C_t );
 
       vector<C_t> dummy;
       for ( int i = 0; i < m; i++ ) {
-        dummy.push_back( convertC_t[ i ] );
+        dummy.push_back( convert_C_t[ i ] );
       }
       for ( int i = 0; i <= m; i++ ) {
         for ( int j = 0; j <= m; j++ ) {
           dummy.push_back(
-              convertC_t[ i * ( component_num + 1 ) + j + clock_start_loc ] );
+              convert_C_t[ i * ( component_num + 1 ) + j + clock_start_loc ] );
         }
       }
 
@@ -167,15 +172,15 @@ public:
 #ifdef DRAW_GRAPH
     ofstream fout( filename );
     fout << "digraph G {" << endl;
-    int len = compressState.getCompressionSize();
-    for ( size_t i = 1; i < stateParent.size(); i++ ) {
-      int parent = stateParent[ i ];
+    int len = compress_state.getCompressionSize();
+    for ( size_t i = 1; i < state_parent.size(); i++ ) {
+      int parent = state_parent[ i ];
 
-      compressState.decode( &( processStates[ parent * len ] ), cache_state );
-      compressState.decode( &( processStates[ i * len ] ), convertC_t );
-      fout << "\t" << stateParent[ i ] << " -> " << i << "  [label=\"";
+      compress_state.decode( &( process_states[ parent * len ] ), cache_state );
+      compress_state.decode( &( process_states[ i * len ] ), convert_C_t );
+      fout << "\t" << state_parent[ i ] << " -> " << i << "  [label=\"";
       for ( int j = 0; j < component_num; j++ ) {
-        if ( cache_state[ j ] != convertC_t[ j ] ) {
+        if ( cache_state[ j ] != convert_C_t[ j ] ) {
           fout << j << " ";
         }
       }
@@ -189,28 +194,28 @@ public:
 
   void addToWait( const C_t *const state ) {
     C_t *newState = manager.newState( state );
-    waitSet.push_back( newState );
+    wait_set.push_back( newState );
 #ifdef DRAW_GRAPH
-    compressState.encode( state, convertUINT );
-    processStates.insert( processStates.end(), convertUINT,
-                          convertUINT + compressState.getCompressionSize() );
-    stateParent.push_back( current_parent );
+    compress_state.encode( state, convert_UINT );
+    process_states.insert( process_states.end(), convert_UINT,
+                           convert_UINT + compress_state.getCompressionSize() );
+    state_parent.push_back( current_parent );
 #endif
   }
 
   inline bool addToReachableSet( const C_t *const state ) {
 
 #ifndef CHECK_MEMORY
-    compressState.encode( state, convertUINT );
+    compress_state.encode( state, convert_UINT );
 
-    return reachSet.add( convertUINT ) > -1;
+    return reach_set.add( convert_UINT ) > -1;
 #endif
     return true;
   }
 
 private:
-  StateSet<UINT> reachSet;
-  deque<C_t *>   waitSet;
+  StateSet<UINT> reach_set;
+  deque<C_t *>   wait_set;
 
   C_t *                        cache_state;
   C_t *                        next_state;
@@ -219,13 +224,13 @@ private:
   template <typename R1> friend class Reachability;
   int                        component_num;
   std::default_random_engine generator;
-  StateConvert<C_t>          compressState;
-  UINT *                     convertUINT;
-  C_t *                      convertC_t;
+  StateConvert<C_t>          compress_state;
+  UINT *                     convert_UINT;
+  C_t *                      convert_C_t;
 
 #ifdef DRAW_GRAPH
-  vector<UINT> processStates;
-  vector<int>  stateParent;
+  vector<UINT> process_states;
+  vector<int>  state_parent;
   int          current_parent;
 #endif
 
@@ -254,8 +259,8 @@ private:
 
     int source = manager.getLoc( component, state );
 
-    int outDegree = sys.tas[ component ].graph.getOutDegree( source );
-    for ( int j = 0; j < outDegree; j++ ) {
+    int out_degree = sys.tas[ component ].graph.getOutDegree( source );
+    for ( int j = 0; j < out_degree; j++ ) {
 
       int link = sys.tas[ component ].graph.getAdj( source, j );
       /**
@@ -291,28 +296,28 @@ private:
    * @param link  the block transition
    * @param state the current state
    * @param prop
-   * @param isSend ture if block_component_id is send part, false otherwise.
+   * @param is_send ture if block_component_id is send part, false otherwise.
    *
    * @return  true the next state make prop true, false otherwise.
    */
   bool unBlockOne( const int current_component, const int block_component_id,
                    const int link, C_t *state, const Property *prop,
-                   bool isSend ) {
+                   bool is_send ) {
 
     manager.copy( next_state, state );
     next_state[ block_component_id + component_num ] = NO_CHANNEL;
 
-    const int block_link  = next_state[ block_component_id ];
-    int       blockSource = 0;
-    sys.tas[ block_component_id ].graph.findSrc( block_link, blockSource );
+    const int block_link   = next_state[ block_component_id ];
+    int       block_source = 0;
+    sys.tas[ block_component_id ].graph.findSrc( block_link, block_source );
 
-    next_state[ block_component_id ] = blockSource;
+    next_state[ block_component_id ] = block_source;
     int send_component_id            = current_component;
     int send_link                    = link;
     int receive_component_id         = block_component_id;
     int receive_link                 = block_link;
 
-    if ( !isSend ) {
+    if ( !is_send ) {
       send_component_id    = block_component_id;
       send_link            = block_link;
       receive_component_id = current_component;
@@ -322,7 +327,6 @@ private:
     // send do firstly
     /**
      *  has some problems
-     * TODO: need rewrite bellow code
      */
     sys.tas[ send_component_id ].transitions[ send_link ](
         send_component_id, manager,
@@ -335,8 +339,8 @@ private:
     sys.tas[ send_component_id ].graph.findSnk( send_link, send_target );
     next_state[ send_component_id ] = send_target;
 
-    bool is_send_commit =
-        sys.tas[ send_component_id ].locations[ send_target ].isCommit();
+    // bool is_send_commit =
+    //     sys.tas[ send_component_id ].locations[ send_target ].is_commit();
 
     int receive_target = 0;
 
@@ -347,112 +351,48 @@ private:
     bool is_receive_commit =
         sys.tas[ receive_component_id ].locations[ receive_target ].isCommit();
 
-    bool re_bool = false;
 
-    // can not stay on current_target and block_target locations when
-    //send_target or receive_target is a commit or urgent location.
-    
-    if ( is_send_commit || is_receive_commit ) {
-      for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
-        sys.tas[ comp_id ]
-            .locations[ manager.getLoc( comp_id, next_state ) ]
-            .employInvariants( manager.getClockManager(),
-                               manager.getDBM( next_state ) );
-      }
-      if ( manager.hasDiffCons() ) {
-        vector<typename SYS::C_t *> next_dbms;
-        manager.norm( manager.getDBM( next_state ), next_dbms );
-
-        for ( auto dbm : next_dbms ) {
-          manager.constructState( send_component_id, send_target, next_state,
-                                  dbm, false, cache_state );
-          if ( is_send_commit ) {
-            manager.setCommitState( send_component_id, cache_state );
-          }
-          if ( is_receive_commit ) {
-            manager.setCommitState( receive_component_id, cache_state );
-          }
-
-          if ( addToReachableSet( cache_state ) ) { // add to reachableSet
-            addToWait( cache_state );
-            if ( isReach( prop, cache_state ) ) {
-              re_bool = true;
-              break;
-            }
-          }
-        }
-        for ( auto dbm : next_dbms ) {
-          manager.getClockManager().destroyDBM( dbm );
-        }
-      } else {
-
-        manager.norm( manager.getDBM( next_state ) );
-
-        manager.constructState(  send_component_id, send_target, false,
-                                next_state );
-
-        if ( is_send_commit ) {
-          manager.setCommitState( send_component_id, cache_state );
-        }
-        if ( is_receive_commit ) {
-          manager.setCommitState( receive_component_id, cache_state );
-        }
-          
-        if ( addToReachableSet( next_state ) ) { // add to reachableSet
-          addToWait( next_state );
-          if ( isReach( prop, next_state ) ) {
-            return true;
-          }
-        }
-      }
-    }else{
-       
-      if ( sys.tas[ send_component_id ].locations[ send_target ](
-              manager.getClockManager(), manager.getDBM( next_state ) ) ) {
-
-        for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
-
-          sys.tas[ comp_id ]
-              .locations[ manager.getLoc( comp_id, next_state ) ]
-              .employInvariants( manager.getClockManager(),
-                                 manager.getDBM( next_state ) );
-        }
-        if ( manager.hasDiffCons() ) {
-
-          vector<typename SYS::C_t *> next_dbms;
-          manager.norm( manager.getDBM( next_state ), next_dbms );
-
-          for ( auto dbm : next_dbms ) {
-            manager.constructState( send_component_id, send_target, next_state, dbm, false,
-                                    cache_state );
-            if ( addToReachableSet( cache_state ) ) { // add to reachableSet
-              addToWait( cache_state );
-              if ( isReach( prop, cache_state ) ) {
-                re_bool = true;
-                break;
-              }
-            }
-          }
-          for ( auto dbm : next_dbms ) {
-            manager.getClockManager().destroyDBM( dbm );
-          }
-        } else {
-          manager.norm( manager.getDBM( next_state ) );
-          manager.constructState( send_component_id, send_target, false, next_state );
-
-          if ( addToReachableSet( next_state ) ) { // add to reachableSet
-            addToWait( next_state );
-            if ( isReach( prop, next_state ) ) {
-              return true;
-            }
-          }
-        }
-      }
-      
+    // if ( is_send_commit ) {
+    //   manager.setCommitState( send_component_id, next_state );
+    // }
+    if ( is_receive_commit ) {
+      manager.setCommitState( receive_component_id, next_state );
     }
 
+    int source, target;
+    source = target = 0;
+    sys.tas[ send_component_id ].graph.findSrcSnk( send_link, source, target );
 
-    return re_bool;
+    if ( sys.tas[ send_component_id ].locations[ source ].isFreezeLocation() ) {
+      next_state[ manager.getFreezeLocation() ]--;
+      assert( next_state[ manager.getFreezeLocation() ] >= 0 );
+    }
+    if ( sys.tas[ send_component_id ].locations[ target ].isFreezeLocation() ) {
+      next_state[ manager.getFreezeLocation() ]++;
+      assert( next_state[ manager.getFreezeLocation() ] <= component_num );
+    }
+    
+    sys.tas[ receive_component_id ].graph.findSrcSnk( receive_link, source,
+                                                      target );
+
+    if ( sys.tas[ receive_component_id ]
+             .locations[ source ]
+             .isFreezeLocation() ) {
+      next_state[ manager.getFreezeLocation() ]--;
+      assert( next_state[ manager.getFreezeLocation() ] >= 0 );
+    }
+
+    if ( sys.tas[ receive_component_id ]
+             .locations[ target ]
+             .isFreezeLocation() ) {
+      next_state[ manager.getFreezeLocation() ]++;
+      assert( next_state[ manager.getFreezeLocation() ] <= component_num );
+    }
+
+    // can not stay on current_target and block_target locations when
+    // send_target or receive_target is a commit or urgent location.
+
+    return delay( send_component_id, send_target, prop, next_state );
   }
 
   /**
@@ -462,30 +402,30 @@ private:
   bool doSynchronize( int component, const Property *prop, C_t *state, int link,
                       const Channel &channel ) {
 
-    vector<int> waitComponents;
-    bool        isSend = true;
+    vector<int> wait_components;
+    bool        is_send = true;
     if ( CHANNEL_SEND == channel.action ) {
-      waitComponents = manager.blockComponents( -channel.id, state );
+      wait_components = manager.blockComponents( -channel.id, state );
     } else if ( CHANNEL_RECEIVE == channel.action ) {
-      isSend         = false;
-      waitComponents = manager.blockComponents( channel.id, state );
+      is_send        = false;
+      wait_components = manager.blockComponents( channel.id, state );
     }
-    if ( !waitComponents.empty() ) {
+    if ( !wait_components.empty() ) {
       if ( channel.type == ONE2ONE_CH ) {
         std::uniform_int_distribution<int> distribution(
-            0, waitComponents.size() - 1 );
+            0, wait_components.size() - 1 );
         int id                 = distribution( generator );
-        int block_component_id = waitComponents[ id ];
+        int block_component_id = wait_components[ id ];
 
         if ( unBlockOne( component, block_component_id, link, state, prop,
-                         isSend ) ) {
+                         is_send ) ) {
           return true;
         }
       } else if ( channel.type == BROADCAST_CH ) {
-        for ( auto id : waitComponents ) {
-          int block_component_id = waitComponents[ id ];
+        for ( auto id : wait_components ) {
+          int block_component_id = wait_components[ id ];
           if ( unBlockOne( component, block_component_id, link, state, prop,
-                           isSend ) ) {
+                           is_send ) ) {
             return true;
           }
         }
@@ -509,7 +449,8 @@ private:
   }
 
   /**
-   *
+   *@brief The current location of TA is on src location of link, then
+   * it wants to jump through link to snk location of link.
    *
    * @param component Current compoent id
    * @param link  Current transition id
@@ -523,54 +464,82 @@ private:
                      const C_t *const state ) {
 
     manager.copy( next_state, state );
+    int source = 0;
     int target = 0;
-    sys.tas[ component ].graph.findSnk( link, target );
+    sys.tas[ component ].graph.findSrcSnk( link, source, target );
+    if ( sys.tas[ component ].locations[ source ].isFreezeLocation() ) {
+      next_state[ manager.getFreezeLocation() ]--;
+      assert( next_state[ manager.getFreezeLocation() ] >= 0 );
+    }
+    if ( sys.tas[ component ].locations[ target ].isFreezeLocation() ) {
+      next_state[ manager.getFreezeLocation() ]++;
+      assert( next_state[ manager.getFreezeLocation() ] <= component_num );
+    }
 
-    sys.tas[ component ].transitions[ link ]( component, manager,
-                                              next_state ); // update state
+    sys.tas[ component ].transitions[ link ](
+        component, manager,
+        next_state ); // update counter state and reset clock state
 
-    next_state[ component ] = target;
-    bool isCommit = sys.tas[ component ].locations[ target ].isCommit();
+    return delay( component, target, prop, next_state );
+  }
+
+  bool delay( const int component, const int target, const Property *prop,
+              C_t *state ) {
+
+    state[ component ] = target;
+    if ( !sys.tas[ component ].locations[ target ].isReachable(
+             manager.getClockManager(), manager.getDBM( state ) ) ) {
+      return false;
+    }
+
+    if ( 0 == state[ manager.getFreezeLocation() ] ) {
+      sys.tas[ component ].locations[ target ]( manager.getClockManager(),
+                                                manager.getDBM( state ) );
+    }
+
+    return postDelay( component, target, prop, state );
+  }
+
+  bool postDelay( const int component, const int target, const Property *prop,
+                  C_t *state ) {
+
+    bool is_commit = sys.tas[ component ].locations[ target ].isCommit();
 
     bool re_bool = false;
-    if ( sys.tas[ component ].locations[ target ](
-             manager.getClockManager(), manager.getDBM( next_state ) ) ) {
 
-      for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+    for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
+      sys.tas[ comp_id ]
+          .locations[ manager.getLoc( comp_id, state ) ]
+          .employInvariants( manager.getClockManager(),
+                             manager.getDBM( state ) );
+    }
+    if ( manager.hasDiffCons() ) {
 
-        sys.tas[ comp_id ]
-            .locations[ manager.getLoc( comp_id, next_state ) ]
-            .employInvariants( manager.getClockManager(),
-                               manager.getDBM( next_state ) );
+      vector<typename SYS::C_t *> next_dbms;
+      manager.norm( manager.getDBM( state ), next_dbms );
+
+      for ( auto dbm : next_dbms ) {
+        manager.constructState( component, target, state, dbm, is_commit,
+                                cache_state );
+        if ( addToReachableSet( cache_state ) ) { // add to reachableSet
+          addToWait( cache_state );
+          if ( isReach( prop, cache_state ) ) {
+            re_bool = true;
+            break;
+          }
+        }
       }
-      if ( manager.hasDiffCons() ) {
+      for ( auto dbm : next_dbms ) {
+        manager.getClockManager().destroyDBM( dbm );
+      }
+    } else {
+      manager.norm( manager.getDBM( state ) );
+      manager.constructState( component, target, is_commit, state );
 
-        vector<typename SYS::C_t *> next_dbms;
-        manager.norm( manager.getDBM( next_state ), next_dbms );
-
-        for ( auto dbm : next_dbms ) {
-          manager.constructState( component, target, next_state, dbm, isCommit,
-                                  cache_state );
-          if ( addToReachableSet( cache_state ) ) { // add to reachableSet
-            addToWait( cache_state );
-            if ( isReach( prop, cache_state ) ) {
-              re_bool = true;
-              break;
-            }
-          }
-        }
-        for ( auto dbm : next_dbms ) {
-          manager.getClockManager().destroyDBM( dbm );
-        }
-      } else {
-        manager.norm( manager.getDBM( next_state ) );
-        manager.constructState( component, target, isCommit, next_state );
-
-        if ( addToReachableSet( next_state ) ) { // add to reachableSet
-          addToWait( next_state );
-          if ( isReach( prop, next_state ) ) {
-            return true;
-          }
+      if ( addToReachableSet( state ) ) { // add to reachableSet
+        addToWait( state );
+        if ( isReach( prop, state ) ) {
+          return true;
         }
       }
     }

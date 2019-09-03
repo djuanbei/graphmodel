@@ -46,7 +46,7 @@ public:
    * @return  true if this location is urgent location, false otherwise.
    */
 
-  bool isUrgent() const { return type == URGENT_LOC; }
+  inline bool isUrgent() const { return type == URGENT_LOC; }
 
   /**
    * @brief  the commit freeze time. Furthermore, if any process is in a
@@ -56,57 +56,77 @@ public:
    *
    * @return true if this location is a commit, false otherwise.
    */
-  bool isCommit() const { return type == COMMIT_LOC; }
+  inline bool isCommit() const { return type == COMMIT_LOC; }
 
-  inline void employInvariants( const DManager_t &dbmManager, C_t *dbm ) const {
+  inline bool isFreezeLocation() const {
+    return ( isUrgent() ) || ( isCommit() );
+  }
+
+  inline void employInvariants( const DManager_t &dbm_manager,
+                                C_t *             dbm ) const {
     for ( auto cs : invariants ) {
-      dbmManager.andImpl( dbm, cs );
+      dbm_manager.andImpl( dbm, cs );
     }
   }
 
-  inline bool operator()( const DManager_t &dbmManager, C_t *dbm ) const {
+  /**
+   * @brief check whether the state dbm satisfies the invariant of this location
+   *
+   * @param dbm_manager
+   * @param dbm
+   *
+   * @return  true if dbm  satisfies invariant, false otherwise.
+   */
 
+  inline bool isReachable( const DManager_t &dbm_manager, C_t *dbm ) const {
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
      *
      */
-    employInvariants( dbmManager, dbm );
+    employInvariants( dbm_manager, dbm );
 
-    if ( dbmManager.isConsistent( dbm ) ) {
-      /**
-       * Urgent and commit locations freeze time; i.e. time is not allowed to
-       * pass when a process is in an urgent location.
-       *
-       */
-
-      if ( ( type != URGENT_LOC ) && ( type != COMMIT_LOC ) ) {
-        dbmManager.upImpl( dbm );
-        /**
-         * After D satisfies the invarient then do operator up on D,
-         * then left the area which satisfies all invariants
-         *
-         */
-
-        assert( dbmManager.isConsistent( dbm ) );
-      }
-      return true;
-
-    } else {
-      return false;
-    }
+    return dbm_manager.isConsistent( dbm );
   }
 
-  bool operator()( const DManager_t &dbmManager, const C_t *const dbm,
+  inline void operator()( const DManager_t &dbm_manager, C_t *dbm ) const {
+    assert( isReachable( dbm_manager, dbm ) );
+    assert( !isFreezeLocation() );
+
+    // if (isReachable( dbm_manager, dbm) ) {
+    /**
+     * Urgent and commit locations freeze time; i.e. time is not allowed to
+     * pass when a process is in an urgent location.
+     *
+     */
+
+    // if ( ( type != URGENT_LOC ) && ( type != COMMIT_LOC ) ) {
+    dbm_manager.upImpl( dbm );
+    /**
+     * After D satisfies the invarient then do operator up on D,
+     * then left the area which satisfies all invariants
+     *
+     */
+
+    assert( dbm_manager.isConsistent( dbm ) );
+    // }
+    //   return true;
+
+    // } else {
+    //   return false;
+    // }
+  }
+
+  bool operator()( const DManager_t &dbm_manager, const C_t *const dbm,
                    vector<C_t *> &re_vec ) const {
-    C_t *newDBM = dbmManager.createDBM( dbm );
-    bool re     = ( *this )( dbmManager, newDBM );
+    C_t *newDBM = dbm_manager.createDBM( dbm );
+    bool re     = ( *this )( dbm_manager, newDBM );
     if ( !re ) {
-      dbmManager.destroyDBM( newDBM );
+      dbm_manager.destroyDBM( newDBM );
       return false;
     }
 
-    dbmManager.norm( newDBM, re_vec );
+    dbm_manager.norm( newDBM, re_vec );
 
     return ( !re_vec.empty() );
   }

@@ -9,7 +9,7 @@
  *
  */
 //#define CHECK_MEMORY 1
-//#define PRINT_STATE 1
+#define PRINT_STATE 1
 #define DRAW_GRAPH 1
 #include <random>
 
@@ -568,7 +568,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 3 );
+  fisher( 2 );
   return 0;
   //  example5();
   //  return 0;

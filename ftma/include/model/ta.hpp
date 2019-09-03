@@ -82,8 +82,12 @@ public:
   void setInitialLoc( int loc ) { initial_loc = loc; }
   int  getInitialLoc() const { return initial_loc; }
 
-  bool locationRun( int i, const DBMFactory<C> &manager, C *D ) const {
-    return locations[ i ]( manager, D );
+  bool locationRun( int link, const DBMFactory<C> &manager, C *D ) const {
+    if ( !locations[ link ].isReachable( manager, D ) ) {
+      return false;
+    }
+    locations[ link ]( manager, D );
+    return true;
   }
   bool isCommit( int id ) const { return locations[ id ].isCommit(); }
 

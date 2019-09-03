@@ -16,7 +16,7 @@ enum CHANNEL_TYPE { ONE2ONE_CH, BROADCAST_CH };
 
 enum CHANNEL_ACTION { CHANNEL_SEND, CHANNEL_RECEIVE };
 
-const int NO_CHANNEL=0;
+const int NO_CHANNEL = 0;
 
 struct Channel {
   int            id; // start from 1

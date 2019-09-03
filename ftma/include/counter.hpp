@@ -10,6 +10,8 @@
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
 namespace graphsat {
+    
+const int MAX_COUNTER_VALUE=255;
 class Counter {
 private:
   int value;
