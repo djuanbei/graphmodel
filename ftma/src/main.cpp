@@ -510,7 +510,7 @@ void fisher1() {
   R_t          data( sys );
 
   Reachability<R_t> reacher( data );
-  FischerMutual     prop;
+//  FischerMutual     prop;
   //  if ( reacher.satisfy( &prop ) ) {
   //   cout << "There is something wrong" << endl;
   // } else {
@@ -568,7 +568,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 2 );
+  fisher( 3 );
   return 0;
   //  example5();
   //  return 0;

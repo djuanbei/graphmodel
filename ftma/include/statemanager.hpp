@@ -25,108 +25,135 @@ template <typename C> class StateConvert {
 
 public:
   StateConvert() {
-    headLen         = 0;
-    headComp        = 0;
-    compressionSize = 0;
+    head_length      = 0;
+    head_comp        = 0;
+    compression_size = 0;
   }
   StateConvert( int hLen, int bLen, Compression<C> hCom, Compression<C> bCom ) {
-    headLen = hLen;
+    head_length = hLen;
 
-    comHeadLen = hCom.getCompressionSize();
+    com_head_length = hCom.getCompressionSize();
 
-    compressionSize = hCom.getCompressionSize() + bCom.getCompressionSize();
-    headComp        = hCom;
-    bodyComp        = bCom;
+    compression_size = hCom.getCompressionSize() + bCom.getCompressionSize();
+    head_comp        = hCom;
+    body_comp        = bCom;
   }
 
   void encode( const C *data, UINT *out ) const {
-    headComp.encode( data, out );
-    bodyComp.encode( data + headLen, out + comHeadLen );
+    head_comp.encode( data, out );
+    body_comp.encode( data + head_length, out + com_head_length );
   }
 
   void decode( const UINT *data, C *out ) const {
-    headComp.decode( data, out );
-    bodyComp.decode( data + comHeadLen, out + headLen );
+    head_comp.decode( data, out );
+    body_comp.decode( data + com_head_length, out + head_length );
   }
-  int getCompressionSize() const { return compressionSize; }
+  int getCompressionSize() const { return compression_size; }
+    
+  int getCompressionHeadSize() const {return head_comp.getCompressionSize(); }
 
 private:
-  int headLen;
-  int comHeadLen;
+  int head_length;
+  int com_head_length;
 
-  int            compressionSize;
-  Compression<C> headComp;
-  Compression<C> bodyComp;
+  int            compression_size;
+  Compression<C> head_comp;
+  Compression<C> body_comp;
 };
 
 template <typename C> class StateManager {
 
   /**
-   * state is [loc, channel_state, counter_state, clock_state] loc is a vector with
-   * length  the number of components, channel_state is aslo a vector
-   * whose length equals to the number of component. If the corresponding loc is
-   * negative integer then this location is a commit location the corresponding
-   * channel_state is the block channel. The channel state is positive then it
-   * is a send channel,  when the value is nonegative integer it is a receive
-   * channel. When channel equals to 0 then there is no channel in this transition.
+   * state is [loc, channel_state, freezeLocationNum, counter_state,
+   * clock_state] loc is a vector with length  the number of components,
+   * channel_state is aslo a vector whose length equals to the number of
+   * component. If the corresponding loc is negative integer then this location
+   * is a commit location the corresponding channel_state is the block channel.
+   * The channel state is positive then it is a send channel,  when the value is
+   * nonegative integer it is a receive channel. When channel equals to
+   * NO_CHANNEL then there is no channel in this transition.
+   *
+   * freezeLocationNum is the number of components which staies on freeze
+   * location. The cunter_state part is the vector value of counter variables
    *
    */
 public:
   StateManager() {
 
-    component_num = stateLen = counter_start_loc = 0;
-    channel_num                                  = 0;
+    component_num = state_length = counter_start_loc = freeze_location_index =
+        0;
+    channel_num = 0;
   }
+	
 
-  StateManager( int comp_num, int counter_num, int clock_num,
-                const vector<C> &                 clockUpperBounds,
-                const vector<ClockConstraint<C>> &edifferenceCons,
+  StateManager( int comp_num, const  vector<Counter> &ecounters, int clock_num,
+                const vector<C> &                 clock_upper_bounds,
+                const vector<ClockConstraint<C>> &edifference_cons,
                 const vector<Parameter> &ps, const vector<int> &nodes,
                 int channel_n ) {
-
+    state_length=0;
     component_num = comp_num;
 
-    differenceConstraints = edifferenceCons;
-    nodeNums              = nodes;
+    difference_constraints = edifference_cons;
+    node_nums              = nodes;
 
     channel_num = channel_n;
 
     if ( channel_num > 0 ) {
       counter_start_loc = 2 * component_num;
-      stateLen          = 2 * component_num + counter_num;
+      state_length      = 2 * component_num + ecounters.size();
     } else {
       counter_start_loc = component_num;
-      stateLen          = component_num + counter_num;
+      state_length      = component_num + ecounters.size();
     }
-    clock_start_loc = stateLen;
+    freeze_location_index = state_length;
 
-    stateLen += ( clock_num + 1 ) * ( clock_num + 1 );
+    state_length++;
+    clock_start_loc = state_length;
 
-    dbmManager =
-        DBMFactory<C>( clock_num, clockUpperBounds, differenceConstraints );
+    state_length += ( clock_num + 1 ) * ( clock_num + 1 );
+
+    dbm_manager =
+        DBMFactory<C>( clock_num, clock_upper_bounds, difference_constraints );
+    counters=ecounters;
 
     parameters = ps;
   }
-  int getStateLen() const { return stateLen; }
+  int getStateLen() const { return state_length; }
 
   int getClockStart() const { return clock_start_loc; }
+
+  int getFreezeLocation() const { return freeze_location_index; }
 
   Compression<C> getHeadCompression() const {
     Compression<C> re_comp( clock_start_loc );
     for ( int i = 0; i < component_num; i++ ) {
-      re_comp.setBound( i, -nodeNums[ i ] - 1, nodeNums[ i ] + 1 );
+      re_comp.setBound( i, -node_nums[ i ] - 1, node_nums[ i ] + 1 );
     }
     if ( channel_num > 0 ) {
       for ( int i = 0; i < component_num; i++ ) {
         re_comp.setBound( i + component_num, -channel_num, channel_num + 1 );
       }
     }
+    int k=0;
+    for(int i=counter_start_loc; i< freeze_location_index; i++){
+        re_comp.setBound(i, counters[ k].getLB( ), counters[ k].getUP( ));
+        k++;
+    }
+      
+    /**
+     * At most all the component in freeze location
+     *
+     */
+    re_comp.setBound( freeze_location_index, 0, component_num );
+
     return re_comp;
   }
 
   Compression<C> getBodyCompression() const {
 
-    Compression<C> re_comp( stateLen - clock_start_loc );
+    Compression<C> re_comp( state_length - clock_start_loc );
+    
 
     return re_comp;
   }
@@ -142,39 +169,39 @@ public:
 
   C *newState() const {
 
-    C *re_state = new C[ stateLen ];
+    C *re_state = new C[ state_length ];
 
     fill( re_state, re_state + clock_start_loc, 0 );
 
-    dbmManager.init( re_state + clock_start_loc );
+    dbm_manager.init( re_state + clock_start_loc );
 
     return re_state;
   }
 
   void copy( C *des_state, const C *const source_state ) const {
-    memcpy( des_state, source_state, stateLen * sizeof( C ) );
+    memcpy( des_state, source_state, state_length * sizeof( C ) );
   }
 
   C *newState( const C *s ) const {
-    C *re = new C[ stateLen ];
-    memcpy( re, s, stateLen * sizeof( C ) );
+    C *re = new C[ state_length ];
+    memcpy( re, s, state_length * sizeof( C ) );
     return re;
   }
 
   void destroyState( C *s ) const { delete[] s; }
 
   inline int                  getComponentNum() const { return component_num; }
-  inline const DBMFactory<C> &getClockManager() const { return dbmManager; }
+  inline const DBMFactory<C> &getClockManager() const { return dbm_manager; }
   inline const int *          getParameterValue( const int i ) const {
     return parameters[ i ].getValue();
   }
 
   void norm( const C *const dbm, vector<C *> &re_vec ) const {
-    C *newDBM = dbmManager.createDBM( dbm );
-    dbmManager.norm( newDBM, re_vec );
+    C *newDBM = dbm_manager.createDBM( dbm );
+    dbm_manager.norm( newDBM, re_vec );
   }
 
-  void norm( C *dbm ) { dbmManager.norm( dbm ); }
+  void norm( C *dbm ) { dbm_manager.norm( dbm ); }
 
   inline C *getDBM( C *state ) const { return state + clock_start_loc; }
 
@@ -191,15 +218,15 @@ public:
   }
 
   inline void andImpl( const ClockConstraint<C> &cs, C *state ) const {
-    return dbmManager.andImpl( getDBM( state ), cs );
+    return dbm_manager.andImpl( getDBM( state ), cs );
   }
   inline bool isConsistent( C *state ) const {
-    return dbmManager.isConsistent( getDBM( state ) );
+    return dbm_manager.isConsistent( getDBM( state ) );
   }
 
   inline vector<int> blockComponents( const int      chid,
                                       const C *const state ) const {
-    vector<int> reBlockComponents;
+    vector<int> re_block_components;
     for ( int i = 0; i < component_num; i++ ) {
 
       /**
@@ -208,10 +235,10 @@ public:
        */
 
       if ( state[ i + component_num ] == chid ) {
-        reBlockComponents.push_back( i );
+        re_block_components.push_back( i );
       }
     }
-    return reBlockComponents;
+    return re_block_components;
   }
 
   inline void constructState( const int component_id, const int target,
@@ -222,7 +249,7 @@ public:
 
     re_state[ component_id ] = target;
     memcpy( re_state + clock_start_loc, dbm,
-            ( stateLen - clock_start_loc ) * sizeof( C ) );
+            ( state_length - clock_start_loc ) * sizeof( C ) );
     if ( isCommit ) {
       setCommitState( component_id, re_state );
     }
@@ -256,22 +283,23 @@ public:
                            const C *const state ) const {
     return -( state[ component_id ] ) - 1;
   }
-  bool hasDiffCons() const { return !differenceConstraints.empty(); }
+  bool hasDiffCons() const { return !difference_constraints.empty(); }
 
 private:
-  bool channel_num;
+  int channel_num;
   int  component_num;
-  int  stateLen;
+  int  state_length;
+  int  freeze_location_index;
 
   int counter_start_loc;
   int clock_start_loc;
 
-  vector<ClockConstraint<C>> differenceConstraints;
+  vector<ClockConstraint<C>> difference_constraints;
 
-  DBMFactory<C> dbmManager;
-
+  DBMFactory<C> dbm_manager;
+  vector<Counter> counters;
   vector<Parameter> parameters;
-  vector<int>       nodeNums;
+  vector<int>       node_nums;
 };
 } // namespace graphsat
 #endif

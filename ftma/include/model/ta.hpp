@@ -74,7 +74,7 @@ public:
   vector<C> getClockMaxValue() const { return clock_max_value; }
 
   vector<ClockConstraint<C>> getDifferenceCons() const {
-    return differenceCons;
+    return difference_cons;
   }
 
   int getClockNum() const { return clock_num; }
@@ -107,7 +107,7 @@ private:
 
   vector<C> clock_max_value;
 
-  vector<ClockConstraint<C>> differenceCons;
+  vector<ClockConstraint<C>> difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
@@ -115,7 +115,7 @@ private:
   void updateUpperAndDiff( const CS_t &cs ) {
 
     if ( cs.x > 0 && cs.y > 0 ) {
-      differenceCons.push_back( cs );
+      difference_cons.push_back( cs );
     }
     C realRhs = getRight( cs.matrix_value );
     if ( cs.x > 0 ) {
@@ -148,7 +148,7 @@ private:
     // // There are no edges connect with  initial location
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
-    differenceCons.clear();
+    difference_cons.clear();
     clock_max_value.resize( clock_num + 1 );
 
     fill( clock_max_value.begin(), clock_max_value.end(), 0 );
@@ -206,7 +206,7 @@ public:
       clock_max_value.push_back( ta1.getClockMaxValue()[ i ] );
     }
 
-    differenceCons.insert( differenceCons.end(),
+    difference_cons.insert( difference_cons.end(),
                            ta1.getDifferenceCons().begin(),
                            ta1.getDifferenceCons().end() );
 
@@ -228,7 +228,6 @@ public:
   int             getComponentNum() const { return tas.size(); }
   StateManager<C> getStateManager() const {
 
-    //    bool      hasChannel = !channels.empty();
     vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
     for ( int i = 0; i < clock_num + 1; i++ ) {
@@ -245,9 +244,9 @@ public:
       node_n.push_back( tas[ i ].graph.getVertex_num() );
     }
 
-    StateManager<C> re( tas.size(), counters.size(), clock_num,
-                        temp_clock_upperbound, differenceCons, parameters,
-                        node_n, channels.size() );
+    StateManager<C> re( tas.size(), counters, clock_num,
+                        temp_clock_upperbound, difference_cons, parameters,
+                        node_n,  channels.size() );
 
     return re;
   }
@@ -292,7 +291,7 @@ private:
   vector<int> vec_clock_nums;
 
   vector<C>                  clock_max_value;
-  vector<ClockConstraint<C>> differenceCons;
+  vector<ClockConstraint<C>> difference_cons;
   vector<Parameter>          parameters;
 
   template <typename R1> friend class Reachability;
@@ -307,8 +306,8 @@ private:
       for ( size_t i = 0; i < ta1.transitions.size(); i++ ) {
         ta1.transitions[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < ta1.differenceCons.size(); i++ ) {
-        ta1.differenceCons[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < ta1.difference_cons.size(); i++ ) {
+        ta1.difference_cons[ i ].clockShift( clock_num );
       }
     }
     clock_num += ta1.getClockNum();
