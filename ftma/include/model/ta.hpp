@@ -39,17 +39,18 @@ template <typename C, typename L, typename T> class TAS;
  */
 
 enum ParaType {
-  BOOL_T,
-  BOOL_REF_T,
-  CHANNEL_T,
-  CHANNEL_REF_T,
-  URGENT_CHANNEL_T,
-  URGENT_CHANNEL_REF_T,
-  INT_T,
-  INT_REF_T,
-  SCALAR_T
+  PARAM_BOOL_T,
+  PARAM_BOOL_REF_T,
+  PARAM_CHANNEL_T,
+  PARAM_CHANNEL_REF_T,
+  PARAM_URGENT_CHANNEL_T,
+  PARAM_URGENT_CHANNEL_REF_T,
+  PARAM_INT_T,
+  PARAM_INT_REF_T,
+  PARAM_SCALAR_T
 };
 struct ParaElement {
+  int      id;
   ParaType type;
   string   name;
 };
@@ -60,6 +61,8 @@ private:
   typedef C C_t;
 
   typedef ClockConstraint<C_t> CS_t;
+
+  typedef TA<C, L, T> TA_t;
 
 public:
   TA() { initial_loc = clock_num = -1; }
@@ -74,6 +77,23 @@ public:
     initial_loc = init;
     clock_num   = vnum;
     initial();
+  }
+  
+  TA( const TA_t &other ) {
+    locations=other.locations;
+    for( auto e: other.transitions){
+      T dummy(e);
+      transitions.push_back(dummy);
+    }
+    initial_loc=other.initial_loc;
+    clock_num=other.clock_num;
+    
+    graph=other.graph;
+    
+    clock_max_value=other.clock_max_value;
+    
+    difference_cons=other.difference_cons;
+    
   }
 
   void addOnePara( int defaultValue = 0 ) {
@@ -96,6 +116,7 @@ public:
   int getClockNum() const { return clock_num; }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
+  
   int  getInitialLoc() const { return initial_loc; }
 
   bool locationRun( int link, const DBMFactory<C> &manager, C *D ) const {
@@ -109,6 +130,17 @@ public:
 
   bool transitionRun( int link, const DBMFactory<C> &manager, C *D ) const {
     return transitions[ link ]( manager, D );
+  }
+
+  void updateCounterId( const map<int, int> &id_map ) {
+    for ( auto e : transitions ) {
+      for ( auto ee : e.counter_cons ) {
+        ee->counterIpMap( id_map );
+      }
+      for ( auto aa : e.actions ) {
+        aa->counterIpMap( id_map );
+      }
+    }
   }
 
 private:
@@ -339,7 +371,7 @@ typedef ClockConstraint<C_t1> CS_t1;
 
 typedef Location<C_t1, CS_t1, DBMManager_t1, DBMSet_t1> L_t1;
 
-typedef Transition<C_t1, CS_t1, DBMManager_t1, DBMSet_t1> T_t1;
+typedef Transition<C_t1, CS_t1, DBMManager_t1> T_t1;
 
 typedef TAS<C_t1, L_t1, T_t1> INT_TAS_t;
 

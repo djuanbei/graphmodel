@@ -29,8 +29,8 @@
   extern  int lineNum;
 
 
-  const UppaalData* uplayerData;
-  UppaalData* data;
+  const UppaalTemplateData* system_data;
+  UppaalTemplateData* current_data;
 
   
   extern void yyerror(const char *); 
@@ -55,6 +55,8 @@
 
 %token<intVal> PARAM
 
+
+%token<intVal> TEMPLATE
 
 
 %type<intVal> const_expression
@@ -169,44 +171,81 @@ IDENTIFIER compare_relation  const_expression
   void *cs;
   const  TYPE_T type=getType( symbol_table[$1]);
   if( type==CLOCK_T){
-    int clock_id=data->getId( CLOCK_STR, symbol_table[$1])+1; //CLOCK ID START FROM 1
-    cs=new      INT_TAS_t::CS_t(clock_id, 0,  $2, $3 ); //x< c
-    data->addPointer( CLOCK_CS, cs);
+    int clock_id=current_data->getId( CLOCK_STR, symbol_table[$1])+1; //CLOCK ID START FROM 1
+    if( EQ==$2){
+      cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, $3 ); //x< c
+      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+
+      cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, $3 ); //x< c
+      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+      
+    }else{
+      cs=new      INT_TAS_t::CS_t(clock_id, 0,  $2, $3 ); //x< c
+      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+    }
+
   }
   else if(type==COUNTER_T ){
-    int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
+    int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
     cs = CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
-    data->addPointer( COUNTER_CS, cs);
+    current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
   }
-
 }
 |
 IDENTIFIER compare_relation  PARAM
 {
   const  TYPE_T type=getType(   symbol_table[$1]);
   assert( COUNTER_T==type);
-  int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
-  int param_id=data->getId( PARAMETER_STR, symbol_table[$3]);
+  int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
+  int param_id=current_data->getPointerId( PARAMETER_STR, symbol_table[$3]);
   DiaFreeCounterPConstraint *cs=CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
-  data->addPointer( COUNTER_CS, cs);
+  current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
 }
 |
 IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
 {
   if(getType( symbol_table[$1])==CLOCK_T &&getType( symbol_table[$3])==CLOCK_T  ){
-    int clock_id1=data->getId( CLOCK_STR, symbol_table[$1])+1;
-    int clock_id2=data->getId( CLOCK_STR, symbol_table[$3])+1;
-    INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
-    data->addPointer( CLOCK_CS, cs);                     
+    int clock_id1=current_data->getId( CLOCK_STR, symbol_table[$1])+1;
+    int clock_id2=current_data->getId( CLOCK_STR, symbol_table[$3])+1;
+    if( $4==EQ){
+      
+      INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, GE,  $5  ); //x-y< rhs
+
+      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+      
+      cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, LE,  $5  ); //x-y< rhs
+
+      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                     
+    }else{
+      INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
+      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                     
+    }
+
   }
   else if(getType( symbol_table[$1])==COUNTER_T &&getType( symbol_table[$3])==COUNTER_T  ){
-    int counter_id1=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
-    int counter_id2=uplayerData->getId( COUNTER_STR, symbol_table[$3]);
+    int counter_id1=system_data->getId( COUNTER_STR, symbol_table[$1]);
+    int counter_id2=system_data->getId( COUNTER_STR, symbol_table[$3]);
     DiaCounterConstraint *cs=CounterConstraintFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
-    data->addPointer( COUNTER_CS, cs);
+    current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
   }
 
 
+}
+|
+PARAM
+{
+  vector<void*> pps= current_data->getPoints(PARAMETER_STR, symbol_table[ $1] );
+  assert(!pps.empty( ) );
+  assert( (pps[ 0]->type==PARAM_BOOL_T) ||(pps[ 0]->type==PARAM_BOOL_REF_T ) );
+  void *cs = CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
+  
+}
+|
+'!' PARAM
+{
+  
+  
+  
 }
 
 ;
@@ -219,14 +258,14 @@ single_assign_statement:
 IDENTIFIER '=' const_expression
 {
   if( getType( symbol_table[$1] )==CLOCK_T){
-    int clock_id=data->getId( CLOCK_STR, symbol_table[$1] )+1;
+    int clock_id=current_data->getId( CLOCK_STR, symbol_table[$1] )+1;
     pair<int, int> *pp=new pair<int,int>(clock_id, $3 );
-    data->addPointer( RESET_STR, pp);
+    current_data->addPointer( RESET_STR,RESET_STR, pp);
     
   }else if(getType( symbol_table[$1] )==COUNTER_T ){
-    int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
+    int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
     SimpleCounterAction *cs=CounterActionFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
-    data->addPointer( COUNTER_UPDATE, cs);
+    current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
   }
   
 }
@@ -234,12 +273,12 @@ IDENTIFIER '=' const_expression
 IDENTIFIER '=' PARAM
 {
   assert(getType(symbol_table[$1] )==COUNTER_T );
-  int counter_id=uplayerData->getId( COUNTER_STR, symbol_table[$1]);
+  int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
 
-  int parameter_id=data->getId( PARAMETER_STR, symbol_table[$3]);
+  int parameter_id=current_data->getId( PARAMETER_STR, symbol_table[$3]);
 
   SimpleCounterPAction *cs  =CounterActionFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
-  data->addPointer( COUNTER_UPDATE, cs);
+  current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
   
 }
 const_expression:
@@ -251,10 +290,10 @@ CONSTANT
 IDENTIFIER
 {
   $$=0;
-  if(data->hasValue(COUNTER_STR, symbol_table[$1]) ){
-    $$=data->getValue(COUNTER_STR,symbol_table[$1]);
-  }else if ( uplayerData->hasValue(COUNTER_STR, symbol_table[$1]) ){
-    $$=uplayerData->getValue(COUNTER_STR,   symbol_table[$1]);
+  if(current_data->hasValue(COUNTER_STR, symbol_table[$1]) ){
+    $$=current_data->getValue(COUNTER_STR,symbol_table[$1]);
+  }else if ( system_data->hasValue(COUNTER_STR, symbol_table[$1]) ){
+    $$=system_data->getValue(COUNTER_STR,   symbol_table[$1]);
   }
 
 }
@@ -266,20 +305,20 @@ variable_declaration
   switch( $1){
     case 1:
       for( auto v: *$2){
-        data->addValue(COUNTER_STR, v);
+        current_data->addValue(COUNTER_STR, v);
       }
       delete $2;
       break ;
     case 2:
       for( auto v: *$2){
-        data->addValue(CLOCK_STR, v);
+        current_data->addValue(CLOCK_STR, v);
       }
       delete $2;
       break ;
       
     case 3:
       for( auto v: *$2){
-        data->addValue(CHANNEL_STR, v, ONE2ONE_CH);
+        current_data->addValue(CHANNEL_STR, v, ONE2ONE_CH);
       }
       delete $2;
       break ;
@@ -290,7 +329,7 @@ variable_declaration
 | BROADCAST CHAN identifier_list ';'
 {
   for( auto v: *$3){
-    data->addValue(CHANNEL_STR, v, BROADCAST_CH);  
+    current_data->addValue(CHANNEL_STR, v, BROADCAST_CH);  
   }
   delete $3;
 }
@@ -298,7 +337,7 @@ variable_declaration
 | BROADCAST CHAN IDENTIFIER '[' const_expression  ']' ';'
 {
   for( int i=0; i< $5; i++ ){
-    data->addValue(CHANNEL_STR, symbol_table[$3], BROADCAST_CH);  
+    current_data->addValue(CHANNEL_STR, symbol_table[$3], BROADCAST_CH);  
   }
 }
 
@@ -306,15 +345,15 @@ variable_declaration
 {
   switch( $1){
     case 1:
-      data->addValue(COUNTER_STR, symbol_table[$2], $4);
+      current_data->addValue(COUNTER_STR, symbol_table[$2], $4);
       break;
     case 2:
-      data->addValue(CLOCK_STR, symbol_table[$2], $4);
+      current_data->addValue(CLOCK_STR, symbol_table[$2], $4);
  
       break;
 
     case 3:
-      data->addValue(CHANNEL_STR, symbol_table[$2], $4);
+      current_data->addValue(CHANNEL_STR, symbol_table[$2], $4);
 
       break;
   }
@@ -325,16 +364,16 @@ variable_declaration
 {
   switch( $2){
     case 1:
-      data->addValue(COUNTER_STR, symbol_table[$3], $5);
+      current_data->addValue(COUNTER_STR, symbol_table[$3], $5);
 
       break;
     case 2:
-      data->addValue(CLOCK_STR, symbol_table[$3], $5);
+      current_data->addValue(CLOCK_STR, symbol_table[$3], $5);
 
       break;
 
     case 3:
-      data->addValue(CHANNEL_STR, symbol_table[$3], $5);
+      current_data->addValue(CHANNEL_STR, symbol_table[$3], $5);
 
       break;
   }
@@ -350,7 +389,7 @@ variable_declaration
   for( int i=$4; i<=$6; i++  ){
     temp.push_back( i);
   }
-  data->addIntArray(symbol_table[ $8],temp);
+  current_data->addIntArray(symbol_table[ $8],temp);
 }
 
 
@@ -375,21 +414,53 @@ void yyerror(const string &s){
 }
 
 TYPE_T getType(string & name ){
-  if(data->hasValue( CLOCK_STR, name) ){
-    return CLOCK_T;
-  }
-  if(data->hasValue( PARAMETER_STR, name) ){
+  
+  if(current_data->hasPointer( PARAMETER_STR, name) ){
     return PARAMETER_T;
   }
-  if( uplayerData->hasValue( COUNTER_STR, name)){
+
+  
+  if(current_data->hasValue( CLOCK_STR, name) ){
+    return CLOCK_T;
+  }
+
+  if(current_data->hasValue( COUNTER_STR, name)){
     return COUNTER_T;
   }
+  if(current_data->hasValue( BOOL_STR, name) ){
+    return BOOL_T;
+  }
+  if( current_data->hasValue( CHANNEL_STR, name)){
+    return CHANNEL_T;
+  }
+
+  if( system_data->hasValue(CLOCK_STR, name )){
+    return CLOCK_T;
+  }
+  
+  
+  if( system_data->hasValue( COUNTER_STR, name)){
+    return COUNTER_T;
+  }
+
+  if(system_data->hasValue( BOOL_STR, name) ){
+    return BOOL_T;
+  }
+
+  if( system_data->hasValue( CHANNEL_STR, name)){
+    return CHANNEL_T;
+  }
+  
+  if(system_data->hasValue( TEMPLATE_STR, name) ){
+    return TEMPLATE_T;
+  }
+  
   return NO_T;
 }
 namespace graphsat{
-  void parseProblem( const string &str, const UppaalData *pd,   UppaalData* d){
-    uplayerData=pd;
-    data=d;
+  void parseProblem( const string &str, const UppaalTemplateData *pd,   UppaalTemplateData* d){
+    system_data=pd;
+    current_data=d;
     yyin=tmpfile();
     fputs( str.c_str(), yyin);
     rewind(yyin);

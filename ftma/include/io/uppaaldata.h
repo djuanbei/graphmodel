@@ -10,11 +10,11 @@
 
 #ifndef __UPPAAL_H
 #define __UPPAAL_H
+#include "model/ta.hpp"
+#include "util/data.hpp"
 #include <map>
 #include <string>
 #include <vector>
-#include "model/ta.hpp"
-#include "util/data.hpp"
 namespace graphsat {
 using std::map;
 using std::pair;
@@ -39,9 +39,11 @@ const static string COUNTER_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
 
-class UppaalData {
+class UppaalParser;
+
+class UppaalTemplateData {
 public:
-  UppaalData() { init_loc = 0; }
+  UppaalTemplateData() { init_loc = 0; }
   void clear() {
     int_values.clear();
     point_values.clear();
@@ -78,7 +80,7 @@ public:
    *
    *
    * @param type
-   * @param int_values
+   * @param name
    *
    * @return  -1 if name is not in int_values
    */
@@ -99,28 +101,47 @@ public:
     return int_values.getValue( type, name, id );
   }
 
-  void addPointer( const string &type, void *v ) {
-
-    point_values.addPointer( type, v );
+  void addPointer( const string &type, const string &name, void *v ) {
+    point_values.addValue( type, name, v );
   }
 
-  vector<void *> getPoints( const string &type ) const {
-    return point_values.getPoints( type );
+  bool hasPointer( const string &type, const string name ) const {
+    return point_values.hasValue( type, name, 0 );
   }
 
-  void clearPoints( const string &type ) { point_values.clearPoints( type ); }
+  int getPointerId( const string &type, const string &name ) const {
+    return point_values.getId( type, name );
+  }
+
+  vector<void *> getPoints( const string &type, const string name ) const {
+    int id = point_values.getId( type, name );
+    if ( id > -1 ) {
+      return point_values.getValue( type, id ).second;
+    } else {
+      vector<void *> dummy;
+      return dummy;
+    }
+  }
+
+  void clearPoints( const string &type ) { point_values.clear( type ); }
+
   void clearPoints() { point_values.clear(); }
-  
+
   vector<ParaElement> para_list;
+
 private:
+  string         name;
   ValueData<int> int_values;
   PointerData    point_values;
 
-
   int init_loc;
+
+  typename INT_TAS_t::TA_t ta;
+  friend class UppaalParser;
 };
 
-void parseProblem( const string &str, const UppaalData *, UppaalData * );
+void parseProblem( const string &str, const UppaalTemplateData *,
+                   UppaalTemplateData * );
 } // namespace graphsat
 
 #endif

@@ -74,12 +74,25 @@ const static string COMMENT_STR = "comment";
 
 const static string RESET_STR = "reset";
 
+const static string INT_STR           = "int";
+const static string CHAN_STR          = "chan";
+const static string BOOL_STR          = "bool";
+const static string PARAMETER_REF_STR = "&";
+
 typedef long double DF_T;
 
 enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
-enum TYPE_T { CLOCK_T, COUNTER_T, PARAMETER_T, NO_T };
+enum TYPE_T {
+  CLOCK_T,
+  COUNTER_T,
+  PARAMETER_T,
+  BOOL_T,
+  CHANNEL_T,
+  TEMPLATE_T,
+  NO_T
+};
 
 /**
  *  Both have compare < and <=
@@ -88,14 +101,6 @@ enum TYPE_T { CLOCK_T, COUNTER_T, PARAMETER_T, NO_T };
 template <typename C> inline C getMAX_INT( const C c ) {
   return std::numeric_limits<C>::max() / 2 - 2;
 }
-
-// template <typename C> C add123( const C x, const C y ) {
-//   static C MAX_INT = getMAX_INT( x );
-//   if ( x >= MAX_INT || y >= MAX_INT ) {
-//     return MAX_INT;
-//   }
-//   return x + y - ( ( x & 1 ) | ( y & 1 ) );
-// }
 
 template <typename C>
 inline C getMatrixValue( C realRight, bool isStrct = true ) {
@@ -161,6 +166,8 @@ template <class T> inline void writeAdd( T *a, T b ) {
 
 vector<string> splitStr( const string &stringToBeSplitted,
                          const string &delimeter );
+
+string deleteChar( const string &value, const size_t start, const char ch );
 
 } // namespace graphsat
 

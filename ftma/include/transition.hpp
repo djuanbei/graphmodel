@@ -18,9 +18,9 @@
 
 namespace graphsat {
 using std::vector;
-template <typename C, typename CS, typename D, typename DSet> class Transition {
+template <typename C, typename CS, typename D> class Transition {
 
-  typedef Transition<C, CS, D, DSet> Transition_t;
+  typedef Transition<C, CS, D> Transition_t;
 
 public:
   Transition() {
@@ -30,6 +30,24 @@ public:
   Transition( int s, int t ) {
     source = s;
     target = t;
+  }
+
+  Transition( const Transition_t &other ) {
+    source = other.source;
+    target = other.target;
+    guards = other.guards;
+    for ( auto e : other.counter_cons ) {
+      counter_cons.push_back( e->copy() );
+    }
+
+    has_channel = other.has_channel;
+
+    Channel channel; // Only one synchronisation channels
+
+    for ( auto a : other.actions ) {
+      actions.push_back( a->copy() );
+    }
+    resets = other.resets;
   }
 
   void setSource( int s ) { source = s; }

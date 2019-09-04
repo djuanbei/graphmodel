@@ -19,20 +19,40 @@ namespace graphsat {
 using std::pair;
 using std::vector;
 class CounterAction {
+protected:
+  bool is_update;
+
 public:
   virtual void operator()( const int *parameterValue,
                            int *      counterValue ) const = 0;
+  /**
+   *Deley set the counter id
+   */
+  virtual void counterIpMap( const map<int, int> &id_map ) = 0;
+
+  virtual CounterAction *copy() const = 0;
 };
 
 class SimpleCounterAction : public CounterAction {
 public:
-  virtual void operator()( const int *parameterValue,
-                           int *      counter_value ) const {
+  void operator()( const int *parameterValue, int *counter_value ) const {
     counter_value[ counter_id ] = rhs;
+  }
+
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update  = true;
+      counter_id = id_map.at( counter_id );
+    }
+  }
+  CounterAction *copy() const {
+    assert( !is_update );
+    return new SimpleCounterAction( counter_id, rhs );
   }
 
 private:
   SimpleCounterAction( int cid, int v ) {
+    is_update  = false;
     counter_id = cid;
     rhs        = v;
   }
@@ -44,26 +64,35 @@ private:
 
 class SimpleCounterPAction : public CounterAction {
 public:
-  virtual void operator()( const int *parameter_value,
-                           int *      counterValue ) const {
-    counterValue[ counter_id ] = parameter_value[ p_id ];
+  void operator()( const int *parameter_value, int *counterValue ) const {
+    counterValue[ counter_id ] = parameter_value[ parameter_id ];
+  }
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update  = true;
+      counter_id = id_map.at( counter_id );
+    }
+  }
+  CounterAction *copy() const {
+    assert( !is_update );
+    return new SimpleCounterPAction( counter_id, parameter_id );
   }
 
 private:
-  SimpleCounterPAction( int cid, int v ) {
-    counter_id = cid;
-    p_id       = v;
+  SimpleCounterPAction( int cid, int eparameter_id ) {
+    is_update    = false;
+    counter_id   = cid;
+    parameter_id = eparameter_id;
   }
   ~SimpleCounterPAction() {}
   int counter_id;
-  int p_id;
+  int parameter_id;
   friend class CounterActionFactory;
 };
 
 class DefaultCAction : public CounterAction {
 public:
-  virtual void operator()( const int *parameter_value,
-                           int *      counter_value ) const {
+  void operator()( const int *parameter_value, int *counter_value ) const {
     for ( auto e : relations ) {
       counter_value[ e.first ] = 0;
       for ( auto ee : e.second ) {
@@ -71,9 +100,27 @@ public:
       }
     }
   }
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update = true;
+      for ( auto e : relations ) {
+        e.first = id_map.at( e.first );
+        for ( auto ee : e.second ) {
+          ee.second = id_map.at( ee.second );
+        }
+      }
+    }
+  }
+
+  CounterAction *copy() const {
+    assert( !is_update );
+    return new DefaultCAction( relations );
+  }
 
 private:
-  DefaultCAction( vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
+  DefaultCAction(
+      const vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
+    is_update = false;
     relations = relations1;
   }
   ~DefaultCAction() {}
@@ -88,26 +135,30 @@ class CounterActionFactory {
 public:
   SimpleCounterAction *createSimpleCounterAction( int cid, int v ) {
     SimpleCounterAction *re = new SimpleCounterAction( cid, v );
-    pdata.addPointer( STRING( SimpleCounterAction ), re );
+    pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterAction ),
+                    re );
     return re;
   }
 
   SimpleCounterPAction *createSimpleCounterPAction( int cid, int v ) {
     SimpleCounterPAction *re = new SimpleCounterPAction( cid, v );
-    pdata.addPointer( STRING( SimpleCounterPAction ), re );
+    pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterPAction ),
+                    re );
     return re;
   }
 
   DefaultCAction *createDefaultCAction(
       vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
     DefaultCAction *re = new DefaultCAction( relations1 );
-    pdata.addPointer( STRING( DefaultCAction ), re );
+    pdata.addValue( STRING( CounterAction ), STRING( DefaultCAction ), re );
     return re;
   }
   void destroy() {
-    deleteType( SimpleCounterAction );
-    deleteType( SimpleCounterPAction );
-    deleteType( DefaultCAction );
+    deleteType( pdata, CounterAction, SimpleCounterAction,
+                SimpleCounterAction );
+    deleteType( pdata, CounterAction, SimpleCounterPAction,
+                SimpleCounterPAction );
+    deleteType( pdata, CounterAction, DefaultCAction, DefaultCAction );
     pdata.clear();
   }
 

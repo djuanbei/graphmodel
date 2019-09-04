@@ -22,17 +22,25 @@
 namespace graphsat {
 
 class CounterConstraint {
+protected:
+  bool is_update;
 
 public:
   virtual bool operator()( const int *parameter_value,
                            const int *counter_value ) const = 0;
+  /**
+   *Deley set the counter id
+   */
+  virtual void counterIpMap( const map<int, int> &id_map ) = 0;
+
+  virtual CounterConstraint *copy() const = 0;
 };
 
 class DiaFreeCounterConstraint : public CounterConstraint {
 
 public:
-  virtual bool operator()( const int *parameter_value,
-                           const int *counter_value ) const {
+  bool operator()( const int *parameter_value,
+                   const int *counter_value ) const {
     switch ( op ) {
     case EQ:
       return counter_value[ counter_id ] == rhs;
@@ -50,10 +58,22 @@ public:
       return false;
     }
   }
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update  = true;
+      counter_id = id_map.at( counter_id );
+    }
+  }
+
+  CounterConstraint *copy() const {
+    assert( !is_update );
+    return new DiaFreeCounterConstraint( counter_id, op, rhs );
+  }
 
 private:
   DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp,
                             int right_side ) {
+    is_update  = false;
     counter_id = ecounter_id;
     op         = opp;
     rhs        = right_side;
@@ -66,20 +86,13 @@ private:
 };
 
 class DiaFreeCounterPConstraint : public CounterConstraint {
-public:
-  DiaFreeCounterPConstraint( int ecounter_id, COMP_OPERATOR opp,
-                             int parameter_id ) {
-    counter_id = ecounter_id;
-    op         = opp;
-    p_id       = parameter_id;
-  }
-  ~DiaFreeCounterPConstraint() {}
 
-  virtual bool operator()( const int *parameter_value,
-                           const int *counter_value ) const {
+public:
+  bool operator()( const int *parameter_value,
+                   const int *counter_value ) const {
 
     int diff = counter_value[ counter_id ];
-    int rhs  = parameter_value[ p_id ];
+    int rhs  = parameter_value[ parameter_id ];
     switch ( op ) {
     case EQ:
       return diff == rhs;
@@ -98,10 +111,30 @@ public:
     }
   }
 
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update  = true;
+      counter_id = id_map.at( counter_id );
+    }
+  }
+  CounterConstraint *copy() const {
+    assert( !is_update );
+    return new DiaFreeCounterPConstraint( counter_id, op, parameter_id );
+  }
+
 private:
   int           counter_id;
   COMP_OPERATOR op;
-  int           p_id;
+  int           parameter_id;
+
+  DiaFreeCounterPConstraint( int ecounter_id, COMP_OPERATOR opp,
+                             int eparameter_id ) {
+    is_update    = false;
+    counter_id   = ecounter_id;
+    op           = opp;
+    parameter_id = eparameter_id;
+  }
+  ~DiaFreeCounterPConstraint() {}
 
   friend class CounterConstraintFactory;
 };
@@ -109,8 +142,8 @@ private:
 class DiaCounterConstraint : public CounterConstraint {
 
 public:
-  virtual bool operator()( const int *parameter_value,
-                           const int *counter_value ) const {
+  bool operator()( const int *parameter_value,
+                   const int *counter_value ) const {
     int diff = counter_value[ counter_x ] - counter_value[ counter_y ];
     switch ( op ) {
     case EQ:
@@ -130,14 +163,29 @@ public:
     }
   }
 
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update = true;
+      counter_x = id_map.at( counter_x );
+      counter_y = id_map.at( counter_y );
+    }
+  }
+
+  CounterConstraint *copy() const {
+    assert( !is_update );
+    return new DiaCounterConstraint( counter_x, counter_y, op, rhs );
+  }
+
 private:
   DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
+    is_update = false;
     counter_x = x;
     counter_y = y;
     op        = p;
     rhs       = r;
   }
   ~DiaCounterConstraint() {}
+
   int           counter_x, counter_y;
   COMP_OPERATOR op;
   int           rhs;
@@ -145,27 +193,18 @@ private:
 };
 
 class DefaultCounterConstraint : public CounterConstraint {
-private:
-  DefaultCounterConstraint( const vector<pair<int, int>> &pcons,
-                            const vector<pair<int, int>> &cons, int erhs,
-                            COMP_OPERATOR eop )
-      : pconstraint( pcons )
-      , constraint( cons )
-      , rhs( erhs )
-      , op( eop ) {}
-  ~DefaultCounterConstraint() {}
 
 public:
   bool operator()( const int *parameter_value,
-                   const int *counter_Value ) const {
+                   const int *counter_value ) const {
     int dummy = 0;
-    for ( auto e : pconstraint ) {
-      dummy += e.first * parameter_value[ e.second ];
+    for ( size_t i = 0; i < pconstraint.size(); i += 2 ) {
+      dummy += pconstraint[ i ] * parameter_value[ pconstraint[ i + 1 ] ];
     }
-    for ( vector<pair<int, int>>::const_iterator it = constraint.begin();
-          it != constraint.end(); it++ ) {
-      dummy += ( it->first ) * counter_Value[ it->second ];
+    for ( size_t i = 0; i < constraint.size(); i += 2 ) {
+      dummy += constraint[ i ] * counter_value[ constraint[ i + 1 ] ];
     }
+
     switch ( op ) {
     case EQ:
       return dummy == rhs;
@@ -184,11 +223,37 @@ public:
     }
   }
 
+  void counterIpMap( const map<int, int> &id_map ) {
+    if ( !is_update ) {
+      is_update = true;
+      for ( size_t i = 1; i < constraint.size(); i += 2 ) {
+        constraint[ i ] = id_map.at( constraint[ i ] );
+      }
+    }
+  }
+
+  CounterConstraint *copy() const {
+    assert( !is_update );
+    return new DefaultCounterConstraint( pconstraint, constraint, rhs, op );
+  }
+
 private:
-  vector<pair<int, int>> pconstraint;
-  vector<pair<int, int>> constraint;
-  int                    rhs;
-  COMP_OPERATOR          op;
+  DefaultCounterConstraint( const vector<int> &pcons, const vector<int> &cons,
+                            int erhs, COMP_OPERATOR eop )
+      : pconstraint( pcons )
+      , constraint( cons )
+      , rhs( erhs )
+      , op( eop ) {
+    is_update = false;
+  }
+  ~DefaultCounterConstraint() {}
+
+private:
+  // odd* value[even]
+  vector<int>   pconstraint;
+  vector<int>   constraint;
+  int           rhs;
+  COMP_OPERATOR op;
   friend class CounterConstraintFactory;
 };
 
@@ -197,40 +262,47 @@ class CounterConstraintFactory {
 
 public:
   DefaultCounterConstraint *
-      createDefaultCounterConstraint( const vector<pair<int, int>> &pcons,
-                                      const vector<pair<int, int>> &cons,
-                                      int erhs, COMP_OPERATOR eop ) {
+      createDefaultCounterConstraint( const vector<int> &pcons,
+                                      const vector<int> &cons, int erhs,
+                                      COMP_OPERATOR eop ) {
     DefaultCounterConstraint *re =
         new DefaultCounterConstraint( pcons, cons, erhs, eop );
-    pdata.addPointer( STRING( DefaultCounterConstraint ), re );
+    pdata.addValue( STRING( CounterConstraint ),
+                    STRING( DefaultCounterConstraint ), re );
     return re;
   }
 
   DiaFreeCounterPConstraint *
       createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p ) {
     DiaFreeCounterPConstraint *re = new DiaFreeCounterPConstraint( c, o, p );
-    pdata.addPointer( STRING( DiaFreeCounterPConstraint ), re );
+    pdata.addValue( STRING( CounterConstraint ),
+                    STRING( DiaFreeCounterPConstraint ), re );
     return re;
   }
 
   DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
                                                     COMP_OPERATOR p, int r ) {
     DiaCounterConstraint *re = new DiaCounterConstraint( x, y, p, r );
-    pdata.addPointer( STRING( DiaCounterConstraint ), re );
+    pdata.addValue( STRING( CounterConstraint ), STRING( DiaCounterConstraint ),
+                    re );
     return re;
   }
   DiaFreeCounterConstraint *
       createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
     DiaFreeCounterConstraint *re = new DiaFreeCounterConstraint( cid, p, r );
-    pdata.addPointer( STRING( DiaFreeCounterConstraint ), re );
+    pdata.addValue( STRING( CounterConstraint ),
+                    STRING( DiaFreeCounterConstraint ), re );
     return re;
   }
 
   void destroy() {
 
-    deleteType( DefaultCounterConstraint );
-    deleteType( DiaFreeCounterPConstraint );
-    deleteType( DiaCounterConstraint );
+    deleteType( pdata, CounterConstraint, DefaultCounterConstraint,
+                DefaultCounterConstraint );
+    deleteType( pdata, CounterConstraint, DiaFreeCounterPConstraint,
+                DiaFreeCounterPConstraint );
+    deleteType( pdata, CounterConstraint, DiaCounterConstraint,
+                DiaCounterConstraint );
     pdata.clear();
   }
 

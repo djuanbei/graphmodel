@@ -37,11 +37,14 @@ public:                                                                        \
     return instance;                                                           \
   }
 
-#define deleteType( T )                                                        \
+#define deleteType( Var, TYPE, NAME, T )                                       \
   {                                                                            \
-    vector<void *> dummy = pdata.getPoints( #T );                              \
-    for ( auto e : dummy ) {                                                   \
-      delete (T *) e;                                                          \
+    int id = Var.getId( #TYPE, #NAME );                                        \
+    if ( id > -1 ) {                                                           \
+      pair<string, vector<void *>> temp = Var.getValue( #TYPE, id );           \
+      for ( auto e : temp.second ) {                                           \
+        delete (T *) e;                                                        \
+      }                                                                        \
     }                                                                          \
   }
 
@@ -50,7 +53,7 @@ public:
   void clear() { values.clear(); }
   void clear( const string &type ) { values[ type ].clear(); }
 
-  void addValue( const string &type, const string &name, int v = 0 ) {
+  void addValue( const string &type, const string &name, T v = 0 ) {
 
     for ( size_t i = 0; i < values[ type ].size(); i++ ) {
       if ( values[ type ][ i ].first == name ) {
@@ -59,7 +62,7 @@ public:
       }
     }
 
-    vector<int> vec_v;
+    vector<T> vec_v;
     vec_v.push_back( v );
     values[ type ].push_back( make_pair( name, vec_v ) );
   }
@@ -92,8 +95,7 @@ public:
     return -1;
   }
 
-  const pair<string, vector<int>> &getValue( const string &type,
-                                             int           id ) const {
+  const pair<string, vector<T>> &getValue( const string &type, int id ) const {
     return values.at( type )[ id ];
   }
 
@@ -109,7 +111,7 @@ public:
     return false;
   }
 
-  int getValue( const string &type, const string &name, int id = 0 ) const {
+  T getValue( const string &type, const string &name, int id = 0 ) const {
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
       if ( values.at( type )[ i ].first == name ) {
         return values.at( type )[ i ].second[ id ];
@@ -120,32 +122,39 @@ public:
   }
 
 private:
-  map<string, vector<pair<string, vector<int>>>> values;
+  map<string, vector<pair<string, vector<T>>>> values;
 };
 
-class PointerData {
+typedef ValueData<void *> PointerData;
 
-public:
-  void clear() { values.clear(); }
+// class PointerData {
 
-  void addPointer( const string &type, void *v ) {
-    values[ type ].push_back( v );
-  }
+// public:
+//   void clear() { values.clear(); }
 
-  vector<void *> getPoints( const string &type ) const {
-    if ( values.find( type ) == values.end() ) {
-      vector<void *> temp;
-      return temp;
-    }
-    return values.at( type );
-  }
+//   void addPointer( const string &type, const string & name, void *v ) {
+//     for( size_t )
+//     values[ type ].push_back( v );
+//   }
 
-  void clearPoints( const string &type ) { values[ type ].clear(); }
-  void clearPoints() { values.clear(); }
+//   vector<void *> getPoints( const string &type ) const {
+//     if ( values.find( type ) == values.end() ) {
+//       vector<void *> temp;
+//       return temp;
+//     }
+//     return values.at( type );
+//   }
 
-private:
-  map<string, vector<void *>> values;
-};
+//   void clearPoints( const string &type ) { values[ type ].clear(); }
+//   void clearPoints() { values.clear(); }
+
+// private:
+//   //map<string, vector<void *>> values;
+//     /**
+//      *type variable_name
+//      */
+//   map<string, vector<pair<string, vector<void *>>>> values;
+// };
 
 } // namespace graphsat
 

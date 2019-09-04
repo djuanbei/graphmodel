@@ -177,15 +177,19 @@ int check_type()
     /*
      *    it actually will only return IDENTIFIER
      */
-     string  sym=string( yytext);
-     yylval.intVal=findSym( sym);
-     if( yylval.intVal<0){
-        yylval.intVal=symbol_table.size( );
-        symbol_table.push_back( sym);
-     }
-   if(data->hasValue(PARAMETER_STR,sym)){
+   string  sym=string( yytext);
+   yylval.intVal=findSym( sym);
+   if( yylval.intVal<0){
+      yylval.intVal=symbol_table.size( );
+      symbol_table.push_back( sym);
+   }
+   if(current_data->hasPointer(PARAMETER_STR,sym)){
      return PARAM;
-   }else{
+   }
+   else if(current_data->hasValue(TEMPLATE_STR, sym ) ){
+     return TEMPLATE;
+   }
+   else{
      return(IDENTIFIER);
    }
    

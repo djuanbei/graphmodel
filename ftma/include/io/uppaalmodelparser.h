@@ -29,7 +29,6 @@
 
 namespace graphsat {
 
-// template<typename C, typename L, typename T>
 class UppaalParser {
 
 public:
@@ -42,7 +41,8 @@ public:
   const Property &getProp() const { return prop; }
 
 private:
-  UppaalData data;
+  UppaalTemplateData              system_data;
+  map<string, UppaalTemplateData> template_map;
 
   INT_TAS_t sys;
   Property  prop;
@@ -55,13 +55,13 @@ private:
 
   int parserQuery( child_type queries );
 
-  vector<typename INT_TAS_t::L_t> parserLocation( UppaalData &tempData,
-                                                  child_type  locations );
+  vector<typename INT_TAS_t::L_t> parserLocation( UppaalTemplateData &tempData,
+                                                  child_type locations );
 
-  vector<typename INT_TAS_t::T_t> parserTransition( UppaalData &tempData,
-                                                    child_type  transitions );
+  vector<typename INT_TAS_t::T_t>
+      parserTransition( UppaalTemplateData &tempData, child_type transitions );
 
-  void parser_label( UppaalData &data, string guards );
+  void parser_label( UppaalTemplateData &data, string guards );
 };
 
 } // namespace graphsat
