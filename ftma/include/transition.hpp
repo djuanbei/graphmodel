@@ -30,22 +30,30 @@ public:
   Transition( int s, int t ) {
     source = s;
     target = t;
+    has_channel     = false;
   }
 
-  Transition( const Transition_t &other ) {
+  Transition( const Transition_t &other, const Parameter &param ) {
     source = other.source;
     target = other.target;
     guards = other.guards;
+
     for ( auto e : other.counter_cons ) {
-      counter_cons.push_back( e->copy() );
+      CounterConstraint *dummy = e->copy();
+      dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
+      counter_cons.push_back( dummy );
     }
 
     has_channel = other.has_channel;
-
-    Channel channel; // Only one synchronisation channels
+    if ( has_channel ) {
+      channel = other.channel;
+      channel.globalIpUpdate( param.getChanMap() );
+    }
 
     for ( auto a : other.actions ) {
-      actions.push_back( a->copy() );
+      CounterAction *dummy = a->copy();
+      dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
+      actions.push_back( dummy );
     }
     resets = other.resets;
   }
@@ -88,7 +96,7 @@ public:
 
   void setChannel( const Channel &ch ) {
     channel = ch;
-    if ( ch.id > NO_CHANNEL ) {
+    if ( ch.gloabl_id > NO_CHANNEL ) {
       has_channel = true;
     }
   }
@@ -156,8 +164,7 @@ public:
       const C *counter_value = manager.getCounterValue( state );
 
       for ( auto cs : counter_cons ) {
-        if ( !( *cs )( manager.getParameterValue( component ),
-                       counter_value ) ) {
+        if ( !( *cs )( counter_value ) ) {
           return false;
         }
       }
@@ -196,7 +203,7 @@ public:
     C *counterValue = manager.getCounterValue( re_state );
 
     for ( auto act : actions ) {
-      ( *act )( manager.getParameterValue( component ), counterValue );
+      ( *act )( counterValue );
     }
 
     //    return re_state;

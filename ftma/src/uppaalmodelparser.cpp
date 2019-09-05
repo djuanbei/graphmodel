@@ -132,9 +132,9 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     vector<typename INT_TAS_t::T_t> transitions =
         parserTransition( template_data, transition_comps );
-    template_data.ta =
-        INT_TAS_t::TA_t( locations, transitions, template_data.getInitialLoc(),
-                         template_data.getTypeNum( CLOCK_STR ) );
+    template_data.tat =
+        INT_TAS_t::TAT_t( locations, transitions, template_data.getInitialLoc(),
+                          template_data.getTypeNum( CLOCK_STR ) );
 
     template_map[ template_data.name ] = template_data;
     /*

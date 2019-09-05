@@ -9,8 +9,8 @@
  *
  */
 //#define CHECK_MEMORY 1
-//#define PRINT_STATE 1
-//#define DRAW_GRAPH 1
+#define PRINT_STATE 1
+#define DRAW_GRAPH 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -77,9 +77,11 @@ void example1( void ) {
   es.push_back( e01 );
   es.push_back( e12 );
   es.push_back( e23 );
-  typename INT_TAS_t::TA_t tma1( ls, es, 0, 3 );
+  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 3 );
 
-  INT_TAS_t sys;
+  Parameter                param;
+  INT_TAS_t                sys;
+  typename INT_TAS_t::TA_t tma1( &tmt1, param );
   sys += tma1;
   R_t data( sys );
 
@@ -128,9 +130,11 @@ void example50() {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  typename INT_TAS_t::TA_t tma1( ls, es, 0, 2 );
-  tma1.addOnePara();
-  INT_TAS_t sys;
+  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
+
+  Parameter                param;
+  INT_TAS_t                sys;
+  typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
   sys += tma1;
   R_t               data( sys );
@@ -177,9 +181,11 @@ void example2( void ) {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  typename INT_TAS_t::TA_t tma1( ls, es, 0, 2 );
-  tma1.addOnePara();
-  INT_TAS_t sys;
+  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
+
+  INT_TAS_t                sys;
+  Parameter                param;
+  typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
   sys += tma1;
   R_t               data( sys );
@@ -321,17 +327,24 @@ void fisher( int n = 2 ) {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  typename INT_TAS_t::TA_t tma1( ls, es, 0, 1 );
+  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
   // tma1.addOnePara();
   INT_TAS_t sys;
+	Counter counter( 0, 100 );
+	sys += counter;
+	
   for ( int i = 1; i <= n; i++ ) {
-    typename INT_TAS_t::TA_t tma2 = tma1;
-    tma2.addOnePara( i );
-    sys += tma2;
+
+    Parameter param;
+		param.setCounterMap(0, 0	); // add relation between local id and global id
+		
+    param.addParameterValue( i );
+    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+
+    sys += tma1;
   }
   //  INT_TAS_t   sys = n * tma1;
-  Counter counter( 0, 100 );
-  sys += counter;
+	
 
   R_t data( sys );
 
@@ -421,13 +434,15 @@ void incrementalTest() {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  typename INT_TAS_t::TA_t tma1( ls, es, 0, 1 );
+  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
   // tma1.addOnePara();
   INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
-    typename INT_TAS_t::TA_t tma2 = tma1;
-    tma2.addOnePara( i );
-    sys += tma2;
+    Parameter param;
+    param.addParameterValue( i );
+    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+
+    sys += tma1;
   }
   //  INT_TAS_t   sys = n * tma1;
   Counter counter( 0, 100 );
@@ -451,9 +466,11 @@ void incrementalTest() {
 
   INT_TAS_t sys1;
   for ( int i = 1; i <= 2; i++ ) {
-    typename INT_TAS_t::TA_t tma2 = tma1;
-    tma2.addOnePara( i );
-    sys1 += tma2;
+    Parameter param;
+    param.addParameterValue( i );
+    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+
+    sys1 += tma1;
   }
 
   sys1 += counter;
@@ -568,8 +585,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  // fisher( 6 );
-  // return 0;
+  fisher( 2 );
+  return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

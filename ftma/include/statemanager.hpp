@@ -88,8 +88,7 @@ public:
   StateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
                 const vector<C> &                 clock_upper_bounds,
                 const vector<ClockConstraint<C>> &edifference_cons,
-                const vector<Parameter> &ps, const vector<int> &nodes,
-                int channel_n ) {
+                const vector<int> &nodes, int channel_n ) {
     state_length  = 0;
     component_num = comp_num;
 
@@ -115,8 +114,6 @@ public:
     dbm_manager =
         DBMFactory<C>( clock_num, clock_upper_bounds, difference_constraints );
     counters = ecounters;
-
-    parameters = ps;
   }
   int getStateLen() const { return state_length; }
 
@@ -190,9 +187,6 @@ public:
 
   inline int                  getComponentNum() const { return component_num; }
   inline const DBMFactory<C> &getClockManager() const { return dbm_manager; }
-  inline const int *          getParameterValue( const int i ) const {
-    return parameters[ i ].getValue();
-  }
 
   void norm( const C *const dbm, vector<C *> &re_vec ) const {
     C *newDBM = dbm_manager.createDBM( dbm );

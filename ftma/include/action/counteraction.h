@@ -19,112 +19,121 @@ namespace graphsat {
 using std::pair;
 using std::vector;
 class CounterAction {
-protected:
-  bool is_update;
 
 public:
-  virtual void operator()( const int *parameterValue,
-                           int *      counterValue ) const = 0;
+  virtual void operator()( int *counter_value ) const = 0;
   /**
    *Deley set the counter id
    */
-  virtual void counterIpMap( const map<int, int> &id_map ) = 0;
+  virtual void globalUpdate( const map<int, int> &id_map,
+                             const vector<int> &  parameter_value ) = 0;
 
   virtual CounterAction *copy() const = 0;
 };
 
 class SimpleCounterAction : public CounterAction {
 public:
-  void operator()( const int *parameterValue, int *counter_value ) const {
-    counter_value[ counter_id ] = rhs;
+  void operator()( int *counter_value ) const {
+    counter_value[ global_counter_id ] = rhs;
   }
 
-  void counterIpMap( const map<int, int> &id_map ) {
-    if ( !is_update ) {
-      is_update  = true;
-      counter_id = id_map.at( counter_id );
-    }
+  void globalUpdate( const map<int, int> &id_map,
+                     const vector<int> &  parameter_value ) {
+
+    global_counter_id = id_map.at( local_counter_id );
   }
+
   CounterAction *copy() const {
-    assert( !is_update );
-    return new SimpleCounterAction( counter_id, rhs );
+    return new SimpleCounterAction( local_counter_id, rhs );
   }
 
 private:
   SimpleCounterAction( int cid, int v ) {
-    is_update  = false;
-    counter_id = cid;
-    rhs        = v;
+    local_counter_id  = cid;
+    global_counter_id = 0;
+    rhs               = v;
   }
+
   ~SimpleCounterAction() {}
-  int counter_id;
+
+  int local_counter_id;
+  int global_counter_id;
   int rhs;
   friend class CounterActionFactory;
 };
 
 class SimpleCounterPAction : public CounterAction {
 public:
-  void operator()( const int *parameter_value, int *counterValue ) const {
-    counterValue[ counter_id ] = parameter_value[ parameter_id ];
+  void operator()( int *counter_value ) const {
+    counter_value[ global_counter_id ] = parameter_v;
   }
-  void counterIpMap( const map<int, int> &id_map ) {
-    if ( !is_update ) {
-      is_update  = true;
-      counter_id = id_map.at( counter_id );
-    }
+
+  void globalUpdate( const map<int, int> &id_map,
+                     const vector<int> &  parameter_value ) {
+    global_counter_id = id_map.at( local_counter_id );
+    parameter_v       = parameter_value[ parameter_id ];
   }
+
   CounterAction *copy() const {
-    assert( !is_update );
-    return new SimpleCounterPAction( counter_id, parameter_id );
+    return new SimpleCounterPAction( local_counter_id, parameter_id );
   }
 
 private:
   SimpleCounterPAction( int cid, int eparameter_id ) {
-    is_update    = false;
-    counter_id   = cid;
-    parameter_id = eparameter_id;
+
+    local_counter_id  = cid;
+    global_counter_id = 0;
+    parameter_id      = eparameter_id;
+    parameter_v       = 0;
   }
   ~SimpleCounterPAction() {}
-  int counter_id;
+  int local_counter_id;
+  int global_counter_id;
   int parameter_id;
+  int parameter_v;
   friend class CounterActionFactory;
 };
 
 class DefaultCAction : public CounterAction {
 public:
-  void operator()( const int *parameter_value, int *counter_value ) const {
-    for ( auto e : relations ) {
+  void operator()( int *counter_value ) const {
+    for ( auto e : global_relations ) {
       counter_value[ e.first ] = 0;
       for ( auto ee : e.second ) {
-        counter_value[ e.first ] += ee.first * parameter_value[ ee.second ];
-      }
-    }
-  }
-  void counterIpMap( const map<int, int> &id_map ) {
-    if ( !is_update ) {
-      is_update = true;
-      for ( auto e : relations ) {
-        e.first = id_map.at( e.first );
-        for ( auto ee : e.second ) {
-          ee.second = id_map.at( ee.second );
-        }
+        counter_value[ e.first ] += ee.first * ee.second;
       }
     }
   }
 
-  CounterAction *copy() const {
-    assert( !is_update );
-    return new DefaultCAction( relations );
+  void globalUpdate( const map<int, int> &id_map,
+                     const vector<int> &  parameter_value ) {
+
+    for ( size_t i = 0; i < local_relations.size(); i++ ) {
+      global_relations[ i ].first = id_map.at( local_relations[ i ].first );
+    }
+
+    for ( size_t i = 0; i < local_relations.size(); i++ ) {
+
+      for ( size_t j = 0; j < local_relations[ i ].second.size(); j++ ) {
+
+        global_relations[ i ].second[ j ].second =
+            parameter_value[ local_relations[ i ].second[ j ].second ];
+      }
+    }
   }
+
+  CounterAction *copy() const { return new DefaultCAction( local_relations ); }
 
 private:
   DefaultCAction(
       const vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
-    is_update = false;
-    relations = relations1;
+
+    local_relations  = relations1;
+    global_relations = relations1;
   }
   ~DefaultCAction() {}
-  vector<pair<int, vector<pair<int, int>>>> relations;
+  vector<pair<int, vector<pair<int, int>>>> local_relations;
+  vector<pair<int, vector<pair<int, int>>>> global_relations;
   friend class CounterActionFactory;
 };
 

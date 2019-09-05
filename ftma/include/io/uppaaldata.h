@@ -136,7 +136,7 @@ private:
 
   int init_loc;
 
-  typename INT_TAS_t::TA_t ta;
+  typename INT_TAS_t::TAT_t tat;
   friend class UppaalParser;
 };
 

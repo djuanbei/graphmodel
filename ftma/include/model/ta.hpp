@@ -55,54 +55,32 @@ struct ParaElement {
   string   name;
 };
 
-template <typename C, typename L, typename T> class TA {
+template <typename C, typename L, typename T> class TA;
+
+template <typename C, typename L, typename T> class TAT {
 
 private:
   typedef C C_t;
 
   typedef ClockConstraint<C_t> CS_t;
 
-  typedef TA<C, L, T> TA_t;
+  typedef TAT<C, L, T> TAT_t;
+  typedef TA<C, L, T>  TA_t;
 
 public:
-  TA() { initial_loc = clock_num = -1; }
-  TA( int init, int clockNum ) {
+  TAT() { initial_loc = clock_num = -1; }
+  TAT( int init, int clockNum ) {
     initial_loc = init;
     clock_num   = clockNum;
   }
 
-  TA( vector<L> &locs, vector<T> &es, int init, int vnum )
+  TAT( vector<L> &locs, vector<T> &es, int init, int vnum )
       : locations( locs )
       , transitions( es ) {
     initial_loc = init;
     clock_num   = vnum;
     initial();
   }
-  
-  TA( const TA_t &other ) {
-    locations=other.locations;
-    for( auto e: other.transitions){
-      T dummy(e);
-      transitions.push_back(dummy);
-    }
-    initial_loc=other.initial_loc;
-    clock_num=other.clock_num;
-    
-    graph=other.graph;
-    
-    clock_max_value=other.clock_max_value;
-    
-    difference_cons=other.difference_cons;
-    
-  }
-
-  void addOnePara( int defaultValue = 0 ) {
-    parameter.addValue( defaultValue );
-  }
-
-  const Parameter &getParameter() const { return parameter; }
-  bool             hasParam() const { return !parameter.empty(); }
-  void             setParam( int p ) { parameter.setValue( 0, p ); }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
@@ -116,8 +94,8 @@ public:
   int getClockNum() const { return clock_num; }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
-  
-  int  getInitialLoc() const { return initial_loc; }
+
+  int getInitialLoc() const { return initial_loc; }
 
   bool locationRun( int link, const DBMFactory<C> &manager, C *D ) const {
     if ( !locations[ link ].isReachable( manager, D ) ) {
@@ -127,10 +105,6 @@ public:
     return true;
   }
   bool isCommit( int id ) const { return locations[ id ].isCommit(); }
-
-  bool transitionRun( int link, const DBMFactory<C> &manager, C *D ) const {
-    return transitions[ link ]( manager, D );
-  }
 
   void updateCounterId( const map<int, int> &id_map ) {
     for ( auto e : transitions ) {
@@ -144,7 +118,6 @@ public:
   }
 
 private:
-  Parameter parameter;
   vector<L> locations;
   vector<T> transitions;
   int       initial_loc;
@@ -159,7 +132,11 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
+
+  friend class TA<C, L, T>;
+
   friend class TAS<C, L, T>;
+
   void updateUpperAndDiff( const CS_t &cs ) {
 
     if ( cs.x > 0 && cs.y > 0 ) {
@@ -209,13 +186,63 @@ private:
     }
 
     for ( auto t : transitions ) {
-
       const vector<CS_t> &gurads = t.getGuards();
       for ( auto cs : gurads ) {
         updateUpperAndDiff( cs );
       }
     }
   }
+};
+
+template <typename C, typename L, typename T> class TA {
+
+private:
+  typedef C C_t;
+
+  typedef ClockConstraint<C_t> CS_t;
+
+  typedef TA<C, L, T>  TA_t;
+  typedef TAT<C, L, T> TAT_t;
+
+public:
+  TA( TAT_t *tat, const Parameter &param ) {
+
+    ta_tempate = tat;
+    for ( auto e : tat->transitions ) {
+      transitions.push_back( T( e, param ) );
+    }
+  }
+
+  void findRhs( const int link, const int lhs, int &rhs ) const {
+    ta_tempate->graph.findRhs( link, lhs, rhs );
+  }
+  vector<C> getClockMaxValue() const { return ta_tempate->clock_max_value; }
+
+  vector<ClockConstraint<C>> getDifferenceCons() const {
+    return ta_tempate->difference_cons;
+  }
+
+  int getClockNum() const { return ta_tempate->clock_num; }
+
+  int getInitialLoc() const { return ta_tempate->initial_loc; }
+
+  bool locationRun( int link, const DBMFactory<C> &manager, C *D ) const {
+    return ta_tempate->locationRun( link, manager, D );
+  }
+  bool isCommit( int id ) const { return ta_tempate->isCommit( id ); }
+
+  bool transitionRun( int link, const DBMFactory<C> &manager, C *D ) const {
+    return transitions[ link ]( manager, D );
+  }
+
+private:
+  TAT_t *ta_tempate;
+
+  vector<T> transitions;
+
+  template <typename R1> friend class Reachability;
+  template <typename R2> friend class ReachableSet;
+  friend class TAS<C, L, T>;
 };
 
 template <typename C, typename L, typename T> class TAS {
@@ -233,7 +260,8 @@ public:
 
   typedef T T_t;
 
-  typedef TA<C, L, T> TA_t;
+  typedef TA<C, L, T>  TA_t;
+  typedef TAT<C, L, T> TAT_t;
 
   typedef StateManager<C_t> StateManager_t;
 
@@ -258,7 +286,7 @@ public:
                             ta1.getDifferenceCons().begin(),
                             ta1.getDifferenceCons().end() );
 
-    parameters.push_back( ta1.getParameter() );
+    // parameters.push_back( ta1.getParameter() );
 
     return *this;
   }
@@ -289,11 +317,11 @@ public:
     }
     vector<int> node_n;
     for ( size_t i = 0; i < tas.size(); i++ ) {
-      node_n.push_back( tas[ i ].graph.getVertex_num() );
+      node_n.push_back( tas[ i ].ta_tempate->graph.getVertex_num() );
     }
 
     StateManager<C> re( tas.size(), counters, clock_num, temp_clock_upperbound,
-                        difference_cons, parameters, node_n, channels.size() );
+                        difference_cons, node_n, channels.size() );
 
     return re;
   }
@@ -317,7 +345,7 @@ public:
 
     for ( int component = 0; component < component_num; component++ ) {
       tas[ component ]
-          .locations[ manager.getLoc( component, state ) ]
+          .ta_tempate->locations[ manager.getLoc( component, state ) ]
           .employInvariants( manager.getClockManager(),
                              manager.getDBM( state ) );
     }
@@ -339,22 +367,22 @@ private:
 
   vector<C>                  clock_max_value;
   vector<ClockConstraint<C>> difference_cons;
-  vector<Parameter>          parameters;
+  // vector<Parameter>          parameters;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
   TA_t transfrom( const TA_t &ta ) {
     TA_t ta1 = ta;
     if ( clock_num > 0 ) {
-      for ( size_t i = 0; i < ta1.locations.size(); i++ ) {
-        ta1.locations[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < ta1.ta_tempate->locations.size(); i++ ) {
+        ta1.ta_tempate->locations[ i ].clockShift( clock_num );
       }
 
       for ( size_t i = 0; i < ta1.transitions.size(); i++ ) {
         ta1.transitions[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < ta1.difference_cons.size(); i++ ) {
-        ta1.difference_cons[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < ta1.ta_tempate->difference_cons.size(); i++ ) {
+        ta1.ta_tempate->difference_cons[ i ].clockShift( clock_num );
       }
     }
     clock_num += ta1.getClockNum();
