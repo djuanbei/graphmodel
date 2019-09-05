@@ -45,7 +45,7 @@ public:
   }
 
   /**
-   * @param DBMFactory  A dbm matrix
+   * @param DM  A dbm matrix
    *
    * @return true if real insert DBMFactory into set
    * false otherwise. DM does not destory in function
@@ -235,7 +235,7 @@ private:
   vector<C *>  recovery_data;
   vector<DF_T> recovery_data_feature;
 
-  C *getD( uint32_t hashValue ) { return map_data[ passed_data[ hashValue ] ]; }
+  C *getD( uint32_t hash_value ) { return map_data[ passed_data[ hash_value ] ]; }
 
   void mapDAdd( C *D, DF_T &value ) {
     map_data.push_back( D );

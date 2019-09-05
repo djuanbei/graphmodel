@@ -22,6 +22,21 @@ using std::vector;
 
 #define STRING( s ) #s
 
+#ifdef PRINT_STATE
+
+#define PRINT_STATE_MACRO                                                        \
+  for ( int i = 0; i < component_num; i++ ) {                                  \
+    cout << state[ i ] << " ";                                                 \
+  }                                                                            \
+  cout << endl                                                                 \
+       << manager.getClockManager().dump( manager.getDBM( state ) ) << endl;
+
+#else
+
+#define PRINT_STATE_MACRO
+  
+#endif
+
 #define SINGLETON( T )                                                         \
 private:                                                                       \
   T() {}                                                                       \
@@ -77,8 +92,8 @@ public:
   /**
    *
    *
-   * @param type
-   * @param values
+   * @param type Element type which wants to find
+   * @param name The name of element
    *
    * @return  -1 if name is not in values
    */

@@ -27,8 +27,13 @@ public:
    */
   virtual void globalUpdate( const map<int, int> &id_map,
                              const vector<int> &  parameter_value ) = 0;
+  
+private:
 
   virtual CounterAction *copy() const = 0;
+  
+  friend class CounterActionFactory;
+  
 };
 
 class SimpleCounterAction : public CounterAction {
@@ -43,9 +48,7 @@ public:
     global_counter_id = id_map.at( local_counter_id );
   }
 
-  CounterAction *copy() const {
-    return new SimpleCounterAction( local_counter_id, rhs );
-  }
+ 
 
 private:
   SimpleCounterAction( int cid, int v ) {
@@ -55,7 +58,12 @@ private:
   }
 
   ~SimpleCounterAction() {}
-
+  
+  CounterAction *copy() const {
+    return new SimpleCounterAction( local_counter_id, rhs );
+  }
+  
+  
   int local_counter_id;
   int global_counter_id;
   int rhs;
@@ -74,9 +82,7 @@ public:
     parameter_v       = parameter_value[ parameter_id ];
   }
 
-  CounterAction *copy() const {
-    return new SimpleCounterPAction( local_counter_id, parameter_id );
-  }
+ 
 
 private:
   SimpleCounterPAction( int cid, int eparameter_id ) {
@@ -87,6 +93,11 @@ private:
     parameter_v       = 0;
   }
   ~SimpleCounterPAction() {}
+  
+  CounterAction *copy() const {
+    return new SimpleCounterPAction( local_counter_id, parameter_id );
+  }
+  
   int local_counter_id;
   int global_counter_id;
   int parameter_id;
@@ -122,7 +133,7 @@ public:
     }
   }
 
-  CounterAction *copy() const { return new DefaultCAction( local_relations ); }
+ 
 
 private:
   DefaultCAction(
@@ -132,6 +143,9 @@ private:
     global_relations = relations1;
   }
   ~DefaultCAction() {}
+  
+  CounterAction *copy() const { return new DefaultCAction( local_relations ); }
+  
   vector<pair<int, vector<pair<int, int>>>> local_relations;
   vector<pair<int, vector<pair<int, int>>>> global_relations;
   friend class CounterActionFactory;
@@ -142,6 +156,10 @@ class CounterActionFactory {
   SINGLETON( CounterActionFactory );
 
 public:
+  ~CounterActionFactory(){
+    destroy();
+  }
+  
   SimpleCounterAction *createSimpleCounterAction( int cid, int v ) {
     SimpleCounterAction *re = new SimpleCounterAction( cid, v );
     pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterAction ),
@@ -162,12 +180,19 @@ public:
     pdata.addValue( STRING( CounterAction ), STRING( DefaultCAction ), re );
     return re;
   }
+  CounterAction *copy(const CounterAction * other){
+    CounterAction * re=other->copy();
+    pdata.addValue( STRING( CounterAction ), STRING( CounterAction ), re );
+    return re;
+    
+  }
   void destroy() {
     deleteType( pdata, CounterAction, SimpleCounterAction,
                 SimpleCounterAction );
     deleteType( pdata, CounterAction, SimpleCounterPAction,
                 SimpleCounterPAction );
     deleteType( pdata, CounterAction, DefaultCAction, DefaultCAction );
+     deleteType( pdata, CounterAction, CounterAction, DefaultCAction );
     pdata.clear();
   }
 

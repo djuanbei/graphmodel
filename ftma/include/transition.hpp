@@ -39,7 +39,8 @@ public:
     guards = other.guards;
 
     for ( auto e : other.counter_cons ) {
-      CounterConstraint *dummy = e->copy();
+      CounterConstraint *dummy = CounterConstraintFactory::getInstance().copy(e);
+      
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       counter_cons.push_back( dummy );
     }
@@ -51,7 +52,7 @@ public:
     }
 
     for ( auto a : other.actions ) {
-      CounterAction *dummy = a->copy();
+      CounterAction *dummy = CounterActionFactory::getInstance().copy(a); 
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       actions.push_back( dummy );
     }
@@ -71,10 +72,10 @@ public:
   /**
    * add constraint to Transition
    *
-   * @param lhs
-   * @param cs
+   * @param lhs The original transition
+   * @param cs  constraint
    *
-   * @return
+   * @return Transition
    */
 
   friend Transition_t &operator+( Transition_t &lhs, CS &cs ) {
@@ -87,7 +88,6 @@ public:
    *
    * @param cs  constraint
    *
-   * @return
    */
   Transition_t &operator+=( CS &cs ) {
     guards.push_back( cs );
@@ -109,9 +109,8 @@ public:
    *
    *  add one action to this transition
    *
-   * @param a
+   * @param action Add one counter action
    *
-   * @return
    */
   void addCounterAction( const CounterAction *action ) {
     actions.push_back( action );
@@ -120,9 +119,8 @@ public:
   /**
    * add one clock reset  to this transition
    *
-   * @param r
+   * @param reset The reset
    *
-   * @return
    */
   void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
 
@@ -133,9 +131,9 @@ public:
   /**
    * @brief Except synchronize signal, other state satisfies jump conditions
    *
-   * @param comp
-   * @param manager
-   * @param state
+   * @param component component id
+   * @param manager state manager
+   * @param state current state
    *
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
@@ -175,7 +173,6 @@ public:
    *
    *@brief  create new state
    *
-   * @return  a new state
    */
 
   void operator()( const int component, const StateManager<C> &manager,

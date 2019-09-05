@@ -137,42 +137,7 @@ int UppaalParser::parserTemplate( child_type templates ) {
                           template_data.getTypeNum( CLOCK_STR ) );
 
     template_map[ template_data.name ] = template_data;
-    /*
-     if ( NULL != parameter ) {
-       string         para_content = parameter->getValue();
-       vector<string> terms        = splitStr( para_content, "," );
-       for ( auto str : terms ) {
-         bool           is_ref=false;
-         size_t start = str.find( PARAMETER_REF_STR);
-         if ( start != std::string::npos ) {
-           str = deleteChar( str, start, '&' );
-           is_ref=true;
-         }
-
-         vector<string> parts = splitStr( str, " " );
-         string         name  = parts.back();
-         if(is_ref){
-           name=name.substr(1);
-         }
-
-         int parameter_id=template_data.getId(PARAMETER_STR, name);
-         if(template_data.para_list[parameter_id].type==SCALAR_T){
-           int size = (int) parts.size();
-           size -= 2;
-           string      global_array = parts[ size ];
-           vector<int> int_array    = data.getIntArray( global_array );
-           for ( auto e : int_array ) {
-             INT_TAS_t::TA_t temp = ta;
-             temp.addOnePara( e );
-             sys += temp;
-           }
-         }
-       }
-
-     } else {
-       sys += ta;
-     }
-     */
+    
   }
 
   return 0;

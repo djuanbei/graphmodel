@@ -99,10 +99,10 @@ public:
 
     if ( channel_num > 0 ) {
       counter_start_loc = 2 * component_num;
-      state_length      = 2 * component_num + ecounters.size();
+      state_length      = 2 * component_num + (int)ecounters.size();
     } else {
       counter_start_loc = component_num;
-      state_length      = component_num + ecounters.size();
+      state_length      = component_num + (int)ecounters.size();
     }
     freeze_location_index = state_length;
 
@@ -263,8 +263,8 @@ public:
   /**
    * @brief  comonent_id in a commit location
    *
-   * @param component_id
-   * @param state
+   * @param component_id component id
+   * @param state set state
    */
   inline void setCommitState( const int component_id, C *state ) const {
     state[ component_id ] = -1 - state[ component_id ];

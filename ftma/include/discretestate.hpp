@@ -353,7 +353,7 @@ private:
 
     head_part_elements[ hashV ].first.insert(
         head_part_elements[ hashV ].first.end(), head, head + head_part_len );
-    int re = body_part_elements.size();
+    int re = (int)body_part_elements.size();
     head_part_elements[ hashV ].second.push_back( re );
     vector<T> temp;
     body_part_elements.push_back( temp );
@@ -603,14 +603,7 @@ private:
   StateSet<T> setValue;
 };
 
-/**
- * one complete times two
- *
- * @param int
- * @param one
- *
- * @return
- */
+
 template <typename T>
 class CompleteCompactComposeStateSet : public ComposeStateSet<T> {
 
@@ -618,10 +611,6 @@ public:
   /**
    * there is only one compoment which does not contain argument one
    *
-   * @param int
-   * @param one
-   *
-   * @return
    */
   int leftOneContain( const vector<pair<int, T *>> &one ) const {
 

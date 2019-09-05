@@ -79,8 +79,8 @@ public:
   /**
    *
    *
-   * @param type
-   * @param name
+   * @param type  The type of element which want to find.
+   * @param name The element name which want to find.
    *
    * @return  -1 if name is not in int_values
    */

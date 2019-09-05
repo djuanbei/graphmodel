@@ -72,8 +72,8 @@ public:
   /**
    * @brief check whether the state dbm satisfies the invariant of this location
    *
-   * @param dbm_manager
-   * @param dbm
+   * @param dbm_manager dbm manager.
+   * @param dbm a dbm matrix.
    *
    * @return  true if dbm  satisfies invariant, false otherwise.
    */
@@ -134,9 +134,9 @@ public:
   /**
    * Add one invariant to this location
    *
-   * @param cs
+   * @param cs atomic constraint
    *
-   * @return
+   * @return a new location
    */
   Location<C_t, CS_t, DManager_t, DBMSet_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );

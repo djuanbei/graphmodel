@@ -40,11 +40,7 @@ using namespace std;
 
 #define LOC( row, col ) ( row ) * ( clock_num ) + ( col )
 
-/**
- *@param C the type of value of clock
- *@param add the operator of x+y
- *
- */
+
 
 template <typename C> class DBMFactory {
 
@@ -96,9 +92,9 @@ public:
   /**
    * Create a new matrix and initial the values with D
    *
-   * @param D
+   * @param dbm dbm matrix
    *
-   * @return
+   * @return a copy dbm matrix
    */
   C *createDBM( const C *const dbm ) const {
     C *newD = new C[ matrix_size ];
@@ -194,7 +190,7 @@ public:
   /**
    * recovery memory
    *
-   * @param Cvec
+   * @param Cvec the vector need to delete
    */
   void deleteVectorM( vector<C *> &Cvec ) const {
     for ( auto d : Cvec ) {
@@ -223,7 +219,7 @@ public:
   /**
    *
    * precondition D is canonicalForm
-   * @param D
+   * @param dbm a dbm matrix
    *
    * @return true if DBMFactory D is not empty,
    * false otherwise.
@@ -235,9 +231,9 @@ public:
   /**
    *
    *
-   * @param C
-   * @param other
+   * @brief  check whether lhs >= rhs, in other words whether lhs contains rhs
    *
+
    * @return true if this is included by other lhs>= rhs
    */
   bool include( const C *const lhs, const C *const rhs ) const {
@@ -254,9 +250,6 @@ public:
    * If lhs contains  rhs, then getIncludeFeature(lhs ) >= getIncludeFeature(
    * rhs)
    *
-   * @param D
-   *
-   * @return
    */
 
   DF_T getIncludeFeature( const C *const dbm ) const {
@@ -277,7 +270,7 @@ public:
    * y-x < ( <= ) d is feasiable if and only if -rhs< d
 
    * This is to check D and x-y < (<=) m is non-empty
-   * @param cons
+   * @param cons the constraints vector
    *
    * @return true if there is a value in this domain which satisfies cons
    * false, otherwise.
@@ -350,7 +343,6 @@ public:
   /**
    * Can not modify value of D
    * The most used operation in state-space exploration in conjunction
-   * @param cons
    */
   C *And( const C *const dbm, const ClockConstraint<C> &cons ) const {
 
@@ -371,7 +363,6 @@ public:
    * Can not modify value of D
    * The free operation removes all constraints on a given clock x.
    *
-   * @param x
    */
   C *free( const C *const dbm, const int x ) const {
     C *newD = createDBM( dbm );
@@ -398,8 +389,8 @@ public:
   /**
    * In forwards exploration this operation is used to set clocks to specific
    * values x:=m Can not modify value of D
-   * @param x
-   * @param m
+   * @param x the reset clock id
+   * @param m rhe reset clock value
    */
   C *reset( const C *const dbm, const int x, const C m ) const {
     C *newD = createDBM( dbm );
@@ -417,8 +408,8 @@ public:
   /**
    * This is another operation used in forwards state space exporation.
    * Can not modify value of D
-   * @param x
-   * @param y
+   * @param x source clock id
+   * @param y target clock id
    */
   C *copy( const C *const dbm, const int x, const int y ) const {
     C *newD = createDBM( dbm );
@@ -447,8 +438,8 @@ public:
    * The last reset operation is shifting a clock, i.e. adding or substracting
    * a clock with an integer value.
    *
-   * @param x
-   * @param m
+   * @param x the shift clock id
+   * @param m the reset clock value
    */
   C *shift( const C *const dbm, const int x, const C m ) const {
     C *newD = createDBM( dbm );
@@ -485,9 +476,8 @@ public:
   /**
    * TODO: The difference bounds will adjust depend on source
    *
-   * @param source
-   * @param D
-   * @param re
+   * @param dbm the dbm matrix which want to norm
+   * @param re_vec the return norm dbm vector
    */
   void norm( C *dbm, vector<C *> &re_vec ) const {
     if ( difference_cons.empty() ) {
@@ -531,8 +521,8 @@ private:
    * maximums[clock_num +n]:= < -maximums_i
    * @param dbm D will deen destroied before return
    * @param maximums maximums[i] is the maximum upper for x_i
-   * @param G
-   * @param re
+   * @param diff_cons All different constraint in model like x-y < c
+   *@param re_vec the return dbm vector
    */
   void norm( C *dbm, const vector<C> &maximums,
              const vector<ClockConstraint<C>> &diff_cons,

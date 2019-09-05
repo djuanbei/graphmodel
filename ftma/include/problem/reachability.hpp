@@ -44,16 +44,18 @@ public:
   /**
    * @brief whether the sysyem satisfies the prop
    *
-   * @param prop
+   * @param prop The property which want to verify.
    *
-   * @return
+   * @return ture if there is a reachable state which makes prop ture,
+   * false otherwise.
    */
   bool satisfy( const Property *prop ) { return run( prop ); }
 
   /**
-   * @param prop
+   * @param prop The property which want to verify.
    *
-   * @return
+   * @return true if ther is a reachable state which make prop ture,
+   * false otherwise.
    */
   bool run( const Property *prop ) {
 

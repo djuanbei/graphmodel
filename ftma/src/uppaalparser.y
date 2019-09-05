@@ -76,7 +76,7 @@
 %token  INT     CONST  VOID  CLOCK CHAN
 %token STRUCT   ELLIPSIS
 
-%token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN 
+%token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN  SYSTEM
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -151,6 +151,7 @@ external_declaration
 : variable_declaration
 | constraint_statement
 | assign_statement
+| system_declaration
 ;
 constraint_statement:
 atomic_constraint
@@ -228,16 +229,15 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
     DiaCounterConstraint *cs=CounterConstraintFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
     current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
   }
-
+  
 
 }
 |
 PARAM
 {
-  vector<void*> pps= current_data->getPoints(PARAMETER_STR, symbol_table[ $1] );
-  assert(!pps.empty( ) );
-  assert( (pps[ 0]->type==PARAM_BOOL_T) ||(pps[ 0]->type==PARAM_BOOL_REF_T ) );
-  void *cs = CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
+  if(PARAMETER_T==getType(symbol_table[ $1] ) ){
+    
+  }
   
 }
 |
@@ -392,6 +392,12 @@ variable_declaration
   current_data->addIntArray(symbol_table[ $8],temp);
 }
 
+
+system_declaration
+: SYSTEM identifier_list ';'
+{
+  
+}
 
 %%
 

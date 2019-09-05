@@ -40,8 +40,9 @@ int check_type();
 "struct"        { count(); return(STRUCT); }
 "switch"        { count(); return(SWITCH); }
 "typedef"        { count(); return(TYPEDEF); }
-"void"            { count(); return(VOID); }
-"while"            { count(); return(WHILE); }
+"void"            { count(); return(VOID);   }
+"while"           { count(); return(WHILE);  }
+"system"          { count(); return(SYSTEM); }
 
 {L}({L}|{D})*        { count(); return(check_type()); }
 

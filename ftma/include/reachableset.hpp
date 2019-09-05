@@ -78,7 +78,7 @@ public:
   const SYS &getSYS( void ) const { return sys; }
   /**
    * BFS
-   * @return
+   * @return next state by order bfs
    */
   C_t *next() {
     C_t *state = wait_set.front();
@@ -104,26 +104,18 @@ public:
     current_parent++;
 #endif
 
-#ifdef PRINT_STATE
-
-    for ( int i = 0; i < component_num; i++ ) {
-      cout << state[ i ] << " ";
-    }
-    cout << endl
-         << manager.getClockManager().dump( manager.getDBM( state ) ) << endl;
-#endif
-    int commit_component = -1;
+    
+    PRINT_STATE_MACRO;
+  
     if ( state[ manager.getFreezeLocation() ] > 0 ) {
       for ( int component = 0; component < component_num; component++ ) {
         if ( manager.isCommitComp( component, state ) ) {
-          commit_component = component;
-          break;
+           return oneComponent( component, prop, state );
+         
         }
       }
     }
-    if ( commit_component > -1 ) {
-      return oneComponent( commit_component, prop, state );
-    }
+   
     for ( int component = 0; component < component_num; component++ ) {
 
       if ( manager.hasChannel() &&
@@ -293,11 +285,11 @@ private:
 
   /**
    * TODO: first do send counter action then do receive action
-   * @param component current run component
+   * @param current_component current run component
    * @param block_component_id blocked  component id
    * @param link  the block transition
    * @param state the current state
-   * @param prop
+   * @param prop the property
    * @param is_send ture if block_component_id is send part, false otherwise.
    *
    * @return  true the next state make prop true, false otherwise.
@@ -490,12 +482,12 @@ private:
   bool delay( const int component, const int target, const Property *prop,
               C_t *state ) {
 
-    state[ component ] = target;
+    
     if ( !sys.tas[ component ].locations[ target ].isReachable(
              manager.getClockManager(), manager.getDBM( state ) ) ) {
       return false;
     }
-   
+    state[ component ] = target;
 
     /**
      Whether there is some component in freeze location

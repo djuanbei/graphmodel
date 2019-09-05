@@ -30,8 +30,11 @@ public:
    */
   virtual void globalUpdate( const map<int, int> &id_map,
                              const vector<int> &  parameter_value ) = 0;
+private:
 
   virtual CounterConstraint *copy() const = 0;
+  
+  friend class CounterConstraintFactory;
 };
 
 class DiaFreeCounterConstraint : public CounterConstraint {
@@ -61,10 +64,7 @@ public:
     global_counter_id = id_map.at( local_counter_id );
   }
 
-  CounterConstraint *copy() const {
-
-    return new DiaFreeCounterConstraint( local_counter_id, op, rhs );
-  }
+ 
 
 private:
   DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp,
@@ -76,6 +76,11 @@ private:
     rhs               = right_side;
   }
   ~DiaFreeCounterConstraint() {}
+  CounterConstraint *copy() const {
+    
+    return new DiaFreeCounterConstraint( local_counter_id, op, rhs );
+  }
+  
   int           local_counter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
@@ -114,10 +119,7 @@ public:
     rhs               = parameter_value[ parameter_id ];
   }
 
-  CounterConstraint *copy() const {
-
-    return new DiaFreeCounterPConstraint( local_counter_id, op, parameter_id );
-  }
+ 
 
 private:
   int           local_counter_id;
@@ -135,6 +137,10 @@ private:
     rhs              = 0;
   }
   ~DiaFreeCounterPConstraint() {}
+  CounterConstraint *copy() const {
+    
+    return new DiaFreeCounterPConstraint( local_counter_id, op, parameter_id );
+  }
 
   friend class CounterConstraintFactory;
 };
@@ -170,11 +176,7 @@ public:
     global_counter_y = id_map.at( local_counter_y );
   }
 
-  CounterConstraint *copy() const {
-
-    return new DiaCounterConstraint( local_counter_x, local_counter_y, op,
-                                     rhs );
-  }
+ 
 
 private:
   DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
@@ -185,6 +187,14 @@ private:
     rhs             = r;
   }
   ~DiaCounterConstraint() {}
+  
+  CounterConstraint *copy() const {
+    
+    return new DiaCounterConstraint( local_counter_x, local_counter_y, op,
+                                    rhs );
+  }
+  
+  
 
   int local_counter_x, local_counter_y, global_counter_x, global_counter_y;
   COMP_OPERATOR op;
@@ -235,11 +245,7 @@ public:
     }
   }
 
-  CounterConstraint *copy() const {
-
-    return new DefaultCounterConstraint( pconstraint, local_constraint, rhs,
-                                         op );
-  }
+ 
 
 private:
   DefaultCounterConstraint( const vector<int> &pcons, const vector<int> &cons,
@@ -250,6 +256,13 @@ private:
       , rhs( erhs )
       , op( eop ) {}
   ~DefaultCounterConstraint() {}
+  
+  CounterConstraint *copy() const {
+    
+    return new DefaultCounterConstraint( pconstraint, local_constraint, rhs,
+                                        op );
+  }
+  
 
 private:
   // odd* value[even]
@@ -266,6 +279,9 @@ class CounterConstraintFactory {
   SINGLETON( CounterConstraintFactory );
 
 public:
+  ~CounterConstraintFactory(){
+    destroy();
+  }
   DefaultCounterConstraint *
       createDefaultCounterConstraint( const vector<int> &pcons,
                                       const vector<int> &cons, int erhs,
@@ -284,6 +300,7 @@ public:
                     STRING( DiaFreeCounterPConstraint ), re );
     return re;
   }
+  
 
   DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
                                                     COMP_OPERATOR p, int r ) {
@@ -299,6 +316,17 @@ public:
                     STRING( DiaFreeCounterConstraint ), re );
     return re;
   }
+  
+  CounterConstraint * copy(CounterConstraint * other){
+    CounterConstraint* re=other->copy();
+    pdata.addValue( STRING( CounterConstraint ),
+                   STRING( CounterConstraint ), re );
+    return re;
+    
+  }
+  
+ 
+  
 
   void destroy() {
 
@@ -308,6 +336,9 @@ public:
                 DiaFreeCounterPConstraint );
     deleteType( pdata, CounterConstraint, DiaCounterConstraint,
                 DiaCounterConstraint );
+    deleteType( pdata, CounterConstraint, CounterConstraint,
+               DiaCounterConstraint );
+    
     pdata.clear();
   }
 

@@ -87,10 +87,10 @@ public:
   }
   vector<C> getClockMaxValue() const { return clock_max_value; }
 
-  vector<ClockConstraint<C>> getDifferenceCons() const {
+ /* vector<ClockConstraint<C>> getDifferenceCons() const {
     return template_difference_cons;
   }
-
+*/
   int getClockNum() const { return clock_num; }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
@@ -185,13 +185,14 @@ private:
   typedef TAT<C, L, T> TAT_t;
 
 public:
-  TA( TAT_t *tat, const Parameter &param ) {
+  TA(const TAT_t *tat, const Parameter &param ) {
 
     ta_tempate = tat;
     for ( auto e : tat->template_transitions ) {
       transitions.push_back( T( e, param ) );
     }
     locations = tat->template_locations;
+    difference_cons=tat->template_difference_cons;
   }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
@@ -230,10 +231,11 @@ public:
   }
 
 private:
-  TAT_t *ta_tempate;
+  const TAT_t *ta_tempate;
 
   vector<L> locations;
   vector<T> transitions;
+  vector<ClockConstraint<C>> difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
@@ -266,20 +268,20 @@ public:
     clock_max_value.push_back( 0 );
     clock_num = 0;
   }
-  TAS_t &operator+=(  TA_t &ta1 ) {
+  TAS_t &operator+=(  TA_t &ta ) {
 
-    transfrom( ta1 );
-    tas.push_back( ta1 );
-    initial_loc.push_back( ta1.getInitialLoc() );
-    vec_clock_nums.push_back( ta1.getClockNum() );
+    transfrom( ta );
+    tas.push_back( ta );
+    initial_loc.push_back( ta.getInitialLoc() );
+    vec_clock_nums.push_back( ta.getClockNum() );
 
-    for ( size_t i = 1; i < ta1.getClockMaxValue().size(); i++ ) {
-      clock_max_value.push_back( ta1.getClockMaxValue()[ i ] );
+    for ( size_t i = 1; i < ta.getClockMaxValue().size(); i++ ) {
+      clock_max_value.push_back( ta.getClockMaxValue()[ i ] );
     }
 
     difference_cons.insert( difference_cons.end(),
-                            ta1.ta_tempate->getDifferenceCons().begin(),
-                            ta1.ta_tempate->getDifferenceCons().end() );
+                            ta.difference_cons.begin(),
+                            ta.difference_cons.end() );
 
     return *this;
   }
@@ -294,7 +296,7 @@ public:
     return *this;
   }
 
-  int             getComponentNum() const { return tas.size(); }
+  int             getComponentNum() const { return (int)tas.size(); }
   StateManager<C> getStateManager() const {
 
     vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
@@ -313,13 +315,13 @@ public:
       node_n.push_back( tas[ i ].ta_tempate->graph.getVertex_num() );
     }
 
-    StateManager<C> re( tas.size(), counters, clock_num, temp_clock_upperbound,
-                        difference_cons, node_n, channels.size() );
+    StateManager<C> re( (int)tas.size(), counters, clock_num, temp_clock_upperbound,
+                        difference_cons, node_n, (int)channels.size() );
 
     return re;
   }
   void initState( const StateManager<C> &manager, State_t *state ) const {
-    int  component_num = tas.size();
+    int  component_num = (int)tas.size();
     bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
       state[ component ] = initial_loc[ component ];
@@ -360,25 +362,24 @@ private:
 
   vector<C>                  clock_max_value;
   vector<ClockConstraint<C>> difference_cons;
-  // vector<Parameter>          parameters;
-
+  
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  void transfrom(  TA_t &ta1 ) {
+  void transfrom(  TA_t &ta ) {
    
     if ( clock_num > 0 ) {
-      for ( size_t i = 0; i < ta1.locations.size(); i++ ) {
-        ta1.locations[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < ta.locations.size(); i++ ) {
+        ta.locations[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < ta1.transitions.size(); i++ ) {
-        ta1.transitions[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < ta.transitions.size(); i++ ) {
+        ta.transitions[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < ta1.ta_tempate->template_difference_cons.size();
+      for ( size_t i = 0; i < ta.ta_tempate->template_difference_cons.size();
             i++ ) {
-        ta1.ta_tempate->template_difference_cons[ i ].clockShift( clock_num );
+        ta.difference_cons[ i ].clockShift( clock_num );
       }
     }
-    clock_num += ta1.getClockNum();
+    clock_num += ta.getClockNum();
    
   }
 };
