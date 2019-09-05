@@ -28,9 +28,9 @@ public:
     has_channel     = false;
   }
   Transition( int s, int t ) {
-    source = s;
-    target = t;
-    has_channel     = false;
+    source      = s;
+    target      = t;
+    has_channel = false;
   }
 
   Transition( const Transition_t &other, const Parameter &param ) {

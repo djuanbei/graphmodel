@@ -330,21 +330,20 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
   // tma1.addOnePara();
   INT_TAS_t sys;
-	Counter counter( 0, 100 );
-	sys += counter;
-	
+  Counter   counter( 0, 100 );
+  sys += counter;
+
   for ( int i = 1; i <= n; i++ ) {
 
     Parameter param;
-		param.setCounterMap(0, 0	); // add relation between local id and global id
-		
+    param.setCounterMap( 0, 0 ); // add relation between local id and global id
+
     param.addParameterValue( i );
     typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
     sys += tma1;
   }
   //  INT_TAS_t   sys = n * tma1;
-	
 
   R_t data( sys );
 

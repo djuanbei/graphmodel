@@ -352,9 +352,8 @@ private:
                                                                receive_target );
     next_state[ receive_component_id ] = receive_target;
 
-    bool is_receive_commit = sys.tas[ receive_component_id ]
-                                 .ta_tempate->locations[ receive_target ]
-                                 .isCommit();
+    bool is_receive_commit =
+        sys.tas[ receive_component_id ].locations[ receive_target ].isCommit();
 
     // if ( is_send_commit ) {
     //   manager.setCommitState( send_component_id, next_state );
@@ -368,15 +367,11 @@ private:
     sys.tas[ send_component_id ].ta_tempate->graph.findSrcSnk( send_link,
                                                                source, target );
 
-    if ( sys.tas[ send_component_id ]
-             .ta_tempate->locations[ source ]
-             .isFreezeLocation() ) {
+    if ( sys.tas[ send_component_id ].locations[ source ].isFreezeLocation() ) {
       next_state[ manager.getFreezeLocation() ]--;
       assert( next_state[ manager.getFreezeLocation() ] >= 0 );
     }
-    if ( sys.tas[ send_component_id ]
-             .ta_tempate->locations[ target ]
-             .isFreezeLocation() ) {
+    if ( sys.tas[ send_component_id ].locations[ target ].isFreezeLocation() ) {
       next_state[ manager.getFreezeLocation() ]++;
       assert( next_state[ manager.getFreezeLocation() ] <= component_num );
     }
@@ -385,14 +380,14 @@ private:
         receive_link, source, target );
 
     if ( sys.tas[ receive_component_id ]
-             .ta_tempate->locations[ source ]
+             .locations[ source ]
              .isFreezeLocation() ) {
       next_state[ manager.getFreezeLocation() ]--;
       assert( next_state[ manager.getFreezeLocation() ] >= 0 );
     }
 
     if ( sys.tas[ receive_component_id ]
-             .ta_tempate->locations[ target ]
+             .locations[ target ]
              .isFreezeLocation() ) {
       next_state[ manager.getFreezeLocation() ]++;
       assert( next_state[ manager.getFreezeLocation() ] <= component_num );
@@ -475,15 +470,11 @@ private:
     int source = 0;
     int target = 0;
     sys.tas[ component ].ta_tempate->graph.findSrcSnk( link, source, target );
-    if ( sys.tas[ component ]
-             .ta_tempate->locations[ source ]
-             .isFreezeLocation() ) {
+    if ( sys.tas[ component ].locations[ source ].isFreezeLocation() ) {
       next_state[ manager.getFreezeLocation() ]--;
       assert( next_state[ manager.getFreezeLocation() ] >= 0 );
     }
-    if ( sys.tas[ component ]
-             .ta_tempate->locations[ target ]
-             .isFreezeLocation() ) {
+    if ( sys.tas[ component ].locations[ target ].isFreezeLocation() ) {
       next_state[ manager.getFreezeLocation() ]++;
       assert( next_state[ manager.getFreezeLocation() ] <= component_num );
     }
@@ -491,6 +482,7 @@ private:
     sys.tas[ component ].transitions[ link ](
         component, manager,
         next_state ); // update counter state and reset clock state
+    
 
     return delay( component, target, prop, next_state );
   }
@@ -499,17 +491,20 @@ private:
               C_t *state ) {
 
     state[ component ] = target;
-    if ( !sys.tas[ component ].ta_tempate->locations[ target ].isReachable(
+    if ( !sys.tas[ component ].locations[ target ].isReachable(
              manager.getClockManager(), manager.getDBM( state ) ) ) {
       return false;
     }
+   
+
     /**
      Whether there is some component in freeze location
      */
     if ( 0 == state[ manager.getFreezeLocation() ] ) {
-      sys.tas[ component ].ta_tempate->locations[ target ](
-          manager.getClockManager(), manager.getDBM( state ) );
+      sys.tas[ component ].locations[ target ]( manager.getClockManager(),
+                                                manager.getDBM( state ) );
     }
+   
 
     return postDelay( component, target, prop, state );
   }
@@ -517,14 +512,13 @@ private:
   bool postDelay( const int component, const int target, const Property *prop,
                   C_t *state ) {
 
-    bool is_commit =
-        sys.tas[ component ].ta_tempate->locations[ target ].isCommit();
+    bool is_commit = sys.tas[ component ].locations[ target ].isCommit();
 
     bool re_bool = false;
     if ( 0 == state[ manager.getFreezeLocation() ] ) {
       for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
         sys.tas[ comp_id ]
-            .ta_tempate->locations[ manager.getLoc( comp_id, state ) ]
+            .locations[ manager.getLoc( comp_id, state ) ]
             .employInvariants( manager.getClockManager(),
                                manager.getDBM( state ) );
       }
