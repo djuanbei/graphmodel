@@ -34,6 +34,7 @@ enum ParaType {
 };
 struct ParaElement {
   ParaType type;
+  string type_name;
   string   name;
 };
 

@@ -62,9 +62,6 @@ int UppaalParser::parserTemplate( child_type templates ) {
     if ( NULL != parameter ) {
       parserTemplateParamter( template_data, parameter );
     }
- 
-    
-    vector<pair<string, vector<void*>>> temp= template_data.getPoints(PARAMETER_STR);
     
     XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
 
@@ -73,14 +70,12 @@ int UppaalParser::parserTemplate( child_type templates ) {
       parseProblem( dec_content, &system_data, &template_data );
     }
     
-    temp= template_data.getPoints(PARAMETER_STR);
     
     child_type location_comps = ( *it )->getChild( LOCATION_STR );
 
     vector<typename INT_TAS_t::L_t> locations =
         parserLocation( template_data, location_comps );
  
-    temp= template_data.getPoints(PARAMETER_STR);
     
     XML_P init_conf = ( *it )->getOneChild( INIT_STR );
 
@@ -91,7 +86,6 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type transition_comps = ( *it )->getChild( TRANSITION_STR );
 
-    temp= template_data.getPoints(PARAMETER_STR);
     
     vector<typename INT_TAS_t::T_t> transitions =
         parserTransition( template_data, transition_comps );
@@ -131,7 +125,7 @@ int UppaalParser::parserSystem( XML_P system ) {
         }else{
           assert(1==temp.size());
           
-          const vector<int> & iarray=system_data.getIntArray(((ParaElement*) temp[0].second[0])->name);
+          const vector<int> & iarray=system_data.getIntArray(((ParaElement*) temp[0].second[0])->type_name);
           for (auto e: iarray){
             Parameter param;
             
@@ -217,6 +211,8 @@ int UppaalParser::parserTemplateParamter( UppaalTemplateData &template_data,
       name = name.substr( 1 );
     }
     temp->name = name;
+    temp->type_name=parts[parts.size()-2];
+    
     if ( find( parts.begin(), parts.end(), BOOL_STR ) != parts.end() ) {
       if ( is_ref ) {
         temp->type = PARAM_BOOL_REF_T;
