@@ -38,23 +38,6 @@ template <typename C, typename L, typename T> class TAS;
  *
  */
 
-enum ParaType {
-  PARAM_BOOL_T,
-  PARAM_BOOL_REF_T,
-  PARAM_CHANNEL_T,
-  PARAM_CHANNEL_REF_T,
-  PARAM_URGENT_CHANNEL_T,
-  PARAM_URGENT_CHANNEL_REF_T,
-  PARAM_INT_T,
-  PARAM_INT_REF_T,
-  PARAM_SCALAR_T
-};
-struct ParaElement {
-  int      id;
-  ParaType type;
-  string   name;
-};
-
 template <typename C, typename L, typename T> class TA;
 
 template <typename C, typename L, typename T> class TAT {
@@ -87,10 +70,7 @@ public:
   }
   vector<C> getClockMaxValue() const { return clock_max_value; }
 
- /* vector<ClockConstraint<C>> getDifferenceCons() const {
-    return template_difference_cons;
-  }
-*/
+
   int getClockNum() const { return clock_num; }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
@@ -185,14 +165,14 @@ private:
   typedef TAT<C, L, T> TAT_t;
 
 public:
-  TA(const TAT_t *tat, const Parameter &param ) {
+  TA( const TAT_t *tat, const Parameter &param ) {
 
     ta_tempate = tat;
     for ( auto e : tat->template_transitions ) {
       transitions.push_back( T( e, param ) );
     }
-    locations = tat->template_locations;
-    difference_cons=tat->template_difference_cons;
+    locations       = tat->template_locations;
+    difference_cons = tat->template_difference_cons;
   }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
@@ -233,8 +213,8 @@ public:
 private:
   const TAT_t *ta_tempate;
 
-  vector<L> locations;
-  vector<T> transitions;
+  vector<L>                  locations;
+  vector<T>                  transitions;
   vector<ClockConstraint<C>> difference_cons;
 
   template <typename R1> friend class Reachability;
@@ -268,7 +248,7 @@ public:
     clock_max_value.push_back( 0 );
     clock_num = 0;
   }
-  TAS_t &operator+=(  TA_t &ta ) {
+  TAS_t &operator+=( TA_t &ta ) {
 
     transfrom( ta );
     tas.push_back( ta );
@@ -279,8 +259,7 @@ public:
       clock_max_value.push_back( ta.getClockMaxValue()[ i ] );
     }
 
-    difference_cons.insert( difference_cons.end(),
-                            ta.difference_cons.begin(),
+    difference_cons.insert( difference_cons.end(), ta.difference_cons.begin(),
                             ta.difference_cons.end() );
 
     return *this;
@@ -296,7 +275,7 @@ public:
     return *this;
   }
 
-  int             getComponentNum() const { return (int)tas.size(); }
+  int             getComponentNum() const { return (int) tas.size(); }
   StateManager<C> getStateManager() const {
 
     vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
@@ -315,13 +294,14 @@ public:
       node_n.push_back( tas[ i ].ta_tempate->graph.getVertex_num() );
     }
 
-    StateManager<C> re( (int)tas.size(), counters, clock_num, temp_clock_upperbound,
-                        difference_cons, node_n, (int)channels.size() );
+    StateManager<C> re( (int) tas.size(), counters, clock_num,
+                        temp_clock_upperbound, difference_cons, node_n,
+                        (int) channels.size() );
 
     return re;
   }
   void initState( const StateManager<C> &manager, State_t *state ) const {
-    int  component_num = (int)tas.size();
+    int  component_num = (int) tas.size();
     bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
       state[ component ] = initial_loc[ component ];
@@ -362,11 +342,11 @@ private:
 
   vector<C>                  clock_max_value;
   vector<ClockConstraint<C>> difference_cons;
-  
+
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  void transfrom(  TA_t &ta ) {
-   
+  void transfrom( TA_t &ta ) {
+
     if ( clock_num > 0 ) {
       for ( size_t i = 0; i < ta.locations.size(); i++ ) {
         ta.locations[ i ].clockShift( clock_num );
@@ -380,7 +360,6 @@ private:
       }
     }
     clock_num += ta.getClockNum();
-   
   }
 };
 

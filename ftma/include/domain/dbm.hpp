@@ -40,8 +40,6 @@ using namespace std;
 
 #define LOC( row, col ) ( row ) * ( clock_num ) + ( col )
 
-
-
 template <typename C> class DBMFactory {
 
 public:

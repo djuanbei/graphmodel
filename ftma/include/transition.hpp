@@ -16,6 +16,8 @@
 #include "constraint/countercons.h"
 #include "statemanager.hpp"
 
+#include "util/instancefactory.h"
+
 namespace graphsat {
 using std::vector;
 template <typename C, typename CS, typename D> class Transition {
@@ -39,8 +41,8 @@ public:
     guards = other.guards;
 
     for ( auto e : other.counter_cons ) {
-      CounterConstraint *dummy = CounterConstraintFactory::getInstance().copy(e);
-      
+      CounterConstraint *dummy = InstanceFactory::getInstance().copy( e );
+
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       counter_cons.push_back( dummy );
     }
@@ -52,7 +54,7 @@ public:
     }
 
     for ( auto a : other.actions ) {
-      CounterAction *dummy = CounterActionFactory::getInstance().copy(a); 
+      CounterAction *dummy = InstanceFactory::getInstance().copy( a );
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       actions.push_back( dummy );
     }

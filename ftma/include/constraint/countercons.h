@@ -13,13 +13,13 @@
 
 #include <vector>
 
-//#include "parameter.h"
-
 #include "util/dbmutil.hpp"
 
 #include "util/data.hpp"
 
 namespace graphsat {
+
+class InstanceFactory;
 
 class CounterConstraint {
 
@@ -30,11 +30,11 @@ public:
    */
   virtual void globalUpdate( const map<int, int> &id_map,
                              const vector<int> &  parameter_value ) = 0;
-private:
 
+private:
   virtual CounterConstraint *copy() const = 0;
-  
-  friend class CounterConstraintFactory;
+
+  friend class InstanceFactory;
 };
 
 class DiaFreeCounterConstraint : public CounterConstraint {
@@ -64,8 +64,6 @@ public:
     global_counter_id = id_map.at( local_counter_id );
   }
 
- 
-
 private:
   DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp,
                             int right_side ) {
@@ -77,15 +75,15 @@ private:
   }
   ~DiaFreeCounterConstraint() {}
   CounterConstraint *copy() const {
-    
+
     return new DiaFreeCounterConstraint( local_counter_id, op, rhs );
   }
-  
+
   int           local_counter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
   int           rhs;
-  friend class CounterConstraintFactory;
+  friend class InstanceFactory;
 };
 
 class DiaFreeCounterPConstraint : public CounterConstraint {
@@ -119,8 +117,6 @@ public:
     rhs               = parameter_value[ parameter_id ];
   }
 
- 
-
 private:
   int           local_counter_id;
   int           global_counter_id;
@@ -138,11 +134,11 @@ private:
   }
   ~DiaFreeCounterPConstraint() {}
   CounterConstraint *copy() const {
-    
+
     return new DiaFreeCounterPConstraint( local_counter_id, op, parameter_id );
   }
 
-  friend class CounterConstraintFactory;
+  friend class InstanceFactory;
 };
 
 class DiaCounterConstraint : public CounterConstraint {
@@ -176,8 +172,6 @@ public:
     global_counter_y = id_map.at( local_counter_y );
   }
 
- 
-
 private:
   DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
 
@@ -187,19 +181,17 @@ private:
     rhs             = r;
   }
   ~DiaCounterConstraint() {}
-  
+
   CounterConstraint *copy() const {
-    
+
     return new DiaCounterConstraint( local_counter_x, local_counter_y, op,
-                                    rhs );
+                                     rhs );
   }
-  
-  
 
   int local_counter_x, local_counter_y, global_counter_x, global_counter_y;
   COMP_OPERATOR op;
   int           rhs;
-  friend class CounterConstraintFactory;
+  friend class InstanceFactory;
 };
 
 class DefaultCounterConstraint : public CounterConstraint {
@@ -245,8 +237,6 @@ public:
     }
   }
 
- 
-
 private:
   DefaultCounterConstraint( const vector<int> &pcons, const vector<int> &cons,
                             int erhs, COMP_OPERATOR eop )
@@ -256,94 +246,21 @@ private:
       , rhs( erhs )
       , op( eop ) {}
   ~DefaultCounterConstraint() {}
-  
+
   CounterConstraint *copy() const {
-    
+
     return new DefaultCounterConstraint( pconstraint, local_constraint, rhs,
-                                        op );
+                                         op );
   }
-  
 
 private:
-  // odd* value[even]
   vector<int>   pconstraint;
   vector<int>   local_constraint;
   vector<int>   global_constraint;
   int           rhs;
   COMP_OPERATOR op;
   int           parameter_part;
-  friend class CounterConstraintFactory;
-};
-
-class CounterConstraintFactory {
-  SINGLETON( CounterConstraintFactory );
-
-public:
-  ~CounterConstraintFactory(){
-    destroy();
-  }
-  DefaultCounterConstraint *
-      createDefaultCounterConstraint( const vector<int> &pcons,
-                                      const vector<int> &cons, int erhs,
-                                      COMP_OPERATOR eop ) {
-    DefaultCounterConstraint *re =
-        new DefaultCounterConstraint( pcons, cons, erhs, eop );
-    pdata.addValue( STRING( CounterConstraint ),
-                    STRING( DefaultCounterConstraint ), re );
-    return re;
-  }
-
-  DiaFreeCounterPConstraint *
-      createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p ) {
-    DiaFreeCounterPConstraint *re = new DiaFreeCounterPConstraint( c, o, p );
-    pdata.addValue( STRING( CounterConstraint ),
-                    STRING( DiaFreeCounterPConstraint ), re );
-    return re;
-  }
-  
-
-  DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
-                                                    COMP_OPERATOR p, int r ) {
-    DiaCounterConstraint *re = new DiaCounterConstraint( x, y, p, r );
-    pdata.addValue( STRING( CounterConstraint ), STRING( DiaCounterConstraint ),
-                    re );
-    return re;
-  }
-  DiaFreeCounterConstraint *
-      createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
-    DiaFreeCounterConstraint *re = new DiaFreeCounterConstraint( cid, p, r );
-    pdata.addValue( STRING( CounterConstraint ),
-                    STRING( DiaFreeCounterConstraint ), re );
-    return re;
-  }
-  
-  CounterConstraint * copy(CounterConstraint * other){
-    CounterConstraint* re=other->copy();
-    pdata.addValue( STRING( CounterConstraint ),
-                   STRING( CounterConstraint ), re );
-    return re;
-    
-  }
-  
- 
-  
-
-  void destroy() {
-
-    deleteType( pdata, CounterConstraint, DefaultCounterConstraint,
-                DefaultCounterConstraint );
-    deleteType( pdata, CounterConstraint, DiaFreeCounterPConstraint,
-                DiaFreeCounterPConstraint );
-    deleteType( pdata, CounterConstraint, DiaCounterConstraint,
-                DiaCounterConstraint );
-    deleteType( pdata, CounterConstraint, CounterConstraint,
-               DiaCounterConstraint );
-    
-    pdata.clear();
-  }
-
-private:
-  PointerData pdata;
+  friend class InstanceFactory;
 };
 
 } // namespace graphsat

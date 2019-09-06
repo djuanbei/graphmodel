@@ -12,7 +12,7 @@
   #include "io/uppaaldata.h"
   #include "model/ta.hpp"
   
-  using  std::string;
+  using std::string;
   using std::map;
   using std::vector;
   using std::make_pair;
@@ -29,7 +29,7 @@
   extern  int lineNum;
 
 
-  const UppaalTemplateData* system_data;
+  UppaalTemplateData* system_data;
   UppaalTemplateData* current_data;
 
   
@@ -63,6 +63,8 @@
 %type<intVal> type_specifier
 
 %type<str_vec_pointer> identifier_list
+
+%type<str_vec_pointer> ta_list
 
 %type<com_op> compare_relation
 
@@ -114,6 +116,30 @@ identifier_list
   $$->push_back(symbol_table[$3]);
 }
 ;
+ta_list
+:IDENTIFIER
+{
+  $$=new vector<string> ( );
+  $$->push_back( symbol_table[$1]);
+}
+|
+TEMPLATE
+{
+  $$=new vector<string> ( );
+  $$->push_back( symbol_table[$1]);
+}
+| ta_list ',' IDENTIFIER
+{
+  $$=$1;
+  $$->push_back(symbol_table[$3]);
+}
+| ta_list ',' TEMPLATE
+{
+  $$=$1;
+  $$->push_back(symbol_table[$3]);
+}
+;
+
 
 compare_relation:
 
@@ -188,7 +214,12 @@ IDENTIFIER compare_relation  const_expression
   }
   else if(type==COUNTER_T ){
     int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
-    cs = CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
+
+    if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
+      current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
+    }
+      
+    cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
     current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
   }
 }
@@ -198,8 +229,13 @@ IDENTIFIER compare_relation  PARAM
   const  TYPE_T type=getType(   symbol_table[$1]);
   assert( COUNTER_T==type);
   int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
+  
+  if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
+    current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
+  }
+  
   int param_id=current_data->getPointerId( PARAMETER_STR, symbol_table[$3]);
-  DiaFreeCounterPConstraint *cs=CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
+  DiaFreeCounterPConstraint *cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
   current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
 }
 |
@@ -226,7 +262,15 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
   else if(getType( symbol_table[$1])==COUNTER_T &&getType( symbol_table[$3])==COUNTER_T  ){
     int counter_id1=system_data->getId( COUNTER_STR, symbol_table[$1]);
     int counter_id2=system_data->getId( COUNTER_STR, symbol_table[$3]);
-    DiaCounterConstraint *cs=CounterConstraintFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
+    
+    if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
+      current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id1 );
+    }
+    if(system_data->hasValue(COUNTER_STR,symbol_table[$3] )){
+      current_data->addValue(USING_COUNTER,symbol_table[$3],counter_id2 );
+    }
+    
+    DiaCounterConstraint *cs=InstanceFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
     current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
   }
   
@@ -264,7 +308,11 @@ IDENTIFIER '=' const_expression
     
   }else if(getType( symbol_table[$1] )==COUNTER_T ){
     int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
-    SimpleCounterAction *cs=CounterActionFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
+    if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
+      current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
+    }
+    
+    SimpleCounterAction *cs=InstanceFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
     current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
   }
   
@@ -275,12 +323,44 @@ IDENTIFIER '=' PARAM
   assert(getType(symbol_table[$1] )==COUNTER_T );
   int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
 
+  if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
+    current_data->addValue(USING_COUNTER,symbol_table[$1], counter_id );
+  }
+    
   int parameter_id=current_data->getId( PARAMETER_STR, symbol_table[$3]);
 
-  SimpleCounterPAction *cs  =CounterActionFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
+  SimpleCounterPAction *cs  =InstanceFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
   current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
   
 }
+|
+IDENTIFIER '=' TEMPLATE '(' identifier_list ')'
+{
+  
+  TaDec * ta=new TaDec( );
+  ta->name=symbol_table[ $1];
+  
+  for(auto name: ( *( $5) ) ){
+    
+    TYPE_T type=getType(name );
+    int id=-1;
+    if(COUNTER_T==type ){
+      id= system_data->getId(COUNTER_STR,  name );
+    }else if(BOOL_T==type ){
+      id= system_data->getId( BOOL_STR, name);
+    }else if( CHANNEL_T==type){
+      id=system_data->getId( CHANNEL_STR, name);
+    }
+    assert( id>-1);
+    ta->param_list.push_back( id);
+  }
+  
+  system_data->addPointer(TEMPLATE_STR,symbol_table[ $1],  ta);
+  
+  delete $5;
+}
+
+
 const_expression:
 CONSTANT
 {
@@ -394,9 +474,28 @@ variable_declaration
 
 
 system_declaration
-: SYSTEM identifier_list ';'
+: SYSTEM ta_list ';'
 {
+  SystemDec * sys=new SystemDec( );
+  for( size_t i=0; i< $2->size( ); i++){
+    string name=(*$2)[ i];
+    if(system_data->hasValue(TEMPLATE_STR, name  )){
+      
+      TaDec* temp=new TaDec( );
+      temp->no_param=true;
+      temp->name= name;
+      sys->ta_list.push_back(temp );
+    }else{
+      vector<void*> sys_dec_vec=system_data->getPoints(TEMPLATE_STR, name );
+      sys->ta_list.push_back((TaDec*)sys_dec_vec[ 0] );
+      
+    }
+  }
   
+  system_data->clearPoints(TEMPLATE_STR );
+  
+  system_data->addPointer(SYSTEM_STR, SYSTEM_STR,sys );
+  delete $2;
 }
 
 %%
@@ -464,7 +563,7 @@ TYPE_T getType(string & name ){
   return NO_T;
 }
 namespace graphsat{
-  void parseProblem( const string &str, const UppaalTemplateData *pd,   UppaalTemplateData* d){
+  void parseProblem( const string &str,  UppaalTemplateData *pd,   UppaalTemplateData* d){
     system_data=pd;
     current_data=d;
     yyin=tmpfile();

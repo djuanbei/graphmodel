@@ -24,7 +24,7 @@ using std::vector;
 
 #ifdef PRINT_STATE
 
-#define PRINT_STATE_MACRO                                                        \
+#define PRINT_STATE_MACRO                                                      \
   for ( int i = 0; i < component_num; i++ ) {                                  \
     cout << state[ i ] << " ";                                                 \
   }                                                                            \
@@ -34,7 +34,7 @@ using std::vector;
 #else
 
 #define PRINT_STATE_MACRO
-  
+
 #endif
 
 #define SINGLETON( T )                                                         \
@@ -112,6 +112,15 @@ public:
 
   const pair<string, vector<T>> &getValue( const string &type, int id ) const {
     return values.at( type )[ id ];
+  }
+
+ vector<pair<string, vector<T>>> getValue( const string &type ) const {
+   
+    if ( values.find( type ) != values.end() ) {
+      return  values.at( type );
+    }
+   
+    return  vector<pair<string, vector<T>>>();
   }
 
   bool hasValue( const string &type, const string &name, int id = 0 ) const {

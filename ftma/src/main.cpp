@@ -274,7 +274,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
   DiaFreeCounterConstraint *ccs1 =
-      CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint(
+      InstanceFactory::getInstance().createDiaFreeCounterConstraint(
           0, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
@@ -290,7 +290,7 @@ void fisher( int n = 2 ) {
   req_wait.addReset( reset2 );
 
   SimpleCounterPAction *caction =
-      CounterActionFactory::getInstance().createSimpleCounterPAction( 0, 0 );
+      InstanceFactory::getInstance().createSimpleCounterPAction( 0, 0 );
 
   req_wait.addCounterAction( caction );
 
@@ -303,7 +303,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::T_t wait_cs( 2, 3 );
 
   DiaFreeCounterPConstraint *ccs2 =
-      CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(
+      InstanceFactory::getInstance().createDiaFreeCounterPConstraint(
           0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
   typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
@@ -312,7 +312,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
   SimpleCounterAction *caction1 =
-      CounterActionFactory::getInstance().createSimpleCounterAction(
+      InstanceFactory::getInstance().createSimpleCounterAction(
           0, 0 ); //( relations1 );
 
   cs_A.addCounterAction( caction1 );
@@ -380,7 +380,7 @@ void incrementalTest() {
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
   DiaFreeCounterConstraint *ccs1 =
-      CounterConstraintFactory::getInstance().createDiaFreeCounterConstraint(
+      InstanceFactory::getInstance().createDiaFreeCounterConstraint(
           0, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
@@ -396,7 +396,7 @@ void incrementalTest() {
   req_wait.addReset( reset2 );
 
   SimpleCounterPAction *caction =
-      CounterActionFactory::getInstance().createSimpleCounterPAction( 0, 0 );
+      InstanceFactory::getInstance().createSimpleCounterPAction( 0, 0 );
 
   req_wait.addCounterAction( caction );
 
@@ -409,7 +409,7 @@ void incrementalTest() {
   typename INT_TAS_t::T_t wait_cs( 2, 3 );
 
   DiaFreeCounterPConstraint *ccs2 =
-      CounterConstraintFactory::getInstance().createDiaFreeCounterPConstraint(
+      InstanceFactory::getInstance().createDiaFreeCounterPConstraint(
           0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
   typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
@@ -418,7 +418,7 @@ void incrementalTest() {
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
   SimpleCounterAction *caction1 =
-      CounterActionFactory::getInstance().createSimpleCounterAction(
+      InstanceFactory::getInstance().createSimpleCounterAction(
           0, 0 ); //( relations1 );
 
   cs_A.addCounterAction( caction1 );
@@ -584,8 +584,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
- // fisher( 2 );
- // return 0;
+  // fisher( 2 );
+  // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

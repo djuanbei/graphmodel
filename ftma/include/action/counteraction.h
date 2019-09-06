@@ -18,6 +18,9 @@
 namespace graphsat {
 using std::pair;
 using std::vector;
+
+class InstanceFactory;
+
 class CounterAction {
 
 public:
@@ -27,13 +30,11 @@ public:
    */
   virtual void globalUpdate( const map<int, int> &id_map,
                              const vector<int> &  parameter_value ) = 0;
-  
-private:
 
+private:
   virtual CounterAction *copy() const = 0;
-  
-  friend class CounterActionFactory;
-  
+
+  friend class InstanceFactory;
 };
 
 class SimpleCounterAction : public CounterAction {
@@ -48,8 +49,6 @@ public:
     global_counter_id = id_map.at( local_counter_id );
   }
 
- 
-
 private:
   SimpleCounterAction( int cid, int v ) {
     local_counter_id  = cid;
@@ -58,16 +57,15 @@ private:
   }
 
   ~SimpleCounterAction() {}
-  
+
   CounterAction *copy() const {
     return new SimpleCounterAction( local_counter_id, rhs );
   }
-  
-  
+
   int local_counter_id;
   int global_counter_id;
   int rhs;
-  friend class CounterActionFactory;
+  friend class InstanceFactory;
 };
 
 class SimpleCounterPAction : public CounterAction {
@@ -82,8 +80,6 @@ public:
     parameter_v       = parameter_value[ parameter_id ];
   }
 
- 
-
 private:
   SimpleCounterPAction( int cid, int eparameter_id ) {
 
@@ -93,16 +89,16 @@ private:
     parameter_v       = 0;
   }
   ~SimpleCounterPAction() {}
-  
+
   CounterAction *copy() const {
     return new SimpleCounterPAction( local_counter_id, parameter_id );
   }
-  
+
   int local_counter_id;
   int global_counter_id;
   int parameter_id;
   int parameter_v;
-  friend class CounterActionFactory;
+  friend class InstanceFactory;
 };
 
 class DefaultCAction : public CounterAction {
@@ -133,8 +129,6 @@ public:
     }
   }
 
- 
-
 private:
   DefaultCAction(
       const vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
@@ -143,62 +137,42 @@ private:
     global_relations = relations1;
   }
   ~DefaultCAction() {}
-  
+
   CounterAction *copy() const { return new DefaultCAction( local_relations ); }
-  
+
   vector<pair<int, vector<pair<int, int>>>> local_relations;
   vector<pair<int, vector<pair<int, int>>>> global_relations;
-  friend class CounterActionFactory;
+  friend class InstanceFactory;
 };
 
-class CounterActionFactory {
+// class InstanceFactory {
 
-  SINGLETON( CounterActionFactory );
+//   SINGLETON( InstanceFactory );
 
-public:
-  ~CounterActionFactory(){
-    destroy();
-  }
-  
-  SimpleCounterAction *createSimpleCounterAction( int cid, int v ) {
-    SimpleCounterAction *re = new SimpleCounterAction( cid, v );
-    pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterAction ),
-                    re );
-    return re;
-  }
+// public:
+//   ~InstanceFactory(){
+//     destroy();
+//   }
 
-  SimpleCounterPAction *createSimpleCounterPAction( int cid, int v ) {
-    SimpleCounterPAction *re = new SimpleCounterPAction( cid, v );
-    pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterPAction ),
-                    re );
-    return re;
-  }
+//   CounterAction *copy(const CounterAction * other){
+//     CounterAction * re=other->copy();
+//     pdata.addValue( STRING( CounterAction ), STRING( CounterAction ), re );
+//     return re;
 
-  DefaultCAction *createDefaultCAction(
-      vector<pair<int, vector<pair<int, int>>>> &relations1 ) {
-    DefaultCAction *re = new DefaultCAction( relations1 );
-    pdata.addValue( STRING( CounterAction ), STRING( DefaultCAction ), re );
-    return re;
-  }
-  CounterAction *copy(const CounterAction * other){
-    CounterAction * re=other->copy();
-    pdata.addValue( STRING( CounterAction ), STRING( CounterAction ), re );
-    return re;
-    
-  }
-  void destroy() {
-    deleteType( pdata, CounterAction, SimpleCounterAction,
-                SimpleCounterAction );
-    deleteType( pdata, CounterAction, SimpleCounterPAction,
-                SimpleCounterPAction );
-    deleteType( pdata, CounterAction, DefaultCAction, DefaultCAction );
-     deleteType( pdata, CounterAction, CounterAction, DefaultCAction );
-    pdata.clear();
-  }
+//   }
+//   void destroy() {
+//     deleteType( pdata, CounterAction, SimpleCounterAction,
+//                 SimpleCounterAction );
+//     deleteType( pdata, CounterAction, SimpleCounterPAction,
+//                 SimpleCounterPAction );
+//     deleteType( pdata, CounterAction, DefaultCAction, DefaultCAction );
+//      deleteType( pdata, CounterAction, CounterAction, DefaultCAction );
+//     pdata.clear();
+//   }
 
-private:
-  PointerData pdata;
-};
+// private:
+//   PointerData pdata;
+// };
 
 } // namespace graphsat
 #endif

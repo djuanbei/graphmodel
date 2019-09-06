@@ -99,10 +99,10 @@ public:
 
     if ( channel_num > 0 ) {
       counter_start_loc = 2 * component_num;
-      state_length      = 2 * component_num + (int)ecounters.size();
+      state_length      = 2 * component_num + (int) ecounters.size();
     } else {
       counter_start_loc = component_num;
-      state_length      = component_num + (int)ecounters.size();
+      state_length      = component_num + (int) ecounters.size();
     }
     freeze_location_index = state_length;
 

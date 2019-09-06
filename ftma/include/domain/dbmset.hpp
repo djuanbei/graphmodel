@@ -235,7 +235,9 @@ private:
   vector<C *>  recovery_data;
   vector<DF_T> recovery_data_feature;
 
-  C *getD( uint32_t hash_value ) { return map_data[ passed_data[ hash_value ] ]; }
+  C *getD( uint32_t hash_value ) {
+    return map_data[ passed_data[ hash_value ] ];
+  }
 
   void mapDAdd( C *D, DF_T &value ) {
     map_data.push_back( D );

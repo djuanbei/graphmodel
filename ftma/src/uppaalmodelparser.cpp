@@ -8,23 +8,23 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   XmlConfig  xmldoc( xmlfile );
   child_type declarations = xmldoc.getChild( DECLARATION_STR );
   child_type templates    = xmldoc.getChild( TEMPLATE_STR );
-  child_type system       = xmldoc.getChild( SYSTEM_STR );
+  XML_P system       = xmldoc.getOneChild( SYSTEM_STR );
   child_type queries      = xmldoc.getChild( QUERIES_STR );
 
   parserDeclaration( declarations );
   parserTemplate( templates );
   parserSystem( system );
   parserQuery( queries );
+  
   int counter_num = system_data.getTypeNum( COUNTER_STR );
-
   for ( int i = 0; i < counter_num; i++ ) {
-
     Counter                          counter( 0, MAX_COUNTER_VALUE );
     const pair<string, vector<int>> &hh =
         system_data.getValue( COUNTER_STR, i );
     counter.setValue( hh.second[ 0 ] );
     sys += counter;
   }
+  
 }
 
 int UppaalParser::parserDeclaration( child_type declarations ) {
@@ -58,69 +58,30 @@ int UppaalParser::parserTemplate( child_type templates ) {
     system_data.addValue( TEMPLATE_STR, template_data.name );
 
     XML_P parameter = ( *it )->getOneChild( PARAMETER_STR );
-    int   pid       = 0;
+
     if ( NULL != parameter ) {
-      string         para_content = parameter->getValue();
-      vector<string> terms        = splitStr( para_content, "," );
-      for ( auto str : terms ) {
-        bool   is_ref = false;
-        size_t start  = str.find( PARAMETER_REF_STR );
-        if ( start != std::string::npos ) {
-          str    = deleteChar( str, start, '&' );
-          is_ref = true;
-        }
-
-        ParaElement *temp = new ParaElement();
-        temp->id          = pid;
-        pid++;
-        vector<string> parts = splitStr( str, " " );
-
-        string name = parts.back();
-        if ( is_ref ) {
-          name = name.substr( 1 );
-        }
-        temp->name = name;
-        if ( find( parts.begin(), parts.end(), BOOL_STR ) != parts.end() ) {
-          if ( is_ref ) {
-            temp->type = PARAM_BOOL_REF_T;
-          } else {
-            temp->type = PARAM_BOOL_T;
-          }
-        } else if ( find( parts.begin(), parts.end(), CHAN_STR ) !=
-                    parts.end() ) {
-          if ( is_ref ) {
-            temp->type = PARAM_CHANNEL_REF_T;
-          } else {
-            temp->type = PARAM_CHANNEL_T;
-          }
-
-        } else if ( find( parts.begin(), parts.end(), INT_STR ) !=
-                    parts.end() ) {
-          if ( is_ref ) {
-            temp->type = PARAM_INT_REF_T;
-          } else {
-            temp->type = PARAM_INT_T;
-          }
-        } else {
-          temp->type = PARAM_SCALAR_T;
-        }
-
-        template_data.addPointer( PARAMETER_STR, name, temp );
-      }
+      parserTemplateParamter( template_data, parameter );
     }
-
+ 
+    
+    vector<pair<string, vector<void*>>> temp= template_data.getPoints(PARAMETER_STR);
+    
     XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
 
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
       parseProblem( dec_content, &system_data, &template_data );
     }
-
+    
+    temp= template_data.getPoints(PARAMETER_STR);
+    
     child_type location_comps = ( *it )->getChild( LOCATION_STR );
 
     vector<typename INT_TAS_t::L_t> locations =
         parserLocation( template_data, location_comps );
-
+ 
+    temp= template_data.getPoints(PARAMETER_STR);
+    
     XML_P init_conf = ( *it )->getOneChild( INIT_STR );
 
     if ( NULL != init_conf ) {
@@ -130,24 +91,65 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type transition_comps = ( *it )->getChild( TRANSITION_STR );
 
+    temp= template_data.getPoints(PARAMETER_STR);
+    
     vector<typename INT_TAS_t::T_t> transitions =
         parserTransition( template_data, transition_comps );
     template_data.tat =
         INT_TAS_t::TAT_t( locations, transitions, template_data.getInitialLoc(),
                           template_data.getTypeNum( CLOCK_STR ) );
-
-    template_map[ template_data.name ] = template_data;
+  
     
+    
+    template_map[ template_data.name ] = template_data;
   }
 
   return 0;
 } // namespace graphsat
 
-int UppaalParser::parserSystem( child_type system ) {
+int UppaalParser::parserSystem( XML_P system ) {
 
   if ( NULL != system ) {
-    XML_P  system_element = ( *system )[ 0 ];
-    string content        = system_element->getValue();
+    
+    string content        = system->getValue();
+    parseProblem( content, &system_data, &system_data );
+
+    vector<void *> sys_dec_vec =
+        system_data.getPoints( SYSTEM_STR, SYSTEM_STR );
+    SystemDec *sys_dec = (SystemDec *) sys_dec_vec[ 0 ];
+    for ( size_t i = 0; i < sys_dec->ta_list.size(); i++ ) {
+      if ( sys_dec->ta_list[ i ]->no_param ) {
+        string template_name=sys_dec->ta_list[ i ]->name;
+        
+        vector<pair<string, vector<void*>>> temp= template_map[template_name].getPoints(PARAMETER_STR);
+        if(temp.empty()){
+          Parameter param;
+          
+          
+          typename INT_TAS_t::TA_t tma( &template_map[template_name].tat, param );
+          sys+=tma;
+        }else{
+          assert(1==temp.size());
+          
+          const vector<int> & iarray=system_data.getIntArray(((ParaElement*) temp[0].second[0])->name);
+          for (auto e: iarray){
+            Parameter param;
+            
+            vector<pair<string, vector<int>>> temp=template_map[template_name].getValue(USING_COUNTER);
+            for(auto ee: temp){
+              param.setCounterMap( ee.second[0], ee.second[0]);
+            }
+            
+            param.addParameterValue( e );
+            typename INT_TAS_t::TA_t tma( &template_map[template_name].tat, param );
+            sys+=tma;
+          }
+        }
+      } else {
+        
+        
+      }
+    }
   }
 
   return 0;
@@ -191,6 +193,56 @@ vector<INT_TAS_t::L_t>
     return_locations.push_back( location );
   }
   return return_locations;
+}
+
+int UppaalParser::parserTemplateParamter( UppaalTemplateData &template_data,
+                                          XML_P               parameter ) {
+
+  string         para_content = parameter->getValue();
+  vector<string> terms        = splitStr( para_content, "," );
+  for ( auto str : terms ) {
+    bool   is_ref = false;
+    size_t start  = str.find( PARAMETER_REF_STR );
+    if ( start != std::string::npos ) {
+      str    = deleteChar( str, start, '&' );
+      is_ref = true;
+    }
+
+    ParaElement *temp = new ParaElement();
+   
+    vector<string> parts = splitStr( str, " " );
+
+    string name = parts.back();
+    if ( is_ref ) {
+      name = name.substr( 1 );
+    }
+    temp->name = name;
+    if ( find( parts.begin(), parts.end(), BOOL_STR ) != parts.end() ) {
+      if ( is_ref ) {
+        temp->type = PARAM_BOOL_REF_T;
+      } else {
+        temp->type = PARAM_BOOL_T;
+      }
+    } else if ( find( parts.begin(), parts.end(), CHAN_STR ) != parts.end() ) {
+      if ( is_ref ) {
+        temp->type = PARAM_CHANNEL_REF_T;
+      } else {
+        temp->type = PARAM_CHANNEL_T;
+      }
+
+    } else if ( find( parts.begin(), parts.end(), INT_STR ) != parts.end() ) {
+      if ( is_ref ) {
+        temp->type = PARAM_INT_REF_T;
+      } else {
+        temp->type = PARAM_INT_T;
+      }
+    } else {
+      temp->type = PARAM_SCALAR_T;
+    }
+
+    template_data.addPointer( PARAMETER_STR, name, temp );
+  }
+  return 0;
 }
 
 vector<INT_TAS_t::T_t>
@@ -245,6 +297,7 @@ vector<INT_TAS_t::T_t>
             transition.addReset( *( (pair<int, int> *) reset ) );
             delete (pair<int, int> *) reset;
           }
+          template_data.clearPoints(RESET_STR);
 
         } else if ( SYNCHRONISATION_STR == kind ) {
           cout << kind << ": " << ( *llit )->getValue() << endl;
@@ -258,7 +311,7 @@ vector<INT_TAS_t::T_t>
 
 void UppaalParser::parser_label( UppaalTemplateData &template_data,
                                  string              guards ) {
-  template_data.clearPoints();
+ // template_data.clearPoints();
   parseProblem( guards, &system_data, &template_data );
 }
 

@@ -353,7 +353,7 @@ private:
 
     head_part_elements[ hashV ].first.insert(
         head_part_elements[ hashV ].first.end(), head, head + head_part_len );
-    int re = (int)body_part_elements.size();
+    int re = (int) body_part_elements.size();
     head_part_elements[ hashV ].second.push_back( re );
     vector<T> temp;
     body_part_elements.push_back( temp );
@@ -602,7 +602,6 @@ public:
 private:
   StateSet<T> setValue;
 };
-
 
 template <typename T>
 class CompleteCompactComposeStateSet : public ComposeStateSet<T> {

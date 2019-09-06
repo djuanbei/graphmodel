@@ -104,18 +104,16 @@ public:
     current_parent++;
 #endif
 
-    
     PRINT_STATE_MACRO;
-  
+
     if ( state[ manager.getFreezeLocation() ] > 0 ) {
       for ( int component = 0; component < component_num; component++ ) {
         if ( manager.isCommitComp( component, state ) ) {
-           return oneComponent( component, prop, state );
-         
+          return oneComponent( component, prop, state );
         }
       }
     }
-   
+
     for ( int component = 0; component < component_num; component++ ) {
 
       if ( manager.hasChannel() &&
@@ -474,7 +472,6 @@ private:
     sys.tas[ component ].transitions[ link ](
         component, manager,
         next_state ); // update counter state and reset clock state
-    
 
     return delay( component, target, prop, next_state );
   }
@@ -482,7 +479,6 @@ private:
   bool delay( const int component, const int target, const Property *prop,
               C_t *state ) {
 
-    
     if ( !sys.tas[ component ].locations[ target ].isReachable(
              manager.getClockManager(), manager.getDBM( state ) ) ) {
       return false;
@@ -496,7 +492,6 @@ private:
       sys.tas[ component ].locations[ target ]( manager.getClockManager(),
                                                 manager.getDBM( state ) );
     }
-   
 
     return postDelay( component, target, prop, state );
   }

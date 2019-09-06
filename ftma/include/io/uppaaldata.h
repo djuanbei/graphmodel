@@ -21,6 +21,42 @@ using std::pair;
 using std::string;
 using std::vector;
 
+enum ParaType {
+  PARAM_BOOL_T,
+  PARAM_BOOL_REF_T,
+  PARAM_CHANNEL_T,
+  PARAM_CHANNEL_REF_T,
+  PARAM_URGENT_CHANNEL_T,
+  PARAM_URGENT_CHANNEL_REF_T,
+  PARAM_INT_T,
+  PARAM_INT_REF_T,
+  PARAM_SCALAR_T
+};
+struct ParaElement {
+  ParaType type;
+  string   name;
+};
+
+struct TaDec {
+  bool no_param;
+  string      name;
+  vector<int> param_list;
+  TaDec( ):no_param( false){
+    name="";
+  }
+};
+
+struct SystemDec {
+  vector<TaDec *> ta_list;
+
+  ~SystemDec( ){
+    for(vector<TaDec *>::iterator it=ta_list.begin( ); it!= ta_list.end( ); it++ ){
+      delete *it;  
+    }
+  }
+  
+};
+
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
 
 const static string CLOCK_STR = "clock";
@@ -38,6 +74,8 @@ const static string CLOCK_RESET = "clock_reset";
 const static string COUNTER_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
+
+const static string USING_COUNTER=STRING( USING_COUNTER);
 
 class UppaalParser;
 
@@ -122,12 +160,16 @@ public:
       return dummy;
     }
   }
+  
+  vector<pair<string, vector<void*>>> getPoints(const string &type) const{
+    return point_values.getValue(type);
+  }
 
   void clearPoints( const string &type ) { point_values.clear( type ); }
 
   void clearPoints() { point_values.clear(); }
 
-  vector<ParaElement> para_list;
+  //  vector<ParaElement> para_list;
 
 private:
   string         name;
@@ -140,7 +182,7 @@ private:
   friend class UppaalParser;
 };
 
-void parseProblem( const string &str, const UppaalTemplateData *,
+void parseProblem( const string &str, UppaalTemplateData *,
                    UppaalTemplateData * );
 } // namespace graphsat
 

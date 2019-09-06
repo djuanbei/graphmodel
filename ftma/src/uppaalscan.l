@@ -187,7 +187,7 @@ int check_type()
    if(current_data->hasPointer(PARAMETER_STR,sym)){
      return PARAM;
    }
-   else if(current_data->hasValue(TEMPLATE_STR, sym ) ){
+   else if(system_data->hasValue(TEMPLATE_STR, sym ) ){
      return TEMPLATE;
    }
    else{
