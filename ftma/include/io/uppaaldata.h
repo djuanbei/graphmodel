@@ -138,6 +138,10 @@ public:
   int getValue( const string &type, const string &name, int id = 0 ) const {
     return int_values.getValue( type, name, id );
   }
+  
+  vector<pair<string, vector<int>>> getValue(const string &type) const{
+    return int_values.getValue(type);
+  }
 
   void addPointer( const string &type, const string &name, void *v ) {
     point_values.addValue( type, name, v );

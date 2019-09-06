@@ -135,7 +135,7 @@ int UppaalParser::parserSystem( XML_P system ) {
           for (auto e: iarray){
             Parameter param;
             
-            vector<pair<string, vector<int>>> temp=template_map[template_name].getValue(USING_COUNTER);
+            vector<pair<string, vector<int>>> temp= template_map[template_name].getValue(USING_COUNTER);
             for(auto ee: temp){
               param.setCounterMap( ee.second[0], ee.second[0]);
             }
