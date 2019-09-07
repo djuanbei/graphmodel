@@ -179,6 +179,7 @@ vector<INT_TAS_t::L_t>
           for ( auto cs : cons ) {
             location += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
+          template_data.clearPoints(CLOCK_CS);
         }
       }
     }
@@ -276,6 +277,9 @@ vector<INT_TAS_t::T_t>
           for ( auto cs : counterCs ) {
             transition.addCounterCons( (CounterConstraint *) cs );
           }
+          
+          template_data.clearPoints(CLOCK_CS);
+          template_data.clearPoints(COUNTER_CS);
 
         } else if ( ASSIGNMENT_STR == kind ) {
           string assign_statement = ( *llit )->getValue();
@@ -285,6 +289,8 @@ vector<INT_TAS_t::T_t>
           for ( auto update : updates ) {
             transition.addCounterAction( (CounterAction *) update );
           }
+          template_data.clearPoints( COUNTER_UPDATE );
+          
           vector<void *> resets =
               template_data.getPoints( RESET_STR, RESET_STR );
           for ( auto reset : resets ) {

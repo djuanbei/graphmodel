@@ -562,6 +562,13 @@ TYPE_T getType(string & name ){
   
   return NO_T;
 }
+
+int getParameterId( const string &name){
+  int param_id=current_data->getPointerId( PARAMETER_STR, name);
+  
+  type_name
+}
+
 namespace graphsat{
   void parseProblem( const string &str,  UppaalTemplateData *pd,   UppaalTemplateData* d){
     system_data=pd;

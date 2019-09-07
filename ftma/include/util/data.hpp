@@ -142,7 +142,7 @@ public:
       }
     }
     assert( false );
-    return -1;
+    return (T)-1;
   }
 
 private:

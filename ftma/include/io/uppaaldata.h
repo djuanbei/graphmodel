@@ -166,6 +166,9 @@ public:
       return dummy;
     }
   }
+  void* getPointer( const string &type, const string& name, int id=0) const{
+    return point_values.getValue( type, name, id);
+  }
 
   vector<pair<string, vector<void *>>> getPoints( const string &type ) const {
     return point_values.getValue( type );

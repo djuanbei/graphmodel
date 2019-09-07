@@ -70,8 +70,8 @@ public:
     return re;
   }
 
-  SimpleCounterPAction *createSimpleCounterPAction( int cid, int v ) {
-    SimpleCounterPAction *re = new SimpleCounterPAction( cid, v );
+  SimpleCounterPAction *createSimpleCounterPAction( int cid, int eparameter_id ) {
+    SimpleCounterPAction *re = new SimpleCounterPAction( cid, eparameter_id );
     pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterPAction ),
                     re );
     return re;
