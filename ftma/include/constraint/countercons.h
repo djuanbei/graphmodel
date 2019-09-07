@@ -31,6 +31,9 @@ public:
   virtual void globalUpdate( const map<int, int> &id_map,
                              const vector<int> &  parameter_value ) = 0;
 
+protected:
+  virtual ~CounterConstraint() {}
+
 private:
   virtual CounterConstraint *copy() const = 0;
 
@@ -64,6 +67,9 @@ public:
     global_counter_id = id_map.at( local_counter_id );
   }
 
+protected:
+  ~DiaFreeCounterConstraint() {}
+
 private:
   DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp,
                             int right_side ) {
@@ -73,7 +79,7 @@ private:
     op                = opp;
     rhs               = right_side;
   }
-  ~DiaFreeCounterConstraint() {}
+
   CounterConstraint *copy() const {
 
     return new DiaFreeCounterConstraint( local_counter_id, op, rhs );
@@ -117,6 +123,9 @@ public:
     rhs               = parameter_value[ parameter_id ];
   }
 
+protected:
+  ~DiaFreeCounterPConstraint() {}
+
 private:
   int           local_counter_id;
   int           global_counter_id;
@@ -132,7 +141,7 @@ private:
     parameter_id     = eparameter_id;
     rhs              = 0;
   }
-  ~DiaFreeCounterPConstraint() {}
+
   CounterConstraint *copy() const {
 
     return new DiaFreeCounterPConstraint( local_counter_id, op, parameter_id );
@@ -172,6 +181,9 @@ public:
     global_counter_y = id_map.at( local_counter_y );
   }
 
+protected:
+  ~DiaCounterConstraint() {}
+
 private:
   DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
 
@@ -180,8 +192,6 @@ private:
     op              = p;
     rhs             = r;
   }
-  ~DiaCounterConstraint() {}
-
   CounterConstraint *copy() const {
 
     return new DiaCounterConstraint( local_counter_x, local_counter_y, op,
@@ -237,6 +247,9 @@ public:
     }
   }
 
+protected:
+  ~DefaultCounterConstraint() {}
+
 private:
   DefaultCounterConstraint( const vector<int> &pcons, const vector<int> &cons,
                             int erhs, COMP_OPERATOR eop )
@@ -245,7 +258,6 @@ private:
       , global_constraint( cons )
       , rhs( erhs )
       , op( eop ) {}
-  ~DefaultCounterConstraint() {}
 
   CounterConstraint *copy() const {
 

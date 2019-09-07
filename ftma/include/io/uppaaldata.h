@@ -34,28 +34,29 @@ enum ParaType {
 };
 struct ParaElement {
   ParaType type;
-  string type_name;
+  string   type_name;
   string   name;
 };
 
 struct TaDec {
-  bool no_param;
+  bool        no_param;
   string      name;
   vector<int> param_list;
-  TaDec( ):no_param( false){
-    name="";
+  TaDec()
+      : no_param( false ) {
+    name = "";
   }
 };
 
 struct SystemDec {
   vector<TaDec *> ta_list;
 
-  ~SystemDec( ){
-    for(vector<TaDec *>::iterator it=ta_list.begin( ); it!= ta_list.end( ); it++ ){
-      delete *it;  
+  ~SystemDec() {
+    for ( vector<TaDec *>::iterator it = ta_list.begin(); it != ta_list.end();
+          it++ ) {
+      delete *it;
     }
   }
-  
 };
 
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
@@ -76,7 +77,7 @@ const static string COUNTER_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
 
-const static string USING_COUNTER=STRING( USING_COUNTER);
+const static string USING_COUNTER = STRING( USING_COUNTER );
 
 class UppaalParser;
 
@@ -139,9 +140,9 @@ public:
   int getValue( const string &type, const string &name, int id = 0 ) const {
     return int_values.getValue( type, name, id );
   }
-  
-  vector<pair<string, vector<int>>> getValue(const string &type) const{
-    return int_values.getValue(type);
+
+  vector<pair<string, vector<int>>> getValue( const string &type ) const {
+    return int_values.getValue( type );
   }
 
   void addPointer( const string &type, const string &name, void *v ) {
@@ -165,9 +166,9 @@ public:
       return dummy;
     }
   }
-  
-  vector<pair<string, vector<void*>>> getPoints(const string &type) const{
-    return point_values.getValue(type);
+
+  vector<pair<string, vector<void *>>> getPoints( const string &type ) const {
+    return point_values.getValue( type );
   }
 
   void clearPoints( const string &type ) { point_values.clear( type ); }

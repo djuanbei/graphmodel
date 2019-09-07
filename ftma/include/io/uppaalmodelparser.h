@@ -32,7 +32,6 @@ namespace graphsat {
 class UppaalParser {
 
 public:
-
   UppaalParser( const string &xmlfile );
 
   const INT_TAS_t &getSYS() const { return sys; }
@@ -40,24 +39,21 @@ public:
   const Property &getProp() const { return prop; }
 
 private:
- 
   UppaalTemplateData              system_data;
   map<string, UppaalTemplateData> template_map;
-  
-  
+
   INT_TAS_t sys;
   Property  prop;
-  
+
   int parserDeclaration( child_type declarations );
 
   int parserTemplate( child_type templates );
 
   int parserSystem( XML_P system );
-  
+
   int parserQuery( child_type queries );
-  
-  
-  int parserTemplateParamter(UppaalTemplateData &tempData, XML_P parameter);
+
+  int parserTemplateParamter( UppaalTemplateData &tempData, XML_P parameter );
 
   vector<typename INT_TAS_t::L_t> parserLocation( UppaalTemplateData &tempData,
                                                   child_type locations );

@@ -52,15 +52,15 @@ public:                                                                        \
     return instance;                                                           \
   }
 
-#define deleteType( Var, TYPE, NAME, T )                                       \
+#define deleteType( Var, TYPE )                                                \
   {                                                                            \
-    int id = Var.getId( #TYPE, #NAME );                                        \
-    if ( id > -1 ) {                                                           \
-      pair<string, vector<void *>> temp = Var.getValue( #TYPE, id );           \
-      for ( auto e : temp.second ) {                                           \
-        delete (T *) e;                                                        \
+    vector<pair<string, vector<void *>>> temp = Var.getValue( #TYPE );         \
+    for ( auto e : temp ) {                                                    \
+      for ( auto ee : e.second ) {                                             \
+        delete (TYPE *) ee;                                                    \
       }                                                                        \
     }                                                                          \
+    Var.clear( #TYPE );                                                        \
   }
 
 template <typename T> class ValueData {
@@ -114,13 +114,13 @@ public:
     return values.at( type )[ id ];
   }
 
- vector<pair<string, vector<T>>> getValue( const string &type ) const {
-   
+  vector<pair<string, vector<T>>> getValue( const string &type ) const {
+
     if ( values.find( type ) != values.end() ) {
-      return  values.at( type );
+      return values.at( type );
     }
-   
-    return  vector<pair<string, vector<T>>>();
+
+    return vector<pair<string, vector<T>>>();
   }
 
   bool hasValue( const string &type, const string &name, int id = 0 ) const {
@@ -150,36 +150,6 @@ private:
 };
 
 typedef ValueData<void *> PointerData;
-
-// class PointerData {
-
-// public:
-//   void clear() { values.clear(); }
-
-//   void addPointer( const string &type, const string & name, void *v ) {
-//     for( size_t )
-//     values[ type ].push_back( v );
-//   }
-
-//   vector<void *> getPoints( const string &type ) const {
-//     if ( values.find( type ) == values.end() ) {
-//       vector<void *> temp;
-//       return temp;
-//     }
-//     return values.at( type );
-//   }
-
-//   void clearPoints( const string &type ) { values[ type ].clear(); }
-//   void clearPoints() { values.clear(); }
-
-// private:
-//   //map<string, vector<void *>> values;
-//     /**
-//      *type variable_name
-//      */
-//   map<string, vector<pair<string, vector<void *>>>> values;
-// };
-
 } // namespace graphsat
 
 #endif

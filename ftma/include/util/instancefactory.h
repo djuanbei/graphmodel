@@ -92,21 +92,9 @@ public:
 
   void destroy() {
 
-    deleteType( pdata, CounterConstraint, DefaultCounterConstraint,
-                DefaultCounterConstraint );
-    deleteType( pdata, CounterConstraint, DiaFreeCounterPConstraint,
-                DiaFreeCounterPConstraint );
-    deleteType( pdata, CounterConstraint, DiaCounterConstraint,
-                DiaCounterConstraint );
-    deleteType( pdata, CounterConstraint, CounterConstraint,
-                DiaCounterConstraint );
+    deleteType( pdata, CounterConstraint );
 
-    deleteType( pdata, CounterAction, SimpleCounterAction,
-                SimpleCounterAction );
-    deleteType( pdata, CounterAction, SimpleCounterPAction,
-                SimpleCounterPAction );
-    deleteType( pdata, CounterAction, DefaultCAction, DefaultCAction );
-    deleteType( pdata, CounterAction, CounterAction, DefaultCAction );
+    deleteType( pdata, CounterAction );
 
     pdata.clear();
   }

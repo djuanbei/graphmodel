@@ -70,7 +70,6 @@ public:
   }
   vector<C> getClockMaxValue() const { return clock_max_value; }
 
-
   int getClockNum() const { return clock_num; }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }

@@ -145,34 +145,5 @@ private:
   friend class InstanceFactory;
 };
 
-// class InstanceFactory {
-
-//   SINGLETON( InstanceFactory );
-
-// public:
-//   ~InstanceFactory(){
-//     destroy();
-//   }
-
-//   CounterAction *copy(const CounterAction * other){
-//     CounterAction * re=other->copy();
-//     pdata.addValue( STRING( CounterAction ), STRING( CounterAction ), re );
-//     return re;
-
-//   }
-//   void destroy() {
-//     deleteType( pdata, CounterAction, SimpleCounterAction,
-//                 SimpleCounterAction );
-//     deleteType( pdata, CounterAction, SimpleCounterPAction,
-//                 SimpleCounterPAction );
-//     deleteType( pdata, CounterAction, DefaultCAction, DefaultCAction );
-//      deleteType( pdata, CounterAction, CounterAction, DefaultCAction );
-//     pdata.clear();
-//   }
-
-// private:
-//   PointerData pdata;
-// };
-
 } // namespace graphsat
 #endif

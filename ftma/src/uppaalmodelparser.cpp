@@ -8,14 +8,14 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   XmlConfig  xmldoc( xmlfile );
   child_type declarations = xmldoc.getChild( DECLARATION_STR );
   child_type templates    = xmldoc.getChild( TEMPLATE_STR );
-  XML_P system       = xmldoc.getOneChild( SYSTEM_STR );
+  XML_P      system       = xmldoc.getOneChild( SYSTEM_STR );
   child_type queries      = xmldoc.getChild( QUERIES_STR );
 
   parserDeclaration( declarations );
   parserTemplate( templates );
   parserSystem( system );
   parserQuery( queries );
-  
+
   int counter_num = system_data.getTypeNum( COUNTER_STR );
   for ( int i = 0; i < counter_num; i++ ) {
     Counter                          counter( 0, MAX_COUNTER_VALUE );
@@ -24,7 +24,6 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
     counter.setValue( hh.second[ 0 ] );
     sys += counter;
   }
-  
 }
 
 int UppaalParser::parserDeclaration( child_type declarations ) {
@@ -62,21 +61,19 @@ int UppaalParser::parserTemplate( child_type templates ) {
     if ( NULL != parameter ) {
       parserTemplateParamter( template_data, parameter );
     }
-    
+
     XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
 
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
       parseProblem( dec_content, &system_data, &template_data );
     }
-    
-    
+
     child_type location_comps = ( *it )->getChild( LOCATION_STR );
 
     vector<typename INT_TAS_t::L_t> locations =
         parserLocation( template_data, location_comps );
- 
-    
+
     XML_P init_conf = ( *it )->getOneChild( INIT_STR );
 
     if ( NULL != init_conf ) {
@@ -86,15 +83,12 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     child_type transition_comps = ( *it )->getChild( TRANSITION_STR );
 
-    
     vector<typename INT_TAS_t::T_t> transitions =
         parserTransition( template_data, transition_comps );
     template_data.tat =
         INT_TAS_t::TAT_t( locations, transitions, template_data.getInitialLoc(),
                           template_data.getTypeNum( CLOCK_STR ) );
-  
-    
-    
+
     template_map[ template_data.name ] = template_data;
   }
 
@@ -104,8 +98,8 @@ int UppaalParser::parserTemplate( child_type templates ) {
 int UppaalParser::parserSystem( XML_P system ) {
 
   if ( NULL != system ) {
-    
-    string content        = system->getValue();
+
+    string content = system->getValue();
     parseProblem( content, &system_data, &system_data );
 
     vector<void *> sys_dec_vec =
@@ -113,35 +107,37 @@ int UppaalParser::parserSystem( XML_P system ) {
     SystemDec *sys_dec = (SystemDec *) sys_dec_vec[ 0 ];
     for ( size_t i = 0; i < sys_dec->ta_list.size(); i++ ) {
       if ( sys_dec->ta_list[ i ]->no_param ) {
-        string template_name=sys_dec->ta_list[ i ]->name;
-        
-        vector<pair<string, vector<void*>>> temp= template_map[template_name].getPoints(PARAMETER_STR);
-        if(temp.empty()){
+        string template_name = sys_dec->ta_list[ i ]->name;
+
+        vector<pair<string, vector<void *>>> temp =
+            template_map[ template_name ].getPoints( PARAMETER_STR );
+        if ( temp.empty() ) {
           Parameter param;
-          
-          
-          typename INT_TAS_t::TA_t tma( &template_map[template_name].tat, param );
-          sys+=tma;
-        }else{
-          assert(1==temp.size());
-          
-          const vector<int> & iarray=system_data.getIntArray(((ParaElement*) temp[0].second[0])->type_name);
-          for (auto e: iarray){
+
+          typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+                                        param );
+          sys += tma;
+        } else {
+          assert( 1 == temp.size() );
+
+          const vector<int> &iarray = system_data.getIntArray(
+              ( (ParaElement *) temp[ 0 ].second[ 0 ] )->type_name );
+          for ( auto e : iarray ) {
             Parameter param;
-            
-            vector<pair<string, vector<int>>> temp= template_map[template_name].getValue(USING_COUNTER);
-            for(auto ee: temp){
-              param.setCounterMap( ee.second[0], ee.second[0]);
+
+            vector<pair<string, vector<int>>> temp =
+                template_map[ template_name ].getValue( USING_COUNTER );
+            for ( auto ee : temp ) {
+              param.setCounterMap( ee.second[ 0 ], ee.second[ 0 ] );
             }
-            
+
             param.addParameterValue( e );
-            typename INT_TAS_t::TA_t tma( &template_map[template_name].tat, param );
-            sys+=tma;
+            typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+                                          param );
+            sys += tma;
           }
         }
       } else {
-        
-        
       }
     }
   }
@@ -203,16 +199,16 @@ int UppaalParser::parserTemplateParamter( UppaalTemplateData &template_data,
     }
 
     ParaElement *temp = new ParaElement();
-   
+
     vector<string> parts = splitStr( str, " " );
 
     string name = parts.back();
     if ( is_ref ) {
       name = name.substr( 1 );
     }
-    temp->name = name;
-    temp->type_name=parts[parts.size()-2];
-    
+    temp->name      = name;
+    temp->type_name = parts[ parts.size() - 2 ];
+
     if ( find( parts.begin(), parts.end(), BOOL_STR ) != parts.end() ) {
       if ( is_ref ) {
         temp->type = PARAM_BOOL_REF_T;
@@ -293,7 +289,7 @@ vector<INT_TAS_t::T_t>
             transition.addReset( *( (pair<int, int> *) reset ) );
             delete (pair<int, int> *) reset;
           }
-          template_data.clearPoints(RESET_STR);
+          template_data.clearPoints( RESET_STR );
 
         } else if ( SYNCHRONISATION_STR == kind ) {
           cout << kind << ": " << ( *llit )->getValue() << endl;
@@ -307,7 +303,7 @@ vector<INT_TAS_t::T_t>
 
 void UppaalParser::parser_label( UppaalTemplateData &template_data,
                                  string              guards ) {
- // template_data.clearPoints();
+  // template_data.clearPoints();
   parseProblem( guards, &system_data, &template_data );
 }
 
