@@ -162,6 +162,8 @@ vector<INT_TAS_t::L_t>
     int location_id = template_data.getId( LOCATION_STR, id_str );
 
     INT_TAS_t::L_t location( location_id );
+    string location_name=(*lit)->getOneChild(NAME_STR)->getValue();
+    location.setName(location_name);
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
     if ( NULL != labels ) {

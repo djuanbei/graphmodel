@@ -34,6 +34,10 @@ public:
   }
 
   void setName( const string &n ) { name = n; }
+  
+  string getName(void){
+    return  name;
+  }
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
@@ -93,28 +97,10 @@ public:
     assert( isReachable( dbm_manager, dbm ) );
     assert( !isFreezeLocation() );
 
-    // if (isReachable( dbm_manager, dbm) ) {
-    /**
-     * Urgent and commit locations freeze time; i.e. time is not allowed to
-     * pass when a process is in an urgent location.
-     *
-     */
-
-    // if ( ( type != URGENT_LOC ) && ( type != COMMIT_LOC ) ) {
     dbm_manager.upImpl( dbm );
-    /**
-     * After D satisfies the invarient then do operator up on D,
-     * then left the area which satisfies all invariants
-     *
-     */
-
+   
     assert( dbm_manager.isConsistent( dbm ) );
-    // }
-    //   return true;
-
-    // } else {
-    //   return false;
-    // }
+    
   }
 
   bool operator()( const DManager_t &dbm_manager, const C_t *const dbm,
