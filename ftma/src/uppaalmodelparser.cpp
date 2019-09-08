@@ -272,13 +272,15 @@ vector<INT_TAS_t::T_t>
           for ( auto cs : cons ) {
             transition += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
+          
+          template_data.clearPoints(CLOCK_CS);
+          
           vector<void *> counterCs =
               template_data.getPoints( COUNTER_CS, COUNTER_CS );
           for ( auto cs : counterCs ) {
             transition.addCounterCons( (CounterConstraint *) cs );
           }
           
-          template_data.clearPoints(CLOCK_CS);
           template_data.clearPoints(COUNTER_CS);
 
         } else if ( ASSIGNMENT_STR == kind ) {

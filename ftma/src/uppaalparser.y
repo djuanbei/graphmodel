@@ -39,6 +39,7 @@
   extern int yyparse();
   extern FILE* yyin;
   TYPE_T getType(string & name );
+  int getParameterId(string &name );
   
  %}
 
@@ -200,10 +201,10 @@ IDENTIFIER compare_relation  const_expression
   if( type==CLOCK_T){
     int clock_id=current_data->getId( CLOCK_STR, symbol_table[$1])+1; //CLOCK ID START FROM 1
     if( EQ==$2){
-      cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, $3 ); //x< c
+      cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, $3 ); //x<= c
       current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
 
-      cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, $3 ); //x< c
+      cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, $3 ); //x>= c
       current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
       
     }else{
@@ -234,7 +235,8 @@ IDENTIFIER compare_relation  PARAM
     current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
   }
   
-  int param_id=current_data->getPointerId( PARAMETER_STR, symbol_table[$3]);
+  int param_id=getParameterId(symbol_table[$3] );
+    
   DiaFreeCounterPConstraint *cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
   current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
 }
@@ -327,7 +329,8 @@ IDENTIFIER '=' PARAM
     current_data->addValue(USING_COUNTER,symbol_table[$1], counter_id );
   }
     
-  int parameter_id=current_data->getId( PARAMETER_STR, symbol_table[$3]);
+  int parameter_id=getParameterId(symbol_table[$3] );
+
 
   SimpleCounterPAction *cs  =InstanceFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
   current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
@@ -563,11 +566,12 @@ TYPE_T getType(string & name ){
   return NO_T;
 }
 
-int getParameterId( const string &name){
+
+int getParameterId(  string &name){
   int param_id=current_data->getPointerId( PARAMETER_STR, name);
-  
-  type_name
+  return  param_id;
 }
+
 
 namespace graphsat{
   void parseProblem( const string &str,  UppaalTemplateData *pd,   UppaalTemplateData* d){

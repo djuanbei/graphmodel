@@ -34,6 +34,7 @@ enum ParaType {
 };
 struct ParaElement {
   ParaType type;
+  int id;
   string   type_name;
   string   name;
 };
@@ -166,8 +167,8 @@ public:
       return dummy;
     }
   }
-  void* getPointer( const string &type, const string& name, int id=0) const{
-    return point_values.getValue( type, name, id);
+  void* getPointer( const string &type, const string& name) const{
+    return point_values.getValue( type, name, 0);
   }
 
   vector<pair<string, vector<void *>>> getPoints( const string &type ) const {
@@ -178,7 +179,6 @@ public:
 
   void clearPoints() { point_values.clear(); }
 
-  //  vector<ParaElement> para_list;
 
 private:
   string         name;
