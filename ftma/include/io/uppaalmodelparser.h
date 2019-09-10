@@ -45,23 +45,25 @@ private:
   INT_TAS_t sys;
   Property  prop;
 
-  int parserDeclaration( XML_P system );
+  int parseDeclaration( XML_P system );
 
-  int parserTemplate( child_type templates );
+  int parseTemplateDeclaration( child_type templates);
+  
+  int parseTemplate( child_type templates );
 
-  int parserSystem( XML_P system );
+  int parseSystem( XML_P system );
 
-  int parserQuery( child_type queries );
+  int parseQuery( child_type queries );
 
-  int parserTemplateParamter( UppaalTemplateData &tempData, XML_P parameter );
+  int parseTemplateParamter( UppaalTemplateData &tempData, XML_P parameter );
 
-  vector<typename INT_TAS_t::L_t> parserLocation( UppaalTemplateData &tempData,
+  vector<typename INT_TAS_t::L_t> parseLocation( UppaalTemplateData &tempData,
                                                   child_type locations );
 
   vector<typename INT_TAS_t::T_t>
-      parserTransition( UppaalTemplateData &tempData, child_type transitions );
+      parseTransition( UppaalTemplateData &tempData, child_type transitions );
 
-  void parser_label( UppaalTemplateData &data, string guards );
+  void parseLabel( UppaalTemplateData &data, string guards );
 };
 
 } // namespace graphsat

@@ -99,10 +99,10 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 enum TYPE_T {
   CLOCK_T,
-  COUNTER_T,
+  INT_T,
   PARAMETER_T,
   BOOL_T,
-  CHANNEL_T,
+  CHAN_T,
   TEMPLATE_T,
   NO_T
 };

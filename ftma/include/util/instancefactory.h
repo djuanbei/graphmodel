@@ -33,6 +33,15 @@ public:
     return re;
   }
 
+
+  FreeCounterConstraint *
+      createFreeCounterConstraint( int p, COMP_OPERATOR o, int rhs ) {
+    FreeCounterConstraint *re = new FreeCounterConstraint( p, o, rhs );
+    pdata.addValue( STRING( CounterConstraint ),
+                    STRING( FreeCounterConstraint ), re );
+    return re;
+  }
+  
   DiaFreeCounterPConstraint *
       createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p ) {
     DiaFreeCounterPConstraint *re = new DiaFreeCounterPConstraint( c, o, p );
@@ -48,6 +57,7 @@ public:
                     re );
     return re;
   }
+  
   DiaFreeCounterConstraint *
       createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
     DiaFreeCounterConstraint *re = new DiaFreeCounterConstraint( cid, p, r );

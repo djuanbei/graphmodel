@@ -33,6 +33,10 @@ enum ParaType {
   PARAM_SCALAR_T
 };
 struct ParaElement {
+  ParaElement( ){
+    is_ref=false;
+  }
+  bool is_ref;
   ParaType type;
   int      id;
   string   type_name;
@@ -63,9 +67,7 @@ struct SystemDec {
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
 
 
-// const static string COUNTER_STR = "counter";
 
-// const static string COUNTER_DEC_STR = "counter_dec";
 
 const static string CLOCK_CS = "clock_cons";
 
@@ -78,7 +80,7 @@ const static string INT_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
 
-const static string USING_INT = STRING( USING_INT );
+const static string USING_GLOBAL = STRING( USING_GLOBAL );
 
 const static int  UN_DEFINE=100000000;
 
@@ -88,27 +90,42 @@ class UppaalParser;
 
 class UppaalTemplateData {
 public:
-  UppaalTemplateData() { init_loc = 0; is_declaration=false; }
+  UppaalTemplateData() { init_loc = 0; name=""; global_var_num=0; }
   void clear() {
     int_values.clear();
     point_values.clear();
   }
 
-
-  void setDeclaration(bool b ){
-    is_declaration=b;
+  void setName(const string &n ){
+    name=n;
   }
   
-  bool isDeclaration( ) const{
-    return is_declaration;
+  string getName( void){
+    return name;
+  }
+  void setGlobalVarNum( int n){
+    global_var_num=n;
+  }
+  
+  int getGlobalVarNum( void) const{
+    return global_var_num;
   }
 
-  void addIntArray( string &key, vector<int> &v ) {
+  string getVarFullName(const string &var_name) const{
+    if(""!=name ){
+      return name+"#"+var_name;
+    }
+    return var_name;
+  }
+
+
+
+  void addIntArray(const string &key, vector<int> &v ) {
     for ( auto e : v ) {
       addValue( INT_ARRAY, key, e );
     }
   }
-  const vector<int> &getIntArray( string &key ) const {
+  const vector<int> &getIntArray(const string &key ) const {
     int id = getId( INT_ARRAY, key );
     if ( id > -1 ) {
       const pair<string, vector<int>> &pp = getValue( INT_ARRAY, id );
@@ -204,8 +221,8 @@ public:
   void clearPoints() { point_values.clear(); }
 
 private:
-  bool is_declaration;
   string         name;
+  int global_var_num;
   ValueData<int> int_values;
   PointerData    point_values;
 

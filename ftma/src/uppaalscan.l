@@ -194,10 +194,13 @@ int check_type()
       yylval.intVal=symbol_table.size( );
       symbol_table.push_back( sym);
    }
-   if(current_data->hasPointer(PARAMETER_STR,sym)){
-     return PARAM;
-   }
-   else if(system_data->hasValue(TEMPLATE_STR, sym ) ){
+
+   // if(current_data->hasPointer(PARAMETER_STR,sym)){
+   //   return PARAM;
+   // }
+   // else
+
+  if(system_data->hasValue(TEMPLATE_STR, sym ) ){
      return TEMPLATE;
    }
    else{

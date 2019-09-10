@@ -40,6 +40,60 @@ private:
   friend class InstanceFactory;
 };
 
+class FreeCounterConstraint : public CounterConstraint {
+ public:
+  bool operator()( const int *counter_value ) const {
+    return value;
+  }
+  void globalUpdate( const map<int, int> &id_map,
+                     const vector<int> &  parameter_value ) {
+    int lhs=parameter_value[ parameter_id];
+    switch( op){
+      case EQ:
+        value=(lhs==rhs);
+        break;
+      case LE:
+        value=(lhs<=rhs);
+        break;
+      case LT:
+        value=( lhs< rhs);
+        break;
+      case GE:
+        value= ( lhs>= rhs);
+        break;
+      case GT:
+        value=( lhs> rhs);
+        break;
+      case NE:
+        value=(lhs!=rhs );
+        break;
+      default:
+        value=false;
+    }
+  }
+
+ protected:
+  ~FreeCounterConstraint( ){
+    
+  }
+ private:
+  FreeCounterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs){
+    parameter_id=eparameter_id;
+    op=opp;
+    rhs=erhs;
+  }
+
+  CounterConstraint *copy() const {
+    return new FreeCounterConstraint( parameter_id, op, rhs );
+  }
+  
+  bool value;
+  int parameter_id;
+  COMP_OPERATOR op;
+  int rhs;
+  friend class InstanceFactory;
+};
+
 class DiaFreeCounterConstraint : public CounterConstraint {
 
 public:
