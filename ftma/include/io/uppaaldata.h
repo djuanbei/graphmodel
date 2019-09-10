@@ -34,17 +34,17 @@ enum ParaType {
 };
 struct ParaElement {
   ParaType type;
-  int id;
+  int      id;
   string   type_name;
   string   name;
 };
 
 struct TaDec {
-  bool        no_param;
+  bool        no_parameter;
   string      name;
   vector<int> param_list;
   TaDec()
-      : no_param( false ) {
+      : no_parameter( false ) {
     name = "";
   }
 };
@@ -62,32 +62,45 @@ struct SystemDec {
 
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
 
-const static string CLOCK_STR = "clock";
 
-const static string COUNTER_STR = "counter";
+// const static string COUNTER_STR = "counter";
 
-const static string CHANNEL_STR = "channel";
+// const static string COUNTER_DEC_STR = "counter_dec";
 
 const static string CLOCK_CS = "clock_cons";
 
-const static string COUNTER_CS = "counter_cons";
+
+const static string INT_CS = "counter_cons";
 
 const static string CLOCK_RESET = "clock_reset";
 
-const static string COUNTER_UPDATE = "counter_update";
+const static string INT_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
 
-const static string USING_COUNTER = STRING( USING_COUNTER );
+const static string USING_INT = STRING( USING_INT );
+
+const static int  UN_DEFINE=100000000;
+
+
 
 class UppaalParser;
 
 class UppaalTemplateData {
 public:
-  UppaalTemplateData() { init_loc = 0; }
+  UppaalTemplateData() { init_loc = 0; is_declaration=false; }
   void clear() {
     int_values.clear();
     point_values.clear();
+  }
+
+
+  void setDeclaration(bool b ){
+    is_declaration=b;
+  }
+  
+  bool isDeclaration( ) const{
+    return is_declaration;
   }
 
   void addIntArray( string &key, vector<int> &v ) {
@@ -109,7 +122,7 @@ public:
 
   int getInitialLoc() const { return init_loc; }
 
-  void addValue( const string &type, const string &name, int v = 0 ) {
+  void addValue( const string &type, const string &name, int v = UN_DEFINE ) {
     int_values.addValue( type, name, v );
   }
 
@@ -118,7 +131,6 @@ public:
   }
 
   /**
-   *
    *
    * @param type  The type of element which want to find.
    * @param name The element name which want to find.
@@ -134,14 +146,17 @@ public:
     return int_values.getValue( type, id );
   }
 
-  bool hasValue( const string &type, const string &name, int id = 0 ) const {
-    return int_values.hasValue( type, name, id );
+  bool hasValue( const string &type, const string &name ) const {
+    
+    return int_values.hasValue( type, name );
+    
   }
 
   int getValue( const string &type, const string &name, int id = 0 ) const {
     return int_values.getValue( type, name, id );
   }
 
+  
   vector<pair<string, vector<int>>> getValue( const string &type ) const {
     return int_values.getValue( type );
   }
@@ -151,7 +166,7 @@ public:
   }
 
   bool hasPointer( const string &type, const string name ) const {
-    return point_values.hasValue( type, name, 0 );
+    return point_values.hasValue( type, name );
   }
 
   int getPointerId( const string &type, const string &name ) const {
@@ -167,8 +182,12 @@ public:
       return dummy;
     }
   }
-  void* getPointer( const string &type, const string& name) const{
-    return point_values.getValue( type, name, 0);
+  void *getPointer( const string &type, const string &name ) const {
+    return point_values.getValue( type, name, 0 );
+  }
+
+  int getPointNum( const string &type ) const {
+    return point_values.getTypeNum( type );
   }
 
   vector<pair<string, vector<void *>>> getPoints( const string &type ) const {
@@ -179,8 +198,8 @@ public:
 
   void clearPoints() { point_values.clear(); }
 
-
 private:
+  bool is_declaration;
   string         name;
   ValueData<int> int_values;
   PointerData    point_values;

@@ -34,10 +34,8 @@ public:
   }
 
   void setName( const string &n ) { name = n; }
-  
-  string getName(void){
-    return  name;
-  }
+
+  string getName( void ) { return name; }
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
@@ -98,9 +96,8 @@ public:
     assert( !isFreezeLocation() );
 
     dbm_manager.upImpl( dbm );
-   
+
     assert( dbm_manager.isConsistent( dbm ) );
-    
   }
 
   bool operator()( const DManager_t &dbm_manager, const C_t *const dbm,

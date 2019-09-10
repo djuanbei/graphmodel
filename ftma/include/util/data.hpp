@@ -13,12 +13,15 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <sstream>
 
 namespace graphsat {
 using std::map;
 using std::pair;
 using std::string;
 using std::vector;
+using std::stringstream;
+
 
 #define STRING( s ) #s
 
@@ -62,6 +65,14 @@ public:                                                                        \
     }                                                                          \
     Var.clear( #TYPE );                                                        \
   }
+
+
+inline string  arrayToVar(const string &name, int id ){
+  stringstream ss;
+  ss<<id;
+  return name +"#"+ss.str( );
+}
+
 
 template <typename T> class ValueData {
 public:
@@ -123,13 +134,13 @@ public:
     return vector<pair<string, vector<T>>>();
   }
 
-  bool hasValue( const string &type, const string &name, int id = 0 ) const {
+  bool hasValue( const string &type, const string &name ) const {
     if ( values.find( type ) == values.end() ) {
       return false;
     }
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
       if ( values.at( type )[ i ].first == name ) {
-        return id < (int) values.at( type )[ i ].second.size();
+        return !(values.at( type )[ i ].second.empty( ));
       }
     }
     return false;
@@ -142,7 +153,7 @@ public:
       }
     }
     assert( false );
-    return (T)-1;
+    return (T) -1;
   }
 
 private:

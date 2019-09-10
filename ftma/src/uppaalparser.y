@@ -76,7 +76,7 @@
 %token XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
 %token TYPEDEF  
-%token  INT     CONST  VOID  CLOCK CHAN
+%token  INT     CONST  VOID  CLOCK CHAN BOOL
 %token STRUCT   ELLIPSIS
 
 %token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN  SYSTEM
@@ -101,6 +101,18 @@ type_specifier
 | CHAN
 {
   $$=3;
+}
+| BOOL
+{
+  $$=4;
+}
+| URGENT CHAN
+{
+  $$=5;
+}
+| BROADCAST CHAN
+{
+  $$=6;
 }
 ;
 
@@ -214,14 +226,21 @@ IDENTIFIER compare_relation  const_expression
 
   }
   else if(type==COUNTER_T ){
-    int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
 
-    if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
-      current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
+    // TODO: parameter counter and global counter, local counter mapping
+    
+    //    int template_parameter_num= current_data->getPointNum(PARAMETER_STR );
+
+    int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
+
+    if(system_data->hasValue(INT_STR,symbol_table[$1] )){
+      
+      current_data->addValue(USING_INT, symbol_table[$1], counter_id);
     }
       
-    cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint( counter_id, $2, $3);
-    current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
+    cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, $2, $3);
+    
+    current_data->addPointer( INT_CS,INT_CS, cs);
   }
 }
 |
@@ -229,16 +248,16 @@ IDENTIFIER compare_relation  PARAM
 {
   const  TYPE_T type=getType(   symbol_table[$1]);
   assert( COUNTER_T==type);
-  int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
+  int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
   
-  if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
-    current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
+  if(system_data->hasValue(INT_STR,symbol_table[$1] )){
+    current_data->addValue(USING_INT,symbol_table[$1],counter_id );
   }
   
   int param_id=getParameterId(symbol_table[$3] );
     
   DiaFreeCounterPConstraint *cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
-  current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
+  current_data->addPointer( INT_CS,INT_CS, cs);
 }
 |
 IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
@@ -262,18 +281,18 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
 
   }
   else if(getType( symbol_table[$1])==COUNTER_T &&getType( symbol_table[$3])==COUNTER_T  ){
-    int counter_id1=system_data->getId( COUNTER_STR, symbol_table[$1]);
-    int counter_id2=system_data->getId( COUNTER_STR, symbol_table[$3]);
+    int counter_id1=system_data->getId( INT_STR, symbol_table[$1]);
+    int counter_id2=system_data->getId( INT_STR, symbol_table[$3]);
     
-    if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
-      current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id1 );
+    if(system_data->hasValue(INT_STR,symbol_table[$1] )){
+      current_data->addValue(USING_INT,symbol_table[$1],counter_id1 );
     }
-    if(system_data->hasValue(COUNTER_STR,symbol_table[$3] )){
-      current_data->addValue(USING_COUNTER,symbol_table[$3],counter_id2 );
+    if(system_data->hasValue(INT_STR,symbol_table[$3] )){
+      current_data->addValue(USING_INT,symbol_table[$3],counter_id2 );
     }
     
     DiaCounterConstraint *cs=InstanceFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
-    current_data->addPointer( COUNTER_CS,COUNTER_CS, cs);
+    current_data->addPointer( INT_CS,INT_CS, cs);
   }
   
 
@@ -309,13 +328,13 @@ IDENTIFIER '=' const_expression
     current_data->addPointer( RESET_STR,RESET_STR, pp);
     
   }else if(getType( symbol_table[$1] )==COUNTER_T ){
-    int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
-    if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
-      current_data->addValue(USING_COUNTER,symbol_table[$1],counter_id );
+    int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
+    if(system_data->hasValue(INT_STR,symbol_table[$1] )){
+      current_data->addValue(USING_INT,symbol_table[$1],counter_id );
     }
     
     SimpleCounterAction *cs=InstanceFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
-    current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
+    current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
   }
   
 }
@@ -323,17 +342,17 @@ IDENTIFIER '=' const_expression
 IDENTIFIER '=' PARAM
 {
   assert(getType(symbol_table[$1] )==COUNTER_T );
-  int counter_id=system_data->getId( COUNTER_STR, symbol_table[$1]);
+  int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
 
-  if(system_data->hasValue(COUNTER_STR,symbol_table[$1] )){
-    current_data->addValue(USING_COUNTER,symbol_table[$1], counter_id );
+  if(system_data->hasValue(INT_STR,symbol_table[$1] )){
+    current_data->addValue(USING_INT,symbol_table[$1], counter_id );
   }
     
   int parameter_id=getParameterId(symbol_table[$3] );
 
 
   SimpleCounterPAction *cs  =InstanceFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
-  current_data->addPointer( COUNTER_UPDATE,COUNTER_UPDATE, cs);
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
   
 }
 |
@@ -348,11 +367,11 @@ IDENTIFIER '=' TEMPLATE '(' identifier_list ')'
     TYPE_T type=getType(name );
     int id=-1;
     if(COUNTER_T==type ){
-      id= system_data->getId(COUNTER_STR,  name );
+      id= system_data->getId(INT_STR,  name );
     }else if(BOOL_T==type ){
       id= system_data->getId( BOOL_STR, name);
     }else if( CHANNEL_T==type){
-      id=system_data->getId( CHANNEL_STR, name);
+      id=system_data->getId( CHAN_STR, name);
     }
     assert( id>-1);
     ta->param_list.push_back( id);
@@ -373,10 +392,10 @@ CONSTANT
 IDENTIFIER
 {
   $$=0;
-  if(current_data->hasValue(COUNTER_STR, symbol_table[$1]) ){
-    $$=current_data->getValue(COUNTER_STR,symbol_table[$1]);
-  }else if ( system_data->hasValue(COUNTER_STR, symbol_table[$1]) ){
-    $$=system_data->getValue(COUNTER_STR,   symbol_table[$1]);
+  if(current_data->hasValue(INT_STR, symbol_table[$1]) ){
+    $$=current_data->getValue(INT_STR,symbol_table[$1]);
+  }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){
+    $$=system_data->getValue(INT_STR,   symbol_table[$1]);
   }
 
 }
@@ -388,56 +407,84 @@ variable_declaration
   switch( $1){
     case 1:
       for( auto v: *$2){
-        current_data->addValue(COUNTER_STR, v);
+        current_data->addValue(INT_DEC_STR, v);
       }
       delete $2;
       break ;
     case 2:
       for( auto v: *$2){
-        current_data->addValue(CLOCK_STR, v);
+        current_data->addValue(CLOCK_DEC_STR, v);
       }
       delete $2;
       break ;
       
     case 3:
       for( auto v: *$2){
-        current_data->addValue(CHANNEL_STR, v, ONE2ONE_CH);
+        current_data->addValue(CHAN_DEC_STR, v, ONE2ONE_CH);
       }
       delete $2;
       break ;
+    case 4:
+      for( auto v: *$2){
+        current_data->addValue(BOOL_DEC_STR, v, ONE2ONE_CH);
+      }
+      delete $2;
+      break ;
+    case 5:
+
+      for( auto v: *$2){
+        current_data->addValue(CHAN_DEC_STR, v, URGENT_CH);
+      }
+      delete $2;
+      break ;
+    case 6:
+      for( auto v: *$2){
+        current_data->addValue(CHAN_DEC_STR, v, BROADCAST_CH);
+      }
+      delete $2;
+      break ;
+      
   }
 }
 
-
-| BROADCAST CHAN identifier_list ';'
+| type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
-  for( auto v: *$3){
-    current_data->addValue(CHANNEL_STR, v, BROADCAST_CH);  
-  }
-  delete $3;
+  
+  string name=symbol_table[ $2];
+  
+ switch( $1){
+   case 1:
+     for( int i=0; i< $4; i++){
+       current_data->addValue( INT_DEC_STR, name, i );
+     }
+     break;
+   case 2:
+     for( int i=0; i< $4; i++){
+       current_data->addValue( CLOCK_DEC_STR, name, i );
+     }
+     break;
+   case 3:
+     for( int i=0; i< $4; i++){
+       current_data->addValue( CHAN_DEC_STR, name, i );
+     }
+     break; 
+     
+ }
 }
 
-| BROADCAST CHAN IDENTIFIER '[' const_expression  ']' ';'
-{
-  for( int i=0; i< $5; i++ ){
-    current_data->addValue(CHANNEL_STR, symbol_table[$3], BROADCAST_CH);  
-  }
-}
 
 |  type_specifier IDENTIFIER '=' const_expression ';'
 {
   switch( $1){
     case 1:
-      current_data->addValue(COUNTER_STR, symbol_table[$2], $4);
+      current_data->addValue(INT_STR, symbol_table[$2], $4);
       break;
     case 2:
       current_data->addValue(CLOCK_STR, symbol_table[$2], $4);
- 
       break;
 
     case 3:
-      current_data->addValue(CHANNEL_STR, symbol_table[$2], $4);
-
+      current_data->addValue(CHAN_STR, symbol_table[$2], $4);
       break;
   }
   
@@ -447,7 +494,7 @@ variable_declaration
 {
   switch( $2){
     case 1:
-      current_data->addValue(COUNTER_STR, symbol_table[$3], $5);
+      current_data->addValue(INT_STR, symbol_table[$3], $5);
 
       break;
     case 2:
@@ -456,7 +503,7 @@ variable_declaration
       break;
 
     case 3:
-      current_data->addValue(CHANNEL_STR, symbol_table[$3], $5);
+      current_data->addValue(CHAN_STR, symbol_table[$3], $5);
 
       break;
   }
@@ -485,7 +532,7 @@ system_declaration
     if(system_data->hasValue(TEMPLATE_STR, name  )){
       
       TaDec* temp=new TaDec( );
-      temp->no_param=true;
+      temp->no_parameter=true;
       temp->name= name;
       sys->ta_list.push_back(temp );
     }else{
@@ -532,13 +579,13 @@ TYPE_T getType(string & name ){
     return CLOCK_T;
   }
 
-  if(current_data->hasValue( COUNTER_STR, name)){
+  if(current_data->hasValue( INT_STR, name)){
     return COUNTER_T;
   }
   if(current_data->hasValue( BOOL_STR, name) ){
     return BOOL_T;
   }
-  if( current_data->hasValue( CHANNEL_STR, name)){
+  if( current_data->hasValue( CHAN_STR, name)){
     return CHANNEL_T;
   }
 
@@ -547,7 +594,7 @@ TYPE_T getType(string & name ){
   }
   
   
-  if( system_data->hasValue( COUNTER_STR, name)){
+  if( system_data->hasValue( INT_STR, name)){
     return COUNTER_T;
   }
 
@@ -555,7 +602,7 @@ TYPE_T getType(string & name ){
     return BOOL_T;
   }
 
-  if( system_data->hasValue( CHANNEL_STR, name)){
+  if( system_data->hasValue( CHAN_STR, name)){
     return CHANNEL_T;
   }
   

@@ -6,38 +6,28 @@ namespace graphsat {
 
 UppaalParser::UppaalParser( const string &xmlfile ) {
   XmlConfig  xmldoc( xmlfile );
-  child_type declarations = xmldoc.getChild( DECLARATION_STR );
-  child_type templates    = xmldoc.getChild( TEMPLATE_STR );
-  XML_P      system       = xmldoc.getOneChild( SYSTEM_STR );
-  child_type queries      = xmldoc.getChild( QUERIES_STR );
+  XML_P      declaration = xmldoc.getOneChild( DECLARATION_STR );
+  child_type templates   = xmldoc.getChild( TEMPLATE_STR );
+  XML_P      system      = xmldoc.getOneChild( SYSTEM_STR );
+  child_type queries     = xmldoc.getChild( QUERIES_STR );
 
-  parserDeclaration( declarations );
+  parserDeclaration( declaration );
   parserTemplate( templates );
   parserSystem( system );
   parserQuery( queries );
-
-  int counter_num = system_data.getTypeNum( COUNTER_STR );
-  for ( int i = 0; i < counter_num; i++ ) {
-    Counter                          counter( 0, MAX_COUNTER_VALUE );
-    const pair<string, vector<int>> &hh =
-        system_data.getValue( COUNTER_STR, i );
-    counter.setValue( hh.second[ 0 ] );
-    sys += counter;
-  }
 }
 
-int UppaalParser::parserDeclaration( child_type declarations ) {
-  if ( NULL == declarations ) {
+int UppaalParser::parserDeclaration( XML_P declaration ) {
+  if ( NULL == declaration ) {
     return 0;
   }
-  for ( child_iterator it = declarations->begin(); it != declarations->end();
-        it++ ) {
-    string content = ( *it )->getValue();
-    if ( content.length() > 0 ) {
-      parseProblem( content, &system_data, &system_data );
-    }
+  system_data.setDeclaration( true);
+  string content = declaration->getValue();
+  if ( content.length() > 0 ) {
+    parseProblem( content, &system_data, &system_data );
   }
-
+  system_data.setDeclaration(false);
+  
   return 0;
 }
 
@@ -66,7 +56,9 @@ int UppaalParser::parserTemplate( child_type templates ) {
 
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
+      template_data.setDeclaration( true);
       parseProblem( dec_content, &system_data, &template_data );
+      template_data.setDeclaration( false);
     }
 
     child_type location_comps = ( *it )->getChild( LOCATION_STR );
@@ -93,52 +85,78 @@ int UppaalParser::parserTemplate( child_type templates ) {
   }
 
   return 0;
-} // namespace graphsat
+}
 
 int UppaalParser::parserSystem( XML_P system ) {
+  assert( NULL != system );
 
-  if ( NULL != system ) {
+  string content = system->getValue();
+  
+  system_data.setDeclaration( true);
+  parseProblem( content, &system_data, &system_data );
+  system_data.setDeclaration(false);
+  
 
-    string content = system->getValue();
-    parseProblem( content, &system_data, &system_data );
+  int counter_num = system_data.getTypeNum( INT_STR );
+  for ( int i = 0; i < counter_num; i++ ) {
+    Counter                          counter( 0, MAX_COUNTER_VALUE );
+    const pair<string, vector<int>> &hh =
+        system_data.getValue( INT_STR, i );
+    counter.setValue( hh.second[ 0 ] );
+    sys += counter;
+  }
 
-    vector<void *> sys_dec_vec =
-        system_data.getPoints( SYSTEM_STR, SYSTEM_STR );
-    SystemDec *sys_dec = (SystemDec *) sys_dec_vec[ 0 ];
-    for ( size_t i = 0; i < sys_dec->ta_list.size(); i++ ) {
-      if ( sys_dec->ta_list[ i ]->no_param ) {
-        string template_name = sys_dec->ta_list[ i ]->name;
+  SystemDec *sys_dec =
+      (SystemDec *) system_data.getPointer( SYSTEM_STR, SYSTEM_STR );
+  /**
+   Exactly one system declaration
+   */
+  assert( NULL != sys_dec );
 
-        vector<pair<string, vector<void *>>> temp =
-            template_map[ template_name ].getPoints( PARAMETER_STR );
-        if ( temp.empty() ) {
-          Parameter param;
+  for ( size_t i = 0; i < sys_dec->ta_list.size(); i++ ) {
+    /**
+     * System declaration the corresponding  automation without parameter.
+     */
+    if ( sys_dec->ta_list[ i ]->no_parameter ) {
 
-          typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
-                                        param );
-          sys += tma;
-        } else {
-          assert( 1 == temp.size() );
+      string template_name = sys_dec->ta_list[ i ]->name;
 
-          const vector<int> &iarray = system_data.getIntArray(
-              ( (ParaElement *) temp[ 0 ].second[ 0 ] )->type_name );
-          for ( auto e : iarray ) {
-            Parameter param;
+      vector<pair<string, vector<void *>>> template_parameter_vec =
+          template_map[ template_name ].getPoints( PARAMETER_STR );
 
-            vector<pair<string, vector<int>>> temp =
-                template_map[ template_name ].getValue( USING_COUNTER );
-            for ( auto ee : temp ) {
-              param.setCounterMap( ee.second[ 0 ], ee.second[ 0 ] );
-            }
+      Parameter parameter_template;
 
-            param.addParameterValue( e );
-            typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
-                                          param );
-            sys += tma;
-          }
-        }
-      } else {
+      vector<pair<string, vector<int>>> template_using_counter_vec =
+          template_map[ template_name ].getValue( USING_INT );
+      for ( auto ee : template_using_counter_vec ) {
+        parameter_template.setCounterMap( ee.second[ 0 ], ee.second[ 0 ] );
       }
+
+      if ( template_parameter_vec.empty() ) {
+        Parameter parameter = parameter_template;
+
+        typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+                                      parameter );
+        sys += tma;
+
+      } else {
+        // If template has paramters, then the number of parameters is exactly
+        // one.
+        assert( 1 == template_parameter_vec.size() );
+
+        const vector<int> &iarray = system_data.getIntArray(
+            ( (ParaElement *) template_parameter_vec[ 0 ].second[ 0 ] )
+                ->type_name );
+        for ( auto e : iarray ) {
+          Parameter parameter = parameter_template;
+
+          parameter.addParameterValue( e );
+          typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+                                        parameter );
+          sys += tma;
+        }
+      }
+    } else {
     }
   }
 
@@ -162,8 +180,8 @@ vector<INT_TAS_t::L_t>
     int location_id = template_data.getId( LOCATION_STR, id_str );
 
     INT_TAS_t::L_t location( location_id );
-    string location_name=(*lit)->getOneChild(NAME_STR)->getValue();
-    location.setName(location_name);
+    string location_name = ( *lit )->getOneChild( NAME_STR )->getValue();
+    location.setName( location_name );
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -179,7 +197,7 @@ vector<INT_TAS_t::L_t>
           for ( auto cs : cons ) {
             location += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
-          template_data.clearPoints(CLOCK_CS);
+          template_data.clearPoints( CLOCK_CS );
         }
       }
     }
@@ -272,27 +290,27 @@ vector<INT_TAS_t::T_t>
           for ( auto cs : cons ) {
             transition += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
-          
-          template_data.clearPoints(CLOCK_CS);
-          
+
+          template_data.clearPoints( CLOCK_CS );
+
           vector<void *> counterCs =
-              template_data.getPoints( COUNTER_CS, COUNTER_CS );
+              template_data.getPoints( INT_CS, INT_CS );
           for ( auto cs : counterCs ) {
             transition.addCounterCons( (CounterConstraint *) cs );
           }
-          
-          template_data.clearPoints(COUNTER_CS);
+
+          template_data.clearPoints( INT_CS );
 
         } else if ( ASSIGNMENT_STR == kind ) {
           string assign_statement = ( *llit )->getValue();
           parser_label( template_data, assign_statement );
           vector<void *> updates =
-              template_data.getPoints( COUNTER_UPDATE, COUNTER_UPDATE );
+              template_data.getPoints( INT_UPDATE, INT_UPDATE );
           for ( auto update : updates ) {
             transition.addCounterAction( (CounterAction *) update );
           }
-          template_data.clearPoints( COUNTER_UPDATE );
-          
+          template_data.clearPoints( INT_UPDATE );
+
           vector<void *> resets =
               template_data.getPoints( RESET_STR, RESET_STR );
           for ( auto reset : resets ) {

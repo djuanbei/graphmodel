@@ -355,7 +355,7 @@ void fisher( int n = 2 ) {
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
   }
-  // reacher.computeAllReachableSet();
+
 
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
@@ -457,7 +457,6 @@ void incrementalTest() {
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
   }
-  // reacher.computeAllReachableSet();
 
   cout << "reach data size: " << data.size() << endl;
   vector<vector<INT_TAS_t::C_t>> project;
@@ -535,7 +534,7 @@ void fisher1() {
   // }
   reacher.computeAllReachableSet();
   cout << "reach data size: " << data.size() << endl;
-  //  reacher.computeAllReachableSet();
+
 }
 
 void testOP() {

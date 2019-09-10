@@ -45,7 +45,7 @@ private:
   INT_TAS_t sys;
   Property  prop;
 
-  int parserDeclaration( child_type declarations );
+  int parserDeclaration( XML_P system );
 
   int parserTemplate( child_type templates );
 

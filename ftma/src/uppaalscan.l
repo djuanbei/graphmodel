@@ -36,6 +36,7 @@ int check_type();
 "int"            { count(); return(INT); }
 "clock"            { count(); return(CLOCK); }
 "chan"            { count(); return(CHAN); }
+"bool"           { count(); return(BOOL);}
 "return"        { count(); return(RETURN); }
 "struct"        { count(); return(STRUCT); }
 "switch"        { count(); return(SWITCH); }

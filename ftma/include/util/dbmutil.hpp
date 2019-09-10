@@ -75,8 +75,21 @@ const static string COMMENT_STR = "comment";
 const static string RESET_STR = "reset";
 
 const static string INT_STR           = "int";
+
+const static string INT_DEC_STR           = "int_dec";
+
 const static string CHAN_STR          = "chan";
+
+const static string CHAN_DEC_STR          = "chan_dec";
+
+const static string CLOCK_STR = "clock";
+
+const static string CLOCK_DEC_STR = "clock_dec";
+
 const static string BOOL_STR          = "bool";
+
+const static string BOOL_DEC_STR          = "bool_dec";
+
 const static string PARAMETER_REF_STR = "&";
 
 typedef long double DF_T;
