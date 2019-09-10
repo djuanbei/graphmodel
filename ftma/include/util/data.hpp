@@ -92,6 +92,21 @@ public:
     vec_v.push_back( v );
     values[ type ].push_back( make_pair( name, vec_v ) );
   }
+  
+  void setValue( const string & type, const string & name, T v){
+    
+    for ( size_t i = 0; i < values[ type ].size(); i++ ) {
+      if ( values[ type ][ i ].first == name ) {
+        if(values[ type ][ i ].second.empty( )){
+          values[ type ][ i ].second.push_back( v);
+        }else{
+          values[ type ][ i ].second[ 0]= v;
+        }
+        return;
+      }
+    }
+    addValue(type, name,  v );
+  }
 
   int getTypeNum( const string &type ) const {
     if ( values.find( type ) == values.end() ) {

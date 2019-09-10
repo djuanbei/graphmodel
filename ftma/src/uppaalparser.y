@@ -61,6 +61,8 @@
 
 
 %type<intVal> const_expression
+
+
 %type<intVal> type_specifier
 
 %type<str_vec_pointer> identifier_list
@@ -77,6 +79,8 @@
 
 %token TYPEDEF  
 %token  INT     CONST  VOID  CLOCK CHAN BOOL
+%token TRUE_Y FALSE_Y
+
 %token STRUCT   ELLIPSIS
 
 %token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN  SYSTEM
@@ -98,11 +102,11 @@ type_specifier
 {
   $$=2;
 }
-| CHAN
+| BOOL
 {
   $$=3;
 }
-| BOOL
+| CHAN
 {
   $$=4;
 }
@@ -397,7 +401,15 @@ IDENTIFIER
   }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){
     $$=system_data->getValue(INT_STR,   symbol_table[$1]);
   }
+}
+|
 
+TRUE_Y{
+  $$=1;
+}
+|
+FALSE_Y{
+  $$=0;
 }
 ;
 
@@ -407,39 +419,41 @@ variable_declaration
   switch( $1){
     case 1:
       for( auto v: *$2){
-        current_data->addValue(INT_DEC_STR, v);
+        current_data->setValue(INT_DEC_STR, v);
       }
       delete $2;
       break ;
     case 2:
       for( auto v: *$2){
-        current_data->addValue(CLOCK_DEC_STR, v);
+        current_data->setValue(CLOCK_DEC_STR, v);
+      }
+      delete $2;
+      break ;
+
+    case 3:
+      for( auto v: *$2){
+        current_data->setValue(BOOL_DEC_STR, v);
       }
       delete $2;
       break ;
       
-    case 3:
-      for( auto v: *$2){
-        current_data->addValue(CHAN_DEC_STR, v, ONE2ONE_CH);
-      }
-      delete $2;
-      break ;
     case 4:
       for( auto v: *$2){
-        current_data->addValue(BOOL_DEC_STR, v, ONE2ONE_CH);
+        current_data->setValue(CHAN_DEC_STR, v, ONE2ONE_CH);
       }
       delete $2;
       break ;
+
     case 5:
 
       for( auto v: *$2){
-        current_data->addValue(CHAN_DEC_STR, v, URGENT_CH);
+        current_data->setValue(CHAN_DEC_STR, v, URGENT_CH);
       }
       delete $2;
       break ;
     case 6:
       for( auto v: *$2){
-        current_data->addValue(CHAN_DEC_STR, v, BROADCAST_CH);
+        current_data->setValue(CHAN_DEC_STR, v, BROADCAST_CH);
       }
       delete $2;
       break ;
@@ -455,20 +469,37 @@ variable_declaration
  switch( $1){
    case 1:
      for( int i=0; i< $4; i++){
-       current_data->addValue( INT_DEC_STR, name, i );
+       current_data->setValue( INT_DEC_STR, arrayToVar(name, i) );
      }
      break;
    case 2:
      for( int i=0; i< $4; i++){
-       current_data->addValue( CLOCK_DEC_STR, name, i );
+       current_data->setValue( CLOCK_DEC_STR, arrayToVar(name, i ));
      }
      break;
+
    case 3:
      for( int i=0; i< $4; i++){
-       current_data->addValue( CHAN_DEC_STR, name, i );
+       current_data->setValue( BOOL_DEC_STR, arrayToVar(name, i ));
      }
-     break; 
+     break;
      
+   case 4:
+     for( int i=0; i< $4; i++){
+       current_data->setValue( CHAN_DEC_STR, arrayToVar(name, i ), ONE2ONE_CH);
+     }
+     break;
+
+   case 5:
+     for( int i=0; i< $4; i++){
+       current_data->setValue( CHAN_DEC_STR, arrayToVar(name, i ), URGENT_CH);
+     }
+     break;
+   case 6:
+     for( int i=0; i< $4; i++){
+       current_data->setValue( CHAN_DEC_STR, arrayToVar(name, i ), BROADCAST_CH);
+     }
+     break;
  }
 }
 
@@ -477,14 +508,14 @@ variable_declaration
 {
   switch( $1){
     case 1:
-      current_data->addValue(INT_STR, symbol_table[$2], $4);
+      current_data->setValue(INT_DEC_STR, symbol_table[$2], $4);
       break;
     case 2:
-      current_data->addValue(CLOCK_STR, symbol_table[$2], $4);
+      current_data->setValue(CLOCK_DEC_STR, symbol_table[$2], $4);
       break;
-
+      
     case 3:
-      current_data->addValue(CHAN_STR, symbol_table[$2], $4);
+      current_data->setValue(BOOL_DEC_STR, symbol_table[$2], $4);
       break;
   }
   
@@ -494,22 +525,18 @@ variable_declaration
 {
   switch( $2){
     case 1:
-      current_data->addValue(INT_STR, symbol_table[$3], $5);
-
+      current_data->setValue(INT_DEC_STR, symbol_table[$3], $5);
       break;
     case 2:
-      current_data->addValue(CLOCK_STR, symbol_table[$3], $5);
-
+      current_data->setValue(CLOCK_DEC_STR, symbol_table[$3], $5);
       break;
 
     case 3:
-      current_data->addValue(CHAN_STR, symbol_table[$3], $5);
-
+      current_data->addValue(BOOL_DEC_STR, symbol_table[$3], $5);
       break;
   }
   
 }
-
 
 
 |  TYPEDEF INT '[' const_expression ',' const_expression ']' IDENTIFIER ';'

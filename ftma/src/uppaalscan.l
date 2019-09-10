@@ -44,6 +44,8 @@ int check_type();
 "void"            { count(); return(VOID);   }
 "while"           { count(); return(WHILE);  }
 "system"          { count(); return(SYSTEM); }
+"true"         { count(); return(TRUE_Y); }
+"false"       { count(); return(FALSE_Y); }
 
 {L}({L}|{D})*        { count(); return(check_type()); }
 
@@ -165,6 +167,13 @@ int findSym(const string& name ){
    return it-symbol_table.begin( );
 
 }
+
+/**
+@return PARAM if sym is one of template parameter;
+ TEMPLATE if sym is one name of template;
+ IDENTIFIER otherwise.
+*/
+
 int check_type()
 {
     /*OB

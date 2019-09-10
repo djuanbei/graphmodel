@@ -126,6 +126,11 @@ public:
     int_values.addValue( type, name, v );
   }
 
+  void setValue( const string & type, const string & name, int v= UN_DEFINE){
+    int_values.setValue( type, name, v );
+  }
+  
+  
   int getTypeNum( const string &type ) const {
     return int_values.getTypeNum( type );
   }
