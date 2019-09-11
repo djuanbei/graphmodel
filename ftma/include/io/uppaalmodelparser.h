@@ -37,6 +37,10 @@ public:
   const INT_TAS_t &getSYS() const { return sys; }
 
   const Property &getProp() const { return prop; }
+  
+  void  parseConstraint(UppaalTemplateData * current_data, const string name, COMP_OPERATOR op,  int );
+  
+  
 
 private:
   UppaalTemplateData              system_data;
@@ -61,9 +65,11 @@ private:
                                                   child_type locations );
 
   vector<typename INT_TAS_t::T_t>
-      parseTransition( UppaalTemplateData &tempData, child_type transitions );
+  parseTransition( UppaalTemplateData &tempData, child_type transitions );
 
   void parseLabel( UppaalTemplateData &data, string guards );
+  
+  
 };
 
 } // namespace graphsat

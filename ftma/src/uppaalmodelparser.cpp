@@ -19,6 +19,12 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   parseQuery( queries );
 }
 
+void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string name, COMP_OPERATOR op,  int ){
+  
+
+    
+  }
+
 int UppaalParser::parseDeclaration( XML_P declaration ) {
   if ( NULL == declaration ) {
     return 0;
@@ -37,7 +43,7 @@ int UppaalParser::parseTemplateDeclaration( child_type templates){
   assert( NULL!=templates);
 
   string keys[ ]={
-    INT_DEC_STR, CLOCK_DEC_STR, BOOL_DEC_STR, CHAN_DEC_STR
+    INT_STR, CLOCK_STR, BOOL_STR, CHAN_STR
   };
     
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
@@ -163,11 +169,10 @@ int UppaalParser::parseSystem( XML_P system ) {
           template_map[ template_name ].getPoints( PARAMETER_STR );
 
       Parameter parameter_template;
-
-      vector<pair<string, vector<int>>> template_using_counter_vec =
-          template_map[ template_name ].getValue( USING_GLOBAL );
-      for ( auto ee : template_using_counter_vec ) {
-        parameter_template.setCounterMap( ee.second[ 0 ], ee.second[ 0 ] );
+      int global_num=system_data.getGlobalVarNum( );
+      int param_num=template_parameter_vec.size( );
+      for( int i=0; i<global_num; i++ ){
+        parameter_template.setCounterMap(i+param_num, i );
       }
 
       if ( template_parameter_vec.empty() ) {

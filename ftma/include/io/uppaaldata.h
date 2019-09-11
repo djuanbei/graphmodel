@@ -80,7 +80,7 @@ const static string INT_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
 
-const static string USING_GLOBAL = STRING( USING_GLOBAL );
+//const static string USING_GLOBAL = STRING( USING_GLOBAL );
 
 const static int  UN_DEFINE=100000000;
 

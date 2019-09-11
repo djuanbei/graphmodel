@@ -40,7 +40,7 @@
   extern FILE* yyin;
   TYPE_T getType(const string & name, string &save_name  );
   
-  int getLocalId(const int realid  );
+  int getLocalId(const int real_id  );
 
   int getParameterId(string &name );
   
@@ -223,13 +223,13 @@ IDENTIFIER compare_relation  const_expression
       ParaElement* p=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name);
       if( p->is_ref){
         cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(param_id, $2, $3);
-        current_data->addPointer( INT_CS,INT_CS, cs);
+        current_data->addPointer( INT_CS, INT_CS, cs);
       }else{
         cs=InstanceFactory::getInstance().createFreeCounterConstraint( param_id, $2, $3 );
-        current_data->addPointer( INT_CS,INT_CS, cs);
+        current_data->addPointer( INT_CS, INT_CS, cs);
       }
     case CLOCK_T:
-      int clock_id=current_data->getId( CLOCK_DEC_STR, save_name)+1; //CLOCK ID START FROM 1
+      int clock_id=current_data->getId( CLOCK_STR, save_name)+1; //CLOCK ID START FROM 1
       if( EQ==$2){
         cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, $3 ); //x<= c
         current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
@@ -243,9 +243,8 @@ IDENTIFIER compare_relation  const_expression
       }
       break;
     case INT_T:
-      int counter_id=getLocalId(system_data->getId( INT_DEC_STR, save_name));
+      int counter_id=getLocalId(system_data->getId( INT_STR, save_name));
       
-      current_data->addValue(USING_GLOBAL, symbol_table[$1], counter_id);
       
       cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, $2, $3);
     
@@ -253,8 +252,8 @@ IDENTIFIER compare_relation  const_expression
       break;
       
     case BOOL_T:
-      counter_id=getLocalId(system_data->getId( BOOL_DEC_STR, save_name));
-      current_data->addValue(USING_GLOBAL, symbol_table[$1], counter_id);
+      counter_id=getLocalId(system_data->getId( BOOL_STR, save_name));
+
       cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, $2, $3);
     
       current_data->addPointer( INT_CS,INT_CS, cs);
@@ -275,7 +274,7 @@ IDENTIFIER compare_relation  IDENTIFIER
   if(type1==PARAMETER_T && type2==PARAMETER_T ){
     int param_id1=getParameterId( save_name1);
     int param_id2=getParameterId( save_name2);
-    ParaElement* p`1=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name1);
+    ParaElement* p1=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name1);
     ParaElement* p2=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name2);
     if( p1->is_ref ){
       if( p2->is_ref){
@@ -294,18 +293,13 @@ IDENTIFIER compare_relation  IDENTIFIER
     }
     
   }
-
   
-  assert( INT_T==type);
+  assert( INT_T==type1);
   int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-  
-  if(system_data->hasValue(INT_STR,symbol_table[$1] )){
-    current_data->addValue(USING_GLOBAL,symbol_table[$1],counter_id );
-  }
   
   int param_id=getParameterId(symbol_table[$3] );
     
-  DiaFreeCounterPConstraint *cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
+  cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
   current_data->addPointer( INT_CS,INT_CS, cs);
 }
 |
@@ -333,12 +327,8 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
     int counter_id1=system_data->getId( INT_STR, symbol_table[$1]);
     int counter_id2=system_data->getId( INT_STR, symbol_table[$3]);
     
-    if(system_data->hasValue(INT_STR,symbol_table[$1] )){
-      current_data->addValue(USING_GLOBAL,symbol_table[$1],counter_id1 );
-    }
-    if(system_data->hasValue(INT_STR,symbol_table[$3] )){
-      current_data->addValue(USING_GLOBAL,symbol_table[$3],counter_id2 );
-    }
+
+
     
     DiaCounterConstraint *cs=InstanceFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
     current_data->addPointer( INT_CS,INT_CS, cs);
@@ -349,6 +339,19 @@ IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
 |
 IDENTIFIER
 {
+  void *cs;
+  string save_name;
+  const  TYPE_T type=getType( symbol_table[$1], save_name);
+  
+  switch(type ){
+    case PARAMETER_T:
+      int param_id=getParameterId(save_name );
+      ParaElement* p=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name);
+      if( p->is_ref){
+        
+      }
+      
+  }
   if(PARAMETER_T==getType(symbol_table[ $1] ) ){
     
   }
@@ -377,16 +380,14 @@ IDENTIFIER '=' const_expression
     
   }else if(getType( symbol_table[$1] )==INT_T ){
 
-    int counter_id=system_data->getId(INT_DEC_STR )
-    if(current_data->hasValue(INT_DEC_STR, symbol_table[$1] ) ){
-      int counter_id=current_data->getId( INT_DEC_STR, symbol_table[$1]);
+    int counter_id=system_data->getId(INT_STR )
+    if(current_data->hasValue(INT_STR, symbol_table[$1] ) ){
+      int counter_id=current_data->getId( INT_STR, symbol_table[$1]);
     }else{
-      int counter_id=system_data->getId( INT_DEC_STR, symbol_table[$1]);
+      int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
     }
     int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-    if(system_data->hasValue(INT_STR,symbol_table[$1] )){
-      current_data->addValue(USING_GLOBAL,symbol_table[$1],counter_id );
-    }
+
     
     SimpleCounterAction *cs=InstanceFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
     current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
@@ -399,9 +400,7 @@ IDENTIFIER '=' IDENTIFIER
   assert(getType(symbol_table[$1] )==INT_T );
   int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
 
-  if(system_data->hasValue(INT_STR,symbol_table[$1] )){
-    current_data->addValue(USING_GLOBAL,symbol_table[$1], counter_id );
-  }
+
     
   int parameter_id=getParameterId(symbol_table[$3] );
 
@@ -443,16 +442,16 @@ CONSTANT
 {
   $$=$1;
 }
-|
-IDENTIFIER
-{
-  $$=0;
-  if(current_data->hasValue(INT_STR, symbol_table[$1]) ){
-    $$=current_data->getValue(INT_STR,symbol_table[$1]);
-  }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){
-    $$=system_data->getValue(INT_STR,   symbol_table[$1]);
-  }
-}
+/* | */
+/* IDENTIFIER */
+/* { */
+/*   $$=0; */
+/*   if(current_data->hasValue(INT_STR, symbol_table[$1]) ){ */
+/*     $$=current_data->getValue(INT_STR,symbol_table[$1]); */
+/*   }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){ */
+/*     $$=system_data->getValue(INT_STR,   symbol_table[$1]); */
+/*   } */
+/* } */
 |
 
 TRUE_Y{
@@ -470,27 +469,27 @@ variable_declaration
   switch( $1){
     case 1:
       for( auto v: *$2){
-        current_data->setValue(INT_DEC_STR, current_data->getVarFullName(v));
+        current_data->setValue(INT_STR, current_data->getVarFullName(v));
       }
       delete $2;
       break ;
     case 2:
       for( auto v: *$2){
-        current_data->setValue(CLOCK_DEC_STR, current_data->getVarFullName(v));
+        current_data->setValue(CLOCK_STR, current_data->getVarFullName(v));
       }
       delete $2;
       break ;
 
     case 3:
       for( auto v: *$2){
-        current_data->setValue(BOOL_DEC_STR, current_data->getVarFullName(v));
+        current_data->setValue(BOOL_STR, current_data->getVarFullName(v));
       }
       delete $2;
       break ;
       
     case 4:
       for( auto v: *$2){
-        current_data->setValue(CHAN_DEC_STR, current_data->getVarFullName(v), ONE2ONE_CH);
+        current_data->setValue(CHAN_STR, current_data->getVarFullName(v), ONE2ONE_CH);
       }
       delete $2;
       break ;
@@ -498,13 +497,13 @@ variable_declaration
     case 5:
 
       for( auto v: *$2){
-        current_data->setValue(CHAN_DEC_STR, current_data->getVarFullName(v), URGENT_CH);
+        current_data->setValue(CHAN_STR, current_data->getVarFullName(v), URGENT_CH);
       }
       delete $2;
       break ;
     case 6:
       for( auto v: *$2){
-        current_data->setValue(CHAN_DEC_STR, current_data->getVarFullName(v), BROADCAST_CH);
+        current_data->setValue(CHAN_STR, current_data->getVarFullName(v), BROADCAST_CH);
       }
       delete $2;
       break ;
@@ -520,35 +519,35 @@ variable_declaration
  switch( $1){
    case 1:
      for( int i=0; i< $4; i++){
-       current_data->setValue( INT_DEC_STR, current_data->getVarFullName(arrayToVar(name, i)) );
+       current_data->setValue( INT_STR, current_data->getVarFullName(arrayToVar(name, i)) );
      }
      break;
    case 2:
      for( int i=0; i< $4; i++){
-       current_data->setValue( CLOCK_DEC_STR, current_data->getVarFullName(arrayToVar(name, i )));
+       current_data->setValue( CLOCK_STR, current_data->getVarFullName(arrayToVar(name, i )));
      }
      break;
 
    case 3:
      for( int i=0; i< $4; i++){
-       current_data->setValue( BOOL_DEC_STR, current_data->getVarFullName(arrayToVar(name, i )));
+       current_data->setValue( BOOL_STR, current_data->getVarFullName(arrayToVar(name, i )));
      }
      break;
      
    case 4:
      for( int i=0; i< $4; i++){
-       current_data->setValue( CHAN_DEC_STR, current_data->getVarFullName(arrayToVar(name, i )), ONE2ONE_CH);
+       current_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), ONE2ONE_CH);
      }
      break;
 
    case 5:
      for( int i=0; i< $4; i++){
-       current_data->setValue( CHAN_DEC_STR, current_data->getVarFullName(arrayToVar(name, i )), URGENT_CH);
+       current_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), URGENT_CH);
      }
      break;
    case 6:
      for( int i=0; i< $4; i++){
-       current_data->setValue( CHAN_DEC_STR, current_data->getVarFullName(arrayToVar(name, i )), BROADCAST_CH);
+       current_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), BROADCAST_CH);
      }
      break;
  }
@@ -559,14 +558,14 @@ variable_declaration
 {
   switch( $1){
     case 1:
-      current_data->setValue(INT_DEC_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+      current_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
     case 2:
-      current_data->setValue(CLOCK_DEC_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+      current_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
       
     case 3:
-      current_data->setValue(BOOL_DEC_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+      current_data->setValue(BOOL_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
   }
   
@@ -576,14 +575,14 @@ variable_declaration
 {
   switch( $2){
     case 1:
-      current_data->setValue(INT_DEC_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+      current_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
     case 2:
-      current_data->setValue(CLOCK_DEC_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+      current_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
 
     case 3:
-      current_data->addValue(BOOL_DEC_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+      current_data->addValue(BOOL_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
   }
   
@@ -658,17 +657,17 @@ TYPE_T getType(const string & name, string &save_name  ){
   }
   
   save_name=current_data->getVarFullName(name);
-  if(system_data->hasValue( CLOCK_DEC_STR, save_name) ){
+  if(system_data->hasValue( CLOCK_STR, save_name) ){
     return CLOCK_T;
   }
 
-  if(system_data->hasValue( INT_DEC_STR, save_name)){
+  if(system_data->hasValue( INT_STR, save_name)){
     return INT_T;
   }
-  if(system_data->hasValue( BOOL_DEC_STR, save_name) ){
+  if(system_data->hasValue( BOOL_STR, save_name) ){
     return BOOL_T;
   }
-  if(system_data->hasValue( CHAN_DEC_STR, save_name)){
+  if(system_data->hasValue( CHAN_STR, save_name)){
     return CHAN_T;
   }
   
@@ -676,19 +675,19 @@ TYPE_T getType(const string & name, string &save_name  ){
   /**
    * clock variable can be only delcared at template section.
    */
-  // if( system_data->hasValue(CLOCK_DEC_STR, save_name )){
+  // if( system_data->hasValue(CLOCK_STR, save_name )){
   //   return CLOCK_T;
   // }
   
-  if( system_data->hasValue( INT_DEC_STR, save_name)){
+  if( system_data->hasValue( INT_STR, save_name)){
     return INT_T;
   }
 
-  if(system_data->hasValue( BOOL_DEC_STR, save_name) ){
+  if(system_data->hasValue( BOOL_STR, save_name) ){
     return BOOL_T;
   }
 
-  if( system_data->hasValue( CHAN_DEC_STR, save_name)){
+  if( system_data->hasValue( CHAN_STR, save_name)){
     return CHAN_T;
   }
 
