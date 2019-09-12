@@ -38,8 +38,10 @@ public:
 
   const Property &getProp() const { return prop; }
   
-  void  parseConstraint(UppaalTemplateData * current_data, const string name, COMP_OPERATOR op,  int );
+  void  parseConstraint(UppaalTemplateData * current_data, const string& name, COMP_OPERATOR op,  int );
+
   
+  void  parseConstraint(UppaalTemplateData * current_data, const string&  left_name, COMP_OPERATOR op, const string & rhs_name );
   
 
 private:
@@ -68,6 +70,13 @@ private:
   parseTransition( UppaalTemplateData &tempData, child_type transitions );
 
   void parseLabel( UppaalTemplateData &data, string guards );
+  
+
+  int getLocalId(UppaalTemplateData * current_data, const int real_id  );
+
+  int getParameterId(UppaalTemplateData * current_data, const string &name );
+
+  TYPE_T getType(UppaalTemplateData * current_data, const string & name, string &save_name  );
   
   
 };

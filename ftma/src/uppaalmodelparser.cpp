@@ -19,11 +19,98 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   parseQuery( queries );
 }
 
-void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string name, COMP_OPERATOR op,  int ){
-  
+void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string & name, COMP_OPERATOR op,  int rhs ){
+  void *cs;
+  string save_name;
+  const  TYPE_T type=getType(current_data, name, save_name);
+  switch(type ){
+    case PARAMETER_T:
+      int param_id=getParameterId(current_data, save_name );
+      ParaElement* p=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name);
+      if( p->is_ref){
+        cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(param_id, op, rhs);
+        current_data->addPointer( INT_CS, INT_CS, cs);
+      }else{
+        cs=InstanceFactory::getInstance().createFreeCounterConstraint( param_id, op, rhs );
+        current_data->addPointer( INT_CS, INT_CS, cs);
+      }
+    case CLOCK_T:
+      int clock_id=current_data->getId( CLOCK_STR, save_name)+1; //CLOCK ID START FROM 1
+      if( EQ==op){
+        cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, rhs ); //x<= c
+        current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+
+        cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, rhs ); //x>= c
+        current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+      
+      }else{
+        cs=new      INT_TAS_t::CS_t(clock_id, 0,  op, rhs ); //x< c
+        current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+      }
+      break;
+    case INT_T:
+      int counter_id=getLocalId(current_data, system_data.getId( INT_STR, save_name));
+      
+      
+      cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, op, rhs);
+    
+      current_data->addPointer( INT_CS,INT_CS, cs);
+      break;
+      
+    case BOOL_T:
+      counter_id=getLocalId(current_data, system_data.getId( BOOL_STR, save_name));
+
+      cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, op, rhs);
+    
+      current_data->addPointer( INT_CS,INT_CS, cs);
+      break;
+    default:
+      assert( false);
+      
+
+  }
 
     
+}
+
+
+void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string&  left_name, COMP_OPERATOR op, const string & rhs_name ){
+
+  void *cs;
+  string save_name1, save_name2;
+  const  TYPE_T type1=getType(   symbol_table[$1], save_name1);
+  const  TYPE_T type2=getType(   symbol_table[$3], save_name2);
+  if(type1==PARAMETER_T && type2==PARAMETER_T ){
+    int param_id1=getParameterId( save_name1);
+    int param_id2=getParameterId( save_name2);
+    ParaElement* p1=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name1);
+    ParaElement* p2=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name2);
+    if( p1->is_ref ){
+      if( p2->is_ref){
+        cs = InstanceFactory::getInstance().createDiaCounterConstraint(param_id1, param_id2, $2, 0 );
+        current_data->addPointer( INT_CS,INT_CS, cs);
+      }else{
+        
+        
+      }
+    }else{
+      if( p2->is_ref){
+        
+      }else{
+        
+      }
+    }
+    
   }
+  
+  assert( INT_T==type1);
+  int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
+  
+  int param_id=getParameterId(symbol_table[$3] );
+    
+  cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
+  current_data->addPointer( INT_CS,INT_CS, cs);
+}
 
 int UppaalParser::parseDeclaration( XML_P declaration ) {
   if ( NULL == declaration ) {
@@ -377,6 +464,64 @@ void UppaalParser::parseLabel( UppaalTemplateData &template_data,
                                  string              guards ) {
   // template_data.clearPoints();
   parseProblem( guards, &system_data, &template_data );
+}
+
+int UppaalParser::getLocalId(UppaalTemplateData * current_data, const int real_id  ){
+  return real_id+current_data->getPointNum(PARAMETER_STR );;
+}
+
+int UppaalParser::getParameterId(UppaalTemplateData * current_data, const string &name ){
+
+  return current_data->getPointerId( PARAMETER_STR, name);
+}
+
+TYPE_T UppaalParser::getType(UppaalTemplateData * current_data, const string & name, string &save_name  ){
+
+  save_name=name;
+  if(current_data->hasPointer( PARAMETER_STR, save_name) ){
+    return PARAMETER_T;
+  }
+  if(hasValue( TEMPLATE_STR, save_name) ){
+    return TEMPLATE_T;
+  }
+  
+  save_name=current_data->getVarFullName(name);
+  if(hasValue( CLOCK_STR, save_name) ){
+    return CLOCK_T;
+  }
+
+  if(hasValue( INT_STR, save_name)){
+    return INT_T;
+  }
+  if(hasValue( BOOL_STR, save_name) ){
+    return BOOL_T;
+  }
+  if(hasValue( CHAN_STR, save_name)){
+    return CHAN_T;
+  }
+  
+  save_name=getVarFullName(name);
+  /**
+   * clock variable can be only delcared at template section.
+   */
+  // if( system_data->hasValue(CLOCK_STR, save_name )){
+  //   return CLOCK_T;
+  // }
+  
+  if(hasValue( INT_STR, save_name)){
+    return INT_T;
+  }
+
+  if(hasValue( BOOL_STR, save_name) ){
+    return BOOL_T;
+  }
+
+  if(hasValue( CHAN_STR, save_name)){
+    return CHAN_T;
+  }
+
+  
+  return NO_T;
 }
 
 } // namespace graphsat
