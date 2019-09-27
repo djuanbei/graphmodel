@@ -40,8 +40,17 @@ private:
   friend class InstanceFactory;
 };
 
+/** 
+ * A constant bool value  class. 
+ */
 class FreeCounterConstraint : public CounterConstraint {
  public:
+  /** 
+   * 
+   * 
+   * 
+   * @return  a constant bool value which does not depend on value of counter_value
+   */
   bool operator()( const int *counter_value ) const {
     return value;
   }
@@ -94,9 +103,17 @@ class FreeCounterConstraint : public CounterConstraint {
   friend class InstanceFactory;
 };
 
+
+/**
+ *  Form of counter op constant value
+ * 
+ */
 class DiaFreeCounterConstraint : public CounterConstraint {
 
 public:
+  /** 
+   * @return true if  the vlaue corresponding counter op rhs, false otherwise.
+   */
   bool operator()( const int *counter_value ) const {
     switch ( op ) {
     case EQ:
@@ -146,9 +163,16 @@ private:
   friend class InstanceFactory;
 };
 
+/**
+ *  Form of counter op parameter 
+ */
+
 class DiaFreeCounterPConstraint : public CounterConstraint {
 
 public:
+  /** 
+   * @return  true if the counter op parameter, false otherwise.
+   */
   bool operator()( const int *counter_value ) const {
 
     int diff = counter_value[ global_counter_id ];
@@ -204,9 +228,78 @@ private:
   friend class InstanceFactory;
 };
 
+/**
+ * Form parameter op parameter 
+ * 
+ */
+
+class DiaParameterConstraint: public CounterConstraint {
+public:
+  bool operator()( const int *counter_value ) const {
+    return value;
+  }
+  void globalUpdate( const map<int, int> &id_map,
+                     const vector<int> &  parameter_value ) {
+    int lhs=parameter_value[first_paramter_id ]-parameter_value[ second_parameter_id];
+    switch( op){
+      case EQ:
+        value=(lhs==rhs);
+        break;
+      case LE:
+        value=(lhs<=rhs);
+        break;
+      case LT:
+        value=( lhs< rhs);
+        break;
+      case GE:
+        value= ( lhs>= rhs);
+        break;
+      case GT:
+        value=( lhs> rhs);
+        break;
+      case NE:
+        value=(lhs!=rhs );
+        break;
+      default:
+        value=false;
+    }
+  }
+
+ protected:
+  ~DiaParameterConstraint( ){
+    
+  }
+ private:
+  DiaParameterConstraint( int efirst_parameter_id, int esecond_parameter_id, COMP_OPERATOR eop, int erhs){
+
+    value=false;
+    first_paramter_id=efirst_parameter_id;
+    second_parameter_id=esecond_parameter_id;
+    op=eop;
+    rhs=erhs;
+  }
+  CounterConstraint *copy() const {
+    return new DiaParameterConstraint(first_paramter_id, second_parameter_id, op, rhs );
+  }
+
+  bool value;
+  int first_paramter_id, second_parameter_id, rhs;
+  COMP_OPERATOR op;
+  friend class InstanceFactory;
+  
+};
+
+
+/**
+ * Form of counterA - counterB op constant value
+ */
+
 class DiaCounterConstraint : public CounterConstraint {
 
 public:
+  /** 
+   * @return  true if counterA - counterB op constant, false otherwise.
+   */
   bool operator()( const int *counter_value ) const {
     int diff =
         counter_value[ global_counter_x ] - counter_value[ global_counter_y ];
@@ -258,9 +351,17 @@ private:
   friend class InstanceFactory;
 };
 
+/**
+ * Form  \sum c_i counter_i op \sum f_i parameter_i
+ * 
+ */
+
 class DefaultCounterConstraint : public CounterConstraint {
 
 public:
+  /** 
+   * @return  true if \sum c_i counter_i op \sum f_i parameter_i
+   */
   bool operator()( const int *counter_value ) const {
     int dummy = parameter_part;
 

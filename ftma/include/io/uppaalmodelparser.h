@@ -37,8 +37,15 @@ public:
   const INT_TAS_t &getSYS() const { return sys; }
 
   const Property &getProp() const { return prop; }
-  
-  void  parseConstraint(UppaalTemplateData * current_data, const string& name, COMP_OPERATOR op,  int );
+
+  /**
+   *@brief variable op rhs
+   * @param current_data 
+   * @param name  variable name
+   * @param op  operator
+   * @param rhs  constant value
+   */
+  void  parseConstraint(UppaalTemplateData * current_data, const string& name, COMP_OPERATOR op,  int  rhs);
 
   
   void  parseConstraint(UppaalTemplateData * current_data, const string&  left_name, COMP_OPERATOR op, const string & rhs_name );
@@ -76,8 +83,13 @@ private:
 
   int getParameterId(UppaalTemplateData * current_data, const string &name );
 
-  TYPE_T getType(UppaalTemplateData * current_data, const string & name, string &save_name  );
-  
+  /** 
+   * @param current_data  current template 
+   * @param name the name in xml model
+   * @param save_name  the name in code level 
+   * @return  the type of name
+   */
+  TYPE_T getType(UppaalTemplateData * current_data, const string & xml_name, string &code_name  );
   
 };
 

@@ -97,6 +97,29 @@ typedef long double DF_T;
 enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
+
+static COMP_OPERATOR negation(COMP_OPERATOR op ){
+  switch( op){
+    case EQ:{
+      return NE;
+    }
+    case LE: {
+      return GT;
+    }
+    case GE: {
+      return LT;
+    }
+    case LT : {
+      return GE;
+    }
+    case GT : {
+      return LE;
+    }
+    case NE: {
+      return EQ;
+    }
+  }
+}
 enum TYPE_T {
   CLOCK_T,
   INT_T,

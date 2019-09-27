@@ -114,6 +114,41 @@ private:
   PointerData pdata;
 };
 
+
+DefaultCounterConstraint *
+createDefaultCounterConstraint( const vector<int> &pcons,
+                                const vector<int> &cons, int erhs,
+                                COMP_OPERATOR eop );
+FreeCounterConstraint *
+createFreeCounterConstraint( int p, COMP_OPERATOR o, int rhs );
+
+
+DiaFreeCounterPConstraint *
+createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p );
+
+
+DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
+                                                  COMP_OPERATOR p, int r );
+
+DiaFreeCounterConstraint *
+createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) ;
+
+
+CounterConstraint *copy( CounterConstraint *other );
+
+SimpleCounterAction *createSimpleCounterAction( int cid, int v );
+
+
+SimpleCounterPAction *createSimpleCounterPAction( int cid,
+                                                  int eparameter_id );
+
+DefaultCAction *createDefaultCAction(
+    vector<pair<int, vector<pair<int, int>>>> &relations1 );
+
+
+CounterAction *copy( const CounterAction *other );
+
+
 } // namespace graphsat
 
 #endif

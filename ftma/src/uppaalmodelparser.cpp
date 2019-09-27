@@ -19,84 +19,100 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   parseQuery( queries );
 }
 
-void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string & name, COMP_OPERATOR op,  int rhs ){
+  /** 
+   * @param current_data 
+   * @param name  variable name
+   * @param op  operator
+   * @param int  constant value
+   *
+   */
+void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string & xml_name, COMP_OPERATOR op,  int rhs ){
   void *cs;
-  string save_name;
-  const  TYPE_T type=getType(current_data, name, save_name);
+  string code_name;
+  int counter_id, param_id, clock_id;
+  ParaElement* p;
+  const  TYPE_T type=getType(current_data, xml_name, code_name);
   switch(type ){
-    case PARAMETER_T:
-      int param_id=getParameterId(current_data, save_name );
-      ParaElement* p=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name);
-      if( p->is_ref){
-        cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(param_id, op, rhs);
-        current_data->addPointer( INT_CS, INT_CS, cs);
-      }else{
-        cs=InstanceFactory::getInstance().createFreeCounterConstraint( param_id, op, rhs );
-        current_data->addPointer( INT_CS, INT_CS, cs);
+    case PARAMETER_T: {
+        param_id=getParameterId(current_data, code_name );
+        p=(ParaElement*)current_data->getPointer(PARAMETER_STR, code_name);
+        if( p->is_ref){
+          cs = createDiaFreeCounterConstraint(param_id, op, rhs);
+          current_data->addPointer( INT_CS, INT_CS, cs);
+        }else{
+          cs=createFreeCounterConstraint( param_id, op, rhs );
+          current_data->addPointer( INT_CS, INT_CS, cs);
+        }
       }
-    case CLOCK_T:
-      int clock_id=current_data->getId( CLOCK_STR, save_name)+1; //CLOCK ID START FROM 1
-      if( EQ==op){
-        cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, rhs ); //x<= c
-        current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+      break;
+    case CLOCK_T:  {
+        clock_id=current_data->getId( CLOCK_STR, code_name)+1; //CLOCK ID START FROM 1
+        if( EQ==op){
+          cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, rhs ); //x<= c
+          current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
 
-        cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, rhs ); //x>= c
-        current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+          cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, rhs ); //x>= c
+          current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
       
-      }else{
-        cs=new      INT_TAS_t::CS_t(clock_id, 0,  op, rhs ); //x< c
-        current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+        }else{
+          cs=new      INT_TAS_t::CS_t(clock_id, 0,  op, rhs ); //x< c
+          current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
+        }
       }
       break;
     case INT_T:
-      int counter_id=getLocalId(current_data, system_data.getId( INT_STR, save_name));
-      
-      
-      cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, op, rhs);
-    
-      current_data->addPointer( INT_CS,INT_CS, cs);
+      {
+        counter_id=getLocalId(current_data, system_data.getId( INT_STR, code_name));
+        cs = createDiaFreeCounterConstraint(counter_id, op, rhs);
+        current_data->addPointer( INT_CS,INT_CS, cs);
+      }
       break;
       
     case BOOL_T:
-      counter_id=getLocalId(current_data, system_data.getId( BOOL_STR, save_name));
+      {
+        counter_id=getLocalId(current_data, system_data.getId( BOOL_STR, code_name));
 
-      cs = InstanceFactory::getInstance().createDiaFreeCounterConstraint(counter_id, op, rhs);
+        cs = createDiaFreeCounterConstraint(counter_id, op, rhs);
     
-      current_data->addPointer( INT_CS,INT_CS, cs);
+        current_data->addPointer( INT_CS,INT_CS, cs);
+      }
       break;
+      
     default:
       assert( false);
-      
-
+   
   }
-
     
 }
 
 
-void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string&  left_name, COMP_OPERATOR op, const string & rhs_name ){
+void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string&  lhs_xml_name, COMP_OPERATOR op, const string & rhs_xml_name ){
 
   void *cs;
-  string save_name1, save_name2;
-  const  TYPE_T type1=getType(   symbol_table[$1], save_name1);
-  const  TYPE_T type2=getType(   symbol_table[$3], save_name2);
+  string lhs_code_name, rhs_code_name;
+  const  TYPE_T type1=getType(current_data,   lhs_xml_name, lhs_code_name);
+  const  TYPE_T type2=getType(current_data,   rhs_xml_name, rhs_code_name);
+  
   if(type1==PARAMETER_T && type2==PARAMETER_T ){
-    int param_id1=getParameterId( save_name1);
-    int param_id2=getParameterId( save_name2);
-    ParaElement* p1=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name1);
-    ParaElement* p2=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name2);
+    int lhs_param_id=getParameterId(current_data, lhs_code_name);
+    int rhs_param_id=getParameterId(current_data, rhs_code_name);
+    ParaElement* p1=(ParaElement*)current_data->getPointer(PARAMETER_STR, lhs_code_name);
+    ParaElement* p2=(ParaElement*)current_data->getPointer(PARAMETER_STR, rhs_code_name);
     if( p1->is_ref ){
       if( p2->is_ref){
-        cs = InstanceFactory::getInstance().createDiaCounterConstraint(param_id1, param_id2, $2, 0 );
+        cs = createDiaCounterConstraint(lhs_param_id, rhs_param_id, op, 0 );
         current_data->addPointer( INT_CS,INT_CS, cs);
       }else{
-        
-        
+        cs=createDiaFreeCounterPConstraint( lhs_param_id, op, rhs_param_id );
+        current_data->addPointer( INT_CS,INT_CS, cs);
       }
     }else{
       if( p2->is_ref){
-        
+        COMP_OPERATOR nop=negation( op);
+        cs =createDiaFreeCounterPConstraint( rhs_param_id, nop, lhs_param_id );
+        current_data->addPointer( INT_CS,INT_CS, cs);
       }else{
+        
         
       }
     }
@@ -104,11 +120,11 @@ void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const str
   }
   
   assert( INT_T==type1);
-  int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
+  int counter_id=system_data.getId( INT_STR, lhs_code_name);
   
-  int param_id=getParameterId(symbol_table[$3] );
+  int param_id=getParameterId(current_data, rhs_code_name); 
     
-  cs=InstanceFactory::getInstance().createDiaFreeCounterPConstraint(counter_id, $2, param_id );
+  cs=createDiaFreeCounterPConstraint(counter_id, op, param_id );
   current_data->addPointer( INT_CS,INT_CS, cs);
 }
 
@@ -475,48 +491,48 @@ int UppaalParser::getParameterId(UppaalTemplateData * current_data, const string
   return current_data->getPointerId( PARAMETER_STR, name);
 }
 
-TYPE_T UppaalParser::getType(UppaalTemplateData * current_data, const string & name, string &save_name  ){
+TYPE_T UppaalParser::getType(UppaalTemplateData * current_data, const string & xml_name, string &code_name  ){
 
-  save_name=name;
-  if(current_data->hasPointer( PARAMETER_STR, save_name) ){
+  code_name=xml_name;
+  if(current_data->hasPointer( PARAMETER_STR, code_name) ){
     return PARAMETER_T;
   }
-  if(hasValue( TEMPLATE_STR, save_name) ){
+  if(system_data.hasValue( TEMPLATE_STR, code_name) ){
     return TEMPLATE_T;
   }
   
-  save_name=current_data->getVarFullName(name);
-  if(hasValue( CLOCK_STR, save_name) ){
+  code_name=current_data->getVarFullName(xml_name);
+  if(current_data->hasValue( CLOCK_STR, code_name) ){
     return CLOCK_T;
   }
 
-  if(hasValue( INT_STR, save_name)){
+  if(current_data->hasValue( INT_STR, code_name)){
     return INT_T;
   }
-  if(hasValue( BOOL_STR, save_name) ){
+  if(current_data->hasValue( BOOL_STR, code_name) ){
     return BOOL_T;
   }
-  if(hasValue( CHAN_STR, save_name)){
+  if(current_data->hasValue( CHAN_STR, code_name)){
     return CHAN_T;
   }
   
-  save_name=getVarFullName(name);
+  //  code_name=current_data->getVarFullName(name);
   /**
    * clock variable can be only delcared at template section.
    */
-  // if( system_data->hasValue(CLOCK_STR, save_name )){
+  // if( system_data.hasValue(CLOCK_STR, xml_name )){
   //   return CLOCK_T;
   // }
   
-  if(hasValue( INT_STR, save_name)){
+  if(system_data.hasValue( INT_STR, xml_name)){
     return INT_T;
   }
 
-  if(hasValue( BOOL_STR, save_name) ){
+  if(system_data.hasValue( BOOL_STR, xml_name) ){
     return BOOL_T;
   }
 
-  if(hasValue( CHAN_STR, save_name)){
+  if(system_data.hasValue( CHAN_STR, xml_name)){
     return CHAN_T;
   }
 

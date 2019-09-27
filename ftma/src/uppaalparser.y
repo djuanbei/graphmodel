@@ -10,6 +10,7 @@
 
   #include "util/dbmutil.hpp"
   #include "io/uppaaldata.h"
+  #include "io/uppaalmodelparser.h"
   #include "model/ta.hpp"
   
   using std::string;
@@ -31,7 +32,7 @@
 
   UppaalTemplateData* system_data;
   UppaalTemplateData* current_data;
-
+  UppaalParser* model_parser;
   
   extern void yyerror(const char *); 
   extern void yyerror(const string&);
@@ -211,12 +212,12 @@ atomic_constraint:
 
 IDENTIFIER compare_relation  const_expression 
 {
-  system_data->parseConstraint( current_data,symbol_table[$1], $2, $3 );
+  model_parser->parseConstraint( current_data, symbol_table[$1], $2, $3 );
 }
 |
 IDENTIFIER compare_relation  IDENTIFIER
 {
-  system_data->parseConstraint( current_data, sysbol_table[ $1], $2,sysbol_table[ $3] );
+  model_parser->parseConstraint( current_data, symbol_table[ $1], $2,symbol_table[ $3] );
 }
 |
 IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
@@ -565,10 +566,10 @@ void yyerror(const string &s){
 
 
 
-
-
 namespace graphsat{
-  void parseProblem( const string &str,  UppaalTemplateData *pd,   UppaalTemplateData* d){
+  void parseProblem( const string &str, UppaalParser* parser,  UppaalTemplateData *pd,   UppaalTemplateData* d){
+    
+    model_parser=parser;
     system_data=pd;
     current_data=d;
     yyin=tmpfile();
