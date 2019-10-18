@@ -17,6 +17,9 @@
 
 #include "util/data.hpp"
 
+
+
+
 namespace graphsat {
 
 class InstanceFactory;
@@ -40,78 +43,75 @@ private:
   friend class InstanceFactory;
 };
 
-/** 
- * A constant bool value  class. 
+/**
+ * A constant bool value  class.
  */
 class FreeCounterConstraint : public CounterConstraint {
- public:
-  /** 
-   * 
-   * 
-   * 
-   * @return  a constant bool value which does not depend on value of counter_value
+public:
+  /**
+   *
+   *
+   *
+   * @return  a constant bool value which does not depend on value of
+   * counter_value
    */
-  bool operator()( const int *counter_value ) const {
-    return value;
-  }
+  bool operator()( const int *counter_value ) const { return value; }
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
-    int lhs=parameter_value[ parameter_id];
-    switch( op){
-      case EQ:
-        value=(lhs==rhs);
-        break;
-      case LE:
-        value=(lhs<=rhs);
-        break;
-      case LT:
-        value=( lhs< rhs);
-        break;
-      case GE:
-        value= ( lhs>= rhs);
-        break;
-      case GT:
-        value=( lhs> rhs);
-        break;
-      case NE:
-        value=(lhs!=rhs );
-        break;
-      default:
-        value=false;
+    int lhs = parameter_value[ parameter_id ];
+    switch ( op ) {
+    case EQ:
+      value = ( lhs == rhs );
+      break;
+    case LE:
+      value = ( lhs <= rhs );
+      break;
+    case LT:
+      value = ( lhs < rhs );
+      break;
+    case GE:
+      value = ( lhs >= rhs );
+      break;
+    case GT:
+      value = ( lhs > rhs );
+      break;
+    case NE:
+      value = ( lhs != rhs );
+      break;
+    default:
+      value = false;
     }
   }
 
- protected:
-  ~FreeCounterConstraint( ){
-    
-  }
- private:
-  FreeCounterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs){
-    parameter_id=eparameter_id;
-    op=opp;
-    rhs=erhs;
+protected:
+  ~FreeCounterConstraint() {}
+
+private:
+  FreeCounterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs ) {
+    parameter_id = eparameter_id;
+    op           = opp;
+    rhs          = erhs;
   }
 
   CounterConstraint *copy() const {
     return new FreeCounterConstraint( parameter_id, op, rhs );
   }
-  
-  bool value;
-  int parameter_id;
+
+  bool          value;
+  int           parameter_id;
   COMP_OPERATOR op;
-  int rhs;
+  int           rhs;
   friend class InstanceFactory;
 };
 
-
 /**
  *  Form of counter op constant value
- * 
+ *
  */
 class DiaFreeCounterConstraint : public CounterConstraint {
 
 public:
-  /** 
+  /**
    * @return true if  the vlaue corresponding counter op rhs, false otherwise.
    */
   bool operator()( const int *counter_value ) const {
@@ -164,13 +164,13 @@ private:
 };
 
 /**
- *  Form of counter op parameter 
+ *  Form of counter - parameter op rhs
  */
 
-class DiaFreeCounterPConstraint : public CounterConstraint {
+class CounterParameterConstraint : public CounterConstraint {
 
 public:
-  /** 
+  /**
    * @return  true if the counter op parameter, false otherwise.
    */
   bool operator()( const int *counter_value ) const {
@@ -194,101 +194,102 @@ public:
     }
   }
 
+
+
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
 
     global_counter_id = id_map.at( local_counter_id );
-    rhs               = parameter_value[ parameter_id ];
+    rhs               = parameter_value[ parameter_id ] + erhs;
   }
 
 protected:
-  ~DiaFreeCounterPConstraint() {}
+  ~CounterParameterConstraint() {}
 
 private:
   int           local_counter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
   int           parameter_id;
+  int           erhs;
   int           rhs;
 
-  DiaFreeCounterPConstraint( int ecounter_id, COMP_OPERATOR opp,
-                             int eparameter_id ) {
+  CounterParameterConstraint( int ecounter_id, int eparameter_id,
+                              COMP_OPERATOR opp, int out_rhs ) {
 
     local_counter_id = ecounter_id;
     op               = opp;
     parameter_id     = eparameter_id;
+    erhs             = out_rhs;
     rhs              = 0;
   }
 
   CounterConstraint *copy() const {
 
-    return new DiaFreeCounterPConstraint( local_counter_id, op, parameter_id );
+    return new CounterParameterConstraint( local_counter_id, parameter_id, op,
+                                           erhs );
   }
 
   friend class InstanceFactory;
 };
 
 /**
- * Form parameter op parameter 
- * 
+ * Form of parameterA - parameterB op rhs (constant value)
  */
-
-class DiaParameterConstraint: public CounterConstraint {
+class DiaParameterConstraint : public CounterConstraint {
 public:
-  bool operator()( const int *counter_value ) const {
-    return value;
-  }
+  bool operator()( const int *counter_value ) const { return value; }
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
-    int lhs=parameter_value[first_paramter_id ]-parameter_value[ second_parameter_id];
-    switch( op){
-      case EQ:
-        value=(lhs==rhs);
-        break;
-      case LE:
-        value=(lhs<=rhs);
-        break;
-      case LT:
-        value=( lhs< rhs);
-        break;
-      case GE:
-        value= ( lhs>= rhs);
-        break;
-      case GT:
-        value=( lhs> rhs);
-        break;
-      case NE:
-        value=(lhs!=rhs );
-        break;
-      default:
-        value=false;
+    int lhs = parameter_value[ first_paramter_id ] -
+              parameter_value[ second_parameter_id ];
+    switch ( op ) {
+    case EQ:
+      value = ( lhs == rhs );
+      break;
+    case LE:
+      value = ( lhs <= rhs );
+      break;
+    case LT:
+      value = ( lhs < rhs );
+      break;
+    case GE:
+      value = ( lhs >= rhs );
+      break;
+    case GT:
+      value = ( lhs > rhs );
+      break;
+    case NE:
+      value = ( lhs != rhs );
+      break;
+    default:
+      value = false;
     }
   }
 
- protected:
-  ~DiaParameterConstraint( ){
-    
-  }
- private:
-  DiaParameterConstraint( int efirst_parameter_id, int esecond_parameter_id, COMP_OPERATOR eop, int erhs){
+protected:
+  ~DiaParameterConstraint() {}
 
-    value=false;
-    first_paramter_id=efirst_parameter_id;
-    second_parameter_id=esecond_parameter_id;
-    op=eop;
-    rhs=erhs;
+private:
+  DiaParameterConstraint( int efirst_parameter_id, int esecond_parameter_id,
+                          COMP_OPERATOR eop, int erhs ) {
+
+    value               = false;
+    first_paramter_id   = efirst_parameter_id;
+    second_parameter_id = esecond_parameter_id;
+    op                  = eop;
+    rhs                 = erhs;
   }
   CounterConstraint *copy() const {
-    return new DiaParameterConstraint(first_paramter_id, second_parameter_id, op, rhs );
+    return new DiaParameterConstraint( first_paramter_id, second_parameter_id,
+                                       op, rhs );
   }
 
-  bool value;
-  int first_paramter_id, second_parameter_id, rhs;
+  bool          value;
+  int           first_paramter_id, second_parameter_id, rhs;
   COMP_OPERATOR op;
   friend class InstanceFactory;
-  
 };
-
 
 /**
  * Form of counterA - counterB op constant value
@@ -297,7 +298,7 @@ public:
 class DiaCounterConstraint : public CounterConstraint {
 
 public:
-  /** 
+  /**
    * @return  true if counterA - counterB op constant, false otherwise.
    */
   bool operator()( const int *counter_value ) const {
@@ -353,13 +354,13 @@ private:
 
 /**
  * Form  \sum c_i counter_i op \sum f_i parameter_i
- * 
+ *
  */
 
 class DefaultCounterConstraint : public CounterConstraint {
 
 public:
-  /** 
+  /**
    * @return  true if \sum c_i counter_i op \sum f_i parameter_i
    */
   bool operator()( const int *counter_value ) const {

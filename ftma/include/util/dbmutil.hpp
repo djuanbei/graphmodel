@@ -74,21 +74,21 @@ const static string COMMENT_STR = "comment";
 
 const static string RESET_STR = "reset";
 
-const static string INT_STR           = "int";
+const static string INT_STR = "int";
 
-//const static string INT_DEC_STR           = "int_dec";
+// const static string INT_DEC_STR           = "int_dec";
 
-const static string CHAN_STR          = "chan";
+const static string CHAN_STR = "chan";
 
-//const static string CHAN_DEC_STR          = "chan_dec";
+// const static string CHAN_DEC_STR          = "chan_dec";
 
 const static string CLOCK_STR = "clock";
 
-//const static string CLOCK_DEC_STR = "clock_dec";
+// const static string CLOCK_DEC_STR = "clock_dec";
 
-const static string BOOL_STR          = "bool";
+const static string BOOL_STR = "bool";
 
-//const static string BOOL_DEC_STR          = "bool_dec";
+// const static string BOOL_DEC_STR          = "bool_dec";
 
 const static string PARAMETER_REF_STR = "&";
 
@@ -98,34 +98,36 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
-static COMP_OPERATOR negation(COMP_OPERATOR op ){
-  switch( op){
-    case EQ:{
-      return NE;
-    }
-    case LE: {
-      return GT;
-    }
-    case GE: {
-      return LT;
-    }
-    case LT : {
-      return GE;
-    }
-    case GT : {
-      return LE;
-    }
-    case NE: {
-      return EQ;
-    }
+static COMP_OPERATOR negation( COMP_OPERATOR op ) {
+  switch ( op ) {
+  case EQ: {
+    return NE;
+  }
+  case LE: {
+    return GT;
+  }
+  case GE: {
+    return LT;
+  }
+  case LT: {
+    return GE;
+  }
+  case GT: {
+    return LE;
+  }
+  case NE: {
+    return EQ;
+  }
   }
 }
 enum TYPE_T {
-  CLOCK_T,
   INT_T,
-  PARAMETER_T,
+  CLOCK_T,
   BOOL_T,
   CHAN_T,
+  URGENT_CHAN_T,
+  BROADCAST_CHAN_T,
+  PARAMETER_T,
   TEMPLATE_T,
   NO_T
 };

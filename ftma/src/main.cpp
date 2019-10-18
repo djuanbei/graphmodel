@@ -274,8 +274,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
   DiaFreeCounterConstraint *ccs1 =
-      InstanceFactory::getInstance().createDiaFreeCounterConstraint(
-          0, EQ, 0 ); // id==0
+      createDiaFreeCounterConstraint( 0, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
 
@@ -289,8 +288,7 @@ void fisher( int n = 2 ) {
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  SimpleCounterPAction *caction =
-      InstanceFactory::getInstance().createSimpleCounterPAction( 0, 0 );
+  SimpleCounterPAction *caction = createSimpleCounterPAction( 0, 0 );
 
   req_wait.addCounterAction( caction );
 
@@ -302,9 +300,8 @@ void fisher( int n = 2 ) {
 
   typename INT_TAS_t::T_t wait_cs( 2, 3 );
 
-  DiaFreeCounterPConstraint *ccs2 =
-      InstanceFactory::getInstance().createDiaFreeCounterPConstraint(
-          0, EQ, 0 ); // id==pid
+  CounterParameterConstraint *ccs2 =
+      createCounterParameterConstraint( 0, 0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
   typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
   wait_cs += cs3;
@@ -312,8 +309,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
   SimpleCounterAction *caction1 =
-      InstanceFactory::getInstance().createSimpleCounterAction(
-          0, 0 ); //( relations1 );
+      createSimpleCounterAction( 0, 0 ); //( relations1 );
 
   cs_A.addCounterAction( caction1 );
 
@@ -356,7 +352,6 @@ void fisher( int n = 2 ) {
     cout << "fisher mutual exclusion property check right" << endl;
   }
 
-
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
 }
@@ -380,8 +375,7 @@ void incrementalTest() {
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
   DiaFreeCounterConstraint *ccs1 =
-      InstanceFactory::getInstance().createDiaFreeCounterConstraint(
-          0, EQ, 0 ); // id==0
+      createDiaFreeCounterConstraint( 0, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
 
@@ -395,8 +389,7 @@ void incrementalTest() {
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  SimpleCounterPAction *caction =
-      InstanceFactory::getInstance().createSimpleCounterPAction( 0, 0 );
+  SimpleCounterPAction *caction = createSimpleCounterPAction( 0, 0 );
 
   req_wait.addCounterAction( caction );
 
@@ -408,9 +401,8 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t wait_cs( 2, 3 );
 
-  DiaFreeCounterPConstraint *ccs2 =
-      InstanceFactory::getInstance().createDiaFreeCounterPConstraint(
-          0, EQ, 0 ); // id==pid
+  CounterParameterConstraint *ccs2 =
+      createCounterParameterConstraint( 0, 0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
   typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
   wait_cs += cs3;
@@ -418,8 +410,7 @@ void incrementalTest() {
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
   SimpleCounterAction *caction1 =
-      InstanceFactory::getInstance().createSimpleCounterAction(
-          0, 0 ); //( relations1 );
+      createSimpleCounterAction( 0, 0 ); //( relations1 );
 
   cs_A.addCounterAction( caction1 );
 
@@ -534,7 +525,6 @@ void fisher1() {
   // }
   reacher.computeAllReachableSet();
   cout << "reach data size: " << data.size() << endl;
-
 }
 
 void testOP() {

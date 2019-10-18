@@ -37,19 +37,50 @@ public:
   const INT_TAS_t &getSYS() const { return sys; }
 
   const Property &getProp() const { return prop; }
-
   /**
-   *@brief variable op rhs
-   * @param current_data 
+   * @brief bool constraint
+   *
+   * @param current_data
+   * @param xml_name
+   * @param prefix
+   */
+  void parseConstraint( UppaalTemplateData *current_data,
+                        const string &xml_name, bool prefix = true );
+  /**
+   *@brief xml_name op rhs
+   * @param current_data
    * @param name  variable name
    * @param op  operator
    * @param rhs  constant value
    */
-  void  parseConstraint(UppaalTemplateData * current_data, const string& name, COMP_OPERATOR op,  int  rhs);
+  void parseConstraint( UppaalTemplateData *current_data,
+                        const string &xml_name, COMP_OPERATOR op, int rhs );
 
-  
-  void  parseConstraint(UppaalTemplateData * current_data, const string&  left_name, COMP_OPERATOR op, const string & rhs_name );
-  
+  /**
+   * @brief  constraint left_xml_name op  rhs_xml_name
+   *
+   * @param current_data
+   * @param left_xml_name
+   * @param op
+   * @param rhs_xml_name
+   */
+  void parseConstraint( UppaalTemplateData *current_data,
+                        const string &left_xml_name, COMP_OPERATOR op,
+                        const string &rhs_xml_name );
+
+  /**
+   * @brief first_xml_name - second_xml_name op rhs
+   *
+   * @param current_data
+   * @param first_xml_name
+   * @param second_xml_name
+   * @param op
+   * @param rhs
+   */
+  void parseConstraint( UppaalTemplateData *current_data,
+                        const string &      first_xml_name,
+                        const string &second_xml_name, COMP_OPERATOR op,
+                        const int rhs );
 
 private:
   UppaalTemplateData              system_data;
@@ -60,8 +91,8 @@ private:
 
   int parseDeclaration( XML_P system );
 
-  int parseTemplateDeclaration( child_type templates);
-  
+  int parseTemplateDeclaration( child_type templates );
+
   int parseTemplate( child_type templates );
 
   int parseSystem( XML_P system );
@@ -71,26 +102,25 @@ private:
   int parseTemplateParamter( UppaalTemplateData &tempData, XML_P parameter );
 
   vector<typename INT_TAS_t::L_t> parseLocation( UppaalTemplateData &tempData,
-                                                  child_type locations );
+                                                 child_type locations );
 
-  vector<typename INT_TAS_t::T_t>
-  parseTransition( UppaalTemplateData &tempData, child_type transitions );
+  vector<typename INT_TAS_t::T_t> parseTransition( UppaalTemplateData &tempData,
+                                                   child_type transitions );
 
   void parseLabel( UppaalTemplateData &data, string guards );
-  
 
-  int getLocalId(UppaalTemplateData * current_data, const int real_id  );
+  int getLocalId( UppaalTemplateData *current_data, const int real_id );
 
-  int getParameterId(UppaalTemplateData * current_data, const string &name );
+  int getParameterId( UppaalTemplateData *current_data, const string &name );
 
-  /** 
-   * @param current_data  current template 
+  /**
+   * @param current_data  current template
    * @param name the name in xml model
-   * @param save_name  the name in code level 
+   * @param save_name  the name in code level
    * @return  the type of name
    */
-  TYPE_T getType(UppaalTemplateData * current_data, const string & xml_name, string &code_name  );
-  
+  TYPE_T getType( UppaalTemplateData *current_data, const string &xml_name,
+                  string &code_name );
 };
 
 } // namespace graphsat

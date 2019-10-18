@@ -12,120 +12,170 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   child_type queries     = xmldoc.getChild( QUERIES_STR );
 
   parseDeclaration( declaration );
-  parseTemplateDeclaration( templates);
-  
+  parseTemplateDeclaration( templates );
+
   parseTemplate( templates );
   parseSystem( system );
   parseQuery( queries );
 }
 
-  /** 
-   * @param current_data 
-   * @param name  variable name
-   * @param op  operator
-   * @param int  constant value
-   *
-   */
-void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string & xml_name, COMP_OPERATOR op,  int rhs ){
-  void *cs;
-  string code_name;
-  int counter_id, param_id, clock_id;
-  ParaElement* p;
-  const  TYPE_T type=getType(current_data, xml_name, code_name);
-  switch(type ){
-    case PARAMETER_T: {
-        param_id=getParameterId(current_data, code_name );
-        p=(ParaElement*)current_data->getPointer(PARAMETER_STR, code_name);
-        if( p->is_ref){
-          cs = createDiaFreeCounterConstraint(param_id, op, rhs);
-          current_data->addPointer( INT_CS, INT_CS, cs);
-        }else{
-          cs=createFreeCounterConstraint( param_id, op, rhs );
-          current_data->addPointer( INT_CS, INT_CS, cs);
-        }
-      }
-      break;
-    case CLOCK_T:  {
-        clock_id=current_data->getId( CLOCK_STR, code_name)+1; //CLOCK ID START FROM 1
-        if( EQ==op){
-          cs=new      INT_TAS_t::CS_t(clock_id, 0,  GE, rhs ); //x<= c
-          current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
-
-          cs=new      INT_TAS_t::CS_t(clock_id, 0,  LE, rhs ); //x>= c
-          current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
-      
-        }else{
-          cs=new      INT_TAS_t::CS_t(clock_id, 0,  op, rhs ); //x< c
-          current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
-        }
-      }
-      break;
-    case INT_T:
-      {
-        counter_id=getLocalId(current_data, system_data.getId( INT_STR, code_name));
-        cs = createDiaFreeCounterConstraint(counter_id, op, rhs);
-        current_data->addPointer( INT_CS,INT_CS, cs);
-      }
-      break;
-      
-    case BOOL_T:
-      {
-        counter_id=getLocalId(current_data, system_data.getId( BOOL_STR, code_name));
-
-        cs = createDiaFreeCounterConstraint(counter_id, op, rhs);
-    
-        current_data->addPointer( INT_CS,INT_CS, cs);
-      }
-      break;
-      
-    default:
-      assert( false);
-   
+void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+                                    const string &xml_name, bool prefix ) {
+  if ( prefix ) {
+    parseConstraint( current_data, xml_name, NE, 0 );
+  } else {
+    parseConstraint( current_data, xml_name, EQ, 0 );
   }
-    
 }
 
+/**
+ * @brief xml_name op rhs
+ * @param current_data
+ * @param name  variable name
+ * @param op  operator
+ * @param int  constant value
+ *
+ */
+void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+                                    const string &xml_name, COMP_OPERATOR op,
+                                    int rhs ) {
+  void *       cs;
+  string       code_name;
+  int          counter_id, param_id, clock_id;
+  ParaElement *p;
+  const TYPE_T type = getType( current_data, xml_name, code_name );
 
-void  UppaalParser::parseConstraint(UppaalTemplateData * current_data, const string&  lhs_xml_name, COMP_OPERATOR op, const string & rhs_xml_name ){
+  switch ( type ) {
+  case CLOCK_T: {
+    clock_id =
+        system_data.getId( CLOCK_STR, code_name ) + 1; // CLOCK ID START FROM 1
+    if ( EQ == op ) {
+      cs = new INT_TAS_t::CS_t( clock_id, 0, GE, rhs ); // x<= c
+      current_data->addPointer( CLOCK_CS, CLOCK_CS, cs );
 
-  void *cs;
-  string lhs_code_name, rhs_code_name;
-  const  TYPE_T type1=getType(current_data,   lhs_xml_name, lhs_code_name);
-  const  TYPE_T type2=getType(current_data,   rhs_xml_name, rhs_code_name);
-  
-  if(type1==PARAMETER_T && type2==PARAMETER_T ){
-    int lhs_param_id=getParameterId(current_data, lhs_code_name);
-    int rhs_param_id=getParameterId(current_data, rhs_code_name);
-    ParaElement* p1=(ParaElement*)current_data->getPointer(PARAMETER_STR, lhs_code_name);
-    ParaElement* p2=(ParaElement*)current_data->getPointer(PARAMETER_STR, rhs_code_name);
-    if( p1->is_ref ){
-      if( p2->is_ref){
-        cs = createDiaCounterConstraint(lhs_param_id, rhs_param_id, op, 0 );
-        current_data->addPointer( INT_CS,INT_CS, cs);
-      }else{
-        cs=createDiaFreeCounterPConstraint( lhs_param_id, op, rhs_param_id );
-        current_data->addPointer( INT_CS,INT_CS, cs);
+      cs = new INT_TAS_t::CS_t( clock_id, 0, LE, rhs ); // x>= c
+      current_data->addPointer( CLOCK_CS, CLOCK_CS, cs );
+
+    } else {
+      cs = new INT_TAS_t::CS_t( clock_id, 0, op, rhs ); // x< c
+      current_data->addPointer( CLOCK_CS, CLOCK_CS, cs );
+    }
+    return;
+  }
+  case PARAMETER_T: {
+    param_id = getParameterId( current_data, code_name );
+    p = (ParaElement *) current_data->getPointer( PARAMETER_STR, code_name );
+    if ( p->is_ref ) {
+      cs = createDiaFreeCounterConstraint( param_id, op, rhs );
+    } else {
+      cs = createFreeCounterConstraint( param_id, op, rhs );
+    }
+    break;
+  }
+  case INT_T: {
+    counter_id =
+        getLocalId( current_data, system_data.getId( INT_STR, code_name ) );
+    cs = createDiaFreeCounterConstraint( counter_id, op, rhs );
+    break;
+  }
+
+  case BOOL_T: {
+    counter_id =
+        getLocalId( current_data, system_data.getId( BOOL_STR, code_name ) );
+    cs = createDiaFreeCounterConstraint( counter_id, op, rhs );
+    break;
+  }
+
+  default:
+    assert( false );
+  }
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+
+/**
+ * @brief  constraint left_xml_name op  rhs_xml_name
+ */
+void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+                                    const string &      lhs_xml_name,
+                                    COMP_OPERATOR       op,
+                                    const string &      rhs_xml_name ) {
+  parseConstraint( current_data, lhs_xml_name, rhs_xml_name, op, 0 );
+}
+
+/**
+
+ * @brief first_xml_name - second_xml_name op rhs
+ * @param current_data
+ * @param first_name
+ * @param second_name
+ * @param op
+ * @param rhs
+ */
+
+void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+                                    const string &      first_xml_name,
+                                    const string &      second_xml_name,
+                                    COMP_OPERATOR op, const int rhs ) {
+
+  void *       cs;
+  string       first_code_name, second_code_name;
+  const TYPE_T type1 = getType( current_data, first_xml_name, first_code_name );
+  const TYPE_T type2 =
+      getType( current_data, second_xml_name, second_code_name );
+
+  if ( type1 == PARAMETER_T && type2 == PARAMETER_T ) {
+    int lhs_param_id = getParameterId( current_data, first_code_name );
+    int rhs_param_id = getParameterId( current_data, second_code_name );
+
+    ParaElement *p1 = (ParaElement *) current_data->getPointer(
+        PARAMETER_STR, first_code_name );
+    ParaElement *p2 = (ParaElement *) current_data->getPointer(
+        PARAMETER_STR, second_code_name );
+    if ( p1->is_ref ) {
+      if ( p2->is_ref ) {
+        cs = createDiaCounterConstraint( lhs_param_id, rhs_param_id, op, rhs );
+      } else {
+        cs = createCounterParameterConstraint( lhs_param_id, rhs_param_id, op,
+                                               rhs );
       }
-    }else{
-      if( p2->is_ref){
-        COMP_OPERATOR nop=negation( op);
-        cs =createDiaFreeCounterPConstraint( rhs_param_id, nop, lhs_param_id );
-        current_data->addPointer( INT_CS,INT_CS, cs);
-      }else{
-        
-        
+    } else {
+      if ( p2->is_ref ) {
+        COMP_OPERATOR nop = negation( op );
+        cs = createCounterParameterConstraint( rhs_param_id, lhs_param_id, nop,
+                                               rhs * -1 );
+      } else {
+        cs = createDiaParameterConstraint( lhs_param_id, rhs_param_id, op, 0 );
       }
     }
-    
+
+  } else if ( type1 == PARAMETER_T ) {
+    int lhs_param_id   = getParameterId( current_data, first_code_name );
+    int rhs_counter_id = getLocalId(
+        current_data, system_data.getId( INT_STR, second_code_name ) );
+    ParaElement *p1 = (ParaElement *) current_data->getPointer(
+        PARAMETER_STR, first_code_name );
+    if ( p1->is_ref ) {
+      cs =
+          createCounterParameterConstraint( lhs_param_id, rhs_counter_id, op, );
+    } else {
+      cs = createDiaParameterConstraint( lhs_param_id, rhs_counter_id, op, 0 );
+    }
+
+  } else if ( type2 == PARAMETER_T ) {
+    int          rhs_param_id = getParameterId( current_data, first_code_name );
+    ParaElement *p2           = (ParaElement *) current_data->getPointer(
+        PARAMETER_STR, second_code_name );
+
+  } else {
   }
-  
-  assert( INT_T==type1);
-  int counter_id=system_data.getId( INT_STR, lhs_code_name);
-  
-  int param_id=getParameterId(current_data, rhs_code_name); 
-    
-  cs=createDiaFreeCounterPConstraint(counter_id, op, param_id );
-  current_data->addPointer( INT_CS,INT_CS, cs);
+
+  assert( INT_T == type1 );
+  int counter_id = system_data.getId( INT_STR, first_code_name );
+
+  int param_id = getParameterId( current_data, second_code_name );
+
+  cs = createDiaFreeCounterPConstraint( counter_id, op, param_id );
+  current_data->addPointer( INT_CS, INT_CS, cs );
 }
 
 int UppaalParser::parseDeclaration( XML_P declaration ) {
@@ -138,44 +188,41 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
     parseProblem( content, &system_data, &system_data );
   }
 
-  
   return 0;
 }
 
-int UppaalParser::parseTemplateDeclaration( child_type templates){
-  assert( NULL!=templates);
+int UppaalParser::parseTemplateDeclaration( child_type templates ) {
+  assert( NULL != templates );
 
-  string keys[ ]={
-    INT_STR, CLOCK_STR, BOOL_STR, CHAN_STR
-  };
-    
+  string keys[] = {INT_STR, CLOCK_STR, BOOL_STR, CHAN_STR};
+
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
     UppaalTemplateData template_data;
-    XML_P nameConf = ( *it )->getOneChild( NAME_STR );
-    template_data.setName( nameConf->getValue());
+    XML_P              nameConf = ( *it )->getOneChild( NAME_STR );
+    template_data.setName( nameConf->getValue() );
 
     XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
-
 
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
       parseProblem( dec_content, &system_data, &template_data );
-      for(auto key: keys ){
-        vector<pair<string, vector<int>>> temp_values=template_data.getValue(key );
-        for( auto e: temp_values ){
-          system_data.setValue(key,  e.first, e.second[ 0]);
+      for ( auto key : keys ) {
+        vector<pair<string, vector<int>>> temp_values =
+            template_data.getValue( key );
+        for ( auto e : temp_values ) {
+          system_data.setValue( key, e.first, e.second[ 0 ] );
         }
       }
     }
   }
-  int num=0;
-  for(auto key: keys ){
-    num+=system_data.getTypeNum( key);
+  int num = 0;
+  for ( auto key : keys ) {
+    num += system_data.getTypeNum( key );
   }
-  
-  system_data.setGlobalVarNum( num);
-  
-  return 0;  
+
+  system_data.setGlobalVarNum( num );
+
+  return 0;
 }
 
 int UppaalParser::parseTemplate( child_type templates ) {
@@ -189,7 +236,7 @@ int UppaalParser::parseTemplate( child_type templates ) {
 
     XML_P nameConf = ( *it )->getOneChild( NAME_STR );
 
-    template_data.setName( nameConf->getValue());
+    template_data.setName( nameConf->getValue() );
 
     system_data.addValue( TEMPLATE_STR, template_data.name );
 
@@ -238,17 +285,13 @@ int UppaalParser::parseSystem( XML_P system ) {
   assert( NULL != system );
 
   string content = system->getValue();
-  
 
   parseProblem( content, &system_data, &system_data );
-
-  
 
   int counter_num = system_data.getTypeNum( INT_STR );
   for ( int i = 0; i < counter_num; i++ ) {
     Counter                          counter( 0, MAX_COUNTER_VALUE );
-    const pair<string, vector<int>> &hh =
-        system_data.getValue( INT_STR, i );
+    const pair<string, vector<int>> &hh = system_data.getValue( INT_STR, i );
     counter.setValue( hh.second[ 0 ] );
     sys += counter;
   }
@@ -272,10 +315,10 @@ int UppaalParser::parseSystem( XML_P system ) {
           template_map[ template_name ].getPoints( PARAMETER_STR );
 
       Parameter parameter_template;
-      int global_num=system_data.getGlobalVarNum( );
-      int param_num=template_parameter_vec.size( );
-      for( int i=0; i<global_num; i++ ){
-        parameter_template.setCounterMap(i+param_num, i );
+      int       global_num = system_data.getGlobalVarNum();
+      int       param_num  = template_parameter_vec.size();
+      for ( int i = 0; i < global_num; i++ ) {
+        parameter_template.setCounterMap( i + param_num, i );
       }
 
       if ( template_parameter_vec.empty() ) {
@@ -313,7 +356,7 @@ int UppaalParser::parseQuery( child_type queries ) { return 0; }
 
 vector<INT_TAS_t::L_t>
     UppaalParser::parseLocation( UppaalTemplateData &template_data,
-                                  child_type          locations ) {
+                                 child_type          locations ) {
   vector<INT_TAS_t::L_t> return_locations;
 
   for ( child_iterator lit = locations->begin(); lit != locations->end();
@@ -353,19 +396,19 @@ vector<INT_TAS_t::L_t>
 }
 
 int UppaalParser::parseTemplateParamter( UppaalTemplateData &template_data,
-                                          XML_P               parameter ) {
+                                         XML_P               parameter ) {
 
   string         para_content = parameter->getValue();
   vector<string> terms        = splitStr( para_content, "," );
   for ( auto str : terms ) {
     ParaElement *temp_param = new ParaElement();
-    bool   is_ref = false;
-    size_t start  = str.find( PARAMETER_REF_STR );
+    bool         is_ref     = false;
+    size_t       start      = str.find( PARAMETER_REF_STR );
 
     if ( start != std::string::npos ) {
-      str    = deleteChar( str, start, '&' );
-      is_ref = true;
-      temp_param->is_ref=true;
+      str                = deleteChar( str, start, '&' );
+      is_ref             = true;
+      temp_param->is_ref = true;
     }
 
     vector<string> parts = splitStr( str, " " );
@@ -407,7 +450,7 @@ int UppaalParser::parseTemplateParamter( UppaalTemplateData &template_data,
 
 vector<INT_TAS_t::T_t>
     UppaalParser::parseTransition( UppaalTemplateData &template_data,
-                                    child_type          transitions ) {
+                                   child_type          transitions ) {
   vector<INT_TAS_t::T_t> return_transitions;
   for ( child_iterator tit = transitions->begin(); tit != transitions->end();
         tit++ ) {
@@ -440,8 +483,7 @@ vector<INT_TAS_t::T_t>
 
           template_data.clearPoints( CLOCK_CS );
 
-          vector<void *> counterCs =
-              template_data.getPoints( INT_CS, INT_CS );
+          vector<void *> counterCs = template_data.getPoints( INT_CS, INT_CS );
           for ( auto cs : counterCs ) {
             transition.addCounterCons( (CounterConstraint *) cs );
           }
@@ -477,45 +519,48 @@ vector<INT_TAS_t::T_t>
 }
 
 void UppaalParser::parseLabel( UppaalTemplateData &template_data,
-                                 string              guards ) {
+                               string              guards ) {
   // template_data.clearPoints();
   parseProblem( guards, &system_data, &template_data );
 }
 
-int UppaalParser::getLocalId(UppaalTemplateData * current_data, const int real_id  ){
-  return real_id+current_data->getPointNum(PARAMETER_STR );;
+int UppaalParser::getLocalId( UppaalTemplateData *current_data,
+                              const int           global_id ) {
+  return global_id + current_data->getPointNum( PARAMETER_STR );
 }
 
-int UppaalParser::getParameterId(UppaalTemplateData * current_data, const string &name ){
+int UppaalParser::getParameterId( UppaalTemplateData *current_data,
+                                  const string &      name ) {
 
-  return current_data->getPointerId( PARAMETER_STR, name);
+  return current_data->getPointerId( PARAMETER_STR, name );
 }
 
-TYPE_T UppaalParser::getType(UppaalTemplateData * current_data, const string & xml_name, string &code_name  ){
+TYPE_T UppaalParser::getType( UppaalTemplateData *current_data,
+                              const string &xml_name, string &code_name ) {
 
-  code_name=xml_name;
-  if(current_data->hasPointer( PARAMETER_STR, code_name) ){
+  code_name = xml_name;
+  if ( current_data->hasPointer( PARAMETER_STR, code_name ) ) {
     return PARAMETER_T;
   }
-  if(system_data.hasValue( TEMPLATE_STR, code_name) ){
+  if ( system_data.hasValue( TEMPLATE_STR, code_name ) ) {
     return TEMPLATE_T;
   }
-  
-  code_name=current_data->getVarFullName(xml_name);
-  if(current_data->hasValue( CLOCK_STR, code_name) ){
+
+  code_name = current_data->getVarFullName( xml_name );
+  if ( system_data.hasValue( CLOCK_STR, code_name ) ) {
     return CLOCK_T;
   }
 
-  if(current_data->hasValue( INT_STR, code_name)){
+  if ( system_data.hasValue( INT_STR, code_name ) ) {
     return INT_T;
   }
-  if(current_data->hasValue( BOOL_STR, code_name) ){
+  if ( system_data.hasValue( BOOL_STR, code_name ) ) {
     return BOOL_T;
   }
-  if(current_data->hasValue( CHAN_STR, code_name)){
+  if ( system_data.hasValue( CHAN_STR, code_name ) ) {
     return CHAN_T;
   }
-  
+
   //  code_name=current_data->getVarFullName(name);
   /**
    * clock variable can be only delcared at template section.
@@ -523,20 +568,20 @@ TYPE_T UppaalParser::getType(UppaalTemplateData * current_data, const string & x
   // if( system_data.hasValue(CLOCK_STR, xml_name )){
   //   return CLOCK_T;
   // }
-  
-  if(system_data.hasValue( INT_STR, xml_name)){
+  code_name = xml_name;
+
+  if ( system_data.hasValue( INT_STR, xml_name ) ) {
     return INT_T;
   }
 
-  if(system_data.hasValue( BOOL_STR, xml_name) ){
+  if ( system_data.hasValue( BOOL_STR, xml_name ) ) {
     return BOOL_T;
   }
 
-  if(system_data.hasValue( CHAN_STR, xml_name)){
+  if ( system_data.hasValue( CHAN_STR, xml_name ) ) {
     return CHAN_T;
   }
 
-  
   return NO_T;
 }
 

@@ -41,7 +41,7 @@ public:
     guards = other.guards;
 
     for ( auto e : other.counter_cons ) {
-      CounterConstraint *dummy = InstanceFactory::getInstance().copy( e );
+      CounterConstraint *dummy = copy( e );
 
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       counter_cons.push_back( dummy );
@@ -54,7 +54,7 @@ public:
     }
 
     for ( auto a : other.actions ) {
-      CounterAction *dummy = InstanceFactory::getInstance().copy( a );
+      CounterAction *dummy = copy( a );
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       actions.push_back( dummy );
     }

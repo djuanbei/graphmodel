@@ -33,10 +33,8 @@ enum ParaType {
   PARAM_SCALAR_T
 };
 struct ParaElement {
-  ParaElement( ){
-    is_ref=false;
-  }
-  bool is_ref;
+  ParaElement() { is_ref = false; }
+  bool     is_ref;
   ParaType type;
   int      id;
   string   type_name;
@@ -66,11 +64,7 @@ struct SystemDec {
 
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
 
-
-
-
 const static string CLOCK_CS = "clock_cons";
-
 
 const static string INT_CS = "counter_cons";
 
@@ -80,52 +74,44 @@ const static string INT_UPDATE = "counter_update";
 
 const static string INT_ARRAY = "int_array";
 
-//const static string USING_GLOBAL = STRING( USING_GLOBAL );
+// const static string USING_GLOBAL = STRING( USING_GLOBAL );
 
-const static int  UN_DEFINE=100000000;
-
-
+const static int UN_DEFINE = 100000000;
 
 class UppaalParser;
 
 class UppaalTemplateData {
 public:
-  UppaalTemplateData() { init_loc = 0; name=""; global_var_num=0; }
+  UppaalTemplateData() {
+    init_loc       = 0;
+    name           = "";
+    global_var_num = 0;
+  }
   void clear() {
     int_values.clear();
     point_values.clear();
   }
 
-  void setName(const string &n ){
-    name=n;
-  }
-  
-  string getName( void){
-    return name;
-  }
-  void setGlobalVarNum( int n){
-    global_var_num=n;
-  }
-  
-  int getGlobalVarNum( void) const{
-    return global_var_num;
-  }
+  void setName( const string &n ) { name = n; }
 
-  string getVarFullName(const string &var_name) const{
-    if(""!=name ){
-      return name+"#"+var_name;
+  string getName( void ) { return name; }
+  void   setGlobalVarNum( int n ) { global_var_num = n; }
+
+  int getGlobalVarNum( void ) const { return global_var_num; }
+
+  string getVarFullName( const string &var_name ) const {
+    if ( "" != name ) {
+      return name + "#" + var_name;
     }
     return var_name;
   }
 
-
-
-  void addIntArray(const string &key, vector<int> &v ) {
+  void addIntArray( const string &key, vector<int> &v ) {
     for ( auto e : v ) {
       addValue( INT_ARRAY, key, e );
     }
   }
-  const vector<int> &getIntArray(const string &key ) const {
+  const vector<int> &getIntArray( const string &key ) const {
     int id = getId( INT_ARRAY, key );
     if ( id > -1 ) {
       const pair<string, vector<int>> &pp = getValue( INT_ARRAY, id );
@@ -143,11 +129,10 @@ public:
     int_values.addValue( type, name, v );
   }
 
-  void setValue( const string & type, const string & name, int v= UN_DEFINE){
+  void setValue( const string &type, const string &name, int v = UN_DEFINE ) {
     int_values.setValue( type, name, v );
   }
-  
-  
+
   int getTypeNum( const string &type ) const {
     return int_values.getTypeNum( type );
   }
@@ -169,16 +154,14 @@ public:
   }
 
   bool hasValue( const string &type, const string &name ) const {
-    
+
     return int_values.hasValue( type, name );
-    
   }
 
   int getValue( const string &type, const string &name, int id = 0 ) const {
     return int_values.getValue( type, name, id );
   }
 
-  
   vector<pair<string, vector<int>>> getValue( const string &type ) const {
     return int_values.getValue( type );
   }
@@ -222,7 +205,7 @@ public:
 
 private:
   string         name;
-  int global_var_num;
+  int            global_var_num;
   ValueData<int> int_values;
   PointerData    point_values;
 

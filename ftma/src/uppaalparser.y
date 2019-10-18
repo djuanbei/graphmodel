@@ -45,25 +45,26 @@
  %}
 
 %union{
-  int intVal;
+  int int_value;
+  TYPE_T type_value;
   vector<string> * str_vec_pointer;
   COMP_OPERATOR com_op;
   
  }
 
-%token <intVal> CONSTANT
+%token <int_value> CONSTANT
 
-%token<intVal> IDENTIFIER
-
-
-
-%token<intVal> TEMPLATE
+%token<int_value> IDENTIFIER
 
 
-%type<intVal> const_expression
+
+%token<int_value> TEMPLATE
 
 
-%type<intVal> type_specifier
+%type<int_value> const_expression
+
+
+%type<type_value> type_specifier
 
 %type<str_vec_pointer> identifier_list
 
@@ -96,27 +97,27 @@
 type_specifier
 : INT
 {
-  $$=1;
+  $$=INT_T;
 }
 | CLOCK
 {
-  $$=2;
+  $$=CLOCK_T;
 }
 | BOOL
 {
-  $$=3;
+  $$=BOOL_T;
 }
 | CHAN
 {
-  $$=4;
+  $$=CHAN_T;
 }
 | URGENT CHAN
 {
-  $$=5;
+  $$=URGENT_CHAN_T;
 }
 | BROADCAST CHAN
 {
-  $$=6;
+  $$=BROADCAST_CHAN_T;
 }
 ;
 
@@ -222,62 +223,44 @@ IDENTIFIER compare_relation  IDENTIFIER
 |
 IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
 {
-  if(getType( symbol_table[$1])==CLOCK_T &&getType( symbol_table[$3])==CLOCK_T  ){
-    int clock_id1=current_data->getId( CLOCK_STR, symbol_table[$1])+1;
-    int clock_id2=current_data->getId( CLOCK_STR, symbol_table[$3])+1;
-    if( $4==EQ){
-      
-      INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, GE,  $5  ); //x-y< rhs
-
-      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);
-      
-      cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, LE,  $5  ); //x-y< rhs
-
-      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                     
-    }else{
-      INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs
-      current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                     
-    }
-
-  }
-  else if(getType( symbol_table[$1])==INT_T &&getType( symbol_table[$3])==INT_T  ){
-    int counter_id1=system_data->getId( INT_STR, symbol_table[$1]);
-    int counter_id2=system_data->getId( INT_STR, symbol_table[$3]);
+  model_parser->parseConstraint( current_data, symbol_table[ $1], symbol_table[ $3], $4, $5 );
     
+  /* if(getType( symbol_table[$1])==CLOCK_T &&getType( symbol_table[$3])==CLOCK_T  ){ */
+  /*   int clock_id1=current_data->getId( CLOCK_STR, symbol_table[$1])+1; */
+  /*   int clock_id2=current_data->getId( CLOCK_STR, symbol_table[$3])+1; */
+  /*   if( $4==EQ){ */
+      
+  /*     INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, GE,  $5  ); //x-y< rhs */
 
+  /*     current_data->addPointer( CLOCK_CS,CLOCK_CS, cs); */
+      
+  /*     cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, LE,  $5  ); //x-y< rhs */
 
-    
-    DiaCounterConstraint *cs=InstanceFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5);
-    current_data->addPointer( INT_CS,INT_CS, cs);
-  }
+  /*     current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                      */
+  /*   }else{ */
+  /*     INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs */
+  /*     current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                      */
+  /*   } */
+
+  /* } */
+  /* else if(getType( symbol_table[$1])==INT_T &&getType( symbol_table[$3])==INT_T  ){ */
+  /*   int counter_id1=system_data->getId( INT_STR, symbol_table[$1]); */
+  /*   int counter_id2=system_data->getId( INT_STR, symbol_table[$3]); */
+  /*   DiaCounterConstraint *cs=InstanceFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5); */
+  /*   current_data->addPointer( INT_CS,INT_CS, cs); */
+  /* } */
   
 
 }
 |
 IDENTIFIER
 {
-  void *cs;
-  string save_name;
-  const  TYPE_T type=getType( symbol_table[$1], save_name);
-  
-  switch(type ){
-    case PARAMETER_T:
-      int param_id=getParameterId(save_name );
-      ParaElement* p=(ParaElement*)current_data->getPointer(PARAMETER_STR, save_name);
-      if( p->is_ref){
-        
-      }
-      
-  }
-  if(PARAMETER_T==getType(symbol_table[ $1] ) ){
-    
-  }
-  
+  model_parser->parseConstraint( current_data, symbol_table[ $1] );
 }
 |
 '!' IDENTIFIER
 {
-  
+  model_parser->parseConstraint( current_data, symbol_table[ $2], false );
   
 }
 ;
@@ -316,11 +299,8 @@ IDENTIFIER '=' IDENTIFIER
 {
   assert(getType(symbol_table[$1] )==INT_T );
   int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-
-
     
   int parameter_id=getParameterId(symbol_table[$3] );
-
 
   SimpleCounterPAction *cs  =InstanceFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
   current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
@@ -384,105 +364,110 @@ variable_declaration
 : type_specifier identifier_list ';'
 {
   switch( $1){
-    case 1:
+    case INT_T:{
       for( auto v: *$2){
-        current_data->setValue(INT_STR, current_data->getVarFullName(v));
+        system_data->setValue(INT_STR, current_data->getVarFullName(v)); //All the variables  in system_data
       }
       delete $2;
       break ;
-    case 2:
+    }
+    case CLOCK_T:{
       for( auto v: *$2){
-        current_data->setValue(CLOCK_STR, current_data->getVarFullName(v));
+        system_data->setValue(CLOCK_STR, current_data->getVarFullName(v));
       }
       delete $2;
       break ;
+    }
 
-    case 3:
+    case BOOL_T: {
       for( auto v: *$2){
-        current_data->setValue(BOOL_STR, current_data->getVarFullName(v));
+        system_data->setValue(BOOL_STR, current_data->getVarFullName(v));
       }
       delete $2;
       break ;
-      
-    case 4:
+    }
+    case CHAN_T: {
       for( auto v: *$2){
-        current_data->setValue(CHAN_STR, current_data->getVarFullName(v), ONE2ONE_CH);
+        system_data->setValue(CHAN_STR, current_data->getVarFullName(v), ONE2ONE_CH);
       }
       delete $2;
       break ;
+    }
 
-    case 5:
-
+    case URGENT_CHAN_T:{
       for( auto v: *$2){
-        current_data->setValue(CHAN_STR, current_data->getVarFullName(v), URGENT_CH);
+        system_data->setValue(CHAN_STR, current_data->getVarFullName(v), URGENT_CH);
       }
       delete $2;
       break ;
-    case 6:
+    }
+    case BROADCAST_CHAN_T:{
       for( auto v: *$2){
-        current_data->setValue(CHAN_STR, current_data->getVarFullName(v), BROADCAST_CH);
+        system_data->setValue(CHAN_STR, current_data->getVarFullName(v), BROADCAST_CH);
       }
       delete $2;
       break ;
-      
+    }
   }
 }
 
 | type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
-  
   string name=symbol_table[ $2];
-  
- switch( $1){
-   case 1:
-     for( int i=0; i< $4; i++){
-       current_data->setValue( INT_STR, current_data->getVarFullName(arrayToVar(name, i)) );
-     }
-     break;
-   case 2:
-     for( int i=0; i< $4; i++){
-       current_data->setValue( CLOCK_STR, current_data->getVarFullName(arrayToVar(name, i )));
-     }
-     break;
+  switch( $1){
+    case INT_T:{
+      for( int i=0; i< $4; i++){
+        system_data->setValue( INT_STR, current_data->getVarFullName(arrayToVar(name, i)) );
+      }
+      break;
+    }
+    case CLOCK_T: {
+      for( int i=0; i< $4; i++){
+        system_data->setValue( CLOCK_STR, current_data->getVarFullName(arrayToVar(name, i )));
+      }
+      break;
+    }
 
-   case 3:
-     for( int i=0; i< $4; i++){
-       current_data->setValue( BOOL_STR, current_data->getVarFullName(arrayToVar(name, i )));
-     }
-     break;
+    case BOOL_T:{
+      for( int i=0; i< $4; i++){
+        system_data->setValue( BOOL_STR, current_data->getVarFullName(arrayToVar(name, i )));
+      }
+      break;
+    }
      
-   case 4:
-     for( int i=0; i< $4; i++){
-       current_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), ONE2ONE_CH);
-     }
-     break;
-
-   case 5:
-     for( int i=0; i< $4; i++){
-       current_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), URGENT_CH);
-     }
-     break;
-   case 6:
-     for( int i=0; i< $4; i++){
-       current_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), BROADCAST_CH);
-     }
-     break;
- }
+    case CHAN_T:{
+      for( int i=0; i< $4; i++){
+        system_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), ONE2ONE_CH);
+      }
+      break;
+    }
+    case URGENT_CHAN_T:{
+      for( int i=0; i< $4; i++){
+        system_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), URGENT_CH);
+      }
+      break;
+    }
+    case BROADCAST_CHAN_T: {
+      for( int i=0; i< $4; i++){
+        system_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), BROADCAST_CH);
+      }
+      break;
+    }
+  }
 }
-
 
 |  type_specifier IDENTIFIER '=' const_expression ';'
 {
   switch( $1){
-    case 1:
-      current_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+    case INT_T:
+      system_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
-    case 2:
-      current_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+    case CLOCK_T:
+      system_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
       
-    case 3:
-      current_data->setValue(BOOL_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+    case BOOL_T:
+      system_data->setValue(BOOL_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
   }
   
@@ -491,15 +476,15 @@ variable_declaration
 
 {
   switch( $2){
-    case 1:
-      current_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+    case INT_T:
+      system_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
-    case 2:
-      current_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+    case CLOCK_T:
+      system_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
 
-    case 3:
-      current_data->addValue(BOOL_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+    case BOOL_T:
+      system_data->addValue(BOOL_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
   }
   
@@ -513,7 +498,7 @@ variable_declaration
   for( int i=$4; i<=$6; i++  ){
     temp.push_back( i);
   }
-  current_data->addIntArray(current_data->getVarFullName(symbol_table[$8]),temp);
+  system_data->addIntArray(current_data->getVarFullName(symbol_table[$8]),temp);
 }
 
 

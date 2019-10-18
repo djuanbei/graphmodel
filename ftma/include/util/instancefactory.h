@@ -15,6 +15,10 @@
 
 #include "action/counteraction.h"
 
+#define regist_to_factory( T, V, V1 ) T *create##T V  {\
+  return InstanceFactory::getInstance().create##T V1 ;   \
+  }
+
 namespace graphsat {
 class InstanceFactory {
   SINGLETON( InstanceFactory );
@@ -22,6 +26,7 @@ class InstanceFactory {
 public:
   ~InstanceFactory() { destroy(); }
 
+private:
   DefaultCounterConstraint *
       createDefaultCounterConstraint( const vector<int> &pcons,
                                       const vector<int> &cons, int erhs,
@@ -33,34 +38,53 @@ public:
     return re;
   }
 
-
-  FreeCounterConstraint *
-      createFreeCounterConstraint( int p, COMP_OPERATOR o, int rhs ) {
-    FreeCounterConstraint *re = new FreeCounterConstraint( p, o, rhs );
+  FreeCounterConstraint *createFreeCounterConstraint( int parameter_id,
+                                                      COMP_OPERATOR op,
+                                                      int           rhs ) {
+    FreeCounterConstraint *re =
+        new FreeCounterConstraint( parameter_id, op, rhs );
     pdata.addValue( STRING( CounterConstraint ),
                     STRING( FreeCounterConstraint ), re );
     return re;
   }
-  
-  DiaFreeCounterPConstraint *
-      createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p ) {
-    DiaFreeCounterPConstraint *re = new DiaFreeCounterPConstraint( c, o, p );
+
+  CounterParameterConstraint *
+      createCounterParameterConstraint( int counter_id, int parameter_id,
+                                        COMP_OPERATOR op, int rhs ) {
+    CounterParameterConstraint *re =
+        new CounterParameterConstraint( counter_id, parameter_id, op, rhs );
     pdata.addValue( STRING( CounterConstraint ),
-                    STRING( DiaFreeCounterPConstraint ), re );
+                    STRING( CounterParameterConstraint ), re );
     return re;
   }
 
-  DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
-                                                    COMP_OPERATOR p, int r ) {
-    DiaCounterConstraint *re = new DiaCounterConstraint( x, y, p, r );
+  DiaParameterConstraint *
+      createDiaParameterConstraint( int efirst_parameter_id,
+                                    int esecond_parameter_id, COMP_OPERATOR eop,
+                                    int erhs ) {
+    DiaParameterConstraint *re = new DiaParameterConstraint(
+        efirst_parameter_id, esecond_parameter_id, eop, erhs );
+    pdata.addValue( STRING( CounterConstraint ),
+                    STRING( DiaParameterConstraint ), re );
+    return re;
+  }
+
+  DiaCounterConstraint *createDiaCounterConstraint( int           counter_x,
+                                                    int           counter_y,
+                                                    COMP_OPERATOR op,
+                                                    int           rhs ) {
+    DiaCounterConstraint *re =
+        new DiaCounterConstraint( counter_x, counter_y, op, rhs );
     pdata.addValue( STRING( CounterConstraint ), STRING( DiaCounterConstraint ),
                     re );
     return re;
   }
-  
-  DiaFreeCounterConstraint *
-      createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) {
-    DiaFreeCounterConstraint *re = new DiaFreeCounterConstraint( cid, p, r );
+
+  DiaFreeCounterConstraint *createDiaFreeCounterConstraint( int counter_id,
+                                                            COMP_OPERATOR op,
+                                                            int rhs ) {
+    DiaFreeCounterConstraint *re =
+        new DiaFreeCounterConstraint( counter_id, op, rhs );
     pdata.addValue( STRING( CounterConstraint ),
                     STRING( DiaFreeCounterConstraint ), re );
     return re;
@@ -73,16 +97,17 @@ public:
     return re;
   }
 
-  SimpleCounterAction *createSimpleCounterAction( int cid, int v ) {
-    SimpleCounterAction *re = new SimpleCounterAction( cid, v );
+  SimpleCounterAction *createSimpleCounterAction( int counter_id, int value ) {
+    SimpleCounterAction *re = new SimpleCounterAction( counter_id, value );
     pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterAction ),
                     re );
     return re;
   }
 
-  SimpleCounterPAction *createSimpleCounterPAction( int cid,
+  SimpleCounterPAction *createSimpleCounterPAction( int counter_id,
                                                     int eparameter_id ) {
-    SimpleCounterPAction *re = new SimpleCounterPAction( cid, eparameter_id );
+    SimpleCounterPAction *re =
+        new SimpleCounterPAction( counter_id, eparameter_id );
     pdata.addValue( STRING( CounterAction ), STRING( SimpleCounterPAction ),
                     re );
     return re;
@@ -101,6 +126,7 @@ public:
     return re;
   }
 
+public:
   void destroy() {
 
     deleteType( pdata, CounterConstraint );
@@ -110,44 +136,90 @@ public:
     pdata.clear();
   }
 
+  friend DefaultCounterConstraint *
+                                createDefaultCounterConstraint( const vector<int> &pcons,
+                                                                const vector<int> &cons, int erhs,
+                                                                COMP_OPERATOR eop );
+  friend FreeCounterConstraint *createFreeCounterConstraint( int parameter_id,
+                                                             COMP_OPERATOR op,
+                                                             int rhs );
+
+  friend CounterParameterConstraint *
+      createCounterParameterConstraint( int counter_id, int parameter_id,
+                                        COMP_OPERATOR op, int rhs );
+
+  friend DiaParameterConstraint *
+      createDiaParameterConstraint( int efirst_parameter_id,
+                                    int esecond_parameter_id, COMP_OPERATOR eop,
+                                    int erhs );
+
+  friend DiaCounterConstraint *createDiaCounterConstraint( int counter_x,
+                                                           int counter_y,
+                                                           COMP_OPERATOR op,
+                                                           int           rhs );
+
+  friend DiaFreeCounterConstraint *
+      createDiaFreeCounterConstraint( int counter_id, COMP_OPERATOR op,
+                                      int rhs );
+
+  friend CounterConstraint *copy( CounterConstraint *other );
+
+  friend SimpleCounterAction *createSimpleCounterAction( int counter_id,
+                                                         int value );
+
+  friend SimpleCounterPAction *createSimpleCounterPAction( int counter_id,
+                                                           int eparameter_id );
+
+  friend DefaultCAction *createDefaultCAction(
+      vector<pair<int, vector<pair<int, int>>>> &relations1 );
+
+  friend CounterAction *copy( const CounterAction *other );
+
 private:
   PointerData pdata;
 };
 
-
 DefaultCounterConstraint *
-createDefaultCounterConstraint( const vector<int> &pcons,
-                                const vector<int> &cons, int erhs,
-                                COMP_OPERATOR eop );
-FreeCounterConstraint *
-createFreeCounterConstraint( int p, COMP_OPERATOR o, int rhs );
+                       createDefaultCounterConstraint( const vector<int> &pcons,
+                                                       const vector<int> &cons, int erhs,
+                                                       COMP_OPERATOR eop );
+FreeCounterConstraint *createFreeCounterConstraint( int           parameter_id,
+                                                    COMP_OPERATOR op, int rhs );
 
+CounterParameterConstraint *createCounterParameterConstraint( int counter_id,
+                                                              int parameter_id,
+                                                              COMP_OPERATOR op,
+                                                              int rhs );
 
-DiaFreeCounterPConstraint *
-createDiaFreeCounterPConstraint( int c, COMP_OPERATOR o, int p );
+DiaParameterConstraint *createDiaParameterConstraint( int efirst_parameter_id,
+                                                      int esecond_parameter_id,
+                                                      COMP_OPERATOR eop,
+                                                      int           erhs );
 
-
-DiaCounterConstraint *createDiaCounterConstraint( int x, int y,
-                                                  COMP_OPERATOR p, int r );
+DiaCounterConstraint *createDiaCounterConstraint( int counter_x, int counter_y,
+                                                  COMP_OPERATOR op, int rhs );
 
 DiaFreeCounterConstraint *
-createDiaFreeCounterConstraint( int cid, COMP_OPERATOR p, int r ) ;
-
+    createDiaFreeCounterConstraint( int counter_id, COMP_OPERATOR op, int rhs );
 
 CounterConstraint *copy( CounterConstraint *other );
 
-SimpleCounterAction *createSimpleCounterAction( int cid, int v );
+SimpleCounterAction *createSimpleCounterAction( int counter_id, int value );
 
-
-SimpleCounterPAction *createSimpleCounterPAction( int cid,
+SimpleCounterPAction *createSimpleCounterPAction( int counter_id,
                                                   int eparameter_id );
 
 DefaultCAction *createDefaultCAction(
     vector<pair<int, vector<pair<int, int>>>> &relations1 );
 
-
 CounterAction *copy( const CounterAction *other );
 
+CounterParameterConstraint *neg( int parameter_id, int counter_id,
+                                 COMP_OPERATOR op, int rhs ) {
+  COMP_OPERATOR nop = negation( op );
+  return createCounterParameterConstraint( counter_id, parameter_id, nop,
+                                           rhs * -1 );
+}
 
 } // namespace graphsat
 

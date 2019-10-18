@@ -11,17 +11,16 @@
 #ifndef __DATA_H
 #define __DATA_H
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
 
 namespace graphsat {
 using std::map;
 using std::pair;
 using std::string;
-using std::vector;
 using std::stringstream;
-
+using std::vector;
 
 #define STRING( s ) #s
 
@@ -66,13 +65,11 @@ public:                                                                        \
     Var.clear( #TYPE );                                                        \
   }
 
-
-inline string  arrayToVar(const string &name, int id ){
+inline string arrayToVar( const string &name, int id ) {
   stringstream ss;
-  ss<<id;
-  return name +"#"+ss.str( );
+  ss << id;
+  return name + "#" + ss.str();
 }
-
 
 template <typename T> class ValueData {
 public:
@@ -92,20 +89,20 @@ public:
     vec_v.push_back( v );
     values[ type ].push_back( make_pair( name, vec_v ) );
   }
-  
-  void setValue( const string & type, const string & name, T v){
-    
+
+  void setValue( const string &type, const string &name, T v ) {
+
     for ( size_t i = 0; i < values[ type ].size(); i++ ) {
       if ( values[ type ][ i ].first == name ) {
-        if(values[ type ][ i ].second.empty( )){
-          values[ type ][ i ].second.push_back( v);
-        }else{
-          values[ type ][ i ].second[ 0]= v;
+        if ( values[ type ][ i ].second.empty() ) {
+          values[ type ][ i ].second.push_back( v );
+        } else {
+          values[ type ][ i ].second[ 0 ] = v;
         }
         return;
       }
     }
-    addValue(type, name,  v );
+    addValue( type, name, v );
   }
 
   int getTypeNum( const string &type ) const {
@@ -155,7 +152,7 @@ public:
     }
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
       if ( values.at( type )[ i ].first == name ) {
-        return !(values.at( type )[ i ].second.empty( ));
+        return !( values.at( type )[ i ].second.empty() );
       }
     }
     return false;
