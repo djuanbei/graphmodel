@@ -1,0 +1,69 @@
+\hypertarget{dbm_8hpp}{}\section{include/domain/dbm.hpp File Reference}
+\label{dbm_8hpp}\index{include/domain/dbm.hpp@{include/domain/dbm.hpp}}
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$cmath$>$}\newline
+{\ttfamily \#include $<$cstdint$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include $<$utility$>$}\newline
+{\ttfamily \#include \char`\"{}util/fast\+Hash.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}constraint/clockdiffcons.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}util/dbmutil.\+hpp\char`\"{}}\newline
+Include dependency graph for dbm.\+hpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dbm_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dbm_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory$<$ C $>$}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacegraphsat}{graphsat}}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{dbm_8hpp_af3b709fb668cf93ca09e2a46a2a031a8}{A\+DD}}(x,  y)
+\item 
+\#define \mbox{\hyperlink{dbm_8hpp_aa122890cae2d7dd19887cc83a771b887}{L\+OC}}(row,  col)~( row ) $\ast$ ( clock\+\_\+num ) + ( col )
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{dbm_8hpp_af3b709fb668cf93ca09e2a46a2a031a8}\label{dbm_8hpp_af3b709fb668cf93ca09e2a46a2a031a8}} 
+\index{dbm.hpp@{dbm.hpp}!ADD@{ADD}}
+\index{ADD@{ADD}!dbm.hpp@{dbm.hpp}}
+\subsubsection{\texorpdfstring{ADD}{ADD}}
+{\footnotesize\ttfamily \#define A\+DD(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{( ( x ) >= MAX\_INT || ( y ) >= MAX\_INT )                                     \(\backslash\)}
+\DoxyCodeLine{      ? MAX\_INT                                                                \(\backslash\)}
+\DoxyCodeLine{      : ( ( x ) + ( y ) - ( ( (x) \&1 ) | ( (y) \&1 ) ) );}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{dbm_8hpp_aa122890cae2d7dd19887cc83a771b887}\label{dbm_8hpp_aa122890cae2d7dd19887cc83a771b887}} 
+\index{dbm.hpp@{dbm.hpp}!LOC@{LOC}}
+\index{LOC@{LOC}!dbm.hpp@{dbm.hpp}}
+\subsubsection{\texorpdfstring{LOC}{LOC}}
+{\footnotesize\ttfamily \#define L\+OC(\begin{DoxyParamCaption}\item[{}]{row,  }\item[{}]{col }\end{DoxyParamCaption})~( row ) $\ast$ ( clock\+\_\+num ) + ( col )}
+

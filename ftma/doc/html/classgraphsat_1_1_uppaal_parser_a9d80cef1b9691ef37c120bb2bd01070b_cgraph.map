@@ -1,0 +1,36 @@
+<map id="graphsat::UppaalParser::parserTemplate" name="graphsat::UppaalParser::parserTemplate">
+<area shape="rect" id="node1" title=" " alt="" coords="5,641,167,680"/>
+<area shape="rect" id="node2" href="$classgraphsat_1_1_xml_config.html#afcc69a80121ee6d026c5da49defb566b" title=" " alt="" coords="453,308,595,347"/>
+<area shape="rect" id="node3" href="$classgraphsat_1_1_xml_config.html#ae8f15789e71f2bb0f795b832b107698f" title=" " alt="" coords="234,724,376,763"/>
+<area shape="rect" id="node4" href="$namespacegraphsat.html#a767ef8183b8eada3700a18101d3444a8" title=" " alt="" coords="245,787,366,812"/>
+<area shape="rect" id="node6" href="$classgraphsat_1_1_uppaal_data.html#a50f0cab2fb2e5624b39068e49d4c51ee" title=" " alt="" coords="1263,329,1414,368"/>
+<area shape="rect" id="node8" href="$namespacegraphsat.html#af2d981e488630027a65b60c1b0f5379a" title=" " alt="" coords="653,417,817,443"/>
+<area shape="rect" id="node14" href="$classgraphsat_1_1_uppaal_parser.html#a95a975c10be3178b0932b631bd10c119" title=" " alt="" coords="224,183,386,221"/>
+<area shape="rect" id="node15" href="$classgraphsat_1_1_uppaal_data.html#a39f89632de7e1d1a1f2b1fb1fbd05bd1" title=" " alt="" coords="449,68,600,107"/>
+<area shape="rect" id="node22" href="$classgraphsat_1_1_xml_config.html#a6f5d856d63643bcaa71589985331d1ad" title=" " alt="" coords="453,559,595,597"/>
+<area shape="rect" id="node23" href="$classgraphsat_1_1_uppaal_data.html#a00ac5e60eb80a5e7684653a9ff81c6a2" title=" " alt="" coords="230,836,381,875"/>
+<area shape="rect" id="node24" href="$classgraphsat_1_1_uppaal_parser.html#a945d1250a166958caaadf62ef845facf" title=" " alt="" coords="224,371,386,409"/>
+<area shape="rect" id="node28" href="$classgraphsat_1_1_uppaal_data.html#a261013813b76f6590e4c5e9b52fe8e12" title=" " alt="" coords="230,899,381,937"/>
+<area shape="rect" id="node29" href="$classgraphsat_1_1_uppaal_data.html#a1c420132ab6e3cfe21bd0fec604c8519" title=" " alt="" coords="230,961,381,1000"/>
+<area shape="rect" id="node31" href="$classgraphsat_1_1_uppaal_data.html#ae7ca546770b68997fac809beec05709f" title=" " alt="" coords="230,68,381,107"/>
+<area shape="rect" id="node34" href="$classgraphsat_1_1_t_a.html#ab72b4b1ef9d5eaebfa25192c63f514f1" title=" " alt="" coords="215,1024,395,1049"/>
+<area shape="rect" id="node5" href="$namespacegraphsat.html#ae996ede22924c81a18a6697de7bcf9d5" title=" " alt="" coords="473,787,576,812"/>
+<area shape="rect" id="node7" href="$classgraphsat_1_1_value_data.html#a60283cd52e1d634d7e10ba891a4bc870" title=" " alt="" coords="1462,329,1604,368"/>
+<area shape="rect" id="node9" href="$parser_2uppaalparser_8cpp.html#acd8617a8f2ac0de8bc1cc032cf449e19" title=" " alt="" coords="906,417,975,443"/>
+<area shape="rect" id="node10" href="$classgraphsat_1_1_uppaal_data.html#a7efc419d4d89f6f54f1b37e6a0ac76da" title=" " alt="" coords="1064,329,1215,368"/>
+<area shape="rect" id="node11" href="$parser_2uppaalparser_8cpp.html#a336804033724b76432b332e95008e90a" title=" " alt="" coords="1108,392,1171,417"/>
+<area shape="rect" id="node12" href="$include_2uppaalscan_8h.html#a7da304d8ef6c688c0835d35296fe61c2" title=" " alt="" coords="1108,441,1171,467"/>
+<area shape="rect" id="node13" href="$parser_2uppaalparser_8cpp.html#a164f2f81ce9c9677c36ded9ca2a62d5c" title=" " alt="" coords="1098,491,1181,516"/>
+<area shape="rect" id="node17" href="$classgraphsat_1_1_uppaal_parser.html#a6d3ff62e4240a56e105974418b497d30" title=" " alt="" coords="443,245,605,284"/>
+<area shape="rect" id="node20" href="$classgraphsat_1_1_uppaal_data.html#ad421061c61d3f2012e261c28d44df2be" title=" " alt="" coords="449,183,600,221"/>
+<area shape="rect" id="node16" href="$classgraphsat_1_1_value_data.html#a08fe1d8569af3f9e0b4906528c527339" title=" " alt="" coords="664,68,806,107"/>
+<area shape="rect" id="node18" href="$classgraphsat_1_1_uppaal_data.html#aa8135b656e806c6c246c45ee88d227fd" title=" " alt="" coords="660,245,811,284"/>
+<area shape="rect" id="node19" href="$classgraphsat_1_1_pointer_data.html#ac609e904c48f7cc8b136eb5208bd5ffe" title=" " alt="" coords="865,245,1016,284"/>
+<area shape="rect" id="node21" href="$classgraphsat_1_1_pointer_data.html#a5a5b4d08a9a16220e22e244c45f320bd" title=" " alt="" coords="660,183,811,221"/>
+<area shape="rect" id="node25" href="$classgraphsat_1_1_transition.html#a05fed532c6d2195a4a2dd010c2f4acf3" title=" " alt="" coords="455,433,594,472"/>
+<area shape="rect" id="node26" href="$classgraphsat_1_1_transition.html#a0532bd97d9b0f70ed8c7a045675c2a3d" title=" " alt="" coords="455,371,594,409"/>
+<area shape="rect" id="node27" href="$classgraphsat_1_1_transition.html#a49a7d2dec0d42cca71d5837c96b77d10" title=" " alt="" coords="455,496,594,535"/>
+<area shape="rect" id="node30" href="$classgraphsat_1_1_value_data.html#ab6782ef0d92876cb39ea1a8bf2d486c6" title=" " alt="" coords="453,961,595,1000"/>
+<area shape="rect" id="node32" href="$classgraphsat_1_1_uppaal_data.html#a0990d1da543e593b05bba3791cd351d8" title=" " alt="" coords="449,5,600,44"/>
+<area shape="rect" id="node33" href="$classgraphsat_1_1_value_data.html#a273b705fe36d8d0aa4397751195c7e1a" title=" " alt="" coords="664,5,806,44"/>
+</map>

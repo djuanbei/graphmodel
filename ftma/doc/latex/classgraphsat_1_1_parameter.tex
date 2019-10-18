@@ -1,0 +1,156 @@
+\hypertarget{classgraphsat_1_1_parameter}{}\section{graphsat\+::Parameter Class Reference}
+\label{classgraphsat_1_1_parameter}\index{graphsat::Parameter@{graphsat::Parameter}}
+
+
+{\ttfamily \#include $<$parameter.\+h$>$}
+
+
+
+Collaboration diagram for graphsat\+::Parameter\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=273pt]{classgraphsat_1_1_parameter__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_parameter_a89c4d6947e1ff44bfbb4e85406321c06}{Parameter}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_parameter_aeb19c4b110f01b846c9e20ae666ca02c}{set\+Counter\+Map}} (int local\+\_\+id, int global\+\_\+id)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_parameter_a34bcbd7b010a26f7b7f4cf78652fe78d}{set\+Chan\+Map}} (int local\+\_\+id, int global\+\_\+id)
+\item 
+const map$<$ int, int $>$ \& \mbox{\hyperlink{classgraphsat_1_1_parameter_a452bc578f7adf8feaedd40f3aa06fab9}{get\+Counter\+Map}} (void) const
+\item 
+const map$<$ int, int $>$ \& \mbox{\hyperlink{classgraphsat_1_1_parameter_a3f4d846ef936f82d07b5a2e4e4b632ee}{get\+Chan\+Map}} (void) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_parameter_a9d1fc3675ee07f866afca38a9fd198ff}{add\+Parameter\+Value}} (int v)
+\item 
+const vector$<$ int $>$ \& \mbox{\hyperlink{classgraphsat_1_1_parameter_a9f6ef8090aefb3f53ca031b70a9c81c4}{get\+Parameter\+Value}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+map$<$ int, int $>$ \mbox{\hyperlink{classgraphsat_1_1_parameter_a914222478bfceb8c804e00f39d60af64}{counter\+\_\+map}}
+\item 
+map$<$ int, int $>$ \mbox{\hyperlink{classgraphsat_1_1_parameter_ae05216a7ab70e07cfe1195338632d809}{chan\+\_\+map}}
+\item 
+vector$<$ int $>$ \mbox{\hyperlink{classgraphsat_1_1_parameter_aedd52a64c271b60c113f99e0e0ae9d6c}{paramter\+\_\+value}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a89c4d6947e1ff44bfbb4e85406321c06}\label{classgraphsat_1_1_parameter_a89c4d6947e1ff44bfbb4e85406321c06}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!Parameter@{Parameter}}
+\index{Parameter@{Parameter}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{Parameter()}{Parameter()}}
+{\footnotesize\ttfamily graphsat\+::\+Parameter\+::\+Parameter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a9d1fc3675ee07f866afca38a9fd198ff}\label{classgraphsat_1_1_parameter_a9d1fc3675ee07f866afca38a9fd198ff}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!addParameterValue@{addParameterValue}}
+\index{addParameterValue@{addParameterValue}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{addParameterValue()}{addParameterValue()}}
+{\footnotesize\ttfamily void graphsat\+::\+Parameter\+::add\+Parameter\+Value (\begin{DoxyParamCaption}\item[{int}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_parameter_a9d1fc3675ee07f866afca38a9fd198ff_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a3f4d846ef936f82d07b5a2e4e4b632ee}\label{classgraphsat_1_1_parameter_a3f4d846ef936f82d07b5a2e4e4b632ee}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!getChanMap@{getChanMap}}
+\index{getChanMap@{getChanMap}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{getChanMap()}{getChanMap()}}
+{\footnotesize\ttfamily const map$<$int, int$>$\& graphsat\+::\+Parameter\+::get\+Chan\+Map (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=327pt]{classgraphsat_1_1_parameter_a3f4d846ef936f82d07b5a2e4e4b632ee_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a452bc578f7adf8feaedd40f3aa06fab9}\label{classgraphsat_1_1_parameter_a452bc578f7adf8feaedd40f3aa06fab9}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!getCounterMap@{getCounterMap}}
+\index{getCounterMap@{getCounterMap}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{getCounterMap()}{getCounterMap()}}
+{\footnotesize\ttfamily const map$<$int, int$>$\& graphsat\+::\+Parameter\+::get\+Counter\+Map (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=327pt]{classgraphsat_1_1_parameter_a452bc578f7adf8feaedd40f3aa06fab9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a9f6ef8090aefb3f53ca031b70a9c81c4}\label{classgraphsat_1_1_parameter_a9f6ef8090aefb3f53ca031b70a9c81c4}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!getParameterValue@{getParameterValue}}
+\index{getParameterValue@{getParameterValue}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{getParameterValue()}{getParameterValue()}}
+{\footnotesize\ttfamily const vector$<$int$>$\& graphsat\+::\+Parameter\+::get\+Parameter\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=327pt]{classgraphsat_1_1_parameter_a9f6ef8090aefb3f53ca031b70a9c81c4_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a34bcbd7b010a26f7b7f4cf78652fe78d}\label{classgraphsat_1_1_parameter_a34bcbd7b010a26f7b7f4cf78652fe78d}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!setChanMap@{setChanMap}}
+\index{setChanMap@{setChanMap}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{setChanMap()}{setChanMap()}}
+{\footnotesize\ttfamily void graphsat\+::\+Parameter\+::set\+Chan\+Map (\begin{DoxyParamCaption}\item[{int}]{local\+\_\+id,  }\item[{int}]{global\+\_\+id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_aeb19c4b110f01b846c9e20ae666ca02c}\label{classgraphsat_1_1_parameter_aeb19c4b110f01b846c9e20ae666ca02c}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!setCounterMap@{setCounterMap}}
+\index{setCounterMap@{setCounterMap}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{setCounterMap()}{setCounterMap()}}
+{\footnotesize\ttfamily void graphsat\+::\+Parameter\+::set\+Counter\+Map (\begin{DoxyParamCaption}\item[{int}]{local\+\_\+id,  }\item[{int}]{global\+\_\+id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_parameter_aeb19c4b110f01b846c9e20ae666ca02c_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_ae05216a7ab70e07cfe1195338632d809}\label{classgraphsat_1_1_parameter_ae05216a7ab70e07cfe1195338632d809}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!chan\_map@{chan\_map}}
+\index{chan\_map@{chan\_map}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{chan\_map}{chan\_map}}
+{\footnotesize\ttfamily map$<$int, int$>$ graphsat\+::\+Parameter\+::chan\+\_\+map\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_a914222478bfceb8c804e00f39d60af64}\label{classgraphsat_1_1_parameter_a914222478bfceb8c804e00f39d60af64}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!counter\_map@{counter\_map}}
+\index{counter\_map@{counter\_map}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{counter\_map}{counter\_map}}
+{\footnotesize\ttfamily map$<$int, int$>$ graphsat\+::\+Parameter\+::counter\+\_\+map\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_parameter_aedd52a64c271b60c113f99e0e0ae9d6c}\label{classgraphsat_1_1_parameter_aedd52a64c271b60c113f99e0e0ae9d6c}} 
+\index{graphsat::Parameter@{graphsat::Parameter}!paramter\_value@{paramter\_value}}
+\index{paramter\_value@{paramter\_value}!graphsat::Parameter@{graphsat::Parameter}}
+\subsubsection{\texorpdfstring{paramter\_value}{paramter\_value}}
+{\footnotesize\ttfamily vector$<$int$>$ graphsat\+::\+Parameter\+::paramter\+\_\+value\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{parameter_8h}{parameter.\+h}}\end{DoxyCompactItemize}

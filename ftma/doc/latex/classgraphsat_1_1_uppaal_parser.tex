@@ -1,0 +1,322 @@
+\hypertarget{classgraphsat_1_1_uppaal_parser}{}\section{graphsat\+::Uppaal\+Parser Class Reference}
+\label{classgraphsat_1_1_uppaal_parser}\index{graphsat::UppaalParser@{graphsat::UppaalParser}}
+
+
+{\ttfamily \#include $<$uppaalmodelparser.\+h$>$}
+
+
+
+Collaboration diagram for graphsat\+::Uppaal\+Parser\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a39600d3f25a764a60f8e6abd36fc024a}{Uppaal\+Parser}} (const string \&xmlfile)
+\item 
+const \mbox{\hyperlink{namespacegraphsat_a72468138834e9a7182f32fed8035a2de}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t}} \& \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a30a317e52903660cc1d1715387e3bbe6}{get\+S\+YS}} () const
+\item 
+const \mbox{\hyperlink{classgraphsat_1_1_property}{Property}} \& \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a4f99de4040226d074cabfceaa0d4c109}{get\+Prop}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a5234eff5f12d53358893072e421fb108}{parse\+Declaration}} (\mbox{\hyperlink{namespacegraphsat_a94de7ec8ce4b5d6bc48bdc19e58b2d76}{X\+M\+L\+\_\+P}} system)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a458fdbf8c38c19215b191bc6a992d38e}{parse\+Template\+Declaration}} (\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}} templates)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a65d4465e1a96053627ef222a05a22356}{parse\+Template}} (\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}} templates)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_ac9dd720630e0d655635396e651d13465}{parse\+System}} (\mbox{\hyperlink{namespacegraphsat_a94de7ec8ce4b5d6bc48bdc19e58b2d76}{X\+M\+L\+\_\+P}} system)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a100e59360c8910f1dad2f0646255ffcc}{parse\+Query}} (\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}} queries)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_ad22c12325a60e719980d25c6368a7b7c}{parse\+Template\+Paramter}} (\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&temp\+Data, \mbox{\hyperlink{namespacegraphsat_a94de7ec8ce4b5d6bc48bdc19e58b2d76}{X\+M\+L\+\_\+P}} parameter)
+\item 
+vector$<$ typename \mbox{\hyperlink{classgraphsat_1_1_t_a_s_a34bf8786372c42fbf45e9d3274a5e325}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t\+::\+L\+\_\+t}} $>$ \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a7d6c4e8f548cf5abe26ea192eaf4a0e2}{parse\+Location}} (\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&temp\+Data, \mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}} locations)
+\item 
+vector$<$ typename \mbox{\hyperlink{classgraphsat_1_1_t_a_s_abbc05c03de984fb78282fd1feaf13c41}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t\+::\+T\+\_\+t}} $>$ \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a2d1d7098418df34e9ae1e97a23b96e1c}{parse\+Transition}} (\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&temp\+Data, \mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}} transitions)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a33d35bb79055b36cf00b281a63265a41}{parse\+Label}} (\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&data, string guards)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a43fcbc15cd57d79d8852e6b3b7c0aacd}{system\+\_\+data}}
+\item 
+map$<$ string, \mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} $>$ \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_aa4059e649e542e41dcbd90a3d980db2d}{template\+\_\+map}}
+\item 
+\mbox{\hyperlink{namespacegraphsat_a72468138834e9a7182f32fed8035a2de}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t}} \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_a1a08527d766eab0bf83e019c3698264c}{sys}}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_property}{Property}} \mbox{\hyperlink{classgraphsat_1_1_uppaal_parser_abf98cbefe7cdf29168472c0cb57a4c40}{prop}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a39600d3f25a764a60f8e6abd36fc024a}\label{classgraphsat_1_1_uppaal_parser_a39600d3f25a764a60f8e6abd36fc024a}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!UppaalParser@{UppaalParser}}
+\index{UppaalParser@{UppaalParser}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{UppaalParser()}{UppaalParser()}}
+{\footnotesize\ttfamily graphsat\+::\+Uppaal\+Parser\+::\+Uppaal\+Parser (\begin{DoxyParamCaption}\item[{const string \&}]{xmlfile }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a39600d3f25a764a60f8e6abd36fc024a_cgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a4f99de4040226d074cabfceaa0d4c109}\label{classgraphsat_1_1_uppaal_parser_a4f99de4040226d074cabfceaa0d4c109}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!getProp@{getProp}}
+\index{getProp@{getProp}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{getProp()}{getProp()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{classgraphsat_1_1_property}{Property}}\& graphsat\+::\+Uppaal\+Parser\+::get\+Prop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a30a317e52903660cc1d1715387e3bbe6}\label{classgraphsat_1_1_uppaal_parser_a30a317e52903660cc1d1715387e3bbe6}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!getSYS@{getSYS}}
+\index{getSYS@{getSYS}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{getSYS()}{getSYS()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{namespacegraphsat_a72468138834e9a7182f32fed8035a2de}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t}}\& graphsat\+::\+Uppaal\+Parser\+::get\+S\+YS (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a30a317e52903660cc1d1715387e3bbe6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a5234eff5f12d53358893072e421fb108}\label{classgraphsat_1_1_uppaal_parser_a5234eff5f12d53358893072e421fb108}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseDeclaration@{parseDeclaration}}
+\index{parseDeclaration@{parseDeclaration}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseDeclaration()}{parseDeclaration()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Parser\+::parse\+Declaration (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacegraphsat_a94de7ec8ce4b5d6bc48bdc19e58b2d76}{X\+M\+L\+\_\+P}}}]{system }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a5234eff5f12d53358893072e421fb108_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a5234eff5f12d53358893072e421fb108_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a33d35bb79055b36cf00b281a63265a41}\label{classgraphsat_1_1_uppaal_parser_a33d35bb79055b36cf00b281a63265a41}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseLabel@{parseLabel}}
+\index{parseLabel@{parseLabel}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseLabel()}{parseLabel()}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Parser\+::parse\+Label (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&}]{data,  }\item[{string}]{guards }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a33d35bb79055b36cf00b281a63265a41_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a33d35bb79055b36cf00b281a63265a41_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a7d6c4e8f548cf5abe26ea192eaf4a0e2}\label{classgraphsat_1_1_uppaal_parser_a7d6c4e8f548cf5abe26ea192eaf4a0e2}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseLocation@{parseLocation}}
+\index{parseLocation@{parseLocation}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseLocation()}{parseLocation()}}
+{\footnotesize\ttfamily vector$<$ \mbox{\hyperlink{classgraphsat_1_1_t_a_s_a34bf8786372c42fbf45e9d3274a5e325}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t\+::\+L\+\_\+t}} $>$ graphsat\+::\+Uppaal\+Parser\+::parse\+Location (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&}]{temp\+Data,  }\item[{\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}}}]{locations }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a7d6c4e8f548cf5abe26ea192eaf4a0e2_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a7d6c4e8f548cf5abe26ea192eaf4a0e2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a100e59360c8910f1dad2f0646255ffcc}\label{classgraphsat_1_1_uppaal_parser_a100e59360c8910f1dad2f0646255ffcc}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseQuery@{parseQuery}}
+\index{parseQuery@{parseQuery}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseQuery()}{parseQuery()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Parser\+::parse\+Query (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}}}]{queries }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a100e59360c8910f1dad2f0646255ffcc_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_ac9dd720630e0d655635396e651d13465}\label{classgraphsat_1_1_uppaal_parser_ac9dd720630e0d655635396e651d13465}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseSystem@{parseSystem}}
+\index{parseSystem@{parseSystem}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseSystem()}{parseSystem()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Parser\+::parse\+System (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacegraphsat_a94de7ec8ce4b5d6bc48bdc19e58b2d76}{X\+M\+L\+\_\+P}}}]{system }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Exactly one system declaration
+
+System declaration the corresponding automation without parameter.Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_ac9dd720630e0d655635396e651d13465_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_ac9dd720630e0d655635396e651d13465_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a65d4465e1a96053627ef222a05a22356}\label{classgraphsat_1_1_uppaal_parser_a65d4465e1a96053627ef222a05a22356}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseTemplate@{parseTemplate}}
+\index{parseTemplate@{parseTemplate}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseTemplate()}{parseTemplate()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Parser\+::parse\+Template (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}}}]{templates }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a65d4465e1a96053627ef222a05a22356_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a65d4465e1a96053627ef222a05a22356_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a458fdbf8c38c19215b191bc6a992d38e}\label{classgraphsat_1_1_uppaal_parser_a458fdbf8c38c19215b191bc6a992d38e}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseTemplateDeclaration@{parseTemplateDeclaration}}
+\index{parseTemplateDeclaration@{parseTemplateDeclaration}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseTemplateDeclaration()}{parseTemplateDeclaration()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Parser\+::parse\+Template\+Declaration (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}}}]{templates }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a458fdbf8c38c19215b191bc6a992d38e_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a458fdbf8c38c19215b191bc6a992d38e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_ad22c12325a60e719980d25c6368a7b7c}\label{classgraphsat_1_1_uppaal_parser_ad22c12325a60e719980d25c6368a7b7c}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseTemplateParamter@{parseTemplateParamter}}
+\index{parseTemplateParamter@{parseTemplateParamter}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseTemplateParamter()}{parseTemplateParamter()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Parser\+::parse\+Template\+Paramter (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&}]{temp\+Data,  }\item[{\mbox{\hyperlink{namespacegraphsat_a94de7ec8ce4b5d6bc48bdc19e58b2d76}{X\+M\+L\+\_\+P}}}]{parameter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_ad22c12325a60e719980d25c6368a7b7c_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_ad22c12325a60e719980d25c6368a7b7c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a2d1d7098418df34e9ae1e97a23b96e1c}\label{classgraphsat_1_1_uppaal_parser_a2d1d7098418df34e9ae1e97a23b96e1c}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!parseTransition@{parseTransition}}
+\index{parseTransition@{parseTransition}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{parseTransition()}{parseTransition()}}
+{\footnotesize\ttfamily vector$<$ \mbox{\hyperlink{classgraphsat_1_1_t_a_s_abbc05c03de984fb78282fd1feaf13c41}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t\+::\+T\+\_\+t}} $>$ graphsat\+::\+Uppaal\+Parser\+::parse\+Transition (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} \&}]{temp\+Data,  }\item[{\mbox{\hyperlink{namespacegraphsat_aba2f5cf076d49898cc0469bee94d3a05}{child\+\_\+type}}}]{transitions }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a2d1d7098418df34e9ae1e97a23b96e1c_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_parser_a2d1d7098418df34e9ae1e97a23b96e1c_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_abf98cbefe7cdf29168472c0cb57a4c40}\label{classgraphsat_1_1_uppaal_parser_abf98cbefe7cdf29168472c0cb57a4c40}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!prop@{prop}}
+\index{prop@{prop}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{prop}{prop}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_property}{Property}} graphsat\+::\+Uppaal\+Parser\+::prop\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a1a08527d766eab0bf83e019c3698264c}\label{classgraphsat_1_1_uppaal_parser_a1a08527d766eab0bf83e019c3698264c}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!sys@{sys}}
+\index{sys@{sys}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{sys}{sys}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacegraphsat_a72468138834e9a7182f32fed8035a2de}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t}} graphsat\+::\+Uppaal\+Parser\+::sys\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_a43fcbc15cd57d79d8852e6b3b7c0aacd}\label{classgraphsat_1_1_uppaal_parser_a43fcbc15cd57d79d8852e6b3b7c0aacd}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!system\_data@{system\_data}}
+\index{system\_data@{system\_data}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{system\_data}{system\_data}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}} graphsat\+::\+Uppaal\+Parser\+::system\+\_\+data\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_parser_aa4059e649e542e41dcbd90a3d980db2d}\label{classgraphsat_1_1_uppaal_parser_aa4059e649e542e41dcbd90a3d980db2d}} 
+\index{graphsat::UppaalParser@{graphsat::UppaalParser}!template\_map@{template\_map}}
+\index{template\_map@{template\_map}!graphsat::UppaalParser@{graphsat::UppaalParser}}
+\subsubsection{\texorpdfstring{template\_map}{template\_map}}
+{\footnotesize\ttfamily map$<$string, \mbox{\hyperlink{classgraphsat_1_1_uppaal_template_data}{Uppaal\+Template\+Data}}$>$ graphsat\+::\+Uppaal\+Parser\+::template\+\_\+map\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/io/\mbox{\hyperlink{uppaalmodelparser_8h}{uppaalmodelparser.\+h}}\item 
+src/\mbox{\hyperlink{uppaalmodelparser_8cpp}{uppaalmodelparser.\+cpp}}\end{DoxyCompactItemize}

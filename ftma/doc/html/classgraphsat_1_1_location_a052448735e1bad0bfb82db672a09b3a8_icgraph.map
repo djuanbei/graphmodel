@@ -1,0 +1,5 @@
+<map id="graphsat::Location::isCommit" name="graphsat::Location::isCommit">
+<area shape="rect" id="node1" title="the commit freeze time. Furthermore, if any process is in a committed location, the next transition m..." alt="" coords="363,5,494,44"/>
+<area shape="rect" id="node2" href="$classgraphsat_1_1_location.html#a061c74b681729ae1fbb38802e394eef6" title=" " alt="" coords="184,5,315,44"/>
+<area shape="rect" id="node3" href="$classgraphsat_1_1_location.html#acff10a7428288b8377a65c3377949160" title=" " alt="" coords="5,5,136,44"/>
+</map>

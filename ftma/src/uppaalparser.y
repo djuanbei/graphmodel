@@ -272,39 +272,13 @@ single_assign_statement
 single_assign_statement:
 IDENTIFIER '=' const_expression
 {
-  if( getType( symbol_table[$1] )==CLOCK_T){ // The clock variable can only de declared in template section
-
-    int clock_id=current_data->getId( CLOCK_STR, symbol_table[$1] )+1; //clock id start from 1
-    pair<int, int> *pp=new pair<int,int>(clock_id, $3 );
-    current_data->addPointer( RESET_STR,RESET_STR, pp);
-    
-  }else if(getType( symbol_table[$1] )==INT_T ){
-
-    int counter_id=system_data->getId(INT_STR )
-    if(current_data->hasValue(INT_STR, symbol_table[$1] ) ){
-      int counter_id=current_data->getId( INT_STR, symbol_table[$1]);
-    }else{
-      int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-    }
-    int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-
-    
-    SimpleCounterAction *cs=InstanceFactory::getInstance( ).createSimpleCounterAction( counter_id, $3);
-    current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
-  }
+  model_parser->parseAssign( current_data, symbol_table[$1], $3 );
   
 }
 |
 IDENTIFIER '=' IDENTIFIER
 {
-  assert(getType(symbol_table[$1] )==INT_T );
-  int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-    
-  int parameter_id=getParameterId(symbol_table[$3] );
-
-  SimpleCounterPAction *cs  =InstanceFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
-  
+  model_parser->parseAssign( current_data, symbol_table[$1], symbol_table[$3] );
 }
 |
 IDENTIFIER '=' TEMPLATE '(' identifier_list ')'
@@ -373,7 +347,7 @@ variable_declaration
     }
     case CLOCK_T:{
       for( auto v: *$2){
-        system_data->setValue(CLOCK_STR, current_data->getVarFullName(v));
+        current_data->setValue(CLOCK_STR, v);  //clock variable only can declare in template
       }
       delete $2;
       break ;
@@ -423,7 +397,7 @@ variable_declaration
     }
     case CLOCK_T: {
       for( int i=0; i< $4; i++){
-        system_data->setValue( CLOCK_STR, current_data->getVarFullName(arrayToVar(name, i )));
+        current_data->setValue( CLOCK_STR, arrayToVar(name, i ));
       }
       break;
     }
@@ -463,7 +437,7 @@ variable_declaration
       system_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$2]), $4);
       break;
     case CLOCK_T:
-      system_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+      current_data->setValue(CLOCK_STR, symbol_table[$2], $4);
       break;
       
     case BOOL_T:
@@ -480,7 +454,7 @@ variable_declaration
       system_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$3]), $5);
       break;
     case CLOCK_T:
-      system_data->setValue(CLOCK_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+      current_data->setValue(CLOCK_STR, symbol_table[$3], $5);
       break;
 
     case BOOL_T:

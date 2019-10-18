@@ -1,0 +1,198 @@
+\hypertarget{classgraphsat_1_1_value_data}{}\section{graphsat\+::Value\+Data$<$ T $>$ Class Template Reference}
+\label{classgraphsat_1_1_value_data}\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+
+
+{\ttfamily \#include $<$data.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::Value\+Data$<$ T $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{classgraphsat_1_1_value_data__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_value_data_a01ec9ee50f85bff7eaa5a29e2b5c7d53}{clear}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_value_data_a6601a601e64ad58e8d584226a13771e7}{clear}} (const string \&type)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_value_data_a96406cf8892e187bc37fccb5c8f5f130}{add\+Value}} (const string \&type, const string \&name, T v=0)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_value_data_a5a2ec95b007418d2c4278d68b4b567d6}{set\+Value}} (const string \&type, const string \&name, T v)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_value_data_ab6782ef0d92876cb39ea1a8bf2d486c6}{get\+Type\+Num}} (const string \&type) const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_value_data_a08fe1d8569af3f9e0b4906528c527339}{get\+Id}} (const string \&type, const string \&name) const
+\item 
+const pair$<$ string, vector$<$ T $>$ $>$ \& \mbox{\hyperlink{classgraphsat_1_1_value_data_a393f4c36450ba089b2b19a39f1094bf3}{get\+Value}} (const string \&type, int id) const
+\item 
+vector$<$ pair$<$ string, vector$<$ T $>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_value_data_a7214b99af7ad307d0f253a6440d451b3}{get\+Value}} (const string \&type) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_value_data_a27fa3eb0807a8822cf2fb0262d93b14b}{has\+Value}} (const string \&type, const string \&name) const
+\item 
+T \mbox{\hyperlink{classgraphsat_1_1_value_data_a072e3aefea03ed89f7dc2b656d4dc62c}{get\+Value}} (const string \&type, const string \&name, int id=0) const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+map$<$ string, vector$<$ pair$<$ string, vector$<$ T $>$ $>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_value_data_a896ab3d64dda9a631d60e0dca55ad90e}{values}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a96406cf8892e187bc37fccb5c8f5f130}\label{classgraphsat_1_1_value_data_a96406cf8892e187bc37fccb5c8f5f130}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!addValue@{addValue}}
+\index{addValue@{addValue}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{addValue()}{addValue()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::add\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name,  }\item[{T}]{v = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_a96406cf8892e187bc37fccb5c8f5f130_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a01ec9ee50f85bff7eaa5a29e2b5c7d53}\label{classgraphsat_1_1_value_data_a01ec9ee50f85bff7eaa5a29e2b5c7d53}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!clear@{clear}}
+\index{clear@{clear}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{clear()}{clear()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::clear (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_a01ec9ee50f85bff7eaa5a29e2b5c7d53_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a6601a601e64ad58e8d584226a13771e7}\label{classgraphsat_1_1_value_data_a6601a601e64ad58e8d584226a13771e7}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!clear@{clear}}
+\index{clear@{clear}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{clear()}{clear()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::clear (\begin{DoxyParamCaption}\item[{const string \&}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a08fe1d8569af3f9e0b4906528c527339}\label{classgraphsat_1_1_value_data_a08fe1d8569af3f9e0b4906528c527339}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!getId@{getId}}
+\index{getId@{getId}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{getId()}{getId()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::get\+Id (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Element type which wants to find \\
+\hline
+{\em name} & The name of element\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/1 if name is not in values 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_a08fe1d8569af3f9e0b4906528c527339_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_ab6782ef0d92876cb39ea1a8bf2d486c6}\label{classgraphsat_1_1_value_data_ab6782ef0d92876cb39ea1a8bf2d486c6}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!getTypeNum@{getTypeNum}}
+\index{getTypeNum@{getTypeNum}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{getTypeNum()}{getTypeNum()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::get\+Type\+Num (\begin{DoxyParamCaption}\item[{const string \&}]{type }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_ab6782ef0d92876cb39ea1a8bf2d486c6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a393f4c36450ba089b2b19a39f1094bf3}\label{classgraphsat_1_1_value_data_a393f4c36450ba089b2b19a39f1094bf3}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!getValue@{getValue}}
+\index{getValue@{getValue}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+const pair$<$string, vector$<$T$>$ $>$\& \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::get\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{int}]{id }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_a393f4c36450ba089b2b19a39f1094bf3_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a7214b99af7ad307d0f253a6440d451b3}\label{classgraphsat_1_1_value_data_a7214b99af7ad307d0f253a6440d451b3}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!getValue@{getValue}}
+\index{getValue@{getValue}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+vector$<$pair$<$string, vector$<$T$>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::get\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a072e3aefea03ed89f7dc2b656d4dc62c}\label{classgraphsat_1_1_value_data_a072e3aefea03ed89f7dc2b656d4dc62c}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!getValue@{getValue}}
+\index{getValue@{getValue}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+T \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::get\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name,  }\item[{int}]{id = {\ttfamily 0} }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a27fa3eb0807a8822cf2fb0262d93b14b}\label{classgraphsat_1_1_value_data_a27fa3eb0807a8822cf2fb0262d93b14b}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!hasValue@{hasValue}}
+\index{hasValue@{hasValue}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{hasValue()}{hasValue()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::has\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_a27fa3eb0807a8822cf2fb0262d93b14b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a5a2ec95b007418d2c4278d68b4b567d6}\label{classgraphsat_1_1_value_data_a5a2ec95b007418d2c4278d68b4b567d6}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!setValue@{setValue}}
+\index{setValue@{setValue}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{setValue()}{setValue()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::set\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name,  }\item[{T}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_value_data_a5a2ec95b007418d2c4278d68b4b567d6_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_value_data_a896ab3d64dda9a631d60e0dca55ad90e}\label{classgraphsat_1_1_value_data_a896ab3d64dda9a631d60e0dca55ad90e}} 
+\index{graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}!values@{values}}
+\index{values@{values}!graphsat::ValueData$<$ T $>$@{graphsat::ValueData$<$ T $>$}}
+\subsubsection{\texorpdfstring{values}{values}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+map$<$string, vector$<$pair$<$string, vector$<$T$>$ $>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_value_data}{graphsat\+::\+Value\+Data}}$<$ T $>$\+::values\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/util/\mbox{\hyperlink{data_8hpp}{data.\+hpp}}\end{DoxyCompactItemize}

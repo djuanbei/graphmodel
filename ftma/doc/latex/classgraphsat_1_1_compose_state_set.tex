@@ -1,0 +1,145 @@
+\hypertarget{classgraphsat_1_1_compose_state_set}{}\section{graphsat\+::Compose\+State\+Set$<$ T $>$ Class Template Reference}
+\label{classgraphsat_1_1_compose_state_set}\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+
+
+{\ttfamily \#include $<$discretestate.\+hpp$>$}
+
+
+
+Inheritance diagram for graphsat\+::Compose\+State\+Set$<$ T $>$\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_compose_state_set__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for graphsat\+::Compose\+State\+Set$<$ T $>$\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=245pt]{classgraphsat_1_1_compose_state_set__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_compose_state_set_aef6ac032dff8b476edd7c7cb6c4bd164}{Compose\+State\+Set}} ()
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_a205740accb316d74a4af24e2a91b3a6d}{add\+Compent}} (\mbox{\hyperlink{classgraphsat_1_1_single_state_set}{Single\+State\+Set}}$<$ T $>$ \&comp)
+\item 
+virtual bool \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_a0f359257087c8ae10bf25881f9448395}{add}} (const vector$<$ pair$<$ int, T $\ast$ $>$$>$ \&one)
+\item 
+virtual bool \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_abfd0e46ca8319f69a506b7854850782b}{contain}} (const vector$<$ pair$<$ int, T $\ast$ $>$$>$ \&one) const
+\item 
+virtual \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{Compose\+State\+Set}}$<$ T $>$ \& \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_a615b1e99b8dd086e1112bf424e29bd16}{operator+}} (const \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{Compose\+State\+Set}}$<$ T $>$ \&other)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_a143dc652308b16919867155d59fa0a09}{add\+Compent\+Impl}} (\mbox{\hyperlink{classgraphsat_1_1_single_state_set}{Single\+State\+Set}}$<$ T $>$ \&comp)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_a26fd1ff0f5da83459419e542597dbf2d}{num}}
+\item 
+map$<$ int, int $>$ \mbox{\hyperlink{classgraphsat_1_1_compose_state_set_abf29da88a54ef280473d506130ef6bc3}{state\+Index\+Map}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_aef6ac032dff8b476edd7c7cb6c4bd164}\label{classgraphsat_1_1_compose_state_set_aef6ac032dff8b476edd7c7cb6c4bd164}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!ComposeStateSet@{ComposeStateSet}}
+\index{ComposeStateSet@{ComposeStateSet}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{ComposeStateSet()}{ComposeStateSet()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{Compose\+State\+Set}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_a0f359257087c8ae10bf25881f9448395}\label{classgraphsat_1_1_compose_state_set_a0f359257087c8ae10bf25881f9448395}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!add@{add}}
+\index{add@{add}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::add (\begin{DoxyParamCaption}\item[{const vector$<$ pair$<$ int, T $\ast$ $>$$>$ \&}]{one }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{classgraphsat_1_1_compact_compose_state_set_ad728351fbf1e81740088147289ef3884}{graphsat\+::\+Compact\+Compose\+State\+Set$<$ T $>$}}, \mbox{\hyperlink{classgraphsat_1_1_complete_compact_compose_state_set_aaf32e840a543a728f1b849e6c8aecab8}{graphsat\+::\+Complete\+Compact\+Compose\+State\+Set$<$ T $>$}}, and \mbox{\hyperlink{classgraphsat_1_1_expand_compose_state_set_ad56d86ce711a4586fcdaacc7e94d4e18}{graphsat\+::\+Expand\+Compose\+State\+Set$<$ T $>$}}.
+
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_a205740accb316d74a4af24e2a91b3a6d}\label{classgraphsat_1_1_compose_state_set_a205740accb316d74a4af24e2a91b3a6d}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!addCompent@{addCompent}}
+\index{addCompent@{addCompent}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{addCompent()}{addCompent()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::add\+Compent (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_single_state_set}{Single\+State\+Set}}$<$ T $>$ \&}]{comp }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_compose_state_set_a205740accb316d74a4af24e2a91b3a6d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_a143dc652308b16919867155d59fa0a09}\label{classgraphsat_1_1_compose_state_set_a143dc652308b16919867155d59fa0a09}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!addCompentImpl@{addCompentImpl}}
+\index{addCompentImpl@{addCompentImpl}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{addCompentImpl()}{addCompentImpl()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+virtual void \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::add\+Compent\+Impl (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_single_state_set}{Single\+State\+Set}}$<$ T $>$ \&}]{comp }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{classgraphsat_1_1_compact_compose_state_set_a11bd85b646593e15141f597abbe301da}{graphsat\+::\+Compact\+Compose\+State\+Set$<$ T $>$}}, and \mbox{\hyperlink{classgraphsat_1_1_complete_compact_compose_state_set_af45ca7e6d6b308d8bdb6f91e0d7830c0}{graphsat\+::\+Complete\+Compact\+Compose\+State\+Set$<$ T $>$}}.
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_compose_state_set_a143dc652308b16919867155d59fa0a09_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_abfd0e46ca8319f69a506b7854850782b}\label{classgraphsat_1_1_compose_state_set_abfd0e46ca8319f69a506b7854850782b}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!contain@{contain}}
+\index{contain@{contain}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{contain()}{contain()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::contain (\begin{DoxyParamCaption}\item[{const vector$<$ pair$<$ int, T $\ast$ $>$$>$ \&}]{one }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented in \mbox{\hyperlink{classgraphsat_1_1_compact_compose_state_set_a0a42f9a9d01b52368209db0e1c5e67b7}{graphsat\+::\+Compact\+Compose\+State\+Set$<$ T $>$}}, \mbox{\hyperlink{classgraphsat_1_1_complete_compact_compose_state_set_a2ba10c7aa62262e0c7cc009573cd7a01}{graphsat\+::\+Complete\+Compact\+Compose\+State\+Set$<$ T $>$}}, and \mbox{\hyperlink{classgraphsat_1_1_expand_compose_state_set_a4c014106669978321e07e0c9b7783479}{graphsat\+::\+Expand\+Compose\+State\+Set$<$ T $>$}}.
+
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_a615b1e99b8dd086e1112bf424e29bd16}\label{classgraphsat_1_1_compose_state_set_a615b1e99b8dd086e1112bf424e29bd16}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!operator+@{operator+}}
+\index{operator+@{operator+}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{operator+()}{operator+()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+virtual \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{Compose\+State\+Set}}$<$T$>$\& \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::operator+ (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{Compose\+State\+Set}}$<$ T $>$ \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_a26fd1ff0f5da83459419e542597dbf2d}\label{classgraphsat_1_1_compose_state_set_a26fd1ff0f5da83459419e542597dbf2d}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!num@{num}}
+\index{num@{num}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{num}{num}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::num\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_compose_state_set_abf29da88a54ef280473d506130ef6bc3}\label{classgraphsat_1_1_compose_state_set_abf29da88a54ef280473d506130ef6bc3}} 
+\index{graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}!stateIndexMap@{stateIndexMap}}
+\index{stateIndexMap@{stateIndexMap}!graphsat::ComposeStateSet$<$ T $>$@{graphsat::ComposeStateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{stateIndexMap}{stateIndexMap}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+map$<$int, int$>$ \mbox{\hyperlink{classgraphsat_1_1_compose_state_set}{graphsat\+::\+Compose\+State\+Set}}$<$ T $>$\+::state\+Index\+Map\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{discretestate_8hpp}{discretestate.\+hpp}}\end{DoxyCompactItemize}

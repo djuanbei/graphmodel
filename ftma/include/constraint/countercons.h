@@ -17,9 +17,6 @@
 
 #include "util/data.hpp"
 
-
-
-
 namespace graphsat {
 
 class InstanceFactory;
@@ -46,7 +43,7 @@ private:
 /**
  * A constant bool value  class.
  */
-class FreeCounterConstraint : public CounterConstraint {
+class OneParamaterConstraint : public CounterConstraint {
 public:
   /**
    *
@@ -84,17 +81,17 @@ public:
   }
 
 protected:
-  ~FreeCounterConstraint() {}
+  ~OneParamaterConstraint() {}
 
 private:
-  FreeCounterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs ) {
+  OneParamaterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs ) {
     parameter_id = eparameter_id;
     op           = opp;
     rhs          = erhs;
   }
 
   CounterConstraint *copy() const {
-    return new FreeCounterConstraint( parameter_id, op, rhs );
+    return new OneParamaterConstraint( parameter_id, op, rhs );
   }
 
   bool          value;
@@ -108,7 +105,7 @@ private:
  *  Form of counter op constant value
  *
  */
-class DiaFreeCounterConstraint : public CounterConstraint {
+class OneCounterConstraint : public CounterConstraint {
 
 public:
   /**
@@ -139,11 +136,10 @@ public:
   }
 
 protected:
-  ~DiaFreeCounterConstraint() {}
+  ~OneCounterConstraint() {}
 
 private:
-  DiaFreeCounterConstraint( int ecounter_id, COMP_OPERATOR opp,
-                            int right_side ) {
+  OneCounterConstraint( int ecounter_id, COMP_OPERATOR opp, int right_side ) {
 
     local_counter_id  = ecounter_id;
     global_counter_id = 0;
@@ -153,7 +149,7 @@ private:
 
   CounterConstraint *copy() const {
 
-    return new DiaFreeCounterConstraint( local_counter_id, op, rhs );
+    return new OneCounterConstraint( local_counter_id, op, rhs );
   }
 
   int           local_counter_id;
@@ -193,8 +189,6 @@ public:
       return false;
     }
   }
-
-
 
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
@@ -236,7 +230,7 @@ private:
 /**
  * Form of parameterA - parameterB op rhs (constant value)
  */
-class DiaParameterConstraint : public CounterConstraint {
+class TwoParameterConstraint : public CounterConstraint {
 public:
   bool operator()( const int *counter_value ) const { return value; }
   void globalUpdate( const map<int, int> &id_map,
@@ -268,10 +262,10 @@ public:
   }
 
 protected:
-  ~DiaParameterConstraint() {}
+  ~TwoParameterConstraint() {}
 
 private:
-  DiaParameterConstraint( int efirst_parameter_id, int esecond_parameter_id,
+  TwoParameterConstraint( int efirst_parameter_id, int esecond_parameter_id,
                           COMP_OPERATOR eop, int erhs ) {
 
     value               = false;
@@ -281,7 +275,7 @@ private:
     rhs                 = erhs;
   }
   CounterConstraint *copy() const {
-    return new DiaParameterConstraint( first_paramter_id, second_parameter_id,
+    return new TwoParameterConstraint( first_paramter_id, second_parameter_id,
                                        op, rhs );
   }
 
@@ -295,7 +289,7 @@ private:
  * Form of counterA - counterB op constant value
  */
 
-class DiaCounterConstraint : public CounterConstraint {
+class TwoCounterConstraint : public CounterConstraint {
 
 public:
   /**
@@ -330,10 +324,10 @@ public:
   }
 
 protected:
-  ~DiaCounterConstraint() {}
+  ~TwoCounterConstraint() {}
 
 private:
-  DiaCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
+  TwoCounterConstraint( int x, int y, COMP_OPERATOR p, int r ) {
 
     local_counter_x = x;
     local_counter_y = y;
@@ -342,7 +336,7 @@ private:
   }
   CounterConstraint *copy() const {
 
-    return new DiaCounterConstraint( local_counter_x, local_counter_y, op,
+    return new TwoCounterConstraint( local_counter_x, local_counter_y, op,
                                      rhs );
   }
 

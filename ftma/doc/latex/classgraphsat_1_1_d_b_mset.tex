@@ -1,0 +1,298 @@
+\hypertarget{classgraphsat_1_1_d_b_mset}{}\section{graphsat\+::D\+B\+Mset$<$ C $>$ Class Template Reference}
+\label{classgraphsat_1_1_d_b_mset}\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+
+
+{\ttfamily \#include $<$dbmset.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::D\+B\+Mset$<$ C $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_mset__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1const__iterator}{const\+\_\+iterator}}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1iterator}{iterator}}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a2a0d8e81172aa1a865cf5819749a80a0}{D\+B\+Mset}} (\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \&manager)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_aa0f809f2d7c58227bcde30f6c664c0c1}{$\sim$\+D\+B\+Mset}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a7aff13f25e4f4f43ceb9e07df6aea276}{begin}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_ac44e4e340d856eeabf26056092520e36}{begin}} () const
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_ade948f2f96fe55fa3fba669c0035f6fe}{end}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a036eed51ffdf1f6b4587d5f4138a7b87}{end}} () const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_ad1b2bff46b84f263f58780296410fa0f}{add}} (C $\ast$DM)
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a3ccc996dbe06983ad22b15791c0d8173}{contain}} (const C $\ast$const DM) const
+\item 
+size\+\_\+t \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a78f9765db0ac92c5b3247973b0e757bb}{size}} () const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_ade231bd44d2559778e4cfb95a9e97214}{clear}} (void)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a0c9433f18627b5f4f4c7567663cf09a3}{delete\+All}} (void)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a22765f57ebbe732d3e8cc55e1f6a83c0}{And}} (\mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{D\+B\+Mset}}$<$ C $>$ \&other)
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_ae552a8fb83cb9a08013367be5134aa1d}{getD}} (uint32\+\_\+t hash\+\_\+value)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_aa4027065a59bc886739ceb3b5b0ebcbf}{map\+D\+Add}} (C $\ast$D, \mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \&value)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a455f7d48ef36013cf3c8df2ea07e95d8}{recovery\+D\+Add}} (C $\ast$D, \mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \&value)
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a2b49bd304c445eb02b1a544900765d70}{include}} (const C $\ast$const DM, \mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \&featrue) const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_aa24554b9389c7743a5aad5c3c75ceb44}{dbm\+\_\+manager}}
+\item 
+map$<$ uint32\+\_\+t, int $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a7e9f628890e7beebbcbb5b8922b96d4c}{passed\+\_\+data}}
+\item 
+vector$<$ C $\ast$ $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a0c24329d7fb3b51735ed8747b9224540}{map\+\_\+data}}
+\item 
+vector$<$ \mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_ae3139d7e806f976f733eeac33b0b5b30}{map\+\_\+data\+\_\+feature}}
+\item 
+vector$<$ C $\ast$ $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_adfd9208fe16d211f33977c3d83d17342}{recovery\+\_\+data}}
+\item 
+vector$<$ \mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset_a005bc0a422afaa2e6b742264345f1972}{recovery\+\_\+data\+\_\+feature}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a2a0d8e81172aa1a865cf5819749a80a0}\label{classgraphsat_1_1_d_b_mset_a2a0d8e81172aa1a865cf5819749a80a0}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!DBMset@{DBMset}}
+\index{DBMset@{DBMset}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{DBMset()}{DBMset()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{D\+B\+Mset}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \&}]{manager }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_aa0f809f2d7c58227bcde30f6c664c0c1}\label{classgraphsat_1_1_d_b_mset_aa0f809f2d7c58227bcde30f6c664c0c1}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!````~DBMset@{$\sim$DBMset}}
+\index{````~DBMset@{$\sim$DBMset}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{$\sim$DBMset()}{~DBMset()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::$\sim$\mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{D\+B\+Mset}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_ad1b2bff46b84f263f58780296410fa0f}\label{classgraphsat_1_1_d_b_mset_ad1b2bff46b84f263f58780296410fa0f}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!add@{add}}
+\index{add@{add}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::add (\begin{DoxyParamCaption}\item[{C $\ast$}]{DM }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em DM} & A dbm matrix\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if real insert \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}} into set false otherwise. DM does not destory in function 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=294pt]{classgraphsat_1_1_d_b_mset_ad1b2bff46b84f263f58780296410fa0f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a22765f57ebbe732d3e8cc55e1f6a83c0}\label{classgraphsat_1_1_d_b_mset_a22765f57ebbe732d3e8cc55e1f6a83c0}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!And@{And}}
+\index{And@{And}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{And()}{And()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::And (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{D\+B\+Mset}}$<$ C $>$ \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_mset_a22765f57ebbe732d3e8cc55e1f6a83c0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a7aff13f25e4f4f43ceb9e07df6aea276}\label{classgraphsat_1_1_d_b_mset_a7aff13f25e4f4f43ceb9e07df6aea276}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!begin@{begin}}
+\index{begin@{begin}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{begin()}{begin()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::begin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_ac44e4e340d856eeabf26056092520e36}\label{classgraphsat_1_1_d_b_mset_ac44e4e340d856eeabf26056092520e36}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!begin@{begin}}
+\index{begin@{begin}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{begin()}{begin()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::begin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_ade231bd44d2559778e4cfb95a9e97214}\label{classgraphsat_1_1_d_b_mset_ade231bd44d2559778e4cfb95a9e97214}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!clear@{clear}}
+\index{clear@{clear}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::clear (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_mset_ade231bd44d2559778e4cfb95a9e97214_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a3ccc996dbe06983ad22b15791c0d8173}\label{classgraphsat_1_1_d_b_mset_a3ccc996dbe06983ad22b15791c0d8173}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!contain@{contain}}
+\index{contain@{contain}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{contain()}{contain()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::contain (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{DM }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=309pt]{classgraphsat_1_1_d_b_mset_a3ccc996dbe06983ad22b15791c0d8173_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a0c9433f18627b5f4f4c7567663cf09a3}\label{classgraphsat_1_1_d_b_mset_a0c9433f18627b5f4f4c7567663cf09a3}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!deleteAll@{deleteAll}}
+\index{deleteAll@{deleteAll}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{deleteAll()}{deleteAll()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::delete\+All (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_ade948f2f96fe55fa3fba669c0035f6fe}\label{classgraphsat_1_1_d_b_mset_ade948f2f96fe55fa3fba669c0035f6fe}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!end@{end}}
+\index{end@{end}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{end()}{end()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::end (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a036eed51ffdf1f6b4587d5f4138a7b87}\label{classgraphsat_1_1_d_b_mset_a036eed51ffdf1f6b4587d5f4138a7b87}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!end@{end}}
+\index{end@{end}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{end()}{end()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_mset_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::end (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_ae552a8fb83cb9a08013367be5134aa1d}\label{classgraphsat_1_1_d_b_mset_ae552a8fb83cb9a08013367be5134aa1d}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!getD@{getD}}
+\index{getD@{getD}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{getD()}{getD()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::getD (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{hash\+\_\+value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a2b49bd304c445eb02b1a544900765d70}\label{classgraphsat_1_1_d_b_mset_a2b49bd304c445eb02b1a544900765d70}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!include@{include}}
+\index{include@{include}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{include()}{include()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::include (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{DM,  }\item[{\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \&}]{featrue }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_mset_a2b49bd304c445eb02b1a544900765d70_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_aa4027065a59bc886739ceb3b5b0ebcbf}\label{classgraphsat_1_1_d_b_mset_aa4027065a59bc886739ceb3b5b0ebcbf}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!mapDAdd@{mapDAdd}}
+\index{mapDAdd@{mapDAdd}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{mapDAdd()}{mapDAdd()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::map\+D\+Add (\begin{DoxyParamCaption}\item[{C $\ast$}]{D,  }\item[{\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a455f7d48ef36013cf3c8df2ea07e95d8}\label{classgraphsat_1_1_d_b_mset_a455f7d48ef36013cf3c8df2ea07e95d8}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!recoveryDAdd@{recoveryDAdd}}
+\index{recoveryDAdd@{recoveryDAdd}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{recoveryDAdd()}{recoveryDAdd()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::recovery\+D\+Add (\begin{DoxyParamCaption}\item[{C $\ast$}]{D,  }\item[{\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a78f9765db0ac92c5b3247973b0e757bb}\label{classgraphsat_1_1_d_b_mset_a78f9765db0ac92c5b3247973b0e757bb}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!size@{size}}
+\index{size@{size}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+size\+\_\+t \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_mset_a78f9765db0ac92c5b3247973b0e757bb_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_aa24554b9389c7743a5aad5c3c75ceb44}\label{classgraphsat_1_1_d_b_mset_aa24554b9389c7743a5aad5c3c75ceb44}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!dbm\_manager@{dbm\_manager}}
+\index{dbm\_manager@{dbm\_manager}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{dbm\_manager}{dbm\_manager}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$C$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::dbm\+\_\+manager\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a0c24329d7fb3b51735ed8747b9224540}\label{classgraphsat_1_1_d_b_mset_a0c24329d7fb3b51735ed8747b9224540}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!map\_data@{map\_data}}
+\index{map\_data@{map\_data}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{map\_data}{map\_data}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+vector$<$C $\ast$$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::map\+\_\+data\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_ae3139d7e806f976f733eeac33b0b5b30}\label{classgraphsat_1_1_d_b_mset_ae3139d7e806f976f733eeac33b0b5b30}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!map\_data\_feature@{map\_data\_feature}}
+\index{map\_data\_feature@{map\_data\_feature}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{map\_data\_feature}{map\_data\_feature}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+vector$<$\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}}$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::map\+\_\+data\+\_\+feature\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a7e9f628890e7beebbcbb5b8922b96d4c}\label{classgraphsat_1_1_d_b_mset_a7e9f628890e7beebbcbb5b8922b96d4c}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!passed\_data@{passed\_data}}
+\index{passed\_data@{passed\_data}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{passed\_data}{passed\_data}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+map$<$uint32\+\_\+t, int$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::passed\+\_\+data\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_adfd9208fe16d211f33977c3d83d17342}\label{classgraphsat_1_1_d_b_mset_adfd9208fe16d211f33977c3d83d17342}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!recovery\_data@{recovery\_data}}
+\index{recovery\_data@{recovery\_data}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{recovery\_data}{recovery\_data}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+vector$<$C $\ast$$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::recovery\+\_\+data\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_mset_a005bc0a422afaa2e6b742264345f1972}\label{classgraphsat_1_1_d_b_mset_a005bc0a422afaa2e6b742264345f1972}} 
+\index{graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}!recovery\_data\_feature@{recovery\_data\_feature}}
+\index{recovery\_data\_feature@{recovery\_data\_feature}!graphsat::DBMset$<$ C $>$@{graphsat::DBMset$<$ C $>$}}
+\subsubsection{\texorpdfstring{recovery\_data\_feature}{recovery\_data\_feature}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+vector$<$\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}}$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_mset}{graphsat\+::\+D\+B\+Mset}}$<$ C $>$\+::recovery\+\_\+data\+\_\+feature\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/domain/\mbox{\hyperlink{dbmset_8hpp}{dbmset.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,193 @@
+\hypertarget{classgraphsat_1_1_clock_constraint}{}\section{graphsat\+::Clock\+Constraint$<$ C $>$ Class Template Reference}
+\label{classgraphsat_1_1_clock_constraint}\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+
+
+{\ttfamily \#include $<$clockdiffcons.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint_acb93892181e50c6bbbe2a67faaf27242}{Clock\+Constraint}} (const int i, const int j, const C r, bool is\+\_\+strict\+\_\+ref=true)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a81ba549abd62032b7491ff03190d31e0}{Clock\+Constraint}} (const int i, const int j, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} op, const C r)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a609e8b8b9805a2934da918fbf8311ddc}{clock\+Shift}} (int shift)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a25326d99afbcc8355cfbc290ba81af8b}{rand\+Const}} (int num, int low, int up) const
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a561831532370518c82b43f6e8a3a5c9e}{neg}} (void) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_aa4beb1eb7911ff6c503e4008ae3718ab}{is\+Sat}} (const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&cons) const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a5dd6153cbc0791becfd1e34f96995d57}{x}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_aa3113fd47bd0291152a30708edd2acf5}{y}}
+\item 
+C \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_aca6f542f04311f892b4662bc0b86d689}{matrix\+\_\+value}}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a5217585f904187d8cf0880e6dd1838b0}{neg\+\_\+impl}} (void)
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \mbox{\hyperlink{classgraphsat_1_1_clock_constraint_a8c772e8d9664dae2d72c5279736e6052}{operator$<$$<$}} (std\+::ostream \&os, const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} \&cons)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename C$>$\newline
+class graphsat\+::\+Clock\+Constraint$<$ C $>$}
+
+x -\/y $<$ ( $<$= ) real\+Right 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_acb93892181e50c6bbbe2a67faaf27242}\label{classgraphsat_1_1_clock_constraint_acb93892181e50c6bbbe2a67faaf27242}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!ClockConstraint@{ClockConstraint}}
+\index{ClockConstraint@{ClockConstraint}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{ClockConstraint()}{ClockConstraint()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} (\begin{DoxyParamCaption}\item[{const int}]{i,  }\item[{const int}]{j,  }\item[{const C}]{r,  }\item[{bool}]{is\+\_\+strict\+\_\+ref = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_clock_constraint_acb93892181e50c6bbbe2a67faaf27242_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a81ba549abd62032b7491ff03190d31e0}\label{classgraphsat_1_1_clock_constraint_a81ba549abd62032b7491ff03190d31e0}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!ClockConstraint@{ClockConstraint}}
+\index{ClockConstraint@{ClockConstraint}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{ClockConstraint()}{ClockConstraint()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} (\begin{DoxyParamCaption}\item[{const int}]{i,  }\item[{const int}]{j,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{op,  }\item[{const C}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_clock_constraint_a81ba549abd62032b7491ff03190d31e0_cgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a609e8b8b9805a2934da918fbf8311ddc}\label{classgraphsat_1_1_clock_constraint_a609e8b8b9805a2934da918fbf8311ddc}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!clockShift@{clockShift}}
+\index{clockShift@{clockShift}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{clockShift()}{clockShift()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::clock\+Shift (\begin{DoxyParamCaption}\item[{int}]{shift }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_aa4beb1eb7911ff6c503e4008ae3718ab}\label{classgraphsat_1_1_clock_constraint_aa4beb1eb7911ff6c503e4008ae3718ab}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!isSat@{isSat}}
+\index{isSat@{isSat}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{isSat()}{isSat()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::is\+Sat (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&}]{cons }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_clock_constraint_aa4beb1eb7911ff6c503e4008ae3718ab_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a561831532370518c82b43f6e8a3a5c9e}\label{classgraphsat_1_1_clock_constraint_a561831532370518c82b43f6e8a3a5c9e}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!neg@{neg}}
+\index{neg@{neg}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{neg()}{neg()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::neg (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_clock_constraint_a561831532370518c82b43f6e8a3a5c9e_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_clock_constraint_a561831532370518c82b43f6e8a3a5c9e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a5217585f904187d8cf0880e6dd1838b0}\label{classgraphsat_1_1_clock_constraint_a5217585f904187d8cf0880e6dd1838b0}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!neg\_impl@{neg\_impl}}
+\index{neg\_impl@{neg\_impl}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{neg\_impl()}{neg\_impl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::neg\+\_\+impl (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_clock_constraint_a5217585f904187d8cf0880e6dd1838b0_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a25326d99afbcc8355cfbc290ba81af8b}\label{classgraphsat_1_1_clock_constraint_a25326d99afbcc8355cfbc290ba81af8b}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!randConst@{randConst}}
+\index{randConst@{randConst}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{randConst()}{randConst()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}} \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::rand\+Const (\begin{DoxyParamCaption}\item[{int}]{num,  }\item[{int}]{low,  }\item[{int}]{up }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=311pt]{classgraphsat_1_1_clock_constraint_a25326d99afbcc8355cfbc290ba81af8b_cgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a8c772e8d9664dae2d72c5279736e6052}\label{classgraphsat_1_1_clock_constraint_a8c772e8d9664dae2d72c5279736e6052}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&}]{cons }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_aca6f542f04311f892b4662bc0b86d689}\label{classgraphsat_1_1_clock_constraint_aca6f542f04311f892b4662bc0b86d689}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!matrix\_value@{matrix\_value}}
+\index{matrix\_value@{matrix\_value}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{matrix\_value}{matrix\_value}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::matrix\+\_\+value}
+
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_a5dd6153cbc0791becfd1e34f96995d57}\label{classgraphsat_1_1_clock_constraint_a5dd6153cbc0791becfd1e34f96995d57}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!x@{x}}
+\index{x@{x}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{x}{x}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::x}
+
+\mbox{\Hypertarget{classgraphsat_1_1_clock_constraint_aa3113fd47bd0291152a30708edd2acf5}\label{classgraphsat_1_1_clock_constraint_aa3113fd47bd0291152a30708edd2acf5}} 
+\index{graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}!y@{y}}
+\index{y@{y}!graphsat::ClockConstraint$<$ C $>$@{graphsat::ClockConstraint$<$ C $>$}}
+\subsubsection{\texorpdfstring{y}{y}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{graphsat\+::\+Clock\+Constraint}}$<$ C $>$\+::y}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/constraint/\mbox{\hyperlink{clockdiffcons_8hpp}{clockdiffcons.\+hpp}}\end{DoxyCompactItemize}

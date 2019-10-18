@@ -1,0 +1,14 @@
+<map id="include/action/counteraction.h" name="include/action/counteraction.h">
+<area shape="rect" id="node1" title=" " alt="" coords="578,5,776,31"/>
+<area shape="rect" id="node2" href="$uppaalmodelparser_8h.html" title=" " alt="" coords="87,299,293,324"/>
+<area shape="rect" id="node3" href="$main_8cpp.html" title="a test main" alt="" coords="642,372,738,397"/>
+<area shape="rect" id="node5" href="$ta_8hpp.html" title="a model for timed automata" alt="" coords="470,79,614,104"/>
+<area shape="rect" id="node12" href="$instancefactory_8h.html" title="Singleton as a factory role to manager object which create in parser process." alt="" coords="659,79,847,104"/>
+<area shape="rect" id="node4" href="$uppaalmodelparser_8cpp.html" title=" " alt="" coords="99,372,281,397"/>
+<area shape="rect" id="node6" href="$uppaaldata_8h.html" title=" " alt="" coords="41,152,200,177"/>
+<area shape="rect" id="node7" href="$uppaalparser_8cpp.html" title=" " alt="" coords="161,225,307,251"/>
+<area shape="rect" id="node8" href="$reachability_8hpp.html" title="reachability problem of timed automata" alt="" coords="274,152,485,177"/>
+<area shape="rect" id="node9" href="$fisher_8cpp.html" title=" " alt="" coords="437,225,591,251"/>
+<area shape="rect" id="node10" href="$statemanager_8hpp.html" title=" " alt="" coords="610,152,784,177"/>
+<area shape="rect" id="node11" href="$transition_8hpp.html" title=" " alt="" coords="616,225,764,251"/>
+</map>

@@ -1,0 +1,311 @@
+\hypertarget{structtimer}{}\section{timer Struct Reference}
+\label{structtimer}\index{timer@{timer}}
+
+
+{\ttfamily \#include $<$gettime.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structtimer_ae536faf93e02933cd025a6fbcbb48d0a}{timer}} ()
+\item 
+double \mbox{\hyperlink{structtimer_a597befd9cd3b4d37419f91e5380e00ae}{get\+Time}} ()
+\item 
+void \mbox{\hyperlink{structtimer_a9aa894a57748b2bdf3adce46f5736794}{start}} ()
+\item 
+double \mbox{\hyperlink{structtimer_a6008e62616dc97a34f52df092cd43cb1}{stop}} ()
+\item 
+double \mbox{\hyperlink{structtimer_ab13f3fefbcf9427b0bb9e2081ea3aea1}{stop}} (double weight)
+\item 
+double \mbox{\hyperlink{structtimer_a1d51e750078352abcabedc232e122dbc}{total}} ()
+\item 
+double \mbox{\hyperlink{structtimer_a3528919bd98e23283cc0046fc5406ff6}{next}} ()
+\item 
+void \mbox{\hyperlink{structtimer_a18f1ffc85c804ee50a0e835c07abe5b2}{reportT}} (double time)
+\item 
+void \mbox{\hyperlink{structtimer_adcf87a7455e8e9ca9abb133427bebb39}{report\+Time}} (double time)
+\item 
+void \mbox{\hyperlink{structtimer_a19e58704fe4de6c537dbe5aa2a3ce3c2}{report\+Stop}} (double weight, std\+::string str)
+\item 
+void \mbox{\hyperlink{structtimer_a94d8ef06e519bc2daad6a2871769dcc6}{report\+Total}} ()
+\item 
+void \mbox{\hyperlink{structtimer_a2ca02959907cfd5a411d88460531cec3}{report\+Total}} (std\+::string str)
+\item 
+void \mbox{\hyperlink{structtimer_a8d9f92edc40c64921b36cc8d1ef5f5a5}{report\+Next}} ()
+\item 
+void \mbox{\hyperlink{structtimer_a7b1a86c7ecf45b606632f959ac4cd51e}{report\+Next}} (std\+::string str)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{structtimer_a0c1f154ef20ab5ae19b1e2c8cec63375}{total\+Time}}
+\item 
+double \mbox{\hyperlink{structtimer_a869b4cac18d1234c721c8314514914a4}{last\+Time}}
+\item 
+double \mbox{\hyperlink{structtimer_ab294a219339c97d333c0d4e11bf8636b}{total\+Weight}}
+\item 
+bool \mbox{\hyperlink{structtimer_ad3b99f09a2fbfa987e9f535879e94a16}{on}}
+\item 
+struct timezone \mbox{\hyperlink{structtimer_a19827c3cd19867fd078b3860e17d0754}{tzp}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structtimer_ae536faf93e02933cd025a6fbcbb48d0a}\label{structtimer_ae536faf93e02933cd025a6fbcbb48d0a}} 
+\index{timer@{timer}!timer@{timer}}
+\index{timer@{timer}!timer@{timer}}
+\subsubsection{\texorpdfstring{timer()}{timer()}}
+{\footnotesize\ttfamily timer\+::timer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structtimer_a597befd9cd3b4d37419f91e5380e00ae}\label{structtimer_a597befd9cd3b4d37419f91e5380e00ae}} 
+\index{timer@{timer}!getTime@{getTime}}
+\index{getTime@{getTime}!timer@{timer}}
+\subsubsection{\texorpdfstring{getTime()}{getTime()}}
+{\footnotesize\ttfamily double timer\+::get\+Time (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a597befd9cd3b4d37419f91e5380e00ae_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a3528919bd98e23283cc0046fc5406ff6}\label{structtimer_a3528919bd98e23283cc0046fc5406ff6}} 
+\index{timer@{timer}!next@{next}}
+\index{next@{next}!timer@{timer}}
+\subsubsection{\texorpdfstring{next()}{next()}}
+{\footnotesize\ttfamily double timer\+::next (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=258pt]{structtimer_a3528919bd98e23283cc0046fc5406ff6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a3528919bd98e23283cc0046fc5406ff6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a8d9f92edc40c64921b36cc8d1ef5f5a5}\label{structtimer_a8d9f92edc40c64921b36cc8d1ef5f5a5}} 
+\index{timer@{timer}!reportNext@{reportNext}}
+\index{reportNext@{reportNext}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportNext()}{reportNext()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void timer\+::report\+Next (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a8d9f92edc40c64921b36cc8d1ef5f5a5_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=297pt]{structtimer_a8d9f92edc40c64921b36cc8d1ef5f5a5_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a7b1a86c7ecf45b606632f959ac4cd51e}\label{structtimer_a7b1a86c7ecf45b606632f959ac4cd51e}} 
+\index{timer@{timer}!reportNext@{reportNext}}
+\index{reportNext@{reportNext}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportNext()}{reportNext()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void timer\+::report\+Next (\begin{DoxyParamCaption}\item[{std\+::string}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a7b1a86c7ecf45b606632f959ac4cd51e_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a19e58704fe4de6c537dbe5aa2a3ce3c2}\label{structtimer_a19e58704fe4de6c537dbe5aa2a3ce3c2}} 
+\index{timer@{timer}!reportStop@{reportStop}}
+\index{reportStop@{reportStop}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportStop()}{reportStop()}}
+{\footnotesize\ttfamily void timer\+::report\+Stop (\begin{DoxyParamCaption}\item[{double}]{weight,  }\item[{std\+::string}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a19e58704fe4de6c537dbe5aa2a3ce3c2_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a18f1ffc85c804ee50a0e835c07abe5b2}\label{structtimer_a18f1ffc85c804ee50a0e835c07abe5b2}} 
+\index{timer@{timer}!reportT@{reportT}}
+\index{reportT@{reportT}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportT()}{reportT()}}
+{\footnotesize\ttfamily void timer\+::reportT (\begin{DoxyParamCaption}\item[{double}]{time }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a18f1ffc85c804ee50a0e835c07abe5b2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_adcf87a7455e8e9ca9abb133427bebb39}\label{structtimer_adcf87a7455e8e9ca9abb133427bebb39}} 
+\index{timer@{timer}!reportTime@{reportTime}}
+\index{reportTime@{reportTime}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportTime()}{reportTime()}}
+{\footnotesize\ttfamily void timer\+::report\+Time (\begin{DoxyParamCaption}\item[{double}]{time }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=284pt]{structtimer_adcf87a7455e8e9ca9abb133427bebb39_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_adcf87a7455e8e9ca9abb133427bebb39_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a94d8ef06e519bc2daad6a2871769dcc6}\label{structtimer_a94d8ef06e519bc2daad6a2871769dcc6}} 
+\index{timer@{timer}!reportTotal@{reportTotal}}
+\index{reportTotal@{reportTotal}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportTotal()}{reportTotal()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void timer\+::report\+Total (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a94d8ef06e519bc2daad6a2871769dcc6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=298pt]{structtimer_a94d8ef06e519bc2daad6a2871769dcc6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a2ca02959907cfd5a411d88460531cec3}\label{structtimer_a2ca02959907cfd5a411d88460531cec3}} 
+\index{timer@{timer}!reportTotal@{reportTotal}}
+\index{reportTotal@{reportTotal}!timer@{timer}}
+\subsubsection{\texorpdfstring{reportTotal()}{reportTotal()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void timer\+::report\+Total (\begin{DoxyParamCaption}\item[{std\+::string}]{str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a2ca02959907cfd5a411d88460531cec3_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a9aa894a57748b2bdf3adce46f5736794}\label{structtimer_a9aa894a57748b2bdf3adce46f5736794}} 
+\index{timer@{timer}!start@{start}}
+\index{start@{start}!timer@{timer}}
+\subsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily void timer\+::start (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=259pt]{structtimer_a9aa894a57748b2bdf3adce46f5736794_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a6008e62616dc97a34f52df092cd43cb1}\label{structtimer_a6008e62616dc97a34f52df092cd43cb1}} 
+\index{timer@{timer}!stop@{stop}}
+\index{stop@{stop}!timer@{timer}}
+\subsubsection{\texorpdfstring{stop()}{stop()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double timer\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=258pt]{structtimer_a6008e62616dc97a34f52df092cd43cb1_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=269pt]{structtimer_a6008e62616dc97a34f52df092cd43cb1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_ab13f3fefbcf9427b0bb9e2081ea3aea1}\label{structtimer_ab13f3fefbcf9427b0bb9e2081ea3aea1}} 
+\index{timer@{timer}!stop@{stop}}
+\index{stop@{stop}!timer@{timer}}
+\subsubsection{\texorpdfstring{stop()}{stop()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double timer\+::stop (\begin{DoxyParamCaption}\item[{double}]{weight }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=258pt]{structtimer_ab13f3fefbcf9427b0bb9e2081ea3aea1_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{structtimer_a1d51e750078352abcabedc232e122dbc}\label{structtimer_a1d51e750078352abcabedc232e122dbc}} 
+\index{timer@{timer}!total@{total}}
+\index{total@{total}!timer@{timer}}
+\subsubsection{\texorpdfstring{total()}{total()}}
+{\footnotesize\ttfamily double timer\+::total (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=258pt]{structtimer_a1d51e750078352abcabedc232e122dbc_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structtimer_a1d51e750078352abcabedc232e122dbc_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structtimer_a869b4cac18d1234c721c8314514914a4}\label{structtimer_a869b4cac18d1234c721c8314514914a4}} 
+\index{timer@{timer}!lastTime@{lastTime}}
+\index{lastTime@{lastTime}!timer@{timer}}
+\subsubsection{\texorpdfstring{lastTime}{lastTime}}
+{\footnotesize\ttfamily double timer\+::last\+Time}
+
+\mbox{\Hypertarget{structtimer_ad3b99f09a2fbfa987e9f535879e94a16}\label{structtimer_ad3b99f09a2fbfa987e9f535879e94a16}} 
+\index{timer@{timer}!on@{on}}
+\index{on@{on}!timer@{timer}}
+\subsubsection{\texorpdfstring{on}{on}}
+{\footnotesize\ttfamily bool timer\+::on}
+
+\mbox{\Hypertarget{structtimer_a0c1f154ef20ab5ae19b1e2c8cec63375}\label{structtimer_a0c1f154ef20ab5ae19b1e2c8cec63375}} 
+\index{timer@{timer}!totalTime@{totalTime}}
+\index{totalTime@{totalTime}!timer@{timer}}
+\subsubsection{\texorpdfstring{totalTime}{totalTime}}
+{\footnotesize\ttfamily double timer\+::total\+Time}
+
+\mbox{\Hypertarget{structtimer_ab294a219339c97d333c0d4e11bf8636b}\label{structtimer_ab294a219339c97d333c0d4e11bf8636b}} 
+\index{timer@{timer}!totalWeight@{totalWeight}}
+\index{totalWeight@{totalWeight}!timer@{timer}}
+\subsubsection{\texorpdfstring{totalWeight}{totalWeight}}
+{\footnotesize\ttfamily double timer\+::total\+Weight}
+
+\mbox{\Hypertarget{structtimer_a19827c3cd19867fd078b3860e17d0754}\label{structtimer_a19827c3cd19867fd078b3860e17d0754}} 
+\index{timer@{timer}!tzp@{tzp}}
+\index{tzp@{tzp}!timer@{timer}}
+\subsubsection{\texorpdfstring{tzp}{tzp}}
+{\footnotesize\ttfamily struct timezone timer\+::tzp}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/util/\mbox{\hyperlink{gettime_8h}{gettime.\+h}}\end{DoxyCompactItemize}

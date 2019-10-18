@@ -1,0 +1,111 @@
+\hypertarget{classgraphsat_1_1_counter_action_factory}{}\section{graphsat\+::Counter\+Action\+Factory Class Reference}
+\label{classgraphsat_1_1_counter_action_factory}\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+
+
+{\ttfamily \#include $<$counteraction.\+h$>$}
+
+
+
+Collaboration diagram for graphsat\+::Counter\+Action\+Factory\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=237pt]{classgraphsat_1_1_counter_action_factory__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_simple_counter_action}{Simple\+Counter\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_counter_action_factory_afbef0245be9501fe9ee39cd2538340c1}{create\+Simple\+Counter\+Action}} (int cid, int v)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_simple_counter_p_action}{Simple\+Counter\+P\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_counter_action_factory_a4bd75f27e6c64f7b2391504ccc506271}{create\+Simple\+Counter\+P\+Action}} (int cid, int v)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_c_action}{Default\+C\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_counter_action_factory_aec6aefcf28eaedeb5985cc31c8900b46}{create\+Default\+C\+Action}} (vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$$>$$>$$>$ \&relations1)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_counter_action_factory_a0fc2717a2818daca93d780a71aea82c2}{destroy}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_counter_action_factory_a8d64bbd03225a58210e1fad11aa4da33}{S\+I\+N\+G\+L\+E\+T\+ON}} (\mbox{\hyperlink{classgraphsat_1_1_counter_action_factory}{Counter\+Action\+Factory}})
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_pointer_data}{Pointer\+Data}} \mbox{\hyperlink{classgraphsat_1_1_counter_action_factory_a89dbbfc09f0dc961e4a88c3b476d42cc}{pdata}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_action_factory_aec6aefcf28eaedeb5985cc31c8900b46}\label{classgraphsat_1_1_counter_action_factory_aec6aefcf28eaedeb5985cc31c8900b46}} 
+\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}!createDefaultCAction@{createDefaultCAction}}
+\index{createDefaultCAction@{createDefaultCAction}!graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+\subsubsection{\texorpdfstring{createDefaultCAction()}{createDefaultCAction()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_default_c_action}{Default\+C\+Action}}$\ast$ graphsat\+::\+Counter\+Action\+Factory\+::create\+Default\+C\+Action (\begin{DoxyParamCaption}\item[{vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$$>$$>$$>$ \&}]{relations1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_action_factory_aec6aefcf28eaedeb5985cc31c8900b46_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_action_factory_afbef0245be9501fe9ee39cd2538340c1}\label{classgraphsat_1_1_counter_action_factory_afbef0245be9501fe9ee39cd2538340c1}} 
+\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}!createSimpleCounterAction@{createSimpleCounterAction}}
+\index{createSimpleCounterAction@{createSimpleCounterAction}!graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+\subsubsection{\texorpdfstring{createSimpleCounterAction()}{createSimpleCounterAction()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_simple_counter_action}{Simple\+Counter\+Action}}$\ast$ graphsat\+::\+Counter\+Action\+Factory\+::create\+Simple\+Counter\+Action (\begin{DoxyParamCaption}\item[{int}]{cid,  }\item[{int}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_action_factory_afbef0245be9501fe9ee39cd2538340c1_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_action_factory_a4bd75f27e6c64f7b2391504ccc506271}\label{classgraphsat_1_1_counter_action_factory_a4bd75f27e6c64f7b2391504ccc506271}} 
+\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}!createSimpleCounterPAction@{createSimpleCounterPAction}}
+\index{createSimpleCounterPAction@{createSimpleCounterPAction}!graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+\subsubsection{\texorpdfstring{createSimpleCounterPAction()}{createSimpleCounterPAction()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_simple_counter_p_action}{Simple\+Counter\+P\+Action}}$\ast$ graphsat\+::\+Counter\+Action\+Factory\+::create\+Simple\+Counter\+P\+Action (\begin{DoxyParamCaption}\item[{int}]{cid,  }\item[{int}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_action_factory_a4bd75f27e6c64f7b2391504ccc506271_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_action_factory_a0fc2717a2818daca93d780a71aea82c2}\label{classgraphsat_1_1_counter_action_factory_a0fc2717a2818daca93d780a71aea82c2}} 
+\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}!destroy@{destroy}}
+\index{destroy@{destroy}!graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+\subsubsection{\texorpdfstring{destroy()}{destroy()}}
+{\footnotesize\ttfamily void graphsat\+::\+Counter\+Action\+Factory\+::destroy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_action_factory_a0fc2717a2818daca93d780a71aea82c2_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_action_factory_a8d64bbd03225a58210e1fad11aa4da33}\label{classgraphsat_1_1_counter_action_factory_a8d64bbd03225a58210e1fad11aa4da33}} 
+\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}!SINGLETON@{SINGLETON}}
+\index{SINGLETON@{SINGLETON}!graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+\subsubsection{\texorpdfstring{SINGLETON()}{SINGLETON()}}
+{\footnotesize\ttfamily graphsat\+::\+Counter\+Action\+Factory\+::\+S\+I\+N\+G\+L\+E\+T\+ON (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_counter_action_factory}{Counter\+Action\+Factory}}}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_action_factory_a89dbbfc09f0dc961e4a88c3b476d42cc}\label{classgraphsat_1_1_counter_action_factory_a89dbbfc09f0dc961e4a88c3b476d42cc}} 
+\index{graphsat::CounterActionFactory@{graphsat::CounterActionFactory}!pdata@{pdata}}
+\index{pdata@{pdata}!graphsat::CounterActionFactory@{graphsat::CounterActionFactory}}
+\subsubsection{\texorpdfstring{pdata}{pdata}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_pointer_data}{Pointer\+Data}} graphsat\+::\+Counter\+Action\+Factory\+::pdata\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/action/\mbox{\hyperlink{counteraction_8h}{counteraction.\+h}}\end{DoxyCompactItemize}

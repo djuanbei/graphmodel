@@ -1,0 +1,409 @@
+\hypertarget{classgraphsat_1_1_transition}{}\section{graphsat\+::Transition$<$ C, CS, D $>$ Class Template Reference}
+\label{classgraphsat_1_1_transition}\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+
+
+{\ttfamily \#include $<$transition.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::Transition$<$ C, CS, D $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_transition__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_transition_a66f3b9e8b9b5d2d941cf8daed7deb024}{Transition}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_transition_a9e8a93ede40a53a52376f122297edf23}{Transition}} (int s, int t)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_transition_a6324e36409a36829cdc25b53c5ee332d}{Transition}} (const \mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}} \&other, const \mbox{\hyperlink{classgraphsat_1_1_parameter}{Parameter}} \&param)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_a72ba2eeb745e6d72761cfbeb01135d3b}{set\+Source}} (int s)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_transition_ac6db9fd2e60156e536f48bef36973875}{get\+Source}} () const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_a8e5c7d83133796e972dec30b2710505e}{set\+Target}} (int t)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_transition_a52fb0f8200812119b8cec7164244a09c}{get\+Target}} () const
+\item 
+const vector$<$ CS $>$ \& \mbox{\hyperlink{classgraphsat_1_1_transition_a0dd4175fcf8cae99fbac4b00aa5cc9d1}{get\+Guards}} () const
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}} \& \mbox{\hyperlink{classgraphsat_1_1_transition_ad160a39fd0ab1f2341525d9d8540802f}{operator+=}} (CS \&cs)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_a5d5733c7945e86a2c1e4a42bacdd791a}{set\+Channel}} (const \mbox{\hyperlink{structgraphsat_1_1_channel}{Channel}} \&ch)
+\item 
+const \mbox{\hyperlink{structgraphsat_1_1_channel}{Channel}} \& \mbox{\hyperlink{classgraphsat_1_1_transition_a22fa6286cb88f0aaf08c15ea8670ebe5}{get\+Channel}} () const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_transition_ac06144ef0f67caf014ee061d4969c787}{has\+Channel}} () const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_a8b25340523019a7995e5d77b112bf37f}{add\+Counter\+Action}} (const \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$action)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_ad406304a7c8d3ffad38c0f1578ef6e31}{add\+Reset}} (pair$<$ int, int $>$ \&reset)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_af5e1f394f7a4c0bcdf416d28b8b8f9fb}{add\+Counter\+Cons}} (\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$\mbox{\hyperlink{classgraphsat_1_1_transition_a09145e27f96327f8e520d89493491371}{guards}})
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_transition_a7ec1d0635ddfce028810457db91c3059}{ready}} (const int component, const \mbox{\hyperlink{classgraphsat_1_1_state_manager}{State\+Manager}}$<$ C $>$ \&manager, const C $\ast$const state) const
+\begin{DoxyCompactList}\small\item\em Except synchronize signal, other state satisfies jump conditions. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_a9bca78149ee938dd36cb856538ce81f0}{operator()}} (const int component, const \mbox{\hyperlink{classgraphsat_1_1_state_manager}{State\+Manager}}$<$ C $>$ \&manager, C $\ast$re\+\_\+state) const
+\begin{DoxyCompactList}\small\item\em create new state \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classgraphsat_1_1_transition_ac489a29696f5620486df69e36ae3b2b3}{clock\+Shift}} (int shift)
+\end{DoxyCompactItemize}
+\subsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef \mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}}$<$ C, CS, D $>$ \mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_transition_a968bd64e847732f78a159a18630f9c8e}{source}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_transition_afbd4e7681da539737620c99ae44cb62e}{target}}
+\item 
+vector$<$ CS $>$ \mbox{\hyperlink{classgraphsat_1_1_transition_a09145e27f96327f8e520d89493491371}{guards}}
+\item 
+vector$<$ \mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$ $>$ \mbox{\hyperlink{classgraphsat_1_1_transition_a69466bc4b2339eac009773adcdf4870a}{counter\+\_\+cons}}
+\item 
+\mbox{\hyperlink{structgraphsat_1_1_channel}{Channel}} \mbox{\hyperlink{classgraphsat_1_1_transition_a35ba5cebf6ca15cd1be02930de7907a5}{channel}}
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_transition_adaa42c53ad073c5a9e02dc40d91f43eb}{has\+\_\+channel}}
+\item 
+vector$<$ const \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$ $>$ \mbox{\hyperlink{classgraphsat_1_1_transition_af85c7164e1f45a5cf6bcd87d7d17e4cf}{actions}}
+\item 
+vector$<$ pair$<$ int, int $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_transition_ae6b0cebbcee753c3c730e7ead03200cd}{resets}}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}} \& \mbox{\hyperlink{classgraphsat_1_1_transition_ab2da70aa54b7aab66ef0294fd1a0d519}{operator+}} (\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}} \&lhs, CS \&cs)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}\label{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!Transition\_t@{Transition\_t}}
+\index{Transition\_t@{Transition\_t}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{Transition\_t}{Transition\_t}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+typedef \mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}}$<$C, CS, D$>$ \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a66f3b9e8b9b5d2d941cf8daed7deb024}\label{classgraphsat_1_1_transition_a66f3b9e8b9b5d2d941cf8daed7deb024}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!Transition@{Transition}}
+\index{Transition@{Transition}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{Transition()}{Transition()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::\mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a9e8a93ede40a53a52376f122297edf23}\label{classgraphsat_1_1_transition_a9e8a93ede40a53a52376f122297edf23}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!Transition@{Transition}}
+\index{Transition@{Transition}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{Transition()}{Transition()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::\mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}} (\begin{DoxyParamCaption}\item[{int}]{s,  }\item[{int}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a6324e36409a36829cdc25b53c5ee332d}\label{classgraphsat_1_1_transition_a6324e36409a36829cdc25b53c5ee332d}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!Transition@{Transition}}
+\index{Transition@{Transition}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{Transition()}{Transition()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::\mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}} (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}} \&}]{other,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_parameter}{Parameter}} \&}]{param }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_transition_a6324e36409a36829cdc25b53c5ee332d_cgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a8b25340523019a7995e5d77b112bf37f}\label{classgraphsat_1_1_transition_a8b25340523019a7995e5d77b112bf37f}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!addCounterAction@{addCounterAction}}
+\index{addCounterAction@{addCounterAction}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{addCounterAction()}{addCounterAction()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::add\+Counter\+Action (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$}]{action }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add one action to this transition
+
+
+\begin{DoxyParams}{Parameters}
+{\em action} & Add one counter action \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_transition_a8b25340523019a7995e5d77b112bf37f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_af5e1f394f7a4c0bcdf416d28b8b8f9fb}\label{classgraphsat_1_1_transition_af5e1f394f7a4c0bcdf416d28b8b8f9fb}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!addCounterCons@{addCounterCons}}
+\index{addCounterCons@{addCounterCons}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{addCounterCons()}{addCounterCons()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::add\+Counter\+Cons (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$}]{guards }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_transition_af5e1f394f7a4c0bcdf416d28b8b8f9fb_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ad406304a7c8d3ffad38c0f1578ef6e31}\label{classgraphsat_1_1_transition_ad406304a7c8d3ffad38c0f1578ef6e31}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!addReset@{addReset}}
+\index{addReset@{addReset}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{addReset()}{addReset()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::add\+Reset (\begin{DoxyParamCaption}\item[{pair$<$ int, int $>$ \&}]{reset }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add one clock reset to this transition
+
+
+\begin{DoxyParams}{Parameters}
+{\em reset} & The reset \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_transition_ad406304a7c8d3ffad38c0f1578ef6e31_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ac489a29696f5620486df69e36ae3b2b3}\label{classgraphsat_1_1_transition_ac489a29696f5620486df69e36ae3b2b3}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!clockShift@{clockShift}}
+\index{clockShift@{clockShift}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{clockShift()}{clockShift()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::clock\+Shift (\begin{DoxyParamCaption}\item[{int}]{shift }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a22fa6286cb88f0aaf08c15ea8670ebe5}\label{classgraphsat_1_1_transition_a22fa6286cb88f0aaf08c15ea8670ebe5}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!getChannel@{getChannel}}
+\index{getChannel@{getChannel}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{getChannel()}{getChannel()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+const \mbox{\hyperlink{structgraphsat_1_1_channel}{Channel}}\& \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::get\+Channel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a0dd4175fcf8cae99fbac4b00aa5cc9d1}\label{classgraphsat_1_1_transition_a0dd4175fcf8cae99fbac4b00aa5cc9d1}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!getGuards@{getGuards}}
+\index{getGuards@{getGuards}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{getGuards()}{getGuards()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+const vector$<$CS$>$\& \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::get\+Guards (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ac6db9fd2e60156e536f48bef36973875}\label{classgraphsat_1_1_transition_ac6db9fd2e60156e536f48bef36973875}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!getSource@{getSource}}
+\index{getSource@{getSource}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{getSource()}{getSource()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::get\+Source (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a52fb0f8200812119b8cec7164244a09c}\label{classgraphsat_1_1_transition_a52fb0f8200812119b8cec7164244a09c}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!getTarget@{getTarget}}
+\index{getTarget@{getTarget}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{getTarget()}{getTarget()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::get\+Target (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ac06144ef0f67caf014ee061d4969c787}\label{classgraphsat_1_1_transition_ac06144ef0f67caf014ee061d4969c787}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!hasChannel@{hasChannel}}
+\index{hasChannel@{hasChannel}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{hasChannel()}{hasChannel()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::has\+Channel (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a9bca78149ee938dd36cb856538ce81f0}\label{classgraphsat_1_1_transition_a9bca78149ee938dd36cb856538ce81f0}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::operator() (\begin{DoxyParamCaption}\item[{const int}]{component,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_state_manager}{State\+Manager}}$<$ C $>$ \&}]{manager,  }\item[{C $\ast$}]{re\+\_\+state }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+create new state 
+
+the state which statisfied the guards can jump this transitionHere is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_transition_a9bca78149ee938dd36cb856538ce81f0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ad160a39fd0ab1f2341525d9d8540802f}\label{classgraphsat_1_1_transition_ad160a39fd0ab1f2341525d9d8540802f}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{operator+=()}{operator+=()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}}\& \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::operator+= (\begin{DoxyParamCaption}\item[{CS \&}]{cs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add one constraint to this transition
+
+
+\begin{DoxyParams}{Parameters}
+{\em cs} & constraint \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a7ec1d0635ddfce028810457db91c3059}\label{classgraphsat_1_1_transition_a7ec1d0635ddfce028810457db91c3059}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!ready@{ready}}
+\index{ready@{ready}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{ready()}{ready()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::ready (\begin{DoxyParamCaption}\item[{const int}]{component,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_state_manager}{State\+Manager}}$<$ C $>$ \&}]{manager,  }\item[{const C $\ast$const}]{state }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Except synchronize signal, other state satisfies jump conditions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em component} & component id \\
+\hline
+{\em manager} & state manager \\
+\hline
+{\em state} & current state\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the gurad on this tranisition is true under state, false otherwise. 
+\end{DoxyReturn}
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classgraphsat_1_1_transition_a7ec1d0635ddfce028810457db91c3059_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=324pt]{classgraphsat_1_1_transition_a7ec1d0635ddfce028810457db91c3059_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a5d5733c7945e86a2c1e4a42bacdd791a}\label{classgraphsat_1_1_transition_a5d5733c7945e86a2c1e4a42bacdd791a}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!setChannel@{setChannel}}
+\index{setChannel@{setChannel}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{setChannel()}{setChannel()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::set\+Channel (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structgraphsat_1_1_channel}{Channel}} \&}]{ch }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a72ba2eeb745e6d72761cfbeb01135d3b}\label{classgraphsat_1_1_transition_a72ba2eeb745e6d72761cfbeb01135d3b}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!setSource@{setSource}}
+\index{setSource@{setSource}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{setSource()}{setSource()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::set\+Source (\begin{DoxyParamCaption}\item[{int}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a8e5c7d83133796e972dec30b2710505e}\label{classgraphsat_1_1_transition_a8e5c7d83133796e972dec30b2710505e}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!setTarget@{setTarget}}
+\index{setTarget@{setTarget}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{setTarget()}{setTarget()}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::set\+Target (\begin{DoxyParamCaption}\item[{int}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ab2da70aa54b7aab66ef0294fd1a0d519}\label{classgraphsat_1_1_transition_ab2da70aa54b7aab66ef0294fd1a0d519}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!operator+@{operator+}}
+\index{operator+@{operator+}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{operator+}{operator+}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}}\& operator+ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_transition_ae0650c39cf272493d16d1fd1b01b6075}{Transition\+\_\+t}} \&}]{lhs,  }\item[{CS \&}]{cs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+add constraint to \mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & The original transition \\
+\hline
+{\em cs} & constraint\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classgraphsat_1_1_transition}{Transition}} 
+\end{DoxyReturn}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_transition_af85c7164e1f45a5cf6bcd87d7d17e4cf}\label{classgraphsat_1_1_transition_af85c7164e1f45a5cf6bcd87d7d17e4cf}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!actions@{actions}}
+\index{actions@{actions}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{actions}{actions}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+vector$<$const \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$$>$ \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::actions\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a35ba5cebf6ca15cd1be02930de7907a5}\label{classgraphsat_1_1_transition_a35ba5cebf6ca15cd1be02930de7907a5}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!channel@{channel}}
+\index{channel@{channel}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{channel}{channel}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+\mbox{\hyperlink{structgraphsat_1_1_channel}{Channel}} \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::channel\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a69466bc4b2339eac009773adcdf4870a}\label{classgraphsat_1_1_transition_a69466bc4b2339eac009773adcdf4870a}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!counter\_cons@{counter\_cons}}
+\index{counter\_cons@{counter\_cons}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{counter\_cons}{counter\_cons}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+vector$<$\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$$>$ \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::counter\+\_\+cons\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a09145e27f96327f8e520d89493491371}\label{classgraphsat_1_1_transition_a09145e27f96327f8e520d89493491371}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!guards@{guards}}
+\index{guards@{guards}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{guards}{guards}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+vector$<$CS$>$ \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::guards\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_adaa42c53ad073c5a9e02dc40d91f43eb}\label{classgraphsat_1_1_transition_adaa42c53ad073c5a9e02dc40d91f43eb}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!has\_channel@{has\_channel}}
+\index{has\_channel@{has\_channel}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{has\_channel}{has\_channel}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::has\+\_\+channel\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_ae6b0cebbcee753c3c730e7ead03200cd}\label{classgraphsat_1_1_transition_ae6b0cebbcee753c3c730e7ead03200cd}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!resets@{resets}}
+\index{resets@{resets}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{resets}{resets}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+vector$<$pair$<$int, int$>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::resets\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_a968bd64e847732f78a159a18630f9c8e}\label{classgraphsat_1_1_transition_a968bd64e847732f78a159a18630f9c8e}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!source@{source}}
+\index{source@{source}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{source}{source}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::source\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_transition_afbd4e7681da539737620c99ae44cb62e}\label{classgraphsat_1_1_transition_afbd4e7681da539737620c99ae44cb62e}} 
+\index{graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}!target@{target}}
+\index{target@{target}!graphsat::Transition$<$ C, CS, D $>$@{graphsat::Transition$<$ C, CS, D $>$}}
+\subsubsection{\texorpdfstring{target}{target}}
+{\footnotesize\ttfamily template$<$typename C , typename CS , typename D $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_transition}{graphsat\+::\+Transition}}$<$ C, CS, D $>$\+::target\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{transition_8hpp}{transition.\+hpp}}\end{DoxyCompactItemize}

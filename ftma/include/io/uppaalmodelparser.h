@@ -37,6 +37,7 @@ public:
   const INT_TAS_t &getSYS() const { return sys; }
 
   const Property &getProp() const { return prop; }
+
   /**
    * @brief bool constraint
    *
@@ -81,8 +82,12 @@ public:
                         const string &      first_xml_name,
                         const string &second_xml_name, COMP_OPERATOR op,
                         const int rhs );
+  void parseAssign( UppaalTemplateData *current_data, const string & xml_name,  const int rhs);
+  
 
 private:
+  map<TYPE_T, string> type_name_map;
+
   UppaalTemplateData              system_data;
   map<string, UppaalTemplateData> template_map;
 
@@ -108,6 +113,9 @@ private:
                                                    child_type transitions );
 
   void parseLabel( UppaalTemplateData &data, string guards );
+
+  void addClockConstraint( UppaalTemplateData *current_data, int clock1_id,
+                           int clock2_id, COMP_OPERATOR op, int rhs );
 
   int getLocalId( UppaalTemplateData *current_data, const int real_id );
 

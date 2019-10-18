@@ -1,0 +1,196 @@
+\hypertarget{dbmutil_8hpp}{}\section{include/util/dbmutil.hpp File Reference}
+\label{dbmutil_8hpp}\index{include/util/dbmutil.hpp@{include/util/dbmutil.hpp}}
+
+
+dbm util class  
+
+
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+Include dependency graph for dbmutil.\+hpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=312pt]{dbmutil_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dbmutil_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacegraphsat}{graphsat}}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{dbmutil_8hpp_ad5af377fae1b185d4c3830c1d8ed89db}{L\+T\+E\+Q\+\_\+\+Z\+E\+RO}}~( (C) 1 )
+\item 
+\#define \mbox{\hyperlink{dbmutil_8hpp_ae933b7ce438954ac00c805628c8fc261}{newA}}(\+\_\+\+\_\+E,  \+\_\+\+\_\+n)~(\+\_\+\+\_\+E $\ast$) malloc( ( \+\_\+\+\_\+n ) $\ast$ sizeof( \+\_\+\+\_\+E ) )
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef long double \mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{graphsat\+::\+D\+F\+\_\+T}}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{namespacegraphsat_af9decc8bd71e7d6989593798fe86a63a}{graphsat\+::\+Check\+\_\+\+State}} \{ \mbox{\hyperlink{namespacegraphsat_af9decc8bd71e7d6989593798fe86a63aa75959247ceaabfa4be42f69fb912b7eb}{graphsat\+::\+T\+R\+UE}}, 
+\mbox{\hyperlink{namespacegraphsat_af9decc8bd71e7d6989593798fe86a63aa123db79bbe27b2edfff44449b4192ab8}{graphsat\+::\+F\+A\+L\+SE}}, 
+\mbox{\hyperlink{namespacegraphsat_af9decc8bd71e7d6989593798fe86a63aa7c6b0f6d2f928ff9e74cc4e873f5af49}{graphsat\+::\+U\+N\+K\+O\+WN}}
+ \}
+\item 
+enum \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{graphsat\+::\+C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} \{ \newline
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69aeebc6bd65cffcc036c9127482fbc66eb}{graphsat\+::\+EQ}}, 
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69ab8353ff5bcba3f3d36a7395442e1d557}{graphsat\+::\+LE}}, 
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69aa9c079bfb2d517760d288a6a4b4dd37e}{graphsat\+::\+GE}}, 
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69a01665cecee2f1893f1a34ef137312968}{graphsat\+::\+LT}}, 
+\newline
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69a797bb2c8daf9eab49e56fc7d52674b93}{graphsat\+::\+GT}}, 
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69aa4024aecd10af72fa73b49e473da8991}{graphsat\+::\+NE}}
+ \}
+\item 
+enum \mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8}{graphsat\+::\+T\+Y\+P\+E\+\_\+T}} \{ \newline
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8a9d41d9ad0c5b966db61d33bb485fcbf6}{graphsat\+::\+C\+L\+O\+C\+K\+\_\+T}}, 
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8a1f127a8c2ee7b6fbaab2c7c6da31606f}{graphsat\+::\+I\+N\+T\+\_\+T}}, 
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8ad4fc1729e667fd25850822492b73502d}{graphsat\+::\+P\+A\+R\+A\+M\+E\+T\+E\+R\+\_\+T}}, 
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8a135ec3979340abe98f82da52e7c4dc88}{graphsat\+::\+B\+O\+O\+L\+\_\+T}}, 
+\newline
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8a0f45df3c2037bbac4f5cf25a4f61254f}{graphsat\+::\+C\+H\+A\+N\+\_\+T}}, 
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8a2edc3acef498a03d0da9ec9dabc1b1a3}{graphsat\+::\+T\+E\+M\+P\+L\+A\+T\+E\+\_\+T}}, 
+\mbox{\hyperlink{namespacegraphsat_a3b0f905b03e040512ad00a629e78c6a8a9d648ecf7db1e3825b60a4364e5e63c3}{graphsat\+::\+N\+O\+\_\+T}}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename C $>$ }\\C \mbox{\hyperlink{namespacegraphsat_a700d4c7efdb81dea623ce0d8f5c6aafc}{graphsat\+::get\+M\+A\+X\+\_\+\+I\+NT}} (const C c)
+\item 
+{\footnotesize template$<$typename C $>$ }\\C \mbox{\hyperlink{namespacegraphsat_aaff479d8398d3b14b5a7126da128b136}{graphsat\+::get\+Matrix\+Value}} (C real\+Right, bool is\+Strct=true)
+\item 
+{\footnotesize template$<$typename C $>$ }\\bool \mbox{\hyperlink{namespacegraphsat_a8c9f56766915c3d206d61da59ce005d1}{graphsat\+::is\+Strict}} (const C c)
+\item 
+{\footnotesize template$<$typename C $>$ }\\std\+::string \mbox{\hyperlink{namespacegraphsat_a76b5c5d33071b5127713a4a75166f8b4}{graphsat\+::get\+Comp}} (const C x)
+\item 
+{\footnotesize template$<$typename C $>$ }\\C \mbox{\hyperlink{namespacegraphsat_a7365b322cc23cabf0402ef03e6daafc7}{graphsat\+::get\+Right}} (const C c)
+\item 
+{\footnotesize template$<$typename C $>$ }\\C \mbox{\hyperlink{namespacegraphsat_aced9a84b55f4f88b72bf2bce66e7e3bf}{graphsat\+::neg\+Matrix\+Value}} (C matrix\+\_\+value)
+\item 
+{\footnotesize template$<$class T $>$ }\\bool \mbox{\hyperlink{namespacegraphsat_a6ba86c7b7b22c55dc8f404d1928ab71e}{graphsat\+::\+C\+AS}} (T $\ast$ptr, T oldv, T newv)
+\item 
+{\footnotesize template$<$class T $>$ }\\bool \mbox{\hyperlink{namespacegraphsat_af93904918cd008fe84acebf0fec34ae3}{graphsat\+::write\+Min}} (T $\ast$a, T b)
+\item 
+{\footnotesize template$<$class T $>$ }\\void \mbox{\hyperlink{namespacegraphsat_a179cb1f1b573c4d71f0f1ac8199f3262}{graphsat\+::write\+Add}} (T $\ast$a, T b)
+\item 
+vector$<$ string $>$ \mbox{\hyperlink{namespacegraphsat_a767ef8183b8eada3700a18101d3444a8}{graphsat\+::split\+Str}} (const string \&string\+To\+Be\+Splitted, const string \&delimeter)
+\item 
+string \mbox{\hyperlink{namespacegraphsat_aa2e41cce8a2ffcf08ed66f25228a21f3}{graphsat\+::delete\+Char}} (const string \&value, const size\+\_\+t start, const char ch)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static const int \mbox{\hyperlink{namespacegraphsat_a3a7778675bb2df267cba6672151335e7}{graphsat\+::zero\+\_\+clock\+\_\+index}} = 0
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_ad0c8e800110eeafa3c4888b686b95b45}{graphsat\+::\+N\+T\+A\+\_\+\+S\+TR}} = \char`\"{}nta\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a78d25c802b5c0846a37c41fb872959ab}{graphsat\+::\+D\+E\+C\+L\+A\+R\+A\+T\+I\+O\+N\+\_\+\+S\+TR}} = \char`\"{}declaration\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_ad58215ae51e4a52e548b915a55daf446}{graphsat\+::\+T\+E\+M\+P\+L\+A\+T\+E\+\_\+\+S\+TR}} = \char`\"{}template\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a52578cd35028ef76cc626229d26d7924}{graphsat\+::\+N\+A\+M\+E\+\_\+\+S\+TR}} = \char`\"{}name\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a47ec61f2ceb3df10841ee322dc9fe5f6}{graphsat\+::\+P\+A\+R\+A\+M\+E\+T\+E\+R\+\_\+\+S\+TR}} = \char`\"{}parameter\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_aa4ffc093cd1401fd80561e8aed5778b7}{graphsat\+::\+L\+O\+C\+A\+T\+I\+O\+N\+\_\+\+S\+TR}} = \char`\"{}location\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_af901a3b7388a34ac26184d7dd224b5fd}{graphsat\+::\+I\+N\+I\+T\+\_\+\+S\+TR}} = \char`\"{}init\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a73a00bd8e7948aad8a91346761d0a4d5}{graphsat\+::\+T\+R\+A\+N\+S\+I\+T\+I\+O\+N\+\_\+\+S\+TR}} = \char`\"{}transition\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_ac72730c9e15cf0dd2f8c9f341066b6d1}{graphsat\+::\+S\+O\+U\+R\+C\+E\+\_\+\+S\+TR}} = \char`\"{}source\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a17fe04763d05d29d24f2e61f96b294fc}{graphsat\+::\+T\+A\+R\+G\+E\+T\+\_\+\+S\+TR}} = \char`\"{}target\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a48f2be54f26130886b01b4085c188058}{graphsat\+::\+I\+D\+\_\+\+S\+TR}} = \char`\"{}id\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a4cb9db90e5a0eecd58c2a948bbad7694}{graphsat\+::\+R\+E\+F\+\_\+\+S\+TR}} = \char`\"{}ref\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a86ba01f0d1130dda6ab1afa5b20874ba}{graphsat\+::\+L\+A\+B\+E\+L\+\_\+\+S\+TR}} = \char`\"{}label\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a2d24b1f6e55d968ea2bb0db15371a1b2}{graphsat\+::\+K\+I\+N\+D\+\_\+\+S\+TR}} = \char`\"{}kind\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_aae4b90aa756b13a2c16ab27c2046d966}{graphsat\+::\+N\+A\+I\+L\+\_\+\+S\+TR}} = \char`\"{}nail\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a9ac16cae7c55ccd846c214033d153242}{graphsat\+::\+I\+N\+V\+A\+R\+I\+A\+N\+T\+\_\+\+S\+TR}} = \char`\"{}invariant\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a5cf783f9d091f218e135024fad71f9c0}{graphsat\+::\+G\+U\+A\+R\+D\+\_\+\+S\+TR}} = \char`\"{}guard\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_ad52aff2b01d385e5c1f1d2ad4200458b}{graphsat\+::\+A\+S\+S\+I\+G\+N\+M\+E\+N\+T\+\_\+\+S\+TR}} = \char`\"{}assignment\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a5a0a13eee450263b2af1dbfbace2c1ba}{graphsat\+::\+S\+Y\+N\+C\+H\+R\+O\+N\+I\+S\+A\+T\+I\+O\+N\+\_\+\+S\+TR}} = \char`\"{}synchronisation\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a60af197840a4b415e8873c4f31e8dd79}{graphsat\+::\+S\+Y\+S\+T\+E\+M\+\_\+\+S\+TR}} = \char`\"{}system\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_ae092a66a8c0635f0aa193e115cd5cd6c}{graphsat\+::\+Q\+U\+E\+R\+I\+E\+S\+\_\+\+S\+TR}} = \char`\"{}queries\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a82009cb606aa65bbf2b2699c864cfcae}{graphsat\+::\+Q\+U\+E\+R\+Y\+\_\+\+S\+TR}} = \char`\"{}query\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a603b9f08434ec8fa84ed6783949ce1c2}{graphsat\+::\+F\+O\+R\+M\+U\+L\+A\+\_\+\+S\+TR}} = \char`\"{}formula\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_aaff3a72df6b078c90dec9769fa169109}{graphsat\+::\+C\+O\+M\+M\+E\+N\+T\+\_\+\+S\+TR}} = \char`\"{}comment\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a79b644336da8e9e4e9ced23332b87623}{graphsat\+::\+R\+E\+S\+E\+T\+\_\+\+S\+TR}} = \char`\"{}reset\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_acc57ed3dc3b16544da58969d55cc7b95}{graphsat\+::\+I\+N\+T\+\_\+\+S\+TR}} = \char`\"{}int\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_aa9a1e8f08a3a50aa74eb06b5eea6b20f}{graphsat\+::\+I\+N\+T\+\_\+\+D\+E\+C\+\_\+\+S\+TR}} = \char`\"{}int\+\_\+dec\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a44dce1c8f03d79abf9223c28a5f71c5f}{graphsat\+::\+C\+H\+A\+N\+\_\+\+S\+TR}} = \char`\"{}chan\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a61808bcb605cc36d46ffb6128f9a10d2}{graphsat\+::\+C\+H\+A\+N\+\_\+\+D\+E\+C\+\_\+\+S\+TR}} = \char`\"{}chan\+\_\+dec\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a94c933e9e8b5da717db99d2c20747278}{graphsat\+::\+C\+L\+O\+C\+K\+\_\+\+S\+TR}} = \char`\"{}clock\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a1a5d25b03d0c62b730d9eec5f916ece0}{graphsat\+::\+C\+L\+O\+C\+K\+\_\+\+D\+E\+C\+\_\+\+S\+TR}} = \char`\"{}clock\+\_\+dec\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_ae8b44e2e55411efb34b652a3e85bf258}{graphsat\+::\+B\+O\+O\+L\+\_\+\+S\+TR}} = \char`\"{}bool\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_a269b206579756e8974a5efe610e10a9e}{graphsat\+::\+B\+O\+O\+L\+\_\+\+D\+E\+C\+\_\+\+S\+TR}} = \char`\"{}bool\+\_\+dec\char`\"{}
+\item 
+static const string \mbox{\hyperlink{namespacegraphsat_aca777a0d8a8c90ed3edfbd5818865270}{graphsat\+::\+P\+A\+R\+A\+M\+E\+T\+E\+R\+\_\+\+R\+E\+F\+\_\+\+S\+TR}} = \char`\"{}\&\char`\"{}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+dbm util class 
+
+\begin{DoxyAuthor}{Author}
+Liyun Dai \href{mailto:dlyun2009@gmail.com}{\texttt{ dlyun2009@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Fri Mar 29 10\+:54\+:12 2019 
+\end{DoxyDate}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{dbmutil_8hpp_ad5af377fae1b185d4c3830c1d8ed89db}\label{dbmutil_8hpp_ad5af377fae1b185d4c3830c1d8ed89db}} 
+\index{dbmutil.hpp@{dbmutil.hpp}!LTEQ\_ZERO@{LTEQ\_ZERO}}
+\index{LTEQ\_ZERO@{LTEQ\_ZERO}!dbmutil.hpp@{dbmutil.hpp}}
+\subsubsection{\texorpdfstring{LTEQ\_ZERO}{LTEQ\_ZERO}}
+{\footnotesize\ttfamily \#define L\+T\+E\+Q\+\_\+\+Z\+E\+RO~( (C) 1 )}
+
+\mbox{\Hypertarget{dbmutil_8hpp_ae933b7ce438954ac00c805628c8fc261}\label{dbmutil_8hpp_ae933b7ce438954ac00c805628c8fc261}} 
+\index{dbmutil.hpp@{dbmutil.hpp}!newA@{newA}}
+\index{newA@{newA}!dbmutil.hpp@{dbmutil.hpp}}
+\subsubsection{\texorpdfstring{newA}{newA}}
+{\footnotesize\ttfamily \#define newA(\begin{DoxyParamCaption}\item[{}]{\+\_\+\+\_\+E,  }\item[{}]{\+\_\+\+\_\+n }\end{DoxyParamCaption})~(\+\_\+\+\_\+E $\ast$) malloc( ( \+\_\+\+\_\+n ) $\ast$ sizeof( \+\_\+\+\_\+E ) )}
+

@@ -1,0 +1,314 @@
+\hypertarget{classgraphsat_1_1_location}{}\section{graphsat\+::Location$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$ Class Template Reference}
+\label{classgraphsat_1_1_location}\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+
+
+{\ttfamily \#include $<$location.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::Location$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=222pt]{classgraphsat_1_1_location__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_location_ac72074c9f67bbeed9762bd23f38112b1}{Location}} (int loc\+\_\+id)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_location_a54af3c3776b46f3fa786356b5d626507}{Location}} (int loc\+\_\+id, \mbox{\hyperlink{namespacegraphsat_a2ea948010388eb8178aa254a3b2023c9}{Location\+\_\+\+Type}} etype)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_location_ae79bd21b6d5b5ff802c0d29d7d6e09db}{set\+Name}} (const string \&n)
+\item 
+string \mbox{\hyperlink{classgraphsat_1_1_location_a87ad30703a6e50c0f73320251eeb95a3}{get\+Name}} (void)
+\item 
+const vector$<$ C\+S\+\_\+t $>$ \& \mbox{\hyperlink{classgraphsat_1_1_location_ae95156bd9f528f92865ef8c51b9a6637}{get\+Invarients}} () const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_location_a446eebc27230db6d46e952d912d8a9c1}{is\+Urgent}} () const
+\begin{DoxyCompactList}\small\item\em the commit freeze time. Semantically, urgent locations are equivalent to\+: \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_location_a052448735e1bad0bfb82db672a09b3a8}{is\+Commit}} () const
+\begin{DoxyCompactList}\small\item\em the commit freeze time. Furthermore, if any process is in a committed location, the next transition must involve an edge from one of the committed locations. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_location_a061c74b681729ae1fbb38802e394eef6}{is\+Freeze\+Location}} () const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_location_ab4e8969e19d19b13c5fd77a6eb84e0df}{employ\+Invariants}} (const D\+Manager\+\_\+t \&dbm\+\_\+manager, C\+\_\+t $\ast$dbm) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_location_a5cb2c4a3420724f44a1c942d2d6ca213}{is\+Reachable}} (const D\+Manager\+\_\+t \&dbm\+\_\+manager, C\+\_\+t $\ast$dbm) const
+\begin{DoxyCompactList}\small\item\em check whether the state dbm satisfies the invariant of this location \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classgraphsat_1_1_location_acff10a7428288b8377a65c3377949160}{operator()}} (const D\+Manager\+\_\+t \&dbm\+\_\+manager, C\+\_\+t $\ast$dbm) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_location_af10b55e77e449360de6b5ad8b1b30e44}{operator()}} (const D\+Manager\+\_\+t \&dbm\+\_\+manager, const C\+\_\+t $\ast$const dbm, vector$<$ C\+\_\+t $\ast$ $>$ \&re\+\_\+vec) const
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_location}{Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$ \& \mbox{\hyperlink{classgraphsat_1_1_location_a71a98b44e4364f888b495267e1c8903e}{operator+=}} (C\+S\+\_\+t \&cs)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_location_a2205739de5231669ad78ffb75c0516b6}{clock\+Shift}} (int shift)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+vector$<$ C\+S\+\_\+t $>$ \mbox{\hyperlink{classgraphsat_1_1_location_ab142fcc5402ea982f34ad075fb24c583}{invariants}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_location_a4dcd1a37246191bbf2014e0884251b04}{location\+\_\+id}}
+\item 
+string \mbox{\hyperlink{classgraphsat_1_1_location_af72c40b3bc9335a7a6d8ebc0180bc1d6}{name}}
+\item 
+\mbox{\hyperlink{namespacegraphsat_a2ea948010388eb8178aa254a3b2023c9}{Location\+\_\+\+Type}} \mbox{\hyperlink{classgraphsat_1_1_location_acb7fb525e22f6d11b60fc876381e9b56}{type}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_location_ac72074c9f67bbeed9762bd23f38112b1}\label{classgraphsat_1_1_location_ac72074c9f67bbeed9762bd23f38112b1}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!Location@{Location}}
+\index{Location@{Location}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{Location()}{Location()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::\mbox{\hyperlink{classgraphsat_1_1_location}{Location}} (\begin{DoxyParamCaption}\item[{int}]{loc\+\_\+id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_a54af3c3776b46f3fa786356b5d626507}\label{classgraphsat_1_1_location_a54af3c3776b46f3fa786356b5d626507}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!Location@{Location}}
+\index{Location@{Location}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{Location()}{Location()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::\mbox{\hyperlink{classgraphsat_1_1_location}{Location}} (\begin{DoxyParamCaption}\item[{int}]{loc\+\_\+id,  }\item[{\mbox{\hyperlink{namespacegraphsat_a2ea948010388eb8178aa254a3b2023c9}{Location\+\_\+\+Type}}}]{etype }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_location_a2205739de5231669ad78ffb75c0516b6}\label{classgraphsat_1_1_location_a2205739de5231669ad78ffb75c0516b6}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!clockShift@{clockShift}}
+\index{clockShift@{clockShift}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{clockShift()}{clockShift()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::clock\+Shift (\begin{DoxyParamCaption}\item[{int}]{shift }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_ab4e8969e19d19b13c5fd77a6eb84e0df}\label{classgraphsat_1_1_location_ab4e8969e19d19b13c5fd77a6eb84e0df}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!employInvariants@{employInvariants}}
+\index{employInvariants@{employInvariants}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{employInvariants()}{employInvariants()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::employ\+Invariants (\begin{DoxyParamCaption}\item[{const D\+Manager\+\_\+t \&}]{dbm\+\_\+manager,  }\item[{C\+\_\+t $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_location_ab4e8969e19d19b13c5fd77a6eb84e0df_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_location_ae95156bd9f528f92865ef8c51b9a6637}\label{classgraphsat_1_1_location_ae95156bd9f528f92865ef8c51b9a6637}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!getInvarients@{getInvarients}}
+\index{getInvarients@{getInvarients}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{getInvarients()}{getInvarients()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+const vector$<$C\+S\+\_\+t$>$\& \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::get\+Invarients (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_a87ad30703a6e50c0f73320251eeb95a3}\label{classgraphsat_1_1_location_a87ad30703a6e50c0f73320251eeb95a3}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!getName@{getName}}
+\index{getName@{getName}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+string \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::get\+Name (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_a052448735e1bad0bfb82db672a09b3a8}\label{classgraphsat_1_1_location_a052448735e1bad0bfb82db672a09b3a8}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!isCommit@{isCommit}}
+\index{isCommit@{isCommit}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{isCommit()}{isCommit()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::is\+Commit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+the commit freeze time. Furthermore, if any process is in a committed location, the next transition must involve an edge from one of the committed locations. 
+
+\begin{DoxyReturn}{Returns}
+true if this location is a commit, false otherwise. 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_location_a052448735e1bad0bfb82db672a09b3a8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_location_a061c74b681729ae1fbb38802e394eef6}\label{classgraphsat_1_1_location_a061c74b681729ae1fbb38802e394eef6}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!isFreezeLocation@{isFreezeLocation}}
+\index{isFreezeLocation@{isFreezeLocation}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{isFreezeLocation()}{isFreezeLocation()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::is\+Freeze\+Location (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=313pt]{classgraphsat_1_1_location_a061c74b681729ae1fbb38802e394eef6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=313pt]{classgraphsat_1_1_location_a061c74b681729ae1fbb38802e394eef6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_location_a5cb2c4a3420724f44a1c942d2d6ca213}\label{classgraphsat_1_1_location_a5cb2c4a3420724f44a1c942d2d6ca213}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!isReachable@{isReachable}}
+\index{isReachable@{isReachable}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{isReachable()}{isReachable()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::is\+Reachable (\begin{DoxyParamCaption}\item[{const D\+Manager\+\_\+t \&}]{dbm\+\_\+manager,  }\item[{C\+\_\+t $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+check whether the state dbm satisfies the invariant of this location 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dbm\+\_\+manager} & dbm manager. \\
+\hline
+{\em dbm} & a dbm matrix.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if dbm satisfies invariant, false otherwise. 
+\end{DoxyReturn}
+D reach \mbox{\hyperlink{classgraphsat_1_1_location}{Location}} first check D satisfies all the invariants in this \mbox{\hyperlink{classgraphsat_1_1_location}{Location}}Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=313pt]{classgraphsat_1_1_location_a5cb2c4a3420724f44a1c942d2d6ca213_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=313pt]{classgraphsat_1_1_location_a5cb2c4a3420724f44a1c942d2d6ca213_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_location_a446eebc27230db6d46e952d912d8a9c1}\label{classgraphsat_1_1_location_a446eebc27230db6d46e952d912d8a9c1}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!isUrgent@{isUrgent}}
+\index{isUrgent@{isUrgent}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{isUrgent()}{isUrgent()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::is\+Urgent (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+the commit freeze time. Semantically, urgent locations are equivalent to\+: 
+
+
+\begin{DoxyEnumerate}
+\item adding sn extra clock x, that is reset on every incomming edge, and
+\item adding an invariant x$<$=0 to the location
+\end{DoxyEnumerate}
+
+\begin{DoxyReturn}{Returns}
+true if this location is urgent location, false otherwise. 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_location_a446eebc27230db6d46e952d912d8a9c1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_location_acff10a7428288b8377a65c3377949160}\label{classgraphsat_1_1_location_acff10a7428288b8377a65c3377949160}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::operator() (\begin{DoxyParamCaption}\item[{const D\+Manager\+\_\+t \&}]{dbm\+\_\+manager,  }\item[{C\+\_\+t $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_location_acff10a7428288b8377a65c3377949160_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_location_af10b55e77e449360de6b5ad8b1b30e44}\label{classgraphsat_1_1_location_af10b55e77e449360de6b5ad8b1b30e44}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::operator() (\begin{DoxyParamCaption}\item[{const D\+Manager\+\_\+t \&}]{dbm\+\_\+manager,  }\item[{const C\+\_\+t $\ast$const}]{dbm,  }\item[{vector$<$ C\+\_\+t $\ast$ $>$ \&}]{re\+\_\+vec }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_a71a98b44e4364f888b495267e1c8903e}\label{classgraphsat_1_1_location_a71a98b44e4364f888b495267e1c8903e}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{operator+=()}{operator+=()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_location}{Location}}$<$C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t$>$\& \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::operator+= (\begin{DoxyParamCaption}\item[{C\+S\+\_\+t \&}]{cs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Add one invariant to this location
+
+
+\begin{DoxyParams}{Parameters}
+{\em cs} & atomic constraint\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a new location 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classgraphsat_1_1_location_ae79bd21b6d5b5ff802c0d29d7d6e09db}\label{classgraphsat_1_1_location_ae79bd21b6d5b5ff802c0d29d7d6e09db}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!setName@{setName}}
+\index{setName@{setName}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{setName()}{setName()}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::set\+Name (\begin{DoxyParamCaption}\item[{const string \&}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_location_ae79bd21b6d5b5ff802c0d29d7d6e09db_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_location_ab142fcc5402ea982f34ad075fb24c583}\label{classgraphsat_1_1_location_ab142fcc5402ea982f34ad075fb24c583}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!invariants@{invariants}}
+\index{invariants@{invariants}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{invariants}{invariants}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+vector$<$C\+S\+\_\+t$>$ \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::invariants\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_a4dcd1a37246191bbf2014e0884251b04}\label{classgraphsat_1_1_location_a4dcd1a37246191bbf2014e0884251b04}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!location\_id@{location\_id}}
+\index{location\_id@{location\_id}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{location\_id}{location\_id}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::location\+\_\+id\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_af72c40b3bc9335a7a6d8ebc0180bc1d6}\label{classgraphsat_1_1_location_af72c40b3bc9335a7a6d8ebc0180bc1d6}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!name@{name}}
+\index{name@{name}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+string \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::name\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_location_acb7fb525e22f6d11b60fc876381e9b56}\label{classgraphsat_1_1_location_acb7fb525e22f6d11b60fc876381e9b56}} 
+\index{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}!type@{type}}
+\index{type@{type}!graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$@{graphsat::Location$<$ C\_t, CS\_t, DManager\_t, DBMSet\_t $>$}}
+\subsubsection{\texorpdfstring{type}{type}}
+{\footnotesize\ttfamily template$<$typename C\+\_\+t , typename C\+S\+\_\+t , typename D\+Manager\+\_\+t , typename D\+B\+M\+Set\+\_\+t $>$ \\
+\mbox{\hyperlink{namespacegraphsat_a2ea948010388eb8178aa254a3b2023c9}{Location\+\_\+\+Type}} \mbox{\hyperlink{classgraphsat_1_1_location}{graphsat\+::\+Location}}$<$ C\+\_\+t, C\+S\+\_\+t, D\+Manager\+\_\+t, D\+B\+M\+Set\+\_\+t $>$\+::type\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{location_8hpp}{location.\+hpp}}\end{DoxyCompactItemize}

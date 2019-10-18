@@ -1,0 +1,372 @@
+\hypertarget{classgraphsat_1_1_uppaal_data}{}\section{graphsat\+::Uppaal\+Data Class Reference}
+\label{classgraphsat_1_1_uppaal_data}\index{graphsat::UppaalData@{graphsat::UppaalData}}
+
+
+{\ttfamily \#include $<$uppaaldata.\+h$>$}
+
+
+
+Collaboration diagram for graphsat\+::Uppaal\+Data\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_uppaal_data_af50032132fe9113f17b9d4f669832bcf}{Uppaal\+Data}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a470caa8beeb50129e99a4ca086bc71c0}{clear}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a7efc419d4d89f6f54f1b37e6a0ac76da}{add\+Int\+Array}} (string \&key, vector$<$ int $>$ \&v)
+\item 
+const vector$<$ int $>$ \& \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_ae7ca546770b68997fac809beec05709f}{get\+Int\+Array}} (string \&key) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a00ac5e60eb80a5e7684653a9ff81c6a2}{set\+Initial\+Loc}} (int id)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a261013813b76f6590e4c5e9b52fe8e12}{get\+Initial\+Loc}} () const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a50f0cab2fb2e5624b39068e49d4c51ee}{add\+Value}} (const string \&type, const string \&name, int v=0)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a1c420132ab6e3cfe21bd0fec604c8519}{get\+Type\+Num}} (const string \&type) const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a39f89632de7e1d1a1f2b1fb1fbd05bd1}{get\+Id}} (const string \&type, const string \&name) const
+\item 
+const pair$<$ string, vector$<$ int $>$ $>$ \& \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a0990d1da543e593b05bba3791cd351d8}{get\+Value}} (const string \&type, int id) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_ac64e8295d429d836f76bbec12eb7fa76}{has\+Value}} (const string \&type, const string \&name, int id=0) const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a888305aeaea6a3df4c01950155a14c24}{get\+Value}} (const string \&type, const string \&name, int id=0) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a8da77b23b7dc06303c819748398a2e27}{add\+Pointer}} (const string \&type, void $\ast$v)
+\item 
+vector$<$ void $\ast$ $>$ \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_ad421061c61d3f2012e261c28d44df2be}{get\+Points}} (const string \&type) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_aa8135b656e806c6c246c45ee88d227fd}{clear\+Points}} (const string \&type)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a6f8e7702012896ac9757a11b7576546a}{clear\+Points}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_value_data}{Value\+Data}}$<$ int $>$ \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_ac66879b386bccbf6c2eaaf57e7833aec}{int\+Values}}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_pointer_data}{Pointer\+Data}} \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a6500c3a0e849e24a39f865fc243a612a}{point\+Values}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_uppaal_data_a3b2012d94f9db575f4dea5dd450ef7ec}{init\+\_\+loc}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_af50032132fe9113f17b9d4f669832bcf}\label{classgraphsat_1_1_uppaal_data_af50032132fe9113f17b9d4f669832bcf}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!UppaalData@{UppaalData}}
+\index{UppaalData@{UppaalData}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{UppaalData()}{UppaalData()}}
+{\footnotesize\ttfamily graphsat\+::\+Uppaal\+Data\+::\+Uppaal\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a7efc419d4d89f6f54f1b37e6a0ac76da}\label{classgraphsat_1_1_uppaal_data_a7efc419d4d89f6f54f1b37e6a0ac76da}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!addIntArray@{addIntArray}}
+\index{addIntArray@{addIntArray}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{addIntArray()}{addIntArray()}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::add\+Int\+Array (\begin{DoxyParamCaption}\item[{string \&}]{key,  }\item[{vector$<$ int $>$ \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a7efc419d4d89f6f54f1b37e6a0ac76da_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a7efc419d4d89f6f54f1b37e6a0ac76da_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a8da77b23b7dc06303c819748398a2e27}\label{classgraphsat_1_1_uppaal_data_a8da77b23b7dc06303c819748398a2e27}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!addPointer@{addPointer}}
+\index{addPointer@{addPointer}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{addPointer()}{addPointer()}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::add\+Pointer (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{void $\ast$}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classgraphsat_1_1_uppaal_data_a8da77b23b7dc06303c819748398a2e27_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=280pt]{classgraphsat_1_1_uppaal_data_a8da77b23b7dc06303c819748398a2e27_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a50f0cab2fb2e5624b39068e49d4c51ee}\label{classgraphsat_1_1_uppaal_data_a50f0cab2fb2e5624b39068e49d4c51ee}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!addValue@{addValue}}
+\index{addValue@{addValue}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{addValue()}{addValue()}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::add\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name,  }\item[{int}]{v = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{classgraphsat_1_1_uppaal_data_a50f0cab2fb2e5624b39068e49d4c51ee_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a50f0cab2fb2e5624b39068e49d4c51ee_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a470caa8beeb50129e99a4ca086bc71c0}\label{classgraphsat_1_1_uppaal_data_a470caa8beeb50129e99a4ca086bc71c0}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!clear@{clear}}
+\index{clear@{clear}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::clear (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classgraphsat_1_1_uppaal_data_a470caa8beeb50129e99a4ca086bc71c0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_aa8135b656e806c6c246c45ee88d227fd}\label{classgraphsat_1_1_uppaal_data_aa8135b656e806c6c246c45ee88d227fd}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!clearPoints@{clearPoints}}
+\index{clearPoints@{clearPoints}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{clearPoints()}{clearPoints()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::clear\+Points (\begin{DoxyParamCaption}\item[{const string \&}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classgraphsat_1_1_uppaal_data_aa8135b656e806c6c246c45ee88d227fd_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_aa8135b656e806c6c246c45ee88d227fd_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a6f8e7702012896ac9757a11b7576546a}\label{classgraphsat_1_1_uppaal_data_a6f8e7702012896ac9757a11b7576546a}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!clearPoints@{clearPoints}}
+\index{clearPoints@{clearPoints}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{clearPoints()}{clearPoints()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::clear\+Points (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classgraphsat_1_1_uppaal_data_a6f8e7702012896ac9757a11b7576546a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a39f89632de7e1d1a1f2b1fb1fbd05bd1}\label{classgraphsat_1_1_uppaal_data_a39f89632de7e1d1a1f2b1fb1fbd05bd1}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getId@{getId}}
+\index{getId@{getId}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getId()}{getId()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Data\+::get\+Id (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & \\
+\hline
+{\em int\+Values} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/1 if name is not in int\+Values 
+\end{DoxyReturn}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{classgraphsat_1_1_uppaal_data_a39f89632de7e1d1a1f2b1fb1fbd05bd1_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a39f89632de7e1d1a1f2b1fb1fbd05bd1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a261013813b76f6590e4c5e9b52fe8e12}\label{classgraphsat_1_1_uppaal_data_a261013813b76f6590e4c5e9b52fe8e12}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getInitialLoc@{getInitialLoc}}
+\index{getInitialLoc@{getInitialLoc}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getInitialLoc()}{getInitialLoc()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Data\+::get\+Initial\+Loc (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a261013813b76f6590e4c5e9b52fe8e12_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_ae7ca546770b68997fac809beec05709f}\label{classgraphsat_1_1_uppaal_data_ae7ca546770b68997fac809beec05709f}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getIntArray@{getIntArray}}
+\index{getIntArray@{getIntArray}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getIntArray()}{getIntArray()}}
+{\footnotesize\ttfamily const vector$<$int$>$\& graphsat\+::\+Uppaal\+Data\+::get\+Int\+Array (\begin{DoxyParamCaption}\item[{string \&}]{key }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_ae7ca546770b68997fac809beec05709f_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_ae7ca546770b68997fac809beec05709f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_ad421061c61d3f2012e261c28d44df2be}\label{classgraphsat_1_1_uppaal_data_ad421061c61d3f2012e261c28d44df2be}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getPoints@{getPoints}}
+\index{getPoints@{getPoints}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getPoints()}{getPoints()}}
+{\footnotesize\ttfamily vector$<$void $\ast$$>$ graphsat\+::\+Uppaal\+Data\+::get\+Points (\begin{DoxyParamCaption}\item[{const string \&}]{type }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classgraphsat_1_1_uppaal_data_ad421061c61d3f2012e261c28d44df2be_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_ad421061c61d3f2012e261c28d44df2be_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a1c420132ab6e3cfe21bd0fec604c8519}\label{classgraphsat_1_1_uppaal_data_a1c420132ab6e3cfe21bd0fec604c8519}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getTypeNum@{getTypeNum}}
+\index{getTypeNum@{getTypeNum}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getTypeNum()}{getTypeNum()}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Data\+::get\+Type\+Num (\begin{DoxyParamCaption}\item[{const string \&}]{type }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{classgraphsat_1_1_uppaal_data_a1c420132ab6e3cfe21bd0fec604c8519_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a1c420132ab6e3cfe21bd0fec604c8519_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a0990d1da543e593b05bba3791cd351d8}\label{classgraphsat_1_1_uppaal_data_a0990d1da543e593b05bba3791cd351d8}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getValue@{getValue}}
+\index{getValue@{getValue}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily const pair$<$string, vector$<$int$>$ $>$\& graphsat\+::\+Uppaal\+Data\+::get\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{int}]{id }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{classgraphsat_1_1_uppaal_data_a0990d1da543e593b05bba3791cd351d8_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a0990d1da543e593b05bba3791cd351d8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a888305aeaea6a3df4c01950155a14c24}\label{classgraphsat_1_1_uppaal_data_a888305aeaea6a3df4c01950155a14c24}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!getValue@{getValue}}
+\index{getValue@{getValue}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{getValue()}{getValue()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Data\+::get\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name,  }\item[{int}]{id = {\ttfamily 0} }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{classgraphsat_1_1_uppaal_data_a888305aeaea6a3df4c01950155a14c24_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_ac64e8295d429d836f76bbec12eb7fa76}\label{classgraphsat_1_1_uppaal_data_ac64e8295d429d836f76bbec12eb7fa76}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!hasValue@{hasValue}}
+\index{hasValue@{hasValue}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{hasValue()}{hasValue()}}
+{\footnotesize\ttfamily bool graphsat\+::\+Uppaal\+Data\+::has\+Value (\begin{DoxyParamCaption}\item[{const string \&}]{type,  }\item[{const string \&}]{name,  }\item[{int}]{id = {\ttfamily 0} }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=336pt]{classgraphsat_1_1_uppaal_data_ac64e8295d429d836f76bbec12eb7fa76_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_ac64e8295d429d836f76bbec12eb7fa76_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a00ac5e60eb80a5e7684653a9ff81c6a2}\label{classgraphsat_1_1_uppaal_data_a00ac5e60eb80a5e7684653a9ff81c6a2}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!setInitialLoc@{setInitialLoc}}
+\index{setInitialLoc@{setInitialLoc}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{setInitialLoc()}{setInitialLoc()}}
+{\footnotesize\ttfamily void graphsat\+::\+Uppaal\+Data\+::set\+Initial\+Loc (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_uppaal_data_a00ac5e60eb80a5e7684653a9ff81c6a2_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a3b2012d94f9db575f4dea5dd450ef7ec}\label{classgraphsat_1_1_uppaal_data_a3b2012d94f9db575f4dea5dd450ef7ec}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!init\_loc@{init\_loc}}
+\index{init\_loc@{init\_loc}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{init\_loc}{init\_loc}}
+{\footnotesize\ttfamily int graphsat\+::\+Uppaal\+Data\+::init\+\_\+loc\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_ac66879b386bccbf6c2eaaf57e7833aec}\label{classgraphsat_1_1_uppaal_data_ac66879b386bccbf6c2eaaf57e7833aec}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!intValues@{intValues}}
+\index{intValues@{intValues}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{intValues}{intValues}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_value_data}{Value\+Data}}$<$int$>$ graphsat\+::\+Uppaal\+Data\+::int\+Values\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_uppaal_data_a6500c3a0e849e24a39f865fc243a612a}\label{classgraphsat_1_1_uppaal_data_a6500c3a0e849e24a39f865fc243a612a}} 
+\index{graphsat::UppaalData@{graphsat::UppaalData}!pointValues@{pointValues}}
+\index{pointValues@{pointValues}!graphsat::UppaalData@{graphsat::UppaalData}}
+\subsubsection{\texorpdfstring{pointValues}{pointValues}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_pointer_data}{Pointer\+Data}} graphsat\+::\+Uppaal\+Data\+::point\+Values\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/io/\mbox{\hyperlink{uppaaldata_8h}{uppaaldata.\+h}}\end{DoxyCompactItemize}

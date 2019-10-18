@@ -1,0 +1,13 @@
+<map id="include/channel.h" name="include/channel.h">
+<area shape="rect" id="node1" title=" " alt="" coords="325,5,450,31"/>
+<area shape="rect" id="node2" href="$ta_8hpp.html" title="a model for timed automata" alt="" coords="315,79,460,104"/>
+<area shape="rect" id="node7" href="$uppaalparser_8cpp.html" title=" " alt="" coords="740,225,886,251"/>
+<area shape="rect" id="node11" href="$transition_8hpp.html" title=" " alt="" coords="82,225,229,251"/>
+<area shape="rect" id="node3" href="$uppaaldata_8h.html" title=" " alt="" coords="618,152,776,177"/>
+<area shape="rect" id="node4" href="$uppaalmodelparser_8h.html" title=" " alt="" coords="303,299,509,324"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="a test main" alt="" coords="167,372,264,397"/>
+<area shape="rect" id="node8" href="$reachability_8hpp.html" title="reachability problem of timed automata" alt="" coords="282,152,493,177"/>
+<area shape="rect" id="node9" href="$fisher_8cpp.html" title=" " alt="" coords="389,225,543,251"/>
+<area shape="rect" id="node10" href="$statemanager_8hpp.html" title=" " alt="" coords="34,152,208,177"/>
+<area shape="rect" id="node6" href="$uppaalmodelparser_8cpp.html" title=" " alt="" coords="316,372,497,397"/>
+</map>

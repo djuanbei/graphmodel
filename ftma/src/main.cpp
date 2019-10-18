@@ -273,8 +273,7 @@ void fisher( int n = 2 ) {
 
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
-  DiaFreeCounterConstraint *ccs1 =
-      createDiaFreeCounterConstraint( 0, EQ, 0 ); // id==0
+  OneCounterConstraint *ccs1 = createOneCounterConstraint( 0, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
 
@@ -374,8 +373,8 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
-  DiaFreeCounterConstraint *ccs1 =
-      createDiaFreeCounterConstraint( 0, EQ, 0 ); // id==0
+  OneCounterConstraint *ccs1 =
+      createOneCounterConstraint( 0, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
 

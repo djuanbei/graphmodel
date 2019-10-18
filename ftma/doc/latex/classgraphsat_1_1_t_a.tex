@@ -1,0 +1,260 @@
+\hypertarget{classgraphsat_1_1_t_a}{}\section{graphsat\+::TA$<$ C, L, T $>$ Class Template Reference}
+\label{classgraphsat_1_1_t_a}\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+
+
+{\ttfamily \#include $<$ta.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::TA$<$ C, L, T $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_t_a__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_t_a_a52ab20ea442cfeae66efc7aafdbd5e3e}{TA}} (const \mbox{\hyperlink{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}{T\+A\+T\+\_\+t}} $\ast$tat, const \mbox{\hyperlink{classgraphsat_1_1_parameter}{Parameter}} \&param)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_t_a_a9bbe8918a388658c5ee6c5fde5325a07}{find\+Rhs}} (const int link, const int lhs, int \&rhs) const
+\item 
+vector$<$ C $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_aea592f12c9c7cd0232c19a19fa268d25}{get\+Clock\+Max\+Value}} () const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_t_a_a5c6fed7d2a3e06cb221049fb42eb1800}{get\+Clock\+Num}} () const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_t_a_a26f74ce62e8b0e5a73fed0302c73781d}{get\+Initial\+Loc}} () const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_t_a_a6c73bfefdea0464e1948377f21905499}{transition\+Run}} (int link, const \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \&manager, C $\ast$D) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_t_a_a4418595d16f065eafd066e0b2dd2b48f}{location\+Run}} (int link, const \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \&manager, C $\ast$D) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_t_a_ad62ce2c1a51636c96fe5205dbaba14cd}{is\+Commit}} (int id) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_t_a_ac3eb735aa539ad827c65930526effa07}{update\+Counter\+Id}} (const map$<$ int, int $>$ \&id\+\_\+map)
+\end{DoxyCompactItemize}
+\subsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef C \mbox{\hyperlink{classgraphsat_1_1_t_a_afa30a66edcc3f3f9126c70aa82db1ea3}{C\+\_\+t}}
+\item 
+typedef \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ \mbox{\hyperlink{classgraphsat_1_1_t_a_afa30a66edcc3f3f9126c70aa82db1ea3}{C\+\_\+t}} $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a2a1d47f0a2945d673fc15125b3ff2f25}{C\+S\+\_\+t}}
+\item 
+typedef \mbox{\hyperlink{classgraphsat_1_1_t_a}{TA}}$<$ C, L, T $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a4ebfe8e97e7ce6681d5f237e322c4a77}{T\+A\+\_\+t}}
+\item 
+typedef \mbox{\hyperlink{classgraphsat_1_1_t_a_t}{T\+AT}}$<$ C, L, T $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}{T\+A\+T\+\_\+t}}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}{T\+A\+T\+\_\+t}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a70a95125e666079a25f808fe99ca6fe0}{ta\+\_\+tempate}}
+\item 
+vector$<$ L $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a0b4b46f5854b0e35b741fd7e82df4046}{locations}}
+\item 
+vector$<$ T $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a2525c9f51319ca318285566c52e6b9d1}{transitions}}
+\item 
+vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a_a8a0eaf0b7ee5ffee7f4cdc95b7ad7f2f}{difference\+\_\+cons}}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename R1 $>$ }\\class \mbox{\hyperlink{classgraphsat_1_1_t_a_ac274586d6140dff44fa1029371c2cf48}{Reachability}}
+\item 
+{\footnotesize template$<$typename R2 $>$ }\\class \mbox{\hyperlink{classgraphsat_1_1_t_a_a8e8eb523736892bc0c9b460e370db614}{Reachable\+Set}}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_t_a_af6e6d1ed1c059a7b2b5e7bd542ea8d83}{T\+A\+S$<$ C, L, T $>$}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename C, typename L, typename T$>$\newline
+class graphsat\+::\+T\+A$<$ C, L, T $>$}
+
+\mbox{\hyperlink{classgraphsat_1_1_t_a}{TA}} has one-\/component 
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_afa30a66edcc3f3f9126c70aa82db1ea3}\label{classgraphsat_1_1_t_a_afa30a66edcc3f3f9126c70aa82db1ea3}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!C\_t@{C\_t}}
+\index{C\_t@{C\_t}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{C\_t}{C\_t}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+typedef C \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_t_a_afa30a66edcc3f3f9126c70aa82db1ea3}{C\+\_\+t}}\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a2a1d47f0a2945d673fc15125b3ff2f25}\label{classgraphsat_1_1_t_a_a2a1d47f0a2945d673fc15125b3ff2f25}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!CS\_t@{CS\_t}}
+\index{CS\_t@{CS\_t}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{CS\_t}{CS\_t}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+typedef \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$\mbox{\hyperlink{classgraphsat_1_1_t_a_afa30a66edcc3f3f9126c70aa82db1ea3}{C\+\_\+t}}$>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_t_a_a2a1d47f0a2945d673fc15125b3ff2f25}{C\+S\+\_\+t}}\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a4ebfe8e97e7ce6681d5f237e322c4a77}\label{classgraphsat_1_1_t_a_a4ebfe8e97e7ce6681d5f237e322c4a77}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!TA\_t@{TA\_t}}
+\index{TA\_t@{TA\_t}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{TA\_t}{TA\_t}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+typedef \mbox{\hyperlink{classgraphsat_1_1_t_a}{TA}}$<$C, L, T$>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_t_a_a4ebfe8e97e7ce6681d5f237e322c4a77}{T\+A\+\_\+t}}\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}\label{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!TAT\_t@{TAT\_t}}
+\index{TAT\_t@{TAT\_t}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{TAT\_t}{TAT\_t}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+typedef \mbox{\hyperlink{classgraphsat_1_1_t_a_t}{T\+AT}}$<$C, L, T$>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}{T\+A\+T\+\_\+t}}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a52ab20ea442cfeae66efc7aafdbd5e3e}\label{classgraphsat_1_1_t_a_a52ab20ea442cfeae66efc7aafdbd5e3e}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!TA@{TA}}
+\index{TA@{TA}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{TA()}{TA()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_t_a}{TA}} (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}{T\+A\+T\+\_\+t}} $\ast$}]{tat,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_parameter}{Parameter}} \&}]{param }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a9bbe8918a388658c5ee6c5fde5325a07}\label{classgraphsat_1_1_t_a_a9bbe8918a388658c5ee6c5fde5325a07}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!findRhs@{findRhs}}
+\index{findRhs@{findRhs}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{findRhs()}{findRhs()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::find\+Rhs (\begin{DoxyParamCaption}\item[{const int}]{link,  }\item[{const int}]{lhs,  }\item[{int \&}]{rhs }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_aea592f12c9c7cd0232c19a19fa268d25}\label{classgraphsat_1_1_t_a_aea592f12c9c7cd0232c19a19fa268d25}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!getClockMaxValue@{getClockMaxValue}}
+\index{getClockMaxValue@{getClockMaxValue}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{getClockMaxValue()}{getClockMaxValue()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+vector$<$C$>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::get\+Clock\+Max\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_t_a_aea592f12c9c7cd0232c19a19fa268d25_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a5c6fed7d2a3e06cb221049fb42eb1800}\label{classgraphsat_1_1_t_a_a5c6fed7d2a3e06cb221049fb42eb1800}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!getClockNum@{getClockNum}}
+\index{getClockNum@{getClockNum}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{getClockNum()}{getClockNum()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::get\+Clock\+Num (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_t_a_a5c6fed7d2a3e06cb221049fb42eb1800_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a26f74ce62e8b0e5a73fed0302c73781d}\label{classgraphsat_1_1_t_a_a26f74ce62e8b0e5a73fed0302c73781d}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!getInitialLoc@{getInitialLoc}}
+\index{getInitialLoc@{getInitialLoc}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{getInitialLoc()}{getInitialLoc()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::get\+Initial\+Loc (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_t_a_a26f74ce62e8b0e5a73fed0302c73781d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_ad62ce2c1a51636c96fe5205dbaba14cd}\label{classgraphsat_1_1_t_a_ad62ce2c1a51636c96fe5205dbaba14cd}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!isCommit@{isCommit}}
+\index{isCommit@{isCommit}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{isCommit()}{isCommit()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::is\+Commit (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a4418595d16f065eafd066e0b2dd2b48f}\label{classgraphsat_1_1_t_a_a4418595d16f065eafd066e0b2dd2b48f}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!locationRun@{locationRun}}
+\index{locationRun@{locationRun}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{locationRun()}{locationRun()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::location\+Run (\begin{DoxyParamCaption}\item[{int}]{link,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \&}]{manager,  }\item[{C $\ast$}]{D }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a6c73bfefdea0464e1948377f21905499}\label{classgraphsat_1_1_t_a_a6c73bfefdea0464e1948377f21905499}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!transitionRun@{transitionRun}}
+\index{transitionRun@{transitionRun}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{transitionRun()}{transitionRun()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::transition\+Run (\begin{DoxyParamCaption}\item[{int}]{link,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}}$<$ C $>$ \&}]{manager,  }\item[{C $\ast$}]{D }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_ac3eb735aa539ad827c65930526effa07}\label{classgraphsat_1_1_t_a_ac3eb735aa539ad827c65930526effa07}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!updateCounterId@{updateCounterId}}
+\index{updateCounterId@{updateCounterId}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{updateCounterId()}{updateCounterId()}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::update\+Counter\+Id (\begin{DoxyParamCaption}\item[{const map$<$ int, int $>$ \&}]{id\+\_\+map }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_ac274586d6140dff44fa1029371c2cf48}\label{classgraphsat_1_1_t_a_ac274586d6140dff44fa1029371c2cf48}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!Reachability@{Reachability}}
+\index{Reachability@{Reachability}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{Reachability}{Reachability}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+template$<$typename R1 $>$ \\
+friend class \mbox{\hyperlink{classgraphsat_1_1_reachability}{Reachability}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a8e8eb523736892bc0c9b460e370db614}\label{classgraphsat_1_1_t_a_a8e8eb523736892bc0c9b460e370db614}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!ReachableSet@{ReachableSet}}
+\index{ReachableSet@{ReachableSet}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{ReachableSet}{ReachableSet}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+template$<$typename R2 $>$ \\
+friend class \mbox{\hyperlink{classgraphsat_1_1_reachable_set}{Reachable\+Set}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_af6e6d1ed1c059a7b2b5e7bd542ea8d83}\label{classgraphsat_1_1_t_a_af6e6d1ed1c059a7b2b5e7bd542ea8d83}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!TAS$<$ C, L, T $>$@{TAS$<$ C, L, T $>$}}
+\index{TAS$<$ C, L, T $>$@{TAS$<$ C, L, T $>$}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{TAS$<$ C, L, T $>$}{TAS< C, L, T >}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+friend class \mbox{\hyperlink{classgraphsat_1_1_t_a_s}{T\+AS}}$<$ C, L, T $>$\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a8a0eaf0b7ee5ffee7f4cdc95b7ad7f2f}\label{classgraphsat_1_1_t_a_a8a0eaf0b7ee5ffee7f4cdc95b7ad7f2f}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!difference\_cons@{difference\_cons}}
+\index{difference\_cons@{difference\_cons}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{difference\_cons}{difference\_cons}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+vector$<$\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$C$>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::difference\+\_\+cons\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a0b4b46f5854b0e35b741fd7e82df4046}\label{classgraphsat_1_1_t_a_a0b4b46f5854b0e35b741fd7e82df4046}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!locations@{locations}}
+\index{locations@{locations}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{locations}{locations}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+vector$<$L$>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::locations\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a70a95125e666079a25f808fe99ca6fe0}\label{classgraphsat_1_1_t_a_a70a95125e666079a25f808fe99ca6fe0}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!ta\_tempate@{ta\_tempate}}
+\index{ta\_tempate@{ta\_tempate}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{ta\_tempate}{ta\_tempate}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+const \mbox{\hyperlink{classgraphsat_1_1_t_a_a9d81348f6a488c20a885e5eed6cd8a14}{T\+A\+T\+\_\+t}}$\ast$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::ta\+\_\+tempate\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_t_a_a2525c9f51319ca318285566c52e6b9d1}\label{classgraphsat_1_1_t_a_a2525c9f51319ca318285566c52e6b9d1}} 
+\index{graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}!transitions@{transitions}}
+\index{transitions@{transitions}!graphsat::TA$<$ C, L, T $>$@{graphsat::TA$<$ C, L, T $>$}}
+\subsubsection{\texorpdfstring{transitions}{transitions}}
+{\footnotesize\ttfamily template$<$typename C , typename L , typename T $>$ \\
+vector$<$T$>$ \mbox{\hyperlink{classgraphsat_1_1_t_a}{graphsat\+::\+TA}}$<$ C, L, T $>$\+::transitions\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/model/\mbox{\hyperlink{ta_8hpp}{ta.\+hpp}}\end{DoxyCompactItemize}

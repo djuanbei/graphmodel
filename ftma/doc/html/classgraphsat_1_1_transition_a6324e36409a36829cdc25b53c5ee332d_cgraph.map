@@ -1,0 +1,11 @@
+<map id="graphsat::Transition::Transition" name="graphsat::Transition::Transition">
+<area shape="rect" id="node1" title=" " alt="" coords="5,225,144,264"/>
+<area shape="rect" id="node2" href="$classgraphsat_1_1_counter_constraint.html#a880eb6520fcf80de35071d62cb31a640" title=" " alt="" coords="192,5,381,44"/>
+<area shape="rect" id="node3" href="$classgraphsat_1_1_counter_constraint.html#aa467ff66b37a1cbc69f5eddb269aaa0d" title=" " alt="" coords="192,68,381,107"/>
+<area shape="rect" id="node4" href="$classgraphsat_1_1_parameter.html#a452bc578f7adf8feaedd40f3aa06fab9" title=" " alt="" coords="215,131,358,169"/>
+<area shape="rect" id="node5" href="$classgraphsat_1_1_parameter.html#a9f6ef8090aefb3f53ca031b70a9c81c4" title=" " alt="" coords="215,193,358,232"/>
+<area shape="rect" id="node6" href="$structgraphsat_1_1_channel.html#a334cfc78cfcb728f178d2566a639b6f6" title=" " alt="" coords="218,256,355,295"/>
+<area shape="rect" id="node7" href="$classgraphsat_1_1_parameter.html#a3f4d846ef936f82d07b5a2e4e4b632ee" title=" " alt="" coords="215,319,358,357"/>
+<area shape="rect" id="node8" href="$classgraphsat_1_1_counter_action.html#aa6ab6ebd8e13b466dba062efea962691" title=" " alt="" coords="204,381,369,420"/>
+<area shape="rect" id="node9" href="$classgraphsat_1_1_counter_action.html#a09e8a5779f0ae70ea07e8974d93edf2e" title=" " alt="" coords="204,444,369,483"/>
+</map>

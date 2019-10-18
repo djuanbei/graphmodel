@@ -1,0 +1,362 @@
+\hypertarget{classrapidxml_1_1xml__document}{}\section{rapidxml\+::xml\+\_\+document$<$ Ch $>$ Class Template Reference}
+\label{classrapidxml_1_1xml__document}\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+
+
+{\ttfamily \#include $<$rapidxml.\+hpp$>$}
+
+
+
+Inheritance diagram for rapidxml\+::xml\+\_\+document$<$ Ch $>$\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=320pt]{classrapidxml_1_1xml__document__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for rapidxml\+::xml\+\_\+document$<$ Ch $>$\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=320pt]{classrapidxml_1_1xml__document__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1attribute__name__pred}{attribute\+\_\+name\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1attribute__value__pred}{attribute\+\_\+value\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1attribute__value__pure__pred}{attribute\+\_\+value\+\_\+pure\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1node__name__pred}{node\+\_\+name\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1text__pred}{text\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1text__pure__no__ws__pred}{text\+\_\+pure\+\_\+no\+\_\+ws\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1text__pure__with__ws__pred}{text\+\_\+pure\+\_\+with\+\_\+ws\+\_\+pred}}
+\item 
+struct \mbox{\hyperlink{structrapidxml_1_1xml__document_1_1whitespace__pred}{whitespace\+\_\+pred}}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classrapidxml_1_1xml__document_aae8841b15085ba8f32ff46587ace28f5}{xml\+\_\+document}} ()
+\begin{DoxyCompactList}\small\item\em Constructs empty X\+ML document. \end{DoxyCompactList}\item 
+{\footnotesize template$<$int Flags$>$ }\\void \mbox{\hyperlink{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1}{parse}} (Ch $\ast$text)
+\item 
+void \mbox{\hyperlink{classrapidxml_1_1xml__document_a826929ff54242532198701f19ff5f83f}{clear}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$int Flags$>$ }\\void \mbox{\hyperlink{classrapidxml_1_1xml__document_aaa63a0c7b57ab8fce63d4aebe4da123d}{parse\+\_\+bom}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_a0151c52c82ba79ea0605c2facf39c534}{parse\+\_\+xml\+\_\+declaration}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_abc287ce83bcb2dc8519e300236004591}{parse\+\_\+comment}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_a4c613f3a928f763b4c788422edda5860}{parse\+\_\+doctype}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_a09e12a4233a07387d4b5a5ad239388aa}{parse\+\_\+pi}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\Ch \mbox{\hyperlink{classrapidxml_1_1xml__document_aec6cedf45179b6378c670bc3ea509e61}{parse\+\_\+and\+\_\+append\+\_\+data}} (\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$node, Ch $\ast$\&text, Ch $\ast$contents\+\_\+start)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_ab94daeb25e8a1609e31210a45b2afa6c}{parse\+\_\+cdata}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_aea385acd096ab200d63a777d53435ada}{parse\+\_\+element}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_a5e94cbc9b02e864cb80961ddb8cc63a7}{parse\+\_\+node}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\void \mbox{\hyperlink{classrapidxml_1_1xml__document_aae0a4c2e1972ab9a9e0ce91cf1166ac9}{parse\+\_\+node\+\_\+contents}} (Ch $\ast$\&text, \mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$node)
+\item 
+{\footnotesize template$<$int Flags$>$ }\\void \mbox{\hyperlink{classrapidxml_1_1xml__document_ac0b3cd07b3d5cbaa83762a196c681519}{parse\+\_\+node\+\_\+attributes}} (Ch $\ast$\&text, \mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$node)
+\end{DoxyCompactItemize}
+\subsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$int Flags$>$ }\\static void \mbox{\hyperlink{classrapidxml_1_1xml__document_ae33040bcfa8e5a29dc6f6f130984a981}{insert\+\_\+coded\+\_\+character}} (Ch $\ast$\&text, unsigned long code)
+\item 
+{\footnotesize template$<$class Stop\+Pred , int Flags$>$ }\\static void \mbox{\hyperlink{classrapidxml_1_1xml__document_a27aca5bdcb3bfa899f61b17d7f1d3a0d}{skip}} (Ch $\ast$\&text)
+\item 
+{\footnotesize template$<$class Stop\+Pred , class Stop\+Pred\+Pure , int Flags$>$ }\\static Ch $\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document_af86781975cdfff2105fa8c0b49ab4507}{skip\+\_\+and\+\_\+expand\+\_\+character\+\_\+refs}} (Ch $\ast$\&text)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class Ch = char$>$\newline
+class rapidxml\+::xml\+\_\+document$<$ Ch $>$}
+
+This class represents root of the D\+OM hierarchy. It is also an \mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}} and a \mbox{\hyperlink{classrapidxml_1_1memory__pool}{memory\+\_\+pool}} through public inheritance. Use \mbox{\hyperlink{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1}{parse()}} function to build a D\+OM tree from a zero-\/terminated X\+ML text string. \mbox{\hyperlink{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1}{parse()}} function allocates memory for nodes and attributes by using functions of \mbox{\hyperlink{classrapidxml_1_1xml__document}{xml\+\_\+document}}, which are inherited from \mbox{\hyperlink{classrapidxml_1_1memory__pool}{memory\+\_\+pool}}. To access root node of the document, use the document itself, as if it was an \mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}.
+\begin{DoxyParams}{Parameters}
+{\em Ch} & Character type to use. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_aae8841b15085ba8f32ff46587ace28f5}\label{classrapidxml_1_1xml__document_aae8841b15085ba8f32ff46587ace28f5}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!xml\_document@{xml\_document}}
+\index{xml\_document@{xml\_document}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{xml\_document()}{xml\_document()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::\mbox{\hyperlink{classrapidxml_1_1xml__document}{xml\+\_\+document}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Constructs empty X\+ML document. 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_a826929ff54242532198701f19ff5f83f}\label{classrapidxml_1_1xml__document_a826929ff54242532198701f19ff5f83f}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!clear@{clear}}
+\index{clear@{clear}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::clear (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Clears the document by deleting all nodes and clearing the memory pool. All nodes owned by document pool are destroyed. Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_a826929ff54242532198701f19ff5f83f_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_ae33040bcfa8e5a29dc6f6f130984a981}\label{classrapidxml_1_1xml__document_ae33040bcfa8e5a29dc6f6f130984a981}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!insert\_coded\_character@{insert\_coded\_character}}
+\index{insert\_coded\_character@{insert\_coded\_character}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{insert\_coded\_character()}{insert\_coded\_character()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+static void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::insert\+\_\+coded\+\_\+character (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text,  }\item[{unsigned long}]{code }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1}\label{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse@{parse}}
+\index{parse@{parse}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse()}{parse()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse (\begin{DoxyParamCaption}\item[{Ch $\ast$}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Parses zero-\/terminated X\+ML string according to given flags. Passed string will be modified by the parser, unless \mbox{\hyperlink{namespacerapidxml_a45d4d8fef551beaaba23a83b847fd6a3}{rapidxml\+::parse\+\_\+non\+\_\+destructive}} flag is used. The string must persist for the lifetime of the document. In case of error, \mbox{\hyperlink{classrapidxml_1_1parse__error}{rapidxml\+::parse\+\_\+error}} exception will be thrown. ~\newline
+~\newline
+ If you want to parse contents of a file, you must first load the file into the memory, and pass pointer to its beginning. Make sure that data is zero-\/terminated. ~\newline
+~\newline
+ Document can be parsed into multiple times. Each new call to parse removes previous nodes and attributes (if any), but does not clear memory pool.
+\begin{DoxyParams}{Parameters}
+{\em text} & X\+ML data to parse; pointer is non-\/const to denote fact that this data may be modified by the parser. \\
+\hline
+\end{DoxyParams}
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=347pt]{classrapidxml_1_1xml__document_ac6e73ff9ac323bf5a370c38feb03a6b1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_aec6cedf45179b6378c670bc3ea509e61}\label{classrapidxml_1_1xml__document_aec6cedf45179b6378c670bc3ea509e61}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_and\_append\_data@{parse\_and\_append\_data}}
+\index{parse\_and\_append\_data@{parse\_and\_append\_data}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_and\_append\_data()}{parse\_and\_append\_data()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+Ch \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+and\+\_\+append\+\_\+data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$}]{node,  }\item[{Ch $\ast$\&}]{text,  }\item[{Ch $\ast$}]{contents\+\_\+start }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_aec6cedf45179b6378c670bc3ea509e61_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_aaa63a0c7b57ab8fce63d4aebe4da123d}\label{classrapidxml_1_1xml__document_aaa63a0c7b57ab8fce63d4aebe4da123d}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_bom@{parse\_bom}}
+\index{parse\_bom@{parse\_bom}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_bom()}{parse\_bom()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+bom (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_ab94daeb25e8a1609e31210a45b2afa6c}\label{classrapidxml_1_1xml__document_ab94daeb25e8a1609e31210a45b2afa6c}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_cdata@{parse\_cdata}}
+\index{parse\_cdata@{parse\_cdata}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_cdata()}{parse\_cdata()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+cdata (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_ab94daeb25e8a1609e31210a45b2afa6c_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_abc287ce83bcb2dc8519e300236004591}\label{classrapidxml_1_1xml__document_abc287ce83bcb2dc8519e300236004591}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_comment@{parse\_comment}}
+\index{parse\_comment@{parse\_comment}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_comment()}{parse\_comment()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+comment (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_abc287ce83bcb2dc8519e300236004591_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_a4c613f3a928f763b4c788422edda5860}\label{classrapidxml_1_1xml__document_a4c613f3a928f763b4c788422edda5860}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_doctype@{parse\_doctype}}
+\index{parse\_doctype@{parse\_doctype}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_doctype()}{parse\_doctype()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+doctype (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_a4c613f3a928f763b4c788422edda5860_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_aea385acd096ab200d63a777d53435ada}\label{classrapidxml_1_1xml__document_aea385acd096ab200d63a777d53435ada}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_element@{parse\_element}}
+\index{parse\_element@{parse\_element}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_element()}{parse\_element()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+element (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_aea385acd096ab200d63a777d53435ada_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_a5e94cbc9b02e864cb80961ddb8cc63a7}\label{classrapidxml_1_1xml__document_a5e94cbc9b02e864cb80961ddb8cc63a7}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_node@{parse\_node}}
+\index{parse\_node@{parse\_node}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_node()}{parse\_node()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+node (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_a5e94cbc9b02e864cb80961ddb8cc63a7_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_ac0b3cd07b3d5cbaa83762a196c681519}\label{classrapidxml_1_1xml__document_ac0b3cd07b3d5cbaa83762a196c681519}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_node\_attributes@{parse\_node\_attributes}}
+\index{parse\_node\_attributes@{parse\_node\_attributes}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_node\_attributes()}{parse\_node\_attributes()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+node\+\_\+attributes (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text,  }\item[{\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$}]{node }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_ac0b3cd07b3d5cbaa83762a196c681519_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_aae0a4c2e1972ab9a9e0ce91cf1166ac9}\label{classrapidxml_1_1xml__document_aae0a4c2e1972ab9a9e0ce91cf1166ac9}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_node\_contents@{parse\_node\_contents}}
+\index{parse\_node\_contents@{parse\_node\_contents}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_node\_contents()}{parse\_node\_contents()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+node\+\_\+contents (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text,  }\item[{\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$ Ch $>$ $\ast$}]{node }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_aae0a4c2e1972ab9a9e0ce91cf1166ac9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_a09e12a4233a07387d4b5a5ad239388aa}\label{classrapidxml_1_1xml__document_a09e12a4233a07387d4b5a5ad239388aa}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_pi@{parse\_pi}}
+\index{parse\_pi@{parse\_pi}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_pi()}{parse\_pi()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+pi (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_a09e12a4233a07387d4b5a5ad239388aa_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_a0151c52c82ba79ea0605c2facf39c534}\label{classrapidxml_1_1xml__document_a0151c52c82ba79ea0605c2facf39c534}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!parse\_xml\_declaration@{parse\_xml\_declaration}}
+\index{parse\_xml\_declaration@{parse\_xml\_declaration}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{parse\_xml\_declaration()}{parse\_xml\_declaration()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$int Flags$>$ \\
+\mbox{\hyperlink{classrapidxml_1_1xml__node}{xml\+\_\+node}}$<$Ch$>$$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::parse\+\_\+xml\+\_\+declaration (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_a0151c52c82ba79ea0605c2facf39c534_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_a27aca5bdcb3bfa899f61b17d7f1d3a0d}\label{classrapidxml_1_1xml__document_a27aca5bdcb3bfa899f61b17d7f1d3a0d}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!skip@{skip}}
+\index{skip@{skip}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{skip()}{skip()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$class Stop\+Pred , int Flags$>$ \\
+static void \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::skip (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classrapidxml_1_1xml__document_af86781975cdfff2105fa8c0b49ab4507}\label{classrapidxml_1_1xml__document_af86781975cdfff2105fa8c0b49ab4507}} 
+\index{rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}!skip\_and\_expand\_character\_refs@{skip\_and\_expand\_character\_refs}}
+\index{skip\_and\_expand\_character\_refs@{skip\_and\_expand\_character\_refs}!rapidxml::xml\_document$<$ Ch $>$@{rapidxml::xml\_document$<$ Ch $>$}}
+\subsubsection{\texorpdfstring{skip\_and\_expand\_character\_refs()}{skip\_and\_expand\_character\_refs()}}
+{\footnotesize\ttfamily template$<$class Ch = char$>$ \\
+template$<$class Stop\+Pred , class Stop\+Pred\+Pure , int Flags$>$ \\
+static Ch$\ast$ \mbox{\hyperlink{classrapidxml_1_1xml__document}{rapidxml\+::xml\+\_\+document}}$<$ Ch $>$\+::skip\+\_\+and\+\_\+expand\+\_\+character\+\_\+refs (\begin{DoxyParamCaption}\item[{Ch $\ast$\&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}, {\ttfamily [private]}}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_af86781975cdfff2105fa8c0b49ab4507_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classrapidxml_1_1xml__document_af86781975cdfff2105fa8c0b49ab4507_icgraph}
+\end{center}
+\end{figure}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/io/\mbox{\hyperlink{rapidxml_8hpp}{rapidxml.\+hpp}}\end{DoxyCompactItemize}

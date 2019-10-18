@@ -1,0 +1,407 @@
+\hypertarget{classgraphsat_1_1_state_set}{}\section{graphsat\+::State\+Set$<$ T $>$ Class Template Reference}
+\label{classgraphsat_1_1_state_set}\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+
+
+{\ttfamily \#include $<$discretestate.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::State\+Set$<$ T $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=340pt]{classgraphsat_1_1_state_set__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_state_set_1_1const__iterator}{const\+\_\+iterator}}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_state_set_1_1iterator}{iterator}}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_a100b271697892dae7a7c8f60289cbf6e}{State\+Set}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_a3c1c4c0746a478a9548f4de5ee14149e}{State\+Set}} (int id, int n, int s)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_state_set_aaa4c599c542c6634fd7b7e6fb4697e2d}{set\+Param}} (const int n, int s)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_a80695c091bb5549583a09e7c71860a82}{$\sim$\+State\+Set}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_state_set_a9617a9bb6590058b3175abfc06c84ec7}{delete\+All}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_state_set_aadb01d38275e5dee296850aa974000de}{clear}} ()
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_a2ba142c5b450dd427534c48c4a9e0791}{size}} () const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set_a263632e007a4c7b277f41d50dd153f72}{empty}} () const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_af6735cbd6b54fea6c2dbfdecdb70f49f}{add}} (const T $\ast$const one)
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set_a8302bab8034c6f16cf9adbbd84b3a535}{contain}} (const T $\ast$const one) const
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set_ad5f5221dbe778039f0aed6404d3c34d8}{begin}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set_a38ce7b2f5e1c5153621361420935aa54}{begin}} () const
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set_acd8eccd91d95757b70c7d84207d888d8}{end}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set_af12eb07d08efb4b091302a2cf3b5e545}{end}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef \mbox{\hyperlink{classgraphsat_1_1_state_set}{State\+Set}}$<$ T $>$ \mbox{\hyperlink{classgraphsat_1_1_state_set_a6474a59203fade7146aacfd0e277ecf4}{State\+Set\+\_\+t}}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_a3d7046e995575e5bf9806b174ec75a65}{add\+Head}} (const T $\ast$const head)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_ab499cfa88c12fedc5d0b6ae8e60ee1e9}{contain\+Head}} (const T $\ast$const head) const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_a2a7f602339d0ef9c428da2333a93199f}{add\+Body\+Value}} (int head\+Id, const T $\ast$const body)
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_aaf7bbbad618682dd6d747b1c388d4995}{hash\+\_\+value}} (const T $\ast$const head) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set_ac293557e5cfc90cea8c75ee76a3d56cb}{equal}} (const T $\ast$const lhs, const T $\ast$const rhs) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set_ac83a9a8a89c6976ba650fc6b221c4cf0}{contain\+Body}} (const T $\ast$const lhs, const T $\ast$const rhs) const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unordered\+\_\+map$<$ int, pair$<$ vector$<$ T $>$, vector$<$ int $>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_state_set_aa82adee471b2bd7245d92c08d0d24991}{head\+\_\+part\+\_\+elements}}
+\item 
+vector$<$ vector$<$ T $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_state_set_aea8d756f3a002b92c6ab86866ac1777d}{body\+\_\+part\+\_\+elements}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_abaedb0e8a95f8b933a58165d0e8b984d}{add\+\_\+element\+\_\+num}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_a195a71db13d33685ae4eba516d7bd4c3}{element\+\_\+len}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_a7d6ffe4819cda042a16fd46cac949010}{head\+\_\+part\+\_\+len}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_set_acc83de2b14bfcb1a0810d9bf3abb2ac5}{body\+\_\+part\+\_\+len}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a6474a59203fade7146aacfd0e277ecf4}\label{classgraphsat_1_1_state_set_a6474a59203fade7146aacfd0e277ecf4}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!StateSet\_t@{StateSet\_t}}
+\index{StateSet\_t@{StateSet\_t}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{StateSet\_t}{StateSet\_t}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+typedef \mbox{\hyperlink{classgraphsat_1_1_state_set}{State\+Set}}$<$T$>$ \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_state_set_a6474a59203fade7146aacfd0e277ecf4}{State\+Set\+\_\+t}}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a100b271697892dae7a7c8f60289cbf6e}\label{classgraphsat_1_1_state_set_a100b271697892dae7a7c8f60289cbf6e}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!StateSet@{StateSet}}
+\index{StateSet@{StateSet}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{StateSet()}{StateSet()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_state_set}{State\+Set}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a3c1c4c0746a478a9548f4de5ee14149e}\label{classgraphsat_1_1_state_set_a3c1c4c0746a478a9548f4de5ee14149e}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!StateSet@{StateSet}}
+\index{StateSet@{StateSet}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{StateSet()}{StateSet()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::\mbox{\hyperlink{classgraphsat_1_1_state_set}{State\+Set}} (\begin{DoxyParamCaption}\item[{int}]{id,  }\item[{int}]{n,  }\item[{int}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a80695c091bb5549583a09e7c71860a82}\label{classgraphsat_1_1_state_set_a80695c091bb5549583a09e7c71860a82}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!````~StateSet@{$\sim$StateSet}}
+\index{````~StateSet@{$\sim$StateSet}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{$\sim$StateSet()}{~StateSet()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::$\sim$\mbox{\hyperlink{classgraphsat_1_1_state_set}{State\+Set}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_af6735cbd6b54fea6c2dbfdecdb70f49f}\label{classgraphsat_1_1_state_set_af6735cbd6b54fea6c2dbfdecdb70f49f}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!add@{add}}
+\index{add@{add}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::add (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{one }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+check whether has element is set has same hash\+\_\+valueHere is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_set_af6735cbd6b54fea6c2dbfdecdb70f49f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a2a7f602339d0ef9c428da2333a93199f}\label{classgraphsat_1_1_state_set_a2a7f602339d0ef9c428da2333a93199f}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!addBodyValue@{addBodyValue}}
+\index{addBodyValue@{addBodyValue}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{addBodyValue()}{addBodyValue()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::add\+Body\+Value (\begin{DoxyParamCaption}\item[{int}]{head\+Id,  }\item[{const T $\ast$const}]{body }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=314pt]{classgraphsat_1_1_state_set_a2a7f602339d0ef9c428da2333a93199f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a3d7046e995575e5bf9806b174ec75a65}\label{classgraphsat_1_1_state_set_a3d7046e995575e5bf9806b174ec75a65}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!addHead@{addHead}}
+\index{addHead@{addHead}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{addHead()}{addHead()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::add\+Head (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{head }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=314pt]{classgraphsat_1_1_state_set_a3d7046e995575e5bf9806b174ec75a65_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_ad5f5221dbe778039f0aed6404d3c34d8}\label{classgraphsat_1_1_state_set_ad5f5221dbe778039f0aed6404d3c34d8}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!begin@{begin}}
+\index{begin@{begin}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{begin()}{begin()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::begin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=346pt]{classgraphsat_1_1_state_set_ad5f5221dbe778039f0aed6404d3c34d8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a38ce7b2f5e1c5153621361420935aa54}\label{classgraphsat_1_1_state_set_a38ce7b2f5e1c5153621361420935aa54}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!begin@{begin}}
+\index{begin@{begin}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{begin()}{begin()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::begin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_aadb01d38275e5dee296850aa974000de}\label{classgraphsat_1_1_state_set_aadb01d38275e5dee296850aa974000de}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!clear@{clear}}
+\index{clear@{clear}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::clear (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=338pt]{classgraphsat_1_1_state_set_aadb01d38275e5dee296850aa974000de_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a8302bab8034c6f16cf9adbbd84b3a535}\label{classgraphsat_1_1_state_set_a8302bab8034c6f16cf9adbbd84b3a535}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!contain@{contain}}
+\index{contain@{contain}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{contain()}{contain()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::contain (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{one }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=274pt]{classgraphsat_1_1_state_set_a8302bab8034c6f16cf9adbbd84b3a535_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_ac83a9a8a89c6976ba650fc6b221c4cf0}\label{classgraphsat_1_1_state_set_ac83a9a8a89c6976ba650fc6b221c4cf0}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!containBody@{containBody}}
+\index{containBody@{containBody}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{containBody()}{containBody()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::contain\+Body (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{lhs,  }\item[{const T $\ast$const}]{rhs }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=314pt]{classgraphsat_1_1_state_set_ac83a9a8a89c6976ba650fc6b221c4cf0_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_ab499cfa88c12fedc5d0b6ae8e60ee1e9}\label{classgraphsat_1_1_state_set_ab499cfa88c12fedc5d0b6ae8e60ee1e9}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!containHead@{containHead}}
+\index{containHead@{containHead}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{containHead()}{containHead()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::contain\+Head (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{head }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em head} & the value which needs to find location in head\+Part\+Elements\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+$>$=0, if find the head in head\+Part\+Elements -\/1, otherwise. 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=314pt]{classgraphsat_1_1_state_set_ab499cfa88c12fedc5d0b6ae8e60ee1e9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a9617a9bb6590058b3175abfc06c84ec7}\label{classgraphsat_1_1_state_set_a9617a9bb6590058b3175abfc06c84ec7}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!deleteAll@{deleteAll}}
+\index{deleteAll@{deleteAll}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{deleteAll()}{deleteAll()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::delete\+All (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=321pt]{classgraphsat_1_1_state_set_a9617a9bb6590058b3175abfc06c84ec7_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a263632e007a4c7b277f41d50dd153f72}\label{classgraphsat_1_1_state_set_a263632e007a4c7b277f41d50dd153f72}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!empty@{empty}}
+\index{empty@{empty}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{empty()}{empty()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::empty (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_acd8eccd91d95757b70c7d84207d888d8}\label{classgraphsat_1_1_state_set_acd8eccd91d95757b70c7d84207d888d8}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!end@{end}}
+\index{end@{end}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{end()}{end()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1iterator}{iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::end (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_set_acd8eccd91d95757b70c7d84207d888d8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_af12eb07d08efb4b091302a2cf3b5e545}\label{classgraphsat_1_1_state_set_af12eb07d08efb4b091302a2cf3b5e545}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!end@{end}}
+\index{end@{end}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{end()}{end()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_set_1_1const__iterator}{const\+\_\+iterator}} \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::end (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_ac293557e5cfc90cea8c75ee76a3d56cb}\label{classgraphsat_1_1_state_set_ac293557e5cfc90cea8c75ee76a3d56cb}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!equal@{equal}}
+\index{equal@{equal}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{equal()}{equal()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::equal (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{lhs,  }\item[{const T $\ast$const}]{rhs }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_aaf7bbbad618682dd6d747b1c388d4995}\label{classgraphsat_1_1_state_set_aaf7bbbad618682dd6d747b1c388d4995}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!hash\_value@{hash\_value}}
+\index{hash\_value@{hash\_value}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{hash\_value()}{hash\_value()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::hash\+\_\+value (\begin{DoxyParamCaption}\item[{const T $\ast$const}]{head }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=333pt]{classgraphsat_1_1_state_set_aaf7bbbad618682dd6d747b1c388d4995_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_aaa4c599c542c6634fd7b7e6fb4697e2d}\label{classgraphsat_1_1_state_set_aaa4c599c542c6634fd7b7e6fb4697e2d}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!setParam@{setParam}}
+\index{setParam@{setParam}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{setParam()}{setParam()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::set\+Param (\begin{DoxyParamCaption}\item[{const int}]{n,  }\item[{int}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=338pt]{classgraphsat_1_1_state_set_aaa4c599c542c6634fd7b7e6fb4697e2d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a2ba142c5b450dd427534c48c4a9e0791}\label{classgraphsat_1_1_state_set_a2ba142c5b450dd427534c48c4a9e0791}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!size@{size}}
+\index{size@{size}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_set_a2ba142c5b450dd427534c48c4a9e0791_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_abaedb0e8a95f8b933a58165d0e8b984d}\label{classgraphsat_1_1_state_set_abaedb0e8a95f8b933a58165d0e8b984d}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!add\_element\_num@{add\_element\_num}}
+\index{add\_element\_num@{add\_element\_num}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{add\_element\_num}{add\_element\_num}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::add\+\_\+element\+\_\+num\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_aea8d756f3a002b92c6ab86866ac1777d}\label{classgraphsat_1_1_state_set_aea8d756f3a002b92c6ab86866ac1777d}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!body\_part\_elements@{body\_part\_elements}}
+\index{body\_part\_elements@{body\_part\_elements}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{body\_part\_elements}{body\_part\_elements}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+vector$<$vector$<$T$>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::body\+\_\+part\+\_\+elements\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_acc83de2b14bfcb1a0810d9bf3abb2ac5}\label{classgraphsat_1_1_state_set_acc83de2b14bfcb1a0810d9bf3abb2ac5}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!body\_part\_len@{body\_part\_len}}
+\index{body\_part\_len@{body\_part\_len}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{body\_part\_len}{body\_part\_len}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::body\+\_\+part\+\_\+len\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_a195a71db13d33685ae4eba516d7bd4c3}\label{classgraphsat_1_1_state_set_a195a71db13d33685ae4eba516d7bd4c3}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!element\_len@{element\_len}}
+\index{element\_len@{element\_len}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{element\_len}{element\_len}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::element\+\_\+len\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_set_aa82adee471b2bd7245d92c08d0d24991}\label{classgraphsat_1_1_state_set_aa82adee471b2bd7245d92c08d0d24991}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!head\_part\_elements@{head\_part\_elements}}
+\index{head\_part\_elements@{head\_part\_elements}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{head\_part\_elements}{head\_part\_elements}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+unordered\+\_\+map$<$int, pair$<$vector$<$T$>$, vector$<$int$>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::head\+\_\+part\+\_\+elements\hspace{0.3cm}{\ttfamily [private]}}
+
+head1, head2,...,headn have same hash\+\_\+value hash\+\_\+value(head$\ast$) -\/-\/$>$ ((head1, head2,...,headn), the corresponding body\+Part location in body\+Part\+Elements) \mbox{\Hypertarget{classgraphsat_1_1_state_set_a7d6ffe4819cda042a16fd46cac949010}\label{classgraphsat_1_1_state_set_a7d6ffe4819cda042a16fd46cac949010}} 
+\index{graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}!head\_part\_len@{head\_part\_len}}
+\index{head\_part\_len@{head\_part\_len}!graphsat::StateSet$<$ T $>$@{graphsat::StateSet$<$ T $>$}}
+\subsubsection{\texorpdfstring{head\_part\_len}{head\_part\_len}}
+{\footnotesize\ttfamily template$<$typename T$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_set}{graphsat\+::\+State\+Set}}$<$ T $>$\+::head\+\_\+part\+\_\+len\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{discretestate_8hpp}{discretestate.\+hpp}}\end{DoxyCompactItemize}

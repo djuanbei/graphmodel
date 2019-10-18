@@ -1,0 +1,12 @@
+<map id="include/statemanager.hpp" name="include/statemanager.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="122,5,296,31"/>
+<area shape="rect" id="node2" href="$ta_8hpp.html" title="a model for timed automata" alt="" coords="137,152,282,177"/>
+<area shape="rect" id="node10" href="$transition_8hpp.html" title=" " alt="" coords="258,79,406,104"/>
+<area shape="rect" id="node3" href="$uppaaldata_8h.html" title=" " alt="" coords="80,225,238,251"/>
+<area shape="rect" id="node4" href="$uppaalmodelparser_8h.html" title=" " alt="" coords="199,299,404,324"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="a test main" alt="" coords="393,372,490,397"/>
+<area shape="rect" id="node7" href="$uppaalparser_8cpp.html" title=" " alt="" coords="29,299,174,324"/>
+<area shape="rect" id="node8" href="$reachability_8hpp.html" title="reachability problem of timed automata" alt="" coords="362,225,574,251"/>
+<area shape="rect" id="node9" href="$fisher_8cpp.html" title=" " alt="" coords="479,299,633,324"/>
+<area shape="rect" id="node6" href="$uppaalmodelparser_8cpp.html" title=" " alt="" coords="188,372,370,397"/>
+</map>

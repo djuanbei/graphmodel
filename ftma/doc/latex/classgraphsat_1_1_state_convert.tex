@@ -1,0 +1,167 @@
+\hypertarget{classgraphsat_1_1_state_convert}{}\section{graphsat\+::State\+Convert$<$ C $>$ Class Template Reference}
+\label{classgraphsat_1_1_state_convert}\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+
+
+{\ttfamily \#include $<$statemanager.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::State\+Convert$<$ C $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_convert__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_convert_aaa56e67d173c8d73eb4925b20e812d68}{State\+Convert}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_state_convert_a1207b78bd7d151c8ce6476d18d535735}{State\+Convert}} (int h\+Len, int b\+Len, \mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$ C $>$ h\+Com, \mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$ C $>$ b\+Com)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_state_convert_a81b6e8eaa165d879745c3ccfbe13182a}{encode}} (const C $\ast$data, \mbox{\hyperlink{namespacegraphsat_aa3b3d61a8c27ffc03448c5e1f3a76aed}{U\+I\+NT}} $\ast$out) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_state_convert_a63207afc56e9b32bba4ee4477802b6c9}{decode}} (const \mbox{\hyperlink{namespacegraphsat_aa3b3d61a8c27ffc03448c5e1f3a76aed}{U\+I\+NT}} $\ast$data, C $\ast$out) const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert_a6bc26e52e5cc55f29f9d541fe58cd8f9}{get\+Compression\+Size}} () const
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert_a94c8e2ac6473c876b3b4bab2725aab04}{get\+Compression\+Head\+Size}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert_a1d5bd9e862cf4706b233d19b1f2ec177}{head\+\_\+length}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert_acc3d0c1279169cd1aefd98d1108fc760}{com\+\_\+head\+\_\+length}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert_a79277c8bb484de1333a5ca54f506875d}{compression\+\_\+size}}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$ C $>$ \mbox{\hyperlink{classgraphsat_1_1_state_convert_a95cd073445c5508b92a64d7f506e8ef3}{head\+\_\+comp}}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$ C $>$ \mbox{\hyperlink{classgraphsat_1_1_state_convert_a0461d849c4c747460f7f625f2dac2fa4}{body\+\_\+comp}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_aaa56e67d173c8d73eb4925b20e812d68}\label{classgraphsat_1_1_state_convert_aaa56e67d173c8d73eb4925b20e812d68}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!StateConvert@{StateConvert}}
+\index{StateConvert@{StateConvert}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{StateConvert()}{StateConvert()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_state_convert}{State\+Convert}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a1207b78bd7d151c8ce6476d18d535735}\label{classgraphsat_1_1_state_convert_a1207b78bd7d151c8ce6476d18d535735}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!StateConvert@{StateConvert}}
+\index{StateConvert@{StateConvert}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{StateConvert()}{StateConvert()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_state_convert}{State\+Convert}} (\begin{DoxyParamCaption}\item[{int}]{h\+Len,  }\item[{int}]{b\+Len,  }\item[{\mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$ C $>$}]{h\+Com,  }\item[{\mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$ C $>$}]{b\+Com }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a63207afc56e9b32bba4ee4477802b6c9}\label{classgraphsat_1_1_state_convert_a63207afc56e9b32bba4ee4477802b6c9}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!decode@{decode}}
+\index{decode@{decode}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{decode()}{decode()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::decode (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{namespacegraphsat_aa3b3d61a8c27ffc03448c5e1f3a76aed}{U\+I\+NT}} $\ast$}]{data,  }\item[{C $\ast$}]{out }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_convert_a63207afc56e9b32bba4ee4477802b6c9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a81b6e8eaa165d879745c3ccfbe13182a}\label{classgraphsat_1_1_state_convert_a81b6e8eaa165d879745c3ccfbe13182a}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!encode@{encode}}
+\index{encode@{encode}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{encode()}{encode()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::encode (\begin{DoxyParamCaption}\item[{const C $\ast$}]{data,  }\item[{\mbox{\hyperlink{namespacegraphsat_aa3b3d61a8c27ffc03448c5e1f3a76aed}{U\+I\+NT}} $\ast$}]{out }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_convert_a81b6e8eaa165d879745c3ccfbe13182a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a94c8e2ac6473c876b3b4bab2725aab04}\label{classgraphsat_1_1_state_convert_a94c8e2ac6473c876b3b4bab2725aab04}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!getCompressionHeadSize@{getCompressionHeadSize}}
+\index{getCompressionHeadSize@{getCompressionHeadSize}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{getCompressionHeadSize()}{getCompressionHeadSize()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::get\+Compression\+Head\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_convert_a94c8e2ac6473c876b3b4bab2725aab04_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a6bc26e52e5cc55f29f9d541fe58cd8f9}\label{classgraphsat_1_1_state_convert_a6bc26e52e5cc55f29f9d541fe58cd8f9}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!getCompressionSize@{getCompressionSize}}
+\index{getCompressionSize@{getCompressionSize}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{getCompressionSize()}{getCompressionSize()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::get\+Compression\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_state_convert_a6bc26e52e5cc55f29f9d541fe58cd8f9_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a0461d849c4c747460f7f625f2dac2fa4}\label{classgraphsat_1_1_state_convert_a0461d849c4c747460f7f625f2dac2fa4}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!body\_comp@{body\_comp}}
+\index{body\_comp@{body\_comp}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{body\_comp}{body\_comp}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$C$>$ \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::body\+\_\+comp\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_acc3d0c1279169cd1aefd98d1108fc760}\label{classgraphsat_1_1_state_convert_acc3d0c1279169cd1aefd98d1108fc760}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!com\_head\_length@{com\_head\_length}}
+\index{com\_head\_length@{com\_head\_length}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{com\_head\_length}{com\_head\_length}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::com\+\_\+head\+\_\+length\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a79277c8bb484de1333a5ca54f506875d}\label{classgraphsat_1_1_state_convert_a79277c8bb484de1333a5ca54f506875d}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!compression\_size@{compression\_size}}
+\index{compression\_size@{compression\_size}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{compression\_size}{compression\_size}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::compression\+\_\+size\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a95cd073445c5508b92a64d7f506e8ef3}\label{classgraphsat_1_1_state_convert_a95cd073445c5508b92a64d7f506e8ef3}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!head\_comp@{head\_comp}}
+\index{head\_comp@{head\_comp}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{head\_comp}{head\_comp}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_compression}{Compression}}$<$C$>$ \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::head\+\_\+comp\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_state_convert_a1d5bd9e862cf4706b233d19b1f2ec177}\label{classgraphsat_1_1_state_convert_a1d5bd9e862cf4706b233d19b1f2ec177}} 
+\index{graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}!head\_length@{head\_length}}
+\index{head\_length@{head\_length}!graphsat::StateConvert$<$ C $>$@{graphsat::StateConvert$<$ C $>$}}
+\subsubsection{\texorpdfstring{head\_length}{head\_length}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_state_convert}{graphsat\+::\+State\+Convert}}$<$ C $>$\+::head\+\_\+length\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{statemanager_8hpp}{statemanager.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,110 @@
+\hypertarget{classgraphsat_1_1_counter_constraint}{}\section{graphsat\+::Counter\+Constraint Class Reference}
+\label{classgraphsat_1_1_counter_constraint}\index{graphsat::CounterConstraint@{graphsat::CounterConstraint}}
+
+
+{\ttfamily \#include $<$countercons.\+h$>$}
+
+
+
+Inheritance diagram for graphsat\+::Counter\+Constraint\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_constraint__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_a1fb82c50097b34656ef5ca319dd352da}{operator()}} (const int $\ast$counter\+\_\+value) const =0
+\item 
+virtual void \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_aa467ff66b37a1cbc69f5eddb269aaa0d}{global\+Update}} (const map$<$ int, int $>$ \&id\+\_\+map, const vector$<$ int $>$ \&parameter\+\_\+value)=0
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_af84f6083e587b99f5af0fdaa36e62a56}{$\sim$\+Counter\+Constraint}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_a880eb6520fcf80de35071d62cb31a640}{copy}} () const =0
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}{Instance\+Factory}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_constraint_af84f6083e587b99f5af0fdaa36e62a56}\label{classgraphsat_1_1_counter_constraint_af84f6083e587b99f5af0fdaa36e62a56}} 
+\index{graphsat::CounterConstraint@{graphsat::CounterConstraint}!````~CounterConstraint@{$\sim$CounterConstraint}}
+\index{````~CounterConstraint@{$\sim$CounterConstraint}!graphsat::CounterConstraint@{graphsat::CounterConstraint}}
+\subsubsection{\texorpdfstring{$\sim$CounterConstraint()}{~CounterConstraint()}}
+{\footnotesize\ttfamily virtual graphsat\+::\+Counter\+Constraint\+::$\sim$\+Counter\+Constraint (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_constraint_a880eb6520fcf80de35071d62cb31a640}\label{classgraphsat_1_1_counter_constraint_a880eb6520fcf80de35071d62cb31a640}} 
+\index{graphsat::CounterConstraint@{graphsat::CounterConstraint}!copy@{copy}}
+\index{copy@{copy}!graphsat::CounterConstraint@{graphsat::CounterConstraint}}
+\subsubsection{\texorpdfstring{copy()}{copy()}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}}$\ast$ graphsat\+::\+Counter\+Constraint\+::copy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}, {\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a5a5b4fcebd097f209ebdebcde1a7321f}{graphsat\+::\+Default\+Counter\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a8298e206d438c302fa43a568bec517ae}{graphsat\+::\+Dia\+Counter\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_p_constraint_a75e3eccebbe42daf47b10209f6ab0b59}{graphsat\+::\+Dia\+Free\+Counter\+P\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_constraint_a1405e3fcda5895d1a3d274670a43699e}{graphsat\+::\+Dia\+Free\+Counter\+Constraint}}, and \mbox{\hyperlink{classgraphsat_1_1_free_counter_constraint_ac47312ffc877f233912491bf380769a9}{graphsat\+::\+Free\+Counter\+Constraint}}.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_constraint_a880eb6520fcf80de35071d62cb31a640_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_constraint_aa467ff66b37a1cbc69f5eddb269aaa0d}\label{classgraphsat_1_1_counter_constraint_aa467ff66b37a1cbc69f5eddb269aaa0d}} 
+\index{graphsat::CounterConstraint@{graphsat::CounterConstraint}!globalUpdate@{globalUpdate}}
+\index{globalUpdate@{globalUpdate}!graphsat::CounterConstraint@{graphsat::CounterConstraint}}
+\subsubsection{\texorpdfstring{globalUpdate()}{globalUpdate()}}
+{\footnotesize\ttfamily virtual void graphsat\+::\+Counter\+Constraint\+::global\+Update (\begin{DoxyParamCaption}\item[{const map$<$ int, int $>$ \&}]{id\+\_\+map,  }\item[{const vector$<$ int $>$ \&}]{parameter\+\_\+value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+Deley set the counter id 
+
+Implemented in \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a5f131f57aa2685073391c372405322dd}{graphsat\+::\+Default\+Counter\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a75319d3a2b1cf2db7cf540b732729871}{graphsat\+::\+Dia\+Counter\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_p_constraint_a4a0fe8c88aba82f93aa6b78b0af68cc1}{graphsat\+::\+Dia\+Free\+Counter\+P\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_constraint_a64d4ec6cb17f6543320bf58ae2b6de01}{graphsat\+::\+Dia\+Free\+Counter\+Constraint}}, and \mbox{\hyperlink{classgraphsat_1_1_free_counter_constraint_adb132f25be53be665c6337224c95f15a}{graphsat\+::\+Free\+Counter\+Constraint}}.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_counter_constraint_aa467ff66b37a1cbc69f5eddb269aaa0d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_constraint_a1fb82c50097b34656ef5ca319dd352da}\label{classgraphsat_1_1_counter_constraint_a1fb82c50097b34656ef5ca319dd352da}} 
+\index{graphsat::CounterConstraint@{graphsat::CounterConstraint}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::CounterConstraint@{graphsat::CounterConstraint}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily virtual bool graphsat\+::\+Counter\+Constraint\+::operator() (\begin{DoxyParamCaption}\item[{const int $\ast$}]{counter\+\_\+value }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a0c7e9fd0402b59afdebfbc1764867aaa}{graphsat\+::\+Default\+Counter\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a31a8b26714bab4aca765556272dae334}{graphsat\+::\+Dia\+Counter\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_p_constraint_a02255677df41a98992d4150923d3e169}{graphsat\+::\+Dia\+Free\+Counter\+P\+Constraint}}, \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_constraint_acb4e5015384b5011ca5347c229b6bb56}{graphsat\+::\+Dia\+Free\+Counter\+Constraint}}, and \mbox{\hyperlink{classgraphsat_1_1_free_counter_constraint_a7ba59c5755c2e90b75038ca6373018bb}{graphsat\+::\+Free\+Counter\+Constraint}}.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}\label{classgraphsat_1_1_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}} 
+\index{graphsat::CounterConstraint@{graphsat::CounterConstraint}!InstanceFactory@{InstanceFactory}}
+\index{InstanceFactory@{InstanceFactory}!graphsat::CounterConstraint@{graphsat::CounterConstraint}}
+\subsubsection{\texorpdfstring{InstanceFactory}{InstanceFactory}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{classgraphsat_1_1_instance_factory}{Instance\+Factory}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/constraint/\mbox{\hyperlink{countercons_8h}{countercons.\+h}}\end{DoxyCompactItemize}

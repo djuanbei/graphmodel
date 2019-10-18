@@ -1,0 +1,181 @@
+\hypertarget{classgraphsat_1_1_default_counter_constraint}{}\section{graphsat\+::Default\+Counter\+Constraint Class Reference}
+\label{classgraphsat_1_1_default_counter_constraint}\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+
+
+{\ttfamily \#include $<$countercons.\+h$>$}
+
+
+
+Inheritance diagram for graphsat\+::Default\+Counter\+Constraint\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=222pt]{classgraphsat_1_1_default_counter_constraint__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for graphsat\+::Default\+Counter\+Constraint\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=332pt]{classgraphsat_1_1_default_counter_constraint__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a0c7e9fd0402b59afdebfbc1764867aaa}{operator()}} (const int $\ast$counter\+\_\+value) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a5f131f57aa2685073391c372405322dd}{global\+Update}} (const map$<$ int, int $>$ \&id\+\_\+map, const vector$<$ int $>$ \&parameter\+\_\+value)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_aafe9f228a3ea6a39fc70ece8b9300875}{$\sim$\+Default\+Counter\+Constraint}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_ae77bcab173109e73923e98a5d1694d70}{Default\+Counter\+Constraint}} (const vector$<$ int $>$ \&pcons, const vector$<$ int $>$ \&cons, int erhs, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} eop)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a5a5b4fcebd097f209ebdebcde1a7321f}{copy}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+vector$<$ int $>$ \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_af5823c3de53e85a79ea1381d7ab647fb}{pconstraint}}
+\item 
+vector$<$ int $>$ \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_ab2cdc3b51359caed2b56fb491cc084e0}{local\+\_\+constraint}}
+\item 
+vector$<$ int $>$ \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a89de77271555799475d5152198f22e57}{global\+\_\+constraint}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_a2f3baba7436bb3a9def3c003abff709d}{rhs}}
+\item 
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_ae7ff7ae9b24cfff60155ad47da17ca60}{op}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_aa29865be3042a8fccb00a9adde1edf32}{parameter\+\_\+part}}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}{Instance\+Factory}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_aafe9f228a3ea6a39fc70ece8b9300875}\label{classgraphsat_1_1_default_counter_constraint_aafe9f228a3ea6a39fc70ece8b9300875}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!````~DefaultCounterConstraint@{$\sim$DefaultCounterConstraint}}
+\index{````~DefaultCounterConstraint@{$\sim$DefaultCounterConstraint}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{$\sim$DefaultCounterConstraint()}{~DefaultCounterConstraint()}}
+{\footnotesize\ttfamily graphsat\+::\+Default\+Counter\+Constraint\+::$\sim$\+Default\+Counter\+Constraint (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_ae77bcab173109e73923e98a5d1694d70}\label{classgraphsat_1_1_default_counter_constraint_ae77bcab173109e73923e98a5d1694d70}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!DefaultCounterConstraint@{DefaultCounterConstraint}}
+\index{DefaultCounterConstraint@{DefaultCounterConstraint}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{DefaultCounterConstraint()}{DefaultCounterConstraint()}}
+{\footnotesize\ttfamily graphsat\+::\+Default\+Counter\+Constraint\+::\+Default\+Counter\+Constraint (\begin{DoxyParamCaption}\item[{const vector$<$ int $>$ \&}]{pcons,  }\item[{const vector$<$ int $>$ \&}]{cons,  }\item[{int}]{erhs,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{eop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_default_counter_constraint_ae77bcab173109e73923e98a5d1694d70_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_a5a5b4fcebd097f209ebdebcde1a7321f}\label{classgraphsat_1_1_default_counter_constraint_a5a5b4fcebd097f209ebdebcde1a7321f}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!copy@{copy}}
+\index{copy@{copy}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{copy()}{copy()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}}$\ast$ graphsat\+::\+Default\+Counter\+Constraint\+::copy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_a880eb6520fcf80de35071d62cb31a640}{graphsat\+::\+Counter\+Constraint}}.
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_default_counter_constraint_a5a5b4fcebd097f209ebdebcde1a7321f_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_a5f131f57aa2685073391c372405322dd}\label{classgraphsat_1_1_default_counter_constraint_a5f131f57aa2685073391c372405322dd}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!globalUpdate@{globalUpdate}}
+\index{globalUpdate@{globalUpdate}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{globalUpdate()}{globalUpdate()}}
+{\footnotesize\ttfamily void graphsat\+::\+Default\+Counter\+Constraint\+::global\+Update (\begin{DoxyParamCaption}\item[{const map$<$ int, int $>$ \&}]{id\+\_\+map,  }\item[{const vector$<$ int $>$ \&}]{parameter\+\_\+value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Deley set the counter id 
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_aa467ff66b37a1cbc69f5eddb269aaa0d}{graphsat\+::\+Counter\+Constraint}}.
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_a0c7e9fd0402b59afdebfbc1764867aaa}\label{classgraphsat_1_1_default_counter_constraint_a0c7e9fd0402b59afdebfbc1764867aaa}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily bool graphsat\+::\+Default\+Counter\+Constraint\+::operator() (\begin{DoxyParamCaption}\item[{const int $\ast$}]{counter\+\_\+value }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_a1fb82c50097b34656ef5ca319dd352da}{graphsat\+::\+Counter\+Constraint}}.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}\label{classgraphsat_1_1_default_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!InstanceFactory@{InstanceFactory}}
+\index{InstanceFactory@{InstanceFactory}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{InstanceFactory}{InstanceFactory}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{classgraphsat_1_1_instance_factory}{Instance\+Factory}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_a89de77271555799475d5152198f22e57}\label{classgraphsat_1_1_default_counter_constraint_a89de77271555799475d5152198f22e57}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!global\_constraint@{global\_constraint}}
+\index{global\_constraint@{global\_constraint}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{global\_constraint}{global\_constraint}}
+{\footnotesize\ttfamily vector$<$int$>$ graphsat\+::\+Default\+Counter\+Constraint\+::global\+\_\+constraint\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_ab2cdc3b51359caed2b56fb491cc084e0}\label{classgraphsat_1_1_default_counter_constraint_ab2cdc3b51359caed2b56fb491cc084e0}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!local\_constraint@{local\_constraint}}
+\index{local\_constraint@{local\_constraint}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{local\_constraint}{local\_constraint}}
+{\footnotesize\ttfamily vector$<$int$>$ graphsat\+::\+Default\+Counter\+Constraint\+::local\+\_\+constraint\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_ae7ff7ae9b24cfff60155ad47da17ca60}\label{classgraphsat_1_1_default_counter_constraint_ae7ff7ae9b24cfff60155ad47da17ca60}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!op@{op}}
+\index{op@{op}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{op}{op}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} graphsat\+::\+Default\+Counter\+Constraint\+::op\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_aa29865be3042a8fccb00a9adde1edf32}\label{classgraphsat_1_1_default_counter_constraint_aa29865be3042a8fccb00a9adde1edf32}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!parameter\_part@{parameter\_part}}
+\index{parameter\_part@{parameter\_part}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{parameter\_part}{parameter\_part}}
+{\footnotesize\ttfamily int graphsat\+::\+Default\+Counter\+Constraint\+::parameter\+\_\+part\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_af5823c3de53e85a79ea1381d7ab647fb}\label{classgraphsat_1_1_default_counter_constraint_af5823c3de53e85a79ea1381d7ab647fb}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!pconstraint@{pconstraint}}
+\index{pconstraint@{pconstraint}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{pconstraint}{pconstraint}}
+{\footnotesize\ttfamily vector$<$int$>$ graphsat\+::\+Default\+Counter\+Constraint\+::pconstraint\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_counter_constraint_a2f3baba7436bb3a9def3c003abff709d}\label{classgraphsat_1_1_default_counter_constraint_a2f3baba7436bb3a9def3c003abff709d}} 
+\index{graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}!rhs@{rhs}}
+\index{rhs@{rhs}!graphsat::DefaultCounterConstraint@{graphsat::DefaultCounterConstraint}}
+\subsubsection{\texorpdfstring{rhs}{rhs}}
+{\footnotesize\ttfamily int graphsat\+::\+Default\+Counter\+Constraint\+::rhs\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/constraint/\mbox{\hyperlink{countercons_8h}{countercons.\+h}}\end{DoxyCompactItemize}

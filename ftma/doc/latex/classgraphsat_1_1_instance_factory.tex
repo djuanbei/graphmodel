@@ -1,0 +1,255 @@
+\hypertarget{classgraphsat_1_1_instance_factory}{}\section{graphsat\+::Instance\+Factory Class Reference}
+\label{classgraphsat_1_1_instance_factory}\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+
+
+{\ttfamily \#include $<$instancefactory.\+h$>$}
+
+
+
+Collaboration diagram for graphsat\+::Instance\+Factory\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=212pt]{classgraphsat_1_1_instance_factory__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_instance_factory_a2a267949518b2bd1a09090757fe46a79}{$\sim$\+Instance\+Factory}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint}{Default\+Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_ac2eb9868107cc51e21a0e698d016267d}{create\+Default\+Counter\+Constraint}} (const vector$<$ int $>$ \&pcons, const vector$<$ int $>$ \&cons, int erhs, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} eop)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_free_counter_constraint}{Free\+Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a5549e171c6cfd167f94ad16b35989391}{create\+Free\+Counter\+Constraint}} (int p, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} o, int rhs)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_p_constraint}{Dia\+Free\+Counter\+P\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a368a7bc5de4eae0d19b631e12f88e00d}{create\+Dia\+Free\+Counter\+P\+Constraint}} (int c, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} o, int p)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint}{Dia\+Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a3a7fcb2873970201601471c4cdbeeeff}{create\+Dia\+Counter\+Constraint}} (int x, int y, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} p, int r)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_constraint}{Dia\+Free\+Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a1b318d873913d4a12ea15b91e12e6b30}{create\+Dia\+Free\+Counter\+Constraint}} (int cid, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} p, int r)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a309e53f4685517176eed7649eda1e9e7}{copy}} (\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$other)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_simple_counter_action}{Simple\+Counter\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a999723c91c8a562def330b2498f26fa8}{create\+Simple\+Counter\+Action}} (int cid, int v)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_simple_counter_p_action}{Simple\+Counter\+P\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a1c7c11da85acdf5b5a1078a50b808f97}{create\+Simple\+Counter\+P\+Action}} (int cid, int eparameter\+\_\+id)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_c_action}{Default\+C\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_aa74280c3c94e38d1b092925172181276}{create\+Default\+C\+Action}} (vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$$>$$>$$>$ \&relations1)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_instance_factory_ae9785cba22bec8be6e89dcc1bd207bd9}{copy}} (const \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$other)
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_instance_factory_afae2681997d939f16abcbc0fb53866bd}{destroy}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_instance_factory_a821ef74add33f8bc36491344dbeab8ab}{S\+I\+N\+G\+L\+E\+T\+ON}} (\mbox{\hyperlink{classgraphsat_1_1_instance_factory}{Instance\+Factory}})
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacegraphsat_a107ef8404e59d9b9e5c375face044c42}{Pointer\+Data}} \mbox{\hyperlink{classgraphsat_1_1_instance_factory_a869120dc983d8c65a57e64176f4aa752}{pdata}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a2a267949518b2bd1a09090757fe46a79}\label{classgraphsat_1_1_instance_factory_a2a267949518b2bd1a09090757fe46a79}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!````~InstanceFactory@{$\sim$InstanceFactory}}
+\index{````~InstanceFactory@{$\sim$InstanceFactory}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{$\sim$InstanceFactory()}{~InstanceFactory()}}
+{\footnotesize\ttfamily graphsat\+::\+Instance\+Factory\+::$\sim$\+Instance\+Factory (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a2a267949518b2bd1a09090757fe46a79_cgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a309e53f4685517176eed7649eda1e9e7}\label{classgraphsat_1_1_instance_factory_a309e53f4685517176eed7649eda1e9e7}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!copy@{copy}}
+\index{copy@{copy}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{copy()}{copy()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}}$\ast$ graphsat\+::\+Instance\+Factory\+::copy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a309e53f4685517176eed7649eda1e9e7_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_ae9785cba22bec8be6e89dcc1bd207bd9}\label{classgraphsat_1_1_instance_factory_ae9785cba22bec8be6e89dcc1bd207bd9}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!copy@{copy}}
+\index{copy@{copy}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{copy()}{copy()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}}$\ast$ graphsat\+::\+Instance\+Factory\+::copy (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_ae9785cba22bec8be6e89dcc1bd207bd9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_aa74280c3c94e38d1b092925172181276}\label{classgraphsat_1_1_instance_factory_aa74280c3c94e38d1b092925172181276}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createDefaultCAction@{createDefaultCAction}}
+\index{createDefaultCAction@{createDefaultCAction}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createDefaultCAction()}{createDefaultCAction()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_default_c_action}{Default\+C\+Action}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Default\+C\+Action (\begin{DoxyParamCaption}\item[{vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$$>$$>$$>$ \&}]{relations1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_aa74280c3c94e38d1b092925172181276_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_ac2eb9868107cc51e21a0e698d016267d}\label{classgraphsat_1_1_instance_factory_ac2eb9868107cc51e21a0e698d016267d}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createDefaultCounterConstraint@{createDefaultCounterConstraint}}
+\index{createDefaultCounterConstraint@{createDefaultCounterConstraint}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createDefaultCounterConstraint()}{createDefaultCounterConstraint()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_default_counter_constraint}{Default\+Counter\+Constraint}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Default\+Counter\+Constraint (\begin{DoxyParamCaption}\item[{const vector$<$ int $>$ \&}]{pcons,  }\item[{const vector$<$ int $>$ \&}]{cons,  }\item[{int}]{erhs,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{eop }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_ac2eb9868107cc51e21a0e698d016267d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a3a7fcb2873970201601471c4cdbeeeff}\label{classgraphsat_1_1_instance_factory_a3a7fcb2873970201601471c4cdbeeeff}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createDiaCounterConstraint@{createDiaCounterConstraint}}
+\index{createDiaCounterConstraint@{createDiaCounterConstraint}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createDiaCounterConstraint()}{createDiaCounterConstraint()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint}{Dia\+Counter\+Constraint}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Dia\+Counter\+Constraint (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{p,  }\item[{int}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a3a7fcb2873970201601471c4cdbeeeff_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a1b318d873913d4a12ea15b91e12e6b30}\label{classgraphsat_1_1_instance_factory_a1b318d873913d4a12ea15b91e12e6b30}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createDiaFreeCounterConstraint@{createDiaFreeCounterConstraint}}
+\index{createDiaFreeCounterConstraint@{createDiaFreeCounterConstraint}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createDiaFreeCounterConstraint()}{createDiaFreeCounterConstraint()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_constraint}{Dia\+Free\+Counter\+Constraint}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Dia\+Free\+Counter\+Constraint (\begin{DoxyParamCaption}\item[{int}]{cid,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{p,  }\item[{int}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a1b318d873913d4a12ea15b91e12e6b30_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a368a7bc5de4eae0d19b631e12f88e00d}\label{classgraphsat_1_1_instance_factory_a368a7bc5de4eae0d19b631e12f88e00d}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createDiaFreeCounterPConstraint@{createDiaFreeCounterPConstraint}}
+\index{createDiaFreeCounterPConstraint@{createDiaFreeCounterPConstraint}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createDiaFreeCounterPConstraint()}{createDiaFreeCounterPConstraint()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_dia_free_counter_p_constraint}{Dia\+Free\+Counter\+P\+Constraint}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Dia\+Free\+Counter\+P\+Constraint (\begin{DoxyParamCaption}\item[{int}]{c,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{o,  }\item[{int}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a368a7bc5de4eae0d19b631e12f88e00d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a5549e171c6cfd167f94ad16b35989391}\label{classgraphsat_1_1_instance_factory_a5549e171c6cfd167f94ad16b35989391}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createFreeCounterConstraint@{createFreeCounterConstraint}}
+\index{createFreeCounterConstraint@{createFreeCounterConstraint}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createFreeCounterConstraint()}{createFreeCounterConstraint()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_free_counter_constraint}{Free\+Counter\+Constraint}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Free\+Counter\+Constraint (\begin{DoxyParamCaption}\item[{int}]{p,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{o,  }\item[{int}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a5549e171c6cfd167f94ad16b35989391_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a999723c91c8a562def330b2498f26fa8}\label{classgraphsat_1_1_instance_factory_a999723c91c8a562def330b2498f26fa8}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createSimpleCounterAction@{createSimpleCounterAction}}
+\index{createSimpleCounterAction@{createSimpleCounterAction}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createSimpleCounterAction()}{createSimpleCounterAction()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_simple_counter_action}{Simple\+Counter\+Action}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Simple\+Counter\+Action (\begin{DoxyParamCaption}\item[{int}]{cid,  }\item[{int}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a999723c91c8a562def330b2498f26fa8_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a1c7c11da85acdf5b5a1078a50b808f97}\label{classgraphsat_1_1_instance_factory_a1c7c11da85acdf5b5a1078a50b808f97}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!createSimpleCounterPAction@{createSimpleCounterPAction}}
+\index{createSimpleCounterPAction@{createSimpleCounterPAction}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{createSimpleCounterPAction()}{createSimpleCounterPAction()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_simple_counter_p_action}{Simple\+Counter\+P\+Action}}$\ast$ graphsat\+::\+Instance\+Factory\+::create\+Simple\+Counter\+P\+Action (\begin{DoxyParamCaption}\item[{int}]{cid,  }\item[{int}]{eparameter\+\_\+id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_a1c7c11da85acdf5b5a1078a50b808f97_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_afae2681997d939f16abcbc0fb53866bd}\label{classgraphsat_1_1_instance_factory_afae2681997d939f16abcbc0fb53866bd}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!destroy@{destroy}}
+\index{destroy@{destroy}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{destroy()}{destroy()}}
+{\footnotesize\ttfamily void graphsat\+::\+Instance\+Factory\+::destroy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_afae2681997d939f16abcbc0fb53866bd_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_instance_factory_afae2681997d939f16abcbc0fb53866bd_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a821ef74add33f8bc36491344dbeab8ab}\label{classgraphsat_1_1_instance_factory_a821ef74add33f8bc36491344dbeab8ab}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!SINGLETON@{SINGLETON}}
+\index{SINGLETON@{SINGLETON}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{SINGLETON()}{SINGLETON()}}
+{\footnotesize\ttfamily graphsat\+::\+Instance\+Factory\+::\+S\+I\+N\+G\+L\+E\+T\+ON (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classgraphsat_1_1_instance_factory}{Instance\+Factory}}}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_instance_factory_a869120dc983d8c65a57e64176f4aa752}\label{classgraphsat_1_1_instance_factory_a869120dc983d8c65a57e64176f4aa752}} 
+\index{graphsat::InstanceFactory@{graphsat::InstanceFactory}!pdata@{pdata}}
+\index{pdata@{pdata}!graphsat::InstanceFactory@{graphsat::InstanceFactory}}
+\subsubsection{\texorpdfstring{pdata}{pdata}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacegraphsat_a107ef8404e59d9b9e5c375face044c42}{Pointer\+Data}} graphsat\+::\+Instance\+Factory\+::pdata\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/util/\mbox{\hyperlink{instancefactory_8h}{instancefactory.\+h}}\end{DoxyCompactItemize}

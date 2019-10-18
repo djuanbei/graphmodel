@@ -1,0 +1,1009 @@
+Terminals which are not used
+
+   STRING_LITERAL
+   META
+   PTR_OP
+   INC_OP
+   DEC_OP
+   LEFT_OP
+   RIGHT_OP
+   OR_OP
+   MUL_ASSIGN
+   DIV_ASSIGN
+   MOD_ASSIGN
+   ADD_ASSIGN
+   SUB_ASSIGN
+   LEFT_ASSIGN
+   RIGHT_ASSIGN
+   AND_ASSIGN
+   XOR_ASSIGN
+   OR_ASSIGN
+   TYPE_NAME
+   VOID
+   STRUCT
+   ELLIPSIS
+   CASE
+   DEFAULT
+   IF
+   ELSE
+   SWITCH
+   WHILE
+   DO
+   FOR
+   CONTINUE
+   BREAK
+   RETURN
+   IFX
+
+
+Grammar
+
+    0 $accept: translation_unit $end
+
+    1 type_specifier: INT
+    2               | CLOCK
+    3               | BOOL
+    4               | CHAN
+    5               | URGENT CHAN
+    6               | BROADCAST CHAN
+
+    7 identifier_list: IDENTIFIER
+    8                | identifier_list ',' IDENTIFIER
+
+    9 ta_list: IDENTIFIER
+   10        | TEMPLATE
+   11        | ta_list ',' IDENTIFIER
+   12        | ta_list ',' TEMPLATE
+
+   13 compare_relation: EQ_OP
+   14                 | LE_OP
+   15                 | GE_OP
+   16                 | '<'
+   17                 | '>'
+   18                 | NE_OP
+
+   19 translation_unit: external_declaration
+   20                 | translation_unit external_declaration
+   21                 | comment_list
+
+   22 external_declaration: variable_declaration
+   23                     | constraint_statement
+   24                     | assign_statement
+   25                     | system_declaration
+
+   26 constraint_statement: atomic_constraint
+   27                     | constraint_statement AND_OP atomic_constraint
+
+   28 comment_list: COMMENT
+   29             | comment_list COMMENT
+
+   30 atomic_constraint: IDENTIFIER compare_relation const_expression
+   31                  | IDENTIFIER compare_relation IDENTIFIER
+   32                  | IDENTIFIER '-' IDENTIFIER compare_relation const_expression
+   33                  | IDENTIFIER
+   34                  | '!' IDENTIFIER
+
+   35 assign_statement: single_assign_statement
+   36                 | assign_statement ',' single_assign_statement
+
+   37 single_assign_statement: IDENTIFIER '=' const_expression
+   38                        | IDENTIFIER '=' IDENTIFIER
+   39                        | IDENTIFIER '=' TEMPLATE '(' identifier_list ')'
+
+   40 const_expression: CONSTANT
+   41                 | TRUE_Y
+   42                 | FALSE_Y
+
+   43 variable_declaration: type_specifier identifier_list ';'
+   44                     | type_specifier IDENTIFIER '[' const_expression ']' ';'
+   45                     | type_specifier IDENTIFIER '=' const_expression ';'
+   46                     | CONST type_specifier IDENTIFIER '=' const_expression ';'
+   47                     | TYPEDEF INT '[' const_expression ',' const_expression ']' IDENTIFIER ';'
+
+   48 system_declaration: SYSTEM ta_list ';'
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'!' (33) 34
+'(' (40) 39
+')' (41) 39
+',' (44) 8 11 12 36 47
+'-' (45) 32
+';' (59) 43 44 45 46 47 48
+'<' (60) 16
+'=' (61) 37 38 39 45 46
+'>' (62) 17
+'[' (91) 44 47
+']' (93) 44 47
+error (256)
+CONSTANT (258) 40
+IDENTIFIER (259) 7 8 9 11 30 31 32 33 34 37 38 39 44 45 46 47
+TEMPLATE (260) 10 12 39
+STRING_LITERAL (261)
+URGENT (262) 5
+BROADCAST (263) 6
+META (264)
+PTR_OP (265)
+INC_OP (266)
+DEC_OP (267)
+LEFT_OP (268)
+RIGHT_OP (269)
+LE_OP (270) 14
+GE_OP (271) 15
+EQ_OP (272) 13
+NE_OP (273) 18
+AND_OP (274) 27
+OR_OP (275)
+MUL_ASSIGN (276)
+DIV_ASSIGN (277)
+MOD_ASSIGN (278)
+ADD_ASSIGN (279)
+SUB_ASSIGN (280)
+LEFT_ASSIGN (281)
+RIGHT_ASSIGN (282)
+AND_ASSIGN (283)
+XOR_ASSIGN (284)
+OR_ASSIGN (285)
+TYPE_NAME (286)
+TYPEDEF (287) 47
+INT (288) 1 47
+CONST (289) 46
+VOID (290)
+CLOCK (291) 2
+CHAN (292) 4 5 6
+BOOL (293) 3
+TRUE_Y (294) 41
+FALSE_Y (295) 42
+STRUCT (296)
+ELLIPSIS (297)
+COMMENT (298) 28 29
+CASE (299)
+DEFAULT (300)
+IF (301)
+ELSE (302)
+SWITCH (303)
+WHILE (304)
+DO (305)
+FOR (306)
+CONTINUE (307)
+BREAK (308)
+RETURN (309)
+SYSTEM (310) 48
+IFX (311)
+
+
+Nonterminals, with rules where they appear
+
+$accept (68)
+    on left: 0
+type_specifier (69)
+    on left: 1 2 3 4 5 6, on right: 43 44 45 46
+identifier_list (70)
+    on left: 7 8, on right: 8 39 43
+ta_list (71)
+    on left: 9 10 11 12, on right: 11 12 48
+compare_relation (72)
+    on left: 13 14 15 16 17 18, on right: 30 31 32
+translation_unit (73)
+    on left: 19 20 21, on right: 0 20
+external_declaration (74)
+    on left: 22 23 24 25, on right: 19 20
+constraint_statement (75)
+    on left: 26 27, on right: 23 27
+comment_list (76)
+    on left: 28 29, on right: 21 29
+atomic_constraint (77)
+    on left: 30 31 32 33 34, on right: 26 27
+assign_statement (78)
+    on left: 35 36, on right: 24 36
+single_assign_statement (79)
+    on left: 37 38 39, on right: 35 36
+const_expression (80)
+    on left: 40 41 42, on right: 30 32 37 44 45 46 47
+variable_declaration (81)
+    on left: 43 44 45 46 47, on right: 22
+system_declaration (82)
+    on left: 48, on right: 25
+
+
+state 0
+
+    0 $accept: . translation_unit $end
+
+    IDENTIFIER  shift, and go to state 1
+    URGENT      shift, and go to state 2
+    BROADCAST   shift, and go to state 3
+    TYPEDEF     shift, and go to state 4
+    INT         shift, and go to state 5
+    CONST       shift, and go to state 6
+    CLOCK       shift, and go to state 7
+    CHAN        shift, and go to state 8
+    BOOL        shift, and go to state 9
+    COMMENT     shift, and go to state 10
+    SYSTEM      shift, and go to state 11
+    '!'         shift, and go to state 12
+
+    type_specifier           go to state 13
+    translation_unit         go to state 14
+    external_declaration     go to state 15
+    constraint_statement     go to state 16
+    comment_list             go to state 17
+    atomic_constraint        go to state 18
+    assign_statement         go to state 19
+    single_assign_statement  go to state 20
+    variable_declaration     go to state 21
+    system_declaration       go to state 22
+
+
+state 1
+
+   30 atomic_constraint: IDENTIFIER . compare_relation const_expression
+   31                  | IDENTIFIER . compare_relation IDENTIFIER
+   32                  | IDENTIFIER . '-' IDENTIFIER compare_relation const_expression
+   33                  | IDENTIFIER .
+   37 single_assign_statement: IDENTIFIER . '=' const_expression
+   38                        | IDENTIFIER . '=' IDENTIFIER
+   39                        | IDENTIFIER . '=' TEMPLATE '(' identifier_list ')'
+
+    LE_OP  shift, and go to state 23
+    GE_OP  shift, and go to state 24
+    EQ_OP  shift, and go to state 25
+    NE_OP  shift, and go to state 26
+    '<'    shift, and go to state 27
+    '>'    shift, and go to state 28
+    '-'    shift, and go to state 29
+    '='    shift, and go to state 30
+
+    $default  reduce using rule 33 (atomic_constraint)
+
+    compare_relation  go to state 31
+
+
+state 2
+
+    5 type_specifier: URGENT . CHAN
+
+    CHAN  shift, and go to state 32
+
+
+state 3
+
+    6 type_specifier: BROADCAST . CHAN
+
+    CHAN  shift, and go to state 33
+
+
+state 4
+
+   47 variable_declaration: TYPEDEF . INT '[' const_expression ',' const_expression ']' IDENTIFIER ';'
+
+    INT  shift, and go to state 34
+
+
+state 5
+
+    1 type_specifier: INT .
+
+    $default  reduce using rule 1 (type_specifier)
+
+
+state 6
+
+   46 variable_declaration: CONST . type_specifier IDENTIFIER '=' const_expression ';'
+
+    URGENT     shift, and go to state 2
+    BROADCAST  shift, and go to state 3
+    INT        shift, and go to state 5
+    CLOCK      shift, and go to state 7
+    CHAN       shift, and go to state 8
+    BOOL       shift, and go to state 9
+
+    type_specifier  go to state 35
+
+
+state 7
+
+    2 type_specifier: CLOCK .
+
+    $default  reduce using rule 2 (type_specifier)
+
+
+state 8
+
+    4 type_specifier: CHAN .
+
+    $default  reduce using rule 4 (type_specifier)
+
+
+state 9
+
+    3 type_specifier: BOOL .
+
+    $default  reduce using rule 3 (type_specifier)
+
+
+state 10
+
+   28 comment_list: COMMENT .
+
+    $default  reduce using rule 28 (comment_list)
+
+
+state 11
+
+   48 system_declaration: SYSTEM . ta_list ';'
+
+    IDENTIFIER  shift, and go to state 36
+    TEMPLATE    shift, and go to state 37
+
+    ta_list  go to state 38
+
+
+state 12
+
+   34 atomic_constraint: '!' . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 39
+
+
+state 13
+
+   43 variable_declaration: type_specifier . identifier_list ';'
+   44                     | type_specifier . IDENTIFIER '[' const_expression ']' ';'
+   45                     | type_specifier . IDENTIFIER '=' const_expression ';'
+
+    IDENTIFIER  shift, and go to state 40
+
+    identifier_list  go to state 41
+
+
+state 14
+
+    0 $accept: translation_unit . $end
+   20 translation_unit: translation_unit . external_declaration
+
+    $end        shift, and go to state 42
+    IDENTIFIER  shift, and go to state 1
+    URGENT      shift, and go to state 2
+    BROADCAST   shift, and go to state 3
+    TYPEDEF     shift, and go to state 4
+    INT         shift, and go to state 5
+    CONST       shift, and go to state 6
+    CLOCK       shift, and go to state 7
+    CHAN        shift, and go to state 8
+    BOOL        shift, and go to state 9
+    SYSTEM      shift, and go to state 11
+    '!'         shift, and go to state 12
+
+    type_specifier           go to state 13
+    external_declaration     go to state 43
+    constraint_statement     go to state 16
+    atomic_constraint        go to state 18
+    assign_statement         go to state 19
+    single_assign_statement  go to state 20
+    variable_declaration     go to state 21
+    system_declaration       go to state 22
+
+
+state 15
+
+   19 translation_unit: external_declaration .
+
+    $default  reduce using rule 19 (translation_unit)
+
+
+state 16
+
+   23 external_declaration: constraint_statement .
+   27 constraint_statement: constraint_statement . AND_OP atomic_constraint
+
+    AND_OP  shift, and go to state 44
+
+    $default  reduce using rule 23 (external_declaration)
+
+
+state 17
+
+   21 translation_unit: comment_list .
+   29 comment_list: comment_list . COMMENT
+
+    COMMENT  shift, and go to state 45
+
+    $default  reduce using rule 21 (translation_unit)
+
+
+state 18
+
+   26 constraint_statement: atomic_constraint .
+
+    $default  reduce using rule 26 (constraint_statement)
+
+
+state 19
+
+   24 external_declaration: assign_statement .
+   36 assign_statement: assign_statement . ',' single_assign_statement
+
+    ','  shift, and go to state 46
+
+    $default  reduce using rule 24 (external_declaration)
+
+
+state 20
+
+   35 assign_statement: single_assign_statement .
+
+    $default  reduce using rule 35 (assign_statement)
+
+
+state 21
+
+   22 external_declaration: variable_declaration .
+
+    $default  reduce using rule 22 (external_declaration)
+
+
+state 22
+
+   25 external_declaration: system_declaration .
+
+    $default  reduce using rule 25 (external_declaration)
+
+
+state 23
+
+   14 compare_relation: LE_OP .
+
+    $default  reduce using rule 14 (compare_relation)
+
+
+state 24
+
+   15 compare_relation: GE_OP .
+
+    $default  reduce using rule 15 (compare_relation)
+
+
+state 25
+
+   13 compare_relation: EQ_OP .
+
+    $default  reduce using rule 13 (compare_relation)
+
+
+state 26
+
+   18 compare_relation: NE_OP .
+
+    $default  reduce using rule 18 (compare_relation)
+
+
+state 27
+
+   16 compare_relation: '<' .
+
+    $default  reduce using rule 16 (compare_relation)
+
+
+state 28
+
+   17 compare_relation: '>' .
+
+    $default  reduce using rule 17 (compare_relation)
+
+
+state 29
+
+   32 atomic_constraint: IDENTIFIER '-' . IDENTIFIER compare_relation const_expression
+
+    IDENTIFIER  shift, and go to state 47
+
+
+state 30
+
+   37 single_assign_statement: IDENTIFIER '=' . const_expression
+   38                        | IDENTIFIER '=' . IDENTIFIER
+   39                        | IDENTIFIER '=' . TEMPLATE '(' identifier_list ')'
+
+    CONSTANT    shift, and go to state 48
+    IDENTIFIER  shift, and go to state 49
+    TEMPLATE    shift, and go to state 50
+    TRUE_Y      shift, and go to state 51
+    FALSE_Y     shift, and go to state 52
+
+    const_expression  go to state 53
+
+
+state 31
+
+   30 atomic_constraint: IDENTIFIER compare_relation . const_expression
+   31                  | IDENTIFIER compare_relation . IDENTIFIER
+
+    CONSTANT    shift, and go to state 48
+    IDENTIFIER  shift, and go to state 54
+    TRUE_Y      shift, and go to state 51
+    FALSE_Y     shift, and go to state 52
+
+    const_expression  go to state 55
+
+
+state 32
+
+    5 type_specifier: URGENT CHAN .
+
+    $default  reduce using rule 5 (type_specifier)
+
+
+state 33
+
+    6 type_specifier: BROADCAST CHAN .
+
+    $default  reduce using rule 6 (type_specifier)
+
+
+state 34
+
+   47 variable_declaration: TYPEDEF INT . '[' const_expression ',' const_expression ']' IDENTIFIER ';'
+
+    '['  shift, and go to state 56
+
+
+state 35
+
+   46 variable_declaration: CONST type_specifier . IDENTIFIER '=' const_expression ';'
+
+    IDENTIFIER  shift, and go to state 57
+
+
+state 36
+
+    9 ta_list: IDENTIFIER .
+
+    $default  reduce using rule 9 (ta_list)
+
+
+state 37
+
+   10 ta_list: TEMPLATE .
+
+    $default  reduce using rule 10 (ta_list)
+
+
+state 38
+
+   11 ta_list: ta_list . ',' IDENTIFIER
+   12        | ta_list . ',' TEMPLATE
+   48 system_declaration: SYSTEM ta_list . ';'
+
+    ','  shift, and go to state 58
+    ';'  shift, and go to state 59
+
+
+state 39
+
+   34 atomic_constraint: '!' IDENTIFIER .
+
+    $default  reduce using rule 34 (atomic_constraint)
+
+
+state 40
+
+    7 identifier_list: IDENTIFIER .
+   44 variable_declaration: type_specifier IDENTIFIER . '[' const_expression ']' ';'
+   45                     | type_specifier IDENTIFIER . '=' const_expression ';'
+
+    '='  shift, and go to state 60
+    '['  shift, and go to state 61
+
+    $default  reduce using rule 7 (identifier_list)
+
+
+state 41
+
+    8 identifier_list: identifier_list . ',' IDENTIFIER
+   43 variable_declaration: type_specifier identifier_list . ';'
+
+    ','  shift, and go to state 62
+    ';'  shift, and go to state 63
+
+
+state 42
+
+    0 $accept: translation_unit $end .
+
+    $default  accept
+
+
+state 43
+
+   20 translation_unit: translation_unit external_declaration .
+
+    $default  reduce using rule 20 (translation_unit)
+
+
+state 44
+
+   27 constraint_statement: constraint_statement AND_OP . atomic_constraint
+
+    IDENTIFIER  shift, and go to state 64
+    '!'         shift, and go to state 12
+
+    atomic_constraint  go to state 65
+
+
+state 45
+
+   29 comment_list: comment_list COMMENT .
+
+    $default  reduce using rule 29 (comment_list)
+
+
+state 46
+
+   36 assign_statement: assign_statement ',' . single_assign_statement
+
+    IDENTIFIER  shift, and go to state 66
+
+    single_assign_statement  go to state 67
+
+
+state 47
+
+   32 atomic_constraint: IDENTIFIER '-' IDENTIFIER . compare_relation const_expression
+
+    LE_OP  shift, and go to state 23
+    GE_OP  shift, and go to state 24
+    EQ_OP  shift, and go to state 25
+    NE_OP  shift, and go to state 26
+    '<'    shift, and go to state 27
+    '>'    shift, and go to state 28
+
+    compare_relation  go to state 68
+
+
+state 48
+
+   40 const_expression: CONSTANT .
+
+    $default  reduce using rule 40 (const_expression)
+
+
+state 49
+
+   38 single_assign_statement: IDENTIFIER '=' IDENTIFIER .
+
+    $default  reduce using rule 38 (single_assign_statement)
+
+
+state 50
+
+   39 single_assign_statement: IDENTIFIER '=' TEMPLATE . '(' identifier_list ')'
+
+    '('  shift, and go to state 69
+
+
+state 51
+
+   41 const_expression: TRUE_Y .
+
+    $default  reduce using rule 41 (const_expression)
+
+
+state 52
+
+   42 const_expression: FALSE_Y .
+
+    $default  reduce using rule 42 (const_expression)
+
+
+state 53
+
+   37 single_assign_statement: IDENTIFIER '=' const_expression .
+
+    $default  reduce using rule 37 (single_assign_statement)
+
+
+state 54
+
+   31 atomic_constraint: IDENTIFIER compare_relation IDENTIFIER .
+
+    $default  reduce using rule 31 (atomic_constraint)
+
+
+state 55
+
+   30 atomic_constraint: IDENTIFIER compare_relation const_expression .
+
+    $default  reduce using rule 30 (atomic_constraint)
+
+
+state 56
+
+   47 variable_declaration: TYPEDEF INT '[' . const_expression ',' const_expression ']' IDENTIFIER ';'
+
+    CONSTANT  shift, and go to state 48
+    TRUE_Y    shift, and go to state 51
+    FALSE_Y   shift, and go to state 52
+
+    const_expression  go to state 70
+
+
+state 57
+
+   46 variable_declaration: CONST type_specifier IDENTIFIER . '=' const_expression ';'
+
+    '='  shift, and go to state 71
+
+
+state 58
+
+   11 ta_list: ta_list ',' . IDENTIFIER
+   12        | ta_list ',' . TEMPLATE
+
+    IDENTIFIER  shift, and go to state 72
+    TEMPLATE    shift, and go to state 73
+
+
+state 59
+
+   48 system_declaration: SYSTEM ta_list ';' .
+
+    $default  reduce using rule 48 (system_declaration)
+
+
+state 60
+
+   45 variable_declaration: type_specifier IDENTIFIER '=' . const_expression ';'
+
+    CONSTANT  shift, and go to state 48
+    TRUE_Y    shift, and go to state 51
+    FALSE_Y   shift, and go to state 52
+
+    const_expression  go to state 74
+
+
+state 61
+
+   44 variable_declaration: type_specifier IDENTIFIER '[' . const_expression ']' ';'
+
+    CONSTANT  shift, and go to state 48
+    TRUE_Y    shift, and go to state 51
+    FALSE_Y   shift, and go to state 52
+
+    const_expression  go to state 75
+
+
+state 62
+
+    8 identifier_list: identifier_list ',' . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 76
+
+
+state 63
+
+   43 variable_declaration: type_specifier identifier_list ';' .
+
+    $default  reduce using rule 43 (variable_declaration)
+
+
+state 64
+
+   30 atomic_constraint: IDENTIFIER . compare_relation const_expression
+   31                  | IDENTIFIER . compare_relation IDENTIFIER
+   32                  | IDENTIFIER . '-' IDENTIFIER compare_relation const_expression
+   33                  | IDENTIFIER .
+
+    LE_OP  shift, and go to state 23
+    GE_OP  shift, and go to state 24
+    EQ_OP  shift, and go to state 25
+    NE_OP  shift, and go to state 26
+    '<'    shift, and go to state 27
+    '>'    shift, and go to state 28
+    '-'    shift, and go to state 29
+
+    $default  reduce using rule 33 (atomic_constraint)
+
+    compare_relation  go to state 31
+
+
+state 65
+
+   27 constraint_statement: constraint_statement AND_OP atomic_constraint .
+
+    $default  reduce using rule 27 (constraint_statement)
+
+
+state 66
+
+   37 single_assign_statement: IDENTIFIER . '=' const_expression
+   38                        | IDENTIFIER . '=' IDENTIFIER
+   39                        | IDENTIFIER . '=' TEMPLATE '(' identifier_list ')'
+
+    '='  shift, and go to state 30
+
+
+state 67
+
+   36 assign_statement: assign_statement ',' single_assign_statement .
+
+    $default  reduce using rule 36 (assign_statement)
+
+
+state 68
+
+   32 atomic_constraint: IDENTIFIER '-' IDENTIFIER compare_relation . const_expression
+
+    CONSTANT  shift, and go to state 48
+    TRUE_Y    shift, and go to state 51
+    FALSE_Y   shift, and go to state 52
+
+    const_expression  go to state 77
+
+
+state 69
+
+   39 single_assign_statement: IDENTIFIER '=' TEMPLATE '(' . identifier_list ')'
+
+    IDENTIFIER  shift, and go to state 78
+
+    identifier_list  go to state 79
+
+
+state 70
+
+   47 variable_declaration: TYPEDEF INT '[' const_expression . ',' const_expression ']' IDENTIFIER ';'
+
+    ','  shift, and go to state 80
+
+
+state 71
+
+   46 variable_declaration: CONST type_specifier IDENTIFIER '=' . const_expression ';'
+
+    CONSTANT  shift, and go to state 48
+    TRUE_Y    shift, and go to state 51
+    FALSE_Y   shift, and go to state 52
+
+    const_expression  go to state 81
+
+
+state 72
+
+   11 ta_list: ta_list ',' IDENTIFIER .
+
+    $default  reduce using rule 11 (ta_list)
+
+
+state 73
+
+   12 ta_list: ta_list ',' TEMPLATE .
+
+    $default  reduce using rule 12 (ta_list)
+
+
+state 74
+
+   45 variable_declaration: type_specifier IDENTIFIER '=' const_expression . ';'
+
+    ';'  shift, and go to state 82
+
+
+state 75
+
+   44 variable_declaration: type_specifier IDENTIFIER '[' const_expression . ']' ';'
+
+    ']'  shift, and go to state 83
+
+
+state 76
+
+    8 identifier_list: identifier_list ',' IDENTIFIER .
+
+    $default  reduce using rule 8 (identifier_list)
+
+
+state 77
+
+   32 atomic_constraint: IDENTIFIER '-' IDENTIFIER compare_relation const_expression .
+
+    $default  reduce using rule 32 (atomic_constraint)
+
+
+state 78
+
+    7 identifier_list: IDENTIFIER .
+
+    $default  reduce using rule 7 (identifier_list)
+
+
+state 79
+
+    8 identifier_list: identifier_list . ',' IDENTIFIER
+   39 single_assign_statement: IDENTIFIER '=' TEMPLATE '(' identifier_list . ')'
+
+    ','  shift, and go to state 62
+    ')'  shift, and go to state 84
+
+
+state 80
+
+   47 variable_declaration: TYPEDEF INT '[' const_expression ',' . const_expression ']' IDENTIFIER ';'
+
+    CONSTANT  shift, and go to state 48
+    TRUE_Y    shift, and go to state 51
+    FALSE_Y   shift, and go to state 52
+
+    const_expression  go to state 85
+
+
+state 81
+
+   46 variable_declaration: CONST type_specifier IDENTIFIER '=' const_expression . ';'
+
+    ';'  shift, and go to state 86
+
+
+state 82
+
+   45 variable_declaration: type_specifier IDENTIFIER '=' const_expression ';' .
+
+    $default  reduce using rule 45 (variable_declaration)
+
+
+state 83
+
+   44 variable_declaration: type_specifier IDENTIFIER '[' const_expression ']' . ';'
+
+    ';'  shift, and go to state 87
+
+
+state 84
+
+   39 single_assign_statement: IDENTIFIER '=' TEMPLATE '(' identifier_list ')' .
+
+    $default  reduce using rule 39 (single_assign_statement)
+
+
+state 85
+
+   47 variable_declaration: TYPEDEF INT '[' const_expression ',' const_expression . ']' IDENTIFIER ';'
+
+    ']'  shift, and go to state 88
+
+
+state 86
+
+   46 variable_declaration: CONST type_specifier IDENTIFIER '=' const_expression ';' .
+
+    $default  reduce using rule 46 (variable_declaration)
+
+
+state 87
+
+   44 variable_declaration: type_specifier IDENTIFIER '[' const_expression ']' ';' .
+
+    $default  reduce using rule 44 (variable_declaration)
+
+
+state 88
+
+   47 variable_declaration: TYPEDEF INT '[' const_expression ',' const_expression ']' . IDENTIFIER ';'
+
+    IDENTIFIER  shift, and go to state 89
+
+
+state 89
+
+   47 variable_declaration: TYPEDEF INT '[' const_expression ',' const_expression ']' IDENTIFIER . ';'
+
+    ';'  shift, and go to state 90
+
+
+state 90
+
+   47 variable_declaration: TYPEDEF INT '[' const_expression ',' const_expression ']' IDENTIFIER ';' .
+
+    $default  reduce using rule 47 (variable_declaration)

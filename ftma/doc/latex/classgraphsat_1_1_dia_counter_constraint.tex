@@ -1,0 +1,180 @@
+\hypertarget{classgraphsat_1_1_dia_counter_constraint}{}\section{graphsat\+::Dia\+Counter\+Constraint Class Reference}
+\label{classgraphsat_1_1_dia_counter_constraint}\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+
+
+{\ttfamily \#include $<$countercons.\+h$>$}
+
+
+
+Inheritance diagram for graphsat\+::Dia\+Counter\+Constraint\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=237pt]{classgraphsat_1_1_dia_counter_constraint__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for graphsat\+::Dia\+Counter\+Constraint\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=237pt]{classgraphsat_1_1_dia_counter_constraint__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a31a8b26714bab4aca765556272dae334}{operator()}} (const int $\ast$counter\+\_\+value) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a75319d3a2b1cf2db7cf540b732729871}{global\+Update}} (const map$<$ int, int $>$ \&id\+\_\+map, const vector$<$ int $>$ \&parameter\+\_\+value)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a4a1e57fd6bf743dcd7430b03b85ebebb}{$\sim$\+Dia\+Counter\+Constraint}} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a16aa92c2e28e0a3e5e110f413a9a3035}{Dia\+Counter\+Constraint}} (int x, int y, \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} p, int r)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a8298e206d438c302fa43a568bec517ae}{copy}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a44b4289bb1156eb3e4faa6e91d02b7b6}{local\+\_\+counter\+\_\+x}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_ae8a47b3607236b908ac6ed5f95947e5d}{local\+\_\+counter\+\_\+y}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a07d0929fb60ab39d8bf0f92a3612fb46}{global\+\_\+counter\+\_\+x}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_afd1424325f6984cd7cf4d3cc7dd1a2e3}{global\+\_\+counter\+\_\+y}}
+\item 
+\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_a704e5bd6fca262934d1a5275bd05fda4}{op}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_addb34c4efce7f22541da59e48f6ada0e}{rhs}}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_dia_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}{Instance\+Factory}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a4a1e57fd6bf743dcd7430b03b85ebebb}\label{classgraphsat_1_1_dia_counter_constraint_a4a1e57fd6bf743dcd7430b03b85ebebb}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!````~DiaCounterConstraint@{$\sim$DiaCounterConstraint}}
+\index{````~DiaCounterConstraint@{$\sim$DiaCounterConstraint}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{$\sim$DiaCounterConstraint()}{~DiaCounterConstraint()}}
+{\footnotesize\ttfamily graphsat\+::\+Dia\+Counter\+Constraint\+::$\sim$\+Dia\+Counter\+Constraint (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a16aa92c2e28e0a3e5e110f413a9a3035}\label{classgraphsat_1_1_dia_counter_constraint_a16aa92c2e28e0a3e5e110f413a9a3035}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!DiaCounterConstraint@{DiaCounterConstraint}}
+\index{DiaCounterConstraint@{DiaCounterConstraint}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{DiaCounterConstraint()}{DiaCounterConstraint()}}
+{\footnotesize\ttfamily graphsat\+::\+Dia\+Counter\+Constraint\+::\+Dia\+Counter\+Constraint (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y,  }\item[{\mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}}}]{p,  }\item[{int}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_dia_counter_constraint_a16aa92c2e28e0a3e5e110f413a9a3035_icgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a8298e206d438c302fa43a568bec517ae}\label{classgraphsat_1_1_dia_counter_constraint_a8298e206d438c302fa43a568bec517ae}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!copy@{copy}}
+\index{copy@{copy}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{copy()}{copy()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_counter_constraint}{Counter\+Constraint}}$\ast$ graphsat\+::\+Dia\+Counter\+Constraint\+::copy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_a880eb6520fcf80de35071d62cb31a640}{graphsat\+::\+Counter\+Constraint}}.
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_dia_counter_constraint_a8298e206d438c302fa43a568bec517ae_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a75319d3a2b1cf2db7cf540b732729871}\label{classgraphsat_1_1_dia_counter_constraint_a75319d3a2b1cf2db7cf540b732729871}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!globalUpdate@{globalUpdate}}
+\index{globalUpdate@{globalUpdate}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{globalUpdate()}{globalUpdate()}}
+{\footnotesize\ttfamily void graphsat\+::\+Dia\+Counter\+Constraint\+::global\+Update (\begin{DoxyParamCaption}\item[{const map$<$ int, int $>$ \&}]{id\+\_\+map,  }\item[{const vector$<$ int $>$ \&}]{parameter\+\_\+value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Deley set the counter id 
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_aa467ff66b37a1cbc69f5eddb269aaa0d}{graphsat\+::\+Counter\+Constraint}}.
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a31a8b26714bab4aca765556272dae334}\label{classgraphsat_1_1_dia_counter_constraint_a31a8b26714bab4aca765556272dae334}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily bool graphsat\+::\+Dia\+Counter\+Constraint\+::operator() (\begin{DoxyParamCaption}\item[{const int $\ast$}]{counter\+\_\+value }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_constraint_a1fb82c50097b34656ef5ca319dd352da}{graphsat\+::\+Counter\+Constraint}}.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}\label{classgraphsat_1_1_dia_counter_constraint_ad4b3c25c041701ae56dc1e78df779d2f}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!InstanceFactory@{InstanceFactory}}
+\index{InstanceFactory@{InstanceFactory}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{InstanceFactory}{InstanceFactory}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{classgraphsat_1_1_instance_factory}{Instance\+Factory}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a07d0929fb60ab39d8bf0f92a3612fb46}\label{classgraphsat_1_1_dia_counter_constraint_a07d0929fb60ab39d8bf0f92a3612fb46}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!global\_counter\_x@{global\_counter\_x}}
+\index{global\_counter\_x@{global\_counter\_x}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{global\_counter\_x}{global\_counter\_x}}
+{\footnotesize\ttfamily int graphsat\+::\+Dia\+Counter\+Constraint\+::global\+\_\+counter\+\_\+x\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_afd1424325f6984cd7cf4d3cc7dd1a2e3}\label{classgraphsat_1_1_dia_counter_constraint_afd1424325f6984cd7cf4d3cc7dd1a2e3}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!global\_counter\_y@{global\_counter\_y}}
+\index{global\_counter\_y@{global\_counter\_y}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{global\_counter\_y}{global\_counter\_y}}
+{\footnotesize\ttfamily int graphsat\+::\+Dia\+Counter\+Constraint\+::global\+\_\+counter\+\_\+y\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a44b4289bb1156eb3e4faa6e91d02b7b6}\label{classgraphsat_1_1_dia_counter_constraint_a44b4289bb1156eb3e4faa6e91d02b7b6}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!local\_counter\_x@{local\_counter\_x}}
+\index{local\_counter\_x@{local\_counter\_x}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{local\_counter\_x}{local\_counter\_x}}
+{\footnotesize\ttfamily int graphsat\+::\+Dia\+Counter\+Constraint\+::local\+\_\+counter\+\_\+x\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_ae8a47b3607236b908ac6ed5f95947e5d}\label{classgraphsat_1_1_dia_counter_constraint_ae8a47b3607236b908ac6ed5f95947e5d}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!local\_counter\_y@{local\_counter\_y}}
+\index{local\_counter\_y@{local\_counter\_y}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{local\_counter\_y}{local\_counter\_y}}
+{\footnotesize\ttfamily int graphsat\+::\+Dia\+Counter\+Constraint\+::local\+\_\+counter\+\_\+y\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_a704e5bd6fca262934d1a5275bd05fda4}\label{classgraphsat_1_1_dia_counter_constraint_a704e5bd6fca262934d1a5275bd05fda4}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!op@{op}}
+\index{op@{op}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{op}{op}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacegraphsat_acfb5939f9bdafbd9aea0d084b9a56f69}{C\+O\+M\+P\+\_\+\+O\+P\+E\+R\+A\+T\+OR}} graphsat\+::\+Dia\+Counter\+Constraint\+::op\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_dia_counter_constraint_addb34c4efce7f22541da59e48f6ada0e}\label{classgraphsat_1_1_dia_counter_constraint_addb34c4efce7f22541da59e48f6ada0e}} 
+\index{graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}!rhs@{rhs}}
+\index{rhs@{rhs}!graphsat::DiaCounterConstraint@{graphsat::DiaCounterConstraint}}
+\subsubsection{\texorpdfstring{rhs}{rhs}}
+{\footnotesize\ttfamily int graphsat\+::\+Dia\+Counter\+Constraint\+::rhs\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/constraint/\mbox{\hyperlink{countercons_8h}{countercons.\+h}}\end{DoxyCompactItemize}

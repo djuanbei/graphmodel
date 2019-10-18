@@ -1,0 +1,339 @@
+\hypertarget{main_8cpp}{}\section{src/main.cpp File Reference}
+\label{main_8cpp}\index{src/main.cpp@{src/main.cpp}}
+
+
+a test main  
+
+
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include \char`\"{}action/counteraction.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}constraint/clockdiffcons.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}location.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}model/ta.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}problem/reachability.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}transition.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}util/dbmutil.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}domain/dbm.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}domain/dbmset.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}io/uppaalmodelparser.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}reachableset.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}discretestate.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}util/datacompression.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$cstdint$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+Include dependency graph for main.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{main_8cpp_ae47cfd8a91abdf21a47496151f973cbe}{P\+R\+I\+N\+T\+\_\+\+S\+T\+A\+TE}}~1
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef \mbox{\hyperlink{classgraphsat_1_1_reachable_set}{Reachable\+Set}}$<$ \mbox{\hyperlink{namespacegraphsat_a72468138834e9a7182f32fed8035a2de}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t}} $>$ \mbox{\hyperlink{main_8cpp_a7994a501eeafe3836592a9c47dc0e1ab}{R\+\_\+t}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8cpp_a88fea488826cbe92b65a461b34e996a1}{example1}} (void)
+\item 
+void \mbox{\hyperlink{main_8cpp_a1341534d8fc961ae4d5082e138eccb5a}{example50}} ()
+\item 
+void \mbox{\hyperlink{main_8cpp_ab37c3a83ff4b628b50930e6d2707d69c}{example2}} (void)
+\item 
+void \mbox{\hyperlink{main_8cpp_a52dbd82bd5045ab24d7628a28c87a2e1}{example3}} (void)
+\item 
+std\+::uniform\+\_\+int\+\_\+distribution$<$ int $>$ \mbox{\hyperlink{main_8cpp_ac4242f91f233808af725f39e05ba6e06}{distribution}} (0, 1000)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_t_a_s_a05b063b91c0ab2a4f94380de78344d72}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t\+::\+C\+\_\+t}} $\ast$ \mbox{\hyperlink{main_8cpp_a66655d86f3d5046fcd8224987fdb2cd8}{randV}} (int n, int s)
+\item 
+void \mbox{\hyperlink{main_8cpp_a780e0cc890f60d1e01cbe42657a64c60}{example5}} (void)
+\item 
+void \mbox{\hyperlink{main_8cpp_aed24a4c9186792ed770a836447168152}{example6}} ()
+\item 
+void \mbox{\hyperlink{main_8cpp_a338071ebc957d23780192a3703f6d450}{fisher}} (int n=2)
+\item 
+void \mbox{\hyperlink{main_8cpp_ad92c97f9722594c8beb1d9957125d6e0}{incremental\+Test}} ()
+\item 
+void \mbox{\hyperlink{main_8cpp_a8d982928436ffb9289c26d44e921658a}{fisher1}} ()
+\item 
+void \mbox{\hyperlink{main_8cpp_affa42e67949cef0feda91c8d66b175b1}{test\+OP}} ()
+\item 
+void \mbox{\hyperlink{main_8cpp_a1b78210bc76c7e515c039bee6f681442}{testcompression}} ()
+\item 
+int \mbox{\hyperlink{main_8cpp_ac0f2228420376f4db7e1274f2b41667c}{main}} (int argc, const char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std\+::default\+\_\+random\+\_\+engine \mbox{\hyperlink{main_8cpp_a3587a710956beb3d42b9a4c6a0aa3acd}{generator}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+a test main 
+
+\begin{DoxyAuthor}{Author}
+Liyun Dai \href{mailto:dlyun2009@gmail.com}{\texttt{ dlyun2009@gmail.\+com}} 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+Sat Mar 30 18\+:10\+:24 2019 
+\end{DoxyDate}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{main_8cpp_ae47cfd8a91abdf21a47496151f973cbe}\label{main_8cpp_ae47cfd8a91abdf21a47496151f973cbe}} 
+\index{main.cpp@{main.cpp}!PRINT\_STATE@{PRINT\_STATE}}
+\index{PRINT\_STATE@{PRINT\_STATE}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{PRINT\_STATE}{PRINT\_STATE}}
+{\footnotesize\ttfamily \#define P\+R\+I\+N\+T\+\_\+\+S\+T\+A\+TE~1}
+
+
+
+\subsection{Typedef Documentation}
+\mbox{\Hypertarget{main_8cpp_a7994a501eeafe3836592a9c47dc0e1ab}\label{main_8cpp_a7994a501eeafe3836592a9c47dc0e1ab}} 
+\index{main.cpp@{main.cpp}!R\_t@{R\_t}}
+\index{R\_t@{R\_t}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{R\_t}{R\_t}}
+{\footnotesize\ttfamily typedef \mbox{\hyperlink{classgraphsat_1_1_reachable_set}{Reachable\+Set}}$<$\mbox{\hyperlink{namespacegraphsat_a72468138834e9a7182f32fed8035a2de}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t}}$>$ \mbox{\hyperlink{main_8cpp_a7994a501eeafe3836592a9c47dc0e1ab}{R\+\_\+t}}}
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{main_8cpp_ac4242f91f233808af725f39e05ba6e06}\label{main_8cpp_ac4242f91f233808af725f39e05ba6e06}} 
+\index{main.cpp@{main.cpp}!distribution@{distribution}}
+\index{distribution@{distribution}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{distribution()}{distribution()}}
+{\footnotesize\ttfamily std\+::uniform\+\_\+int\+\_\+distribution$<$int$>$ distribution (\begin{DoxyParamCaption}\item[{0}]{,  }\item[{1000}]{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_ac4242f91f233808af725f39e05ba6e06_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a88fea488826cbe92b65a461b34e996a1}\label{main_8cpp_a88fea488826cbe92b65a461b34e996a1}} 
+\index{main.cpp@{main.cpp}!example1@{example1}}
+\index{example1@{example1}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{example1()}{example1()}}
+{\footnotesize\ttfamily void example1 (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_a88fea488826cbe92b65a461b34e996a1_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=213pt]{main_8cpp_a88fea488826cbe92b65a461b34e996a1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_ab37c3a83ff4b628b50930e6d2707d69c}\label{main_8cpp_ab37c3a83ff4b628b50930e6d2707d69c}} 
+\index{main.cpp@{main.cpp}!example2@{example2}}
+\index{example2@{example2}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{example2()}{example2()}}
+{\footnotesize\ttfamily void example2 (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_ab37c3a83ff4b628b50930e6d2707d69c_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=213pt]{main_8cpp_ab37c3a83ff4b628b50930e6d2707d69c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a52dbd82bd5045ab24d7628a28c87a2e1}\label{main_8cpp_a52dbd82bd5045ab24d7628a28c87a2e1}} 
+\index{main.cpp@{main.cpp}!example3@{example3}}
+\index{example3@{example3}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{example3()}{example3()}}
+{\footnotesize\ttfamily void example3 (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{main_8cpp_a780e0cc890f60d1e01cbe42657a64c60}\label{main_8cpp_a780e0cc890f60d1e01cbe42657a64c60}} 
+\index{main.cpp@{main.cpp}!example5@{example5}}
+\index{example5@{example5}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{example5()}{example5()}}
+{\footnotesize\ttfamily void example5 (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_a780e0cc890f60d1e01cbe42657a64c60_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a1341534d8fc961ae4d5082e138eccb5a}\label{main_8cpp_a1341534d8fc961ae4d5082e138eccb5a}} 
+\index{main.cpp@{main.cpp}!example50@{example50}}
+\index{example50@{example50}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{example50()}{example50()}}
+{\footnotesize\ttfamily void example50 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_a1341534d8fc961ae4d5082e138eccb5a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_aed24a4c9186792ed770a836447168152}\label{main_8cpp_aed24a4c9186792ed770a836447168152}} 
+\index{main.cpp@{main.cpp}!example6@{example6}}
+\index{example6@{example6}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{example6()}{example6()}}
+{\footnotesize\ttfamily void example6 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_aed24a4c9186792ed770a836447168152_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a338071ebc957d23780192a3703f6d450}\label{main_8cpp_a338071ebc957d23780192a3703f6d450}} 
+\index{main.cpp@{main.cpp}!fisher@{fisher}}
+\index{fisher@{fisher}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{fisher()}{fisher()}}
+{\footnotesize\ttfamily void fisher (\begin{DoxyParamCaption}\item[{int}]{n = {\ttfamily 2} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_a338071ebc957d23780192a3703f6d450_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a8d982928436ffb9289c26d44e921658a}\label{main_8cpp_a8d982928436ffb9289c26d44e921658a}} 
+\index{main.cpp@{main.cpp}!fisher1@{fisher1}}
+\index{fisher1@{fisher1}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{fisher1()}{fisher1()}}
+{\footnotesize\ttfamily void fisher1 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_a8d982928436ffb9289c26d44e921658a_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=200pt]{main_8cpp_a8d982928436ffb9289c26d44e921658a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_ad92c97f9722594c8beb1d9957125d6e0}\label{main_8cpp_ad92c97f9722594c8beb1d9957125d6e0}} 
+\index{main.cpp@{main.cpp}!incrementalTest@{incrementalTest}}
+\index{incrementalTest@{incrementalTest}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{incrementalTest()}{incrementalTest()}}
+{\footnotesize\ttfamily void incremental\+Test (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_ad92c97f9722594c8beb1d9957125d6e0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_ac0f2228420376f4db7e1274f2b41667c}\label{main_8cpp_ac0f2228420376f4db7e1274f2b41667c}} 
+\index{main.cpp@{main.cpp}!main@{main}}
+\index{main@{main}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{const char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{main_8cpp_ac0f2228420376f4db7e1274f2b41667c_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a66655d86f3d5046fcd8224987fdb2cd8}\label{main_8cpp_a66655d86f3d5046fcd8224987fdb2cd8}} 
+\index{main.cpp@{main.cpp}!randV@{randV}}
+\index{randV@{randV}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{randV()}{randV()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_t_a_s_a05b063b91c0ab2a4f94380de78344d72}{I\+N\+T\+\_\+\+T\+A\+S\+\_\+t\+::\+C\+\_\+t}}$\ast$ randV (\begin{DoxyParamCaption}\item[{int}]{n,  }\item[{int}]{s }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=223pt]{main_8cpp_a66655d86f3d5046fcd8224987fdb2cd8_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=218pt]{main_8cpp_a66655d86f3d5046fcd8224987fdb2cd8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_a1b78210bc76c7e515c039bee6f681442}\label{main_8cpp_a1b78210bc76c7e515c039bee6f681442}} 
+\index{main.cpp@{main.cpp}!testcompression@{testcompression}}
+\index{testcompression@{testcompression}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{testcompression()}{testcompression()}}
+{\footnotesize\ttfamily void testcompression (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=324pt]{main_8cpp_a1b78210bc76c7e515c039bee6f681442_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{main_8cpp_affa42e67949cef0feda91c8d66b175b1}\label{main_8cpp_affa42e67949cef0feda91c8d66b175b1}} 
+\index{main.cpp@{main.cpp}!testOP@{testOP}}
+\index{testOP@{testOP}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{testOP()}{testOP()}}
+{\footnotesize\ttfamily void test\+OP (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=289pt]{main_8cpp_affa42e67949cef0feda91c8d66b175b1_cgraph}
+\end{center}
+\end{figure}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{main_8cpp_a3587a710956beb3d42b9a4c6a0aa3acd}\label{main_8cpp_a3587a710956beb3d42b9a4c6a0aa3acd}} 
+\index{main.cpp@{main.cpp}!generator@{generator}}
+\index{generator@{generator}!main.cpp@{main.cpp}}
+\subsubsection{\texorpdfstring{generator}{generator}}
+{\footnotesize\ttfamily std\+::default\+\_\+random\+\_\+engine generator}
+

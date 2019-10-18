@@ -1,0 +1,146 @@
+\hypertarget{classgraphsat_1_1_default_c_action}{}\section{graphsat\+::Default\+C\+Action Class Reference}
+\label{classgraphsat_1_1_default_c_action}\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+
+
+{\ttfamily \#include $<$counteraction.\+h$>$}
+
+
+
+Inheritance diagram for graphsat\+::Default\+C\+Action\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=207pt]{classgraphsat_1_1_default_c_action__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for graphsat\+::Default\+C\+Action\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=316pt]{classgraphsat_1_1_default_c_action__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_default_c_action_a78b8f5f344c61e83c83fca04be2a4d73}{operator()}} (int $\ast$counter\+\_\+value) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_default_c_action_a70f9da2bbdd46e42d279b867195daa56}{global\+Update}} (const map$<$ int, int $>$ \&id\+\_\+map, const vector$<$ int $>$ \&parameter\+\_\+value)
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_c_action_a12283e84a4da37280c1c8ac56a3564ec}{Default\+C\+Action}} (const vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$$>$$>$$>$ \&relations1)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_default_c_action_a05af49386f59671eebee3b120dc0a086}{$\sim$\+Default\+C\+Action}} ()
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}} $\ast$ \mbox{\hyperlink{classgraphsat_1_1_default_c_action_a69fa305cacc678c4435bad7a101302aa}{copy}} () const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$ $>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_default_c_action_afa01fc648aa9cb9713c9bb01ca5d5ce2}{local\+\_\+relations}}
+\item 
+vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$ $>$ $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_default_c_action_aac5f877175ded69616afb1ff2812562b}{global\+\_\+relations}}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classgraphsat_1_1_default_c_action_ad4b3c25c041701ae56dc1e78df779d2f}{Instance\+Factory}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_a12283e84a4da37280c1c8ac56a3564ec}\label{classgraphsat_1_1_default_c_action_a12283e84a4da37280c1c8ac56a3564ec}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!DefaultCAction@{DefaultCAction}}
+\index{DefaultCAction@{DefaultCAction}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{DefaultCAction()}{DefaultCAction()}}
+{\footnotesize\ttfamily graphsat\+::\+Default\+C\+Action\+::\+Default\+C\+Action (\begin{DoxyParamCaption}\item[{const vector$<$ pair$<$ int, vector$<$ pair$<$ int, int $>$$>$$>$$>$ \&}]{relations1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_default_c_action_a12283e84a4da37280c1c8ac56a3564ec_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_a05af49386f59671eebee3b120dc0a086}\label{classgraphsat_1_1_default_c_action_a05af49386f59671eebee3b120dc0a086}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!````~DefaultCAction@{$\sim$DefaultCAction}}
+\index{````~DefaultCAction@{$\sim$DefaultCAction}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{$\sim$DefaultCAction()}{~DefaultCAction()}}
+{\footnotesize\ttfamily graphsat\+::\+Default\+C\+Action\+::$\sim$\+Default\+C\+Action (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_a69fa305cacc678c4435bad7a101302aa}\label{classgraphsat_1_1_default_c_action_a69fa305cacc678c4435bad7a101302aa}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!copy@{copy}}
+\index{copy@{copy}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{copy()}{copy()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classgraphsat_1_1_counter_action}{Counter\+Action}}$\ast$ graphsat\+::\+Default\+C\+Action\+::copy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_action_aa6ab6ebd8e13b466dba062efea962691}{graphsat\+::\+Counter\+Action}}.
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_default_c_action_a69fa305cacc678c4435bad7a101302aa_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_a70f9da2bbdd46e42d279b867195daa56}\label{classgraphsat_1_1_default_c_action_a70f9da2bbdd46e42d279b867195daa56}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!globalUpdate@{globalUpdate}}
+\index{globalUpdate@{globalUpdate}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{globalUpdate()}{globalUpdate()}}
+{\footnotesize\ttfamily void graphsat\+::\+Default\+C\+Action\+::global\+Update (\begin{DoxyParamCaption}\item[{const map$<$ int, int $>$ \&}]{id\+\_\+map,  }\item[{const vector$<$ int $>$ \&}]{parameter\+\_\+value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Deley set the counter id 
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_action_a09e8a5779f0ae70ea07e8974d93edf2e}{graphsat\+::\+Counter\+Action}}.
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_a78b8f5f344c61e83c83fca04be2a4d73}\label{classgraphsat_1_1_default_c_action_a78b8f5f344c61e83c83fca04be2a4d73}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!operator()@{operator()}}
+\index{operator()@{operator()}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily void graphsat\+::\+Default\+C\+Action\+::operator() (\begin{DoxyParamCaption}\item[{int $\ast$}]{counter\+\_\+value }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classgraphsat_1_1_counter_action_ac21660dc667a4abca69fdda313c6708c}{graphsat\+::\+Counter\+Action}}.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_ad4b3c25c041701ae56dc1e78df779d2f}\label{classgraphsat_1_1_default_c_action_ad4b3c25c041701ae56dc1e78df779d2f}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!InstanceFactory@{InstanceFactory}}
+\index{InstanceFactory@{InstanceFactory}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{InstanceFactory}{InstanceFactory}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{classgraphsat_1_1_instance_factory}{Instance\+Factory}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_aac5f877175ded69616afb1ff2812562b}\label{classgraphsat_1_1_default_c_action_aac5f877175ded69616afb1ff2812562b}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!global\_relations@{global\_relations}}
+\index{global\_relations@{global\_relations}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{global\_relations}{global\_relations}}
+{\footnotesize\ttfamily vector$<$pair$<$int, vector$<$pair$<$int, int$>$ $>$ $>$ $>$ graphsat\+::\+Default\+C\+Action\+::global\+\_\+relations\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_default_c_action_afa01fc648aa9cb9713c9bb01ca5d5ce2}\label{classgraphsat_1_1_default_c_action_afa01fc648aa9cb9713c9bb01ca5d5ce2}} 
+\index{graphsat::DefaultCAction@{graphsat::DefaultCAction}!local\_relations@{local\_relations}}
+\index{local\_relations@{local\_relations}!graphsat::DefaultCAction@{graphsat::DefaultCAction}}
+\subsubsection{\texorpdfstring{local\_relations}{local\_relations}}
+{\footnotesize\ttfamily vector$<$pair$<$int, vector$<$pair$<$int, int$>$ $>$ $>$ $>$ graphsat\+::\+Default\+C\+Action\+::local\+\_\+relations\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/action/\mbox{\hyperlink{counteraction_8h}{counteraction.\+h}}\end{DoxyCompactItemize}

@@ -1,0 +1,4 @@
+<map id="graphsat::Transition::ready" name="graphsat::Transition::ready">
+<area shape="rect" id="node1" title="Except synchronize signal, other state satisfies jump conditions." alt="" coords="192,5,331,44"/>
+<area shape="rect" id="node2" href="$classgraphsat_1_1_transition.html#a9bca78149ee938dd36cb856538ce81f0" title="create new state" alt="" coords="5,5,144,44"/>
+</map>

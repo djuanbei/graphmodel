@@ -1,0 +1,734 @@
+\hypertarget{classgraphsat_1_1_d_b_m_factory}{}\section{graphsat\+::D\+B\+M\+Factory$<$ C $>$ Class Template Reference}
+\label{classgraphsat_1_1_d_b_m_factory}\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+
+
+{\ttfamily \#include $<$dbm.\+hpp$>$}
+
+
+
+Collaboration diagram for graphsat\+::D\+B\+M\+Factory$<$ C $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=332pt]{classgraphsat_1_1_d_b_m_factory__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a9e1186bd6895316c221b836278ff8e67}{D\+B\+M\+Factory}} (void)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ad74660809aa5c24398bc51d4124bfc34}{D\+B\+M\+Factory}} (int n)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a92cb135d2bb3e22ba50de76107fdb8bd}{D\+B\+M\+Factory}} (int n, const vector$<$ C $>$ \&oclock\+Uppuer\+Bound, const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&odifference\+Cons)
+\item 
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_af0f3dde87f07df5d3c9f0f3a1d754425}{$\sim$\+D\+B\+M\+Factory}} ()
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ab3c0c83274b0cda4d0899e529ada4138}{set\+Clock\+Num}} (int num)
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ac51eaa5ba3e4049b0de4ac8fe5950ca1}{create\+D\+BM}} () const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a861184abac08ce37064083f653ab99cc}{create\+D\+BM}} (const C $\ast$const dbm) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a4495ff0e5a07519a5ea06d4eb0e16876}{destroy\+D\+BM}} (C $\ast$dbm) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aaeae7653989fa7e0fcb32d2f54eb1cc1}{init}} (C $\ast$dbm) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a4870799258dd6b425fec20603924ffb4}{random\+D\+BM}} ()
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a900f72a3876daf4cd4142a3704873025}{random\+Feasiable\+D\+BM}} ()
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aaecf26c5b4157fce85102a8759d9c435}{get\+Size}} () const
+\item 
+std\+::string \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a700e1338dda1ba25930938b8f130ab80}{dump}} (const C $\ast$const dbm) const
+\item 
+uint32\+\_\+t \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ad2ff0a1517b24343a5d84af18d26bb59}{get\+Hash\+Value}} (const C $\ast$const dbm) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aa1bc76ac025370bd23ab04dfa761df75}{equal}} (const C $\ast$lhs, const C $\ast$rhs) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a777b62cf77b24fe8acdcb162ffe46545}{delete\+VectorM}} (vector$<$ C $\ast$ $>$ \&Cvec) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ac5b5033506ebb4956d49499e998cd2c5}{canonical\+Form}} (C $\ast$dbm) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a29c2a503d13babf1c536476dc85e2c6a}{is\+Consistent}} (const C $\ast$const dbm) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a449e577089eb65bafab1fdfb40540da5}{include}} (const C $\ast$const lhs, const C $\ast$const rhs) const
+\begin{DoxyCompactList}\small\item\em check whether lhs $>$= rhs, in other words whether lhs contains rhs \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a7532cb7ca080144b870363fdd46ff23e}{get\+Include\+Feature}} (const C $\ast$const dbm) const
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a764bf33011ec3346db15f065d1c66950}{is\+Satisfied}} (const C $\ast$const dbm, const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&cons) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ab47c993ced812163852b176ac2b00110}{up\+Impl}} (C $\ast$dbm) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a3e5f7dfadf1c448c3a920d471962a354}{up}} (const C $\ast$const dbm) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aa18c590a6b5c8a85da3bf8fe44e732f2}{down\+Impl}} (C $\ast$dbm) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a3fd6759bbb5dbbb47e342714b39644aa}{down}} (const C $\ast$const dbm) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aa0ecf76e4c8f3de3a60ef3642e417dc1}{and\+Impl}} (C $\ast$newD, const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&cons) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_af2ab13a24914e31d8fc85f2d96fc38b2}{And}} (const C $\ast$const dbm, const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&cons) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aa8e961d2da36fee769e2e9dd0aabbe9f}{free\+Impl}} (C $\ast$dbm, const int x) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_af0d31fdf2ef13fc1f78a74dfd3992fda}{free}} (const C $\ast$const dbm, const int x) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a2b760cdec73147a8bb44d043b349074b}{reset\+Impl}} (C $\ast$dbm, const int x, const C m) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aecc4c6f42165cbce7cc7465e4558846e}{reset}} (const C $\ast$const dbm, const int x, const C m) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_abcccc3e053ac100dc3ded9411bb4186f}{copy\+Impl}} (C $\ast$dbm, const int x, const int y) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a00df8b7374daa8bb0e3b9fd1e0aa20a9}{copy}} (const C $\ast$const dbm, const int x, const int y) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a9dd1531e9f728bbf69c0fa3d8545ef35}{shift\+Impl}} (C $\ast$dbm, const int x, const C m) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a2d0b5e437a030cf28fca6f291ed1b1f6}{shift}} (const C $\ast$const dbm, const int x, const C m) const
+\begin{DoxyCompactList}\small\item\em x-\/$>$ x+m The last reset operation is shifting a clock, i.\+e. adding or substracting a clock with an integer value. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ae8d0c336111c80f14e8ee92afd30589e}{norm}} (C $\ast$dbm, const vector$<$ C $>$ \&maximums) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a9613b287aff6b6b48bfe1ed392a5eb16}{norm}} (C $\ast$dbm, vector$<$ C $\ast$ $>$ \&re\+\_\+vec) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a51513da611d3b528219e7204498c035b}{norm}} (C $\ast$dbm) const
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a9a6781c8ba87d7e1d3514a603a8600f4}{contain}} (const vector$<$ C $\ast$ $>$ \&values, const C $\ast$const dbm) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_aba7883693f33b40f126bb406f6ead2c6}{norm}} (C $\ast$dbm, const vector$<$ C $>$ \&maximums, const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&diff\+\_\+cons, vector$<$ C $\ast$ $>$ \&re\+\_\+vec) const
+\item 
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a8bcb9646051ac1004cccf3c6c845b20d}{split}} (C $\ast$dbm, const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&diff\+Cons, vector$<$ C $\ast$ $>$ \&re\+\_\+vec) const
+\item 
+C $\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a24fb30c6cf4305ed996f4ca29a5adb65}{corn\+\_\+norm}} (C $\ast$dbm, const vector$<$ C $>$ \&maximums, const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a82c522596ca856797626cfa989863b3c}{difference\+\_\+cons}}) const
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ac5495ee1709f1c30767cf9cb7b33fa45}{clock\+\_\+num}}
+\item 
+int \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a87e76925a7014706de170916fa25ad6e}{matrix\+\_\+size}}
+\item 
+C \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ab31453fbd3195ee7bbe6e1571af9e420}{M\+A\+X\+\_\+\+I\+NT}}
+\item 
+std\+::default\+\_\+random\+\_\+engine \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_ad072fe9626380dbb008aed5b14d392f2}{generator}}
+\item 
+std\+::uniform\+\_\+int\+\_\+distribution$<$ int $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a71f57dc6a5e77ae6d8814e4bce286670}{distribution}}
+\item 
+vector$<$ C $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_af348f08d8be1bc46a4cd6b89d63b19a6}{clock\+\_\+uppuer\+\_\+bound}}
+\item 
+vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory_a82c522596ca856797626cfa989863b3c}{difference\+\_\+cons}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a9e1186bd6895316c221b836278ff8e67}\label{classgraphsat_1_1_d_b_m_factory_a9e1186bd6895316c221b836278ff8e67}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!DBMFactory@{DBMFactory}}
+\index{DBMFactory@{DBMFactory}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{DBMFactory()}{DBMFactory()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}} (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_a9e1186bd6895316c221b836278ff8e67_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ad74660809aa5c24398bc51d4124bfc34}\label{classgraphsat_1_1_d_b_m_factory_ad74660809aa5c24398bc51d4124bfc34}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!DBMFactory@{DBMFactory}}
+\index{DBMFactory@{DBMFactory}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{DBMFactory()}{DBMFactory()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}} (\begin{DoxyParamCaption}\item[{int}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_ad74660809aa5c24398bc51d4124bfc34_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a92cb135d2bb3e22ba50de76107fdb8bd}\label{classgraphsat_1_1_d_b_m_factory_a92cb135d2bb3e22ba50de76107fdb8bd}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!DBMFactory@{DBMFactory}}
+\index{DBMFactory@{DBMFactory}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{DBMFactory()}{DBMFactory()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}} (\begin{DoxyParamCaption}\item[{int}]{n,  }\item[{const vector$<$ C $>$ \&}]{oclock\+Uppuer\+Bound,  }\item[{const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&}]{odifference\+Cons }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_a92cb135d2bb3e22ba50de76107fdb8bd_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_af0f3dde87f07df5d3c9f0f3a1d754425}\label{classgraphsat_1_1_d_b_m_factory_af0f3dde87f07df5d3c9f0f3a1d754425}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!````~DBMFactory@{$\sim$DBMFactory}}
+\index{````~DBMFactory@{$\sim$DBMFactory}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{$\sim$DBMFactory()}{~DBMFactory()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::$\sim$\mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_af2ab13a24914e31d8fc85f2d96fc38b2}\label{classgraphsat_1_1_d_b_m_factory_af2ab13a24914e31d8fc85f2d96fc38b2}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!And@{And}}
+\index{And@{And}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{And()}{And()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::And (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&}]{cons }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Can not modify value of D The most used operation in state-\/space exploration in conjunction Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=297pt]{classgraphsat_1_1_d_b_m_factory_af2ab13a24914e31d8fc85f2d96fc38b2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aa0ecf76e4c8f3de3a60ef3642e417dc1}\label{classgraphsat_1_1_d_b_m_factory_aa0ecf76e4c8f3de3a60ef3642e417dc1}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!andImpl@{andImpl}}
+\index{andImpl@{andImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{andImpl()}{andImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::and\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{newD,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&}]{cons }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_aa0ecf76e4c8f3de3a60ef3642e417dc1_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ac5b5033506ebb4956d49499e998cd2c5}\label{classgraphsat_1_1_d_b_m_factory_ac5b5033506ebb4956d49499e998cd2c5}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!canonicalForm@{canonicalForm}}
+\index{canonicalForm@{canonicalForm}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{canonicalForm()}{canonicalForm()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::canonical\+Form (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Floyds algorithm for computing all shortest path T\+O\+DO improve efficient Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=270pt]{classgraphsat_1_1_d_b_m_factory_ac5b5033506ebb4956d49499e998cd2c5_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a9a6781c8ba87d7e1d3514a603a8600f4}\label{classgraphsat_1_1_d_b_m_factory_a9a6781c8ba87d7e1d3514a603a8600f4}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!contain@{contain}}
+\index{contain@{contain}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{contain()}{contain()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::contain (\begin{DoxyParamCaption}\item[{const vector$<$ C $\ast$ $>$ \&}]{values,  }\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a00df8b7374daa8bb0e3b9fd1e0aa20a9}\label{classgraphsat_1_1_d_b_m_factory_a00df8b7374daa8bb0e3b9fd1e0aa20a9}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!copy@{copy}}
+\index{copy@{copy}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{copy()}{copy()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::copy (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm,  }\item[{const int}]{x,  }\item[{const int}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+This is another operation used in forwards state space exporation. Can not modify value of D 
+\begin{DoxyParams}{Parameters}
+{\em x} & source clock id \\
+\hline
+{\em y} & target clock id \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_abcccc3e053ac100dc3ded9411bb4186f}\label{classgraphsat_1_1_d_b_m_factory_abcccc3e053ac100dc3ded9411bb4186f}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!copyImpl@{copyImpl}}
+\index{copyImpl@{copyImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{copyImpl()}{copyImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::copy\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const int}]{x,  }\item[{const int}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a24fb30c6cf4305ed996f4ca29a5adb65}\label{classgraphsat_1_1_d_b_m_factory_a24fb30c6cf4305ed996f4ca29a5adb65}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!corn\_norm@{corn\_norm}}
+\index{corn\_norm@{corn\_norm}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{corn\_norm()}{corn\_norm()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::corn\+\_\+norm (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const vector$<$ C $>$ \&}]{maximums,  }\item[{const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&}]{difference\+\_\+cons }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+If D and C does not satisiable then norm(\+D,k) and C does not satisable
+
+If D and neg(\+C) does not satisiable then norm(\+D,k) and C does not satisable\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ac51eaa5ba3e4049b0de4ac8fe5950ca1}\label{classgraphsat_1_1_d_b_m_factory_ac51eaa5ba3e4049b0de4ac8fe5950ca1}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!createDBM@{createDBM}}
+\index{createDBM@{createDBM}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{createDBM()}{createDBM()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::create\+D\+BM (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=270pt]{classgraphsat_1_1_d_b_m_factory_ac51eaa5ba3e4049b0de4ac8fe5950ca1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a861184abac08ce37064083f653ab99cc}\label{classgraphsat_1_1_d_b_m_factory_a861184abac08ce37064083f653ab99cc}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!createDBM@{createDBM}}
+\index{createDBM@{createDBM}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{createDBM()}{createDBM()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::create\+D\+BM (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Create a new matrix and initial the values with D
+
+
+\begin{DoxyParams}{Parameters}
+{\em dbm} & dbm matrix\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a copy dbm matrix 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a777b62cf77b24fe8acdcb162ffe46545}\label{classgraphsat_1_1_d_b_m_factory_a777b62cf77b24fe8acdcb162ffe46545}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!deleteVectorM@{deleteVectorM}}
+\index{deleteVectorM@{deleteVectorM}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{deleteVectorM()}{deleteVectorM()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::delete\+VectorM (\begin{DoxyParamCaption}\item[{vector$<$ C $\ast$ $>$ \&}]{Cvec }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+recovery memory
+
+
+\begin{DoxyParams}{Parameters}
+{\em Cvec} & the vector need to delete \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a4495ff0e5a07519a5ea06d4eb0e16876}\label{classgraphsat_1_1_d_b_m_factory_a4495ff0e5a07519a5ea06d4eb0e16876}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!destroyDBM@{destroyDBM}}
+\index{destroyDBM@{destroyDBM}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{destroyDBM()}{destroyDBM()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::destroy\+D\+BM (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=291pt]{classgraphsat_1_1_d_b_m_factory_a4495ff0e5a07519a5ea06d4eb0e16876_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a3fd6759bbb5dbbb47e342714b39644aa}\label{classgraphsat_1_1_d_b_m_factory_a3fd6759bbb5dbbb47e342714b39644aa}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!down@{down}}
+\index{down@{down}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{down()}{down()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::down (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Can not modify value of D compute weakest precondition \mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aa18c590a6b5c8a85da3bf8fe44e732f2}\label{classgraphsat_1_1_d_b_m_factory_aa18c590a6b5c8a85da3bf8fe44e732f2}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!downImpl@{downImpl}}
+\index{downImpl@{downImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{downImpl()}{downImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::down\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a700e1338dda1ba25930938b8f130ab80}\label{classgraphsat_1_1_d_b_m_factory_a700e1338dda1ba25930938b8f130ab80}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!dump@{dump}}
+\index{dump@{dump}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{dump()}{dump()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+std\+::string \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::dump (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=270pt]{classgraphsat_1_1_d_b_m_factory_a700e1338dda1ba25930938b8f130ab80_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aa1bc76ac025370bd23ab04dfa761df75}\label{classgraphsat_1_1_d_b_m_factory_aa1bc76ac025370bd23ab04dfa761df75}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!equal@{equal}}
+\index{equal@{equal}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{equal()}{equal()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::equal (\begin{DoxyParamCaption}\item[{const C $\ast$}]{lhs,  }\item[{const C $\ast$}]{rhs }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_af0d31fdf2ef13fc1f78a74dfd3992fda}\label{classgraphsat_1_1_d_b_m_factory_af0d31fdf2ef13fc1f78a74dfd3992fda}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!free@{free}}
+\index{free@{free}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{free()}{free()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::free (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm,  }\item[{const int}]{x }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Can not modify value of D The free operation removes all constraints on a given clock x. \mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aa8e961d2da36fee769e2e9dd0aabbe9f}\label{classgraphsat_1_1_d_b_m_factory_aa8e961d2da36fee769e2e9dd0aabbe9f}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!freeImpl@{freeImpl}}
+\index{freeImpl@{freeImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{freeImpl()}{freeImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::free\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const int}]{x }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ad2ff0a1517b24343a5d84af18d26bb59}\label{classgraphsat_1_1_d_b_m_factory_ad2ff0a1517b24343a5d84af18d26bb59}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!getHashValue@{getHashValue}}
+\index{getHashValue@{getHashValue}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{getHashValue()}{getHashValue()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+uint32\+\_\+t \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::get\+Hash\+Value (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=291pt]{classgraphsat_1_1_d_b_m_factory_ad2ff0a1517b24343a5d84af18d26bb59_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a7532cb7ca080144b870363fdd46ff23e}\label{classgraphsat_1_1_d_b_m_factory_a7532cb7ca080144b870363fdd46ff23e}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!getIncludeFeature@{getIncludeFeature}}
+\index{getIncludeFeature@{getIncludeFeature}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{getIncludeFeature()}{getIncludeFeature()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+\mbox{\hyperlink{namespacegraphsat_a9d75165dd4e82d2e03ffd07fe27533d0}{D\+F\+\_\+T}} \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::get\+Include\+Feature (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+If lhs contains rhs, then get\+Include\+Feature(lhs ) $>$= get\+Include\+Feature( rhs) \mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aaecf26c5b4157fce85102a8759d9c435}\label{classgraphsat_1_1_d_b_m_factory_aaecf26c5b4157fce85102a8759d9c435}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!getSize@{getSize}}
+\index{getSize@{getSize}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{getSize()}{getSize()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::get\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a449e577089eb65bafab1fdfb40540da5}\label{classgraphsat_1_1_d_b_m_factory_a449e577089eb65bafab1fdfb40540da5}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!include@{include}}
+\index{include@{include}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{include()}{include()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::include (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{lhs,  }\item[{const C $\ast$const}]{rhs }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+check whether lhs $>$= rhs, in other words whether lhs contains rhs 
+
+\begin{DoxyReturn}{Returns}
+true if this is included by other lhs$>$= rhs 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_a449e577089eb65bafab1fdfb40540da5_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aaeae7653989fa7e0fcb32d2f54eb1cc1}\label{classgraphsat_1_1_d_b_m_factory_aaeae7653989fa7e0fcb32d2f54eb1cc1}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!init@{init}}
+\index{init@{init}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::init (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a29c2a503d13babf1c536476dc85e2c6a}\label{classgraphsat_1_1_d_b_m_factory_a29c2a503d13babf1c536476dc85e2c6a}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!isConsistent@{isConsistent}}
+\index{isConsistent@{isConsistent}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{isConsistent()}{isConsistent()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::is\+Consistent (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+precondition D is canonical\+Form 
+\begin{DoxyParams}{Parameters}
+{\em dbm} & a dbm matrix\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{D\+B\+M\+Factory}} D is not empty, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a764bf33011ec3346db15f065d1c66950}\label{classgraphsat_1_1_d_b_m_factory_a764bf33011ec3346db15f065d1c66950}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!isSatisfied@{isSatisfied}}
+\index{isSatisfied@{isSatisfied}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{isSatisfied()}{isSatisfied()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+bool \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::is\+Satisfied (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm,  }\item[{const \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$ \&}]{cons }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+D\+\_\+\{y,x\} + cons.\+matrix\+\_\+value \char`\"{}$>$=\char`\"{} 0 \} x-\/y $<$ ( $<$= ) rhs and y-\/x $<$ ( $<$= ) d is feasiable if and only if -\/rhs$<$ d
+
+This is to check D and x-\/y $<$ ($<$=) m is non-\/empty 
+\begin{DoxyParams}{Parameters}
+{\em cons} & the constraints vector\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if there is a value in this domain which satisfies cons false, otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ae8d0c336111c80f14e8ee92afd30589e}\label{classgraphsat_1_1_d_b_m_factory_ae8d0c336111c80f14e8ee92afd30589e}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!norm@{norm}}
+\index{norm@{norm}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{norm()}{norm()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::norm (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const vector$<$ C $>$ \&}]{maximums }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+For a timed automaton and safty prperty to be checked, that contain no difference constraints. assert(maximum.\+matrix\+\_\+size()==2$\ast$n) maximum\mbox{[} i \mbox{]}\+:= $<$= k\+\_\+i maximum\mbox{[}i+n\mbox{]}\+:= $<$ -\/k\+\_\+i 
+\begin{DoxyParams}{Parameters}
+{\em maximums} & maximums\mbox{[}i\mbox{]} is the maximum upper for x\+\_\+i \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a9613b287aff6b6b48bfe1ed392a5eb16}\label{classgraphsat_1_1_d_b_m_factory_a9613b287aff6b6b48bfe1ed392a5eb16}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!norm@{norm}}
+\index{norm@{norm}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{norm()}{norm()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::norm (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{vector$<$ C $\ast$ $>$ \&}]{re\+\_\+vec }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+T\+O\+DO\+: The difference bounds will adjust depend on source
+
+
+\begin{DoxyParams}{Parameters}
+{\em dbm} & the dbm matrix which want to norm \\
+\hline
+{\em re\+\_\+vec} & the return norm dbm vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a51513da611d3b528219e7204498c035b}\label{classgraphsat_1_1_d_b_m_factory_a51513da611d3b528219e7204498c035b}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!norm@{norm}}
+\index{norm@{norm}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{norm()}{norm()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::norm (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=196pt]{classgraphsat_1_1_d_b_m_factory_a51513da611d3b528219e7204498c035b_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=196pt]{classgraphsat_1_1_d_b_m_factory_a51513da611d3b528219e7204498c035b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aba7883693f33b40f126bb406f6ead2c6}\label{classgraphsat_1_1_d_b_m_factory_aba7883693f33b40f126bb406f6ead2c6}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!norm@{norm}}
+\index{norm@{norm}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{norm()}{norm()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::norm (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const vector$<$ C $>$ \&}]{maximums,  }\item[{const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&}]{diff\+\_\+cons,  }\item[{vector$<$ C $\ast$ $>$ \&}]{re\+\_\+vec }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+For automaton containing difference constraints in the guards, it is more complicated and expensive to compute the normalized zones. assert(maximums.\+matrix\+\_\+size()==maximums$\ast$clock\+\_\+num) maximums\mbox{[} i \mbox{]}\+:= $<$= maximums\+\_\+i maximums\mbox{[}clock\+\_\+num +n\mbox{]}\+:= $<$ -\/maximums\+\_\+i 
+\begin{DoxyParams}{Parameters}
+{\em dbm} & D will deen destroied before return \\
+\hline
+{\em maximums} & maximums\mbox{[}i\mbox{]} is the maximum upper for x\+\_\+i \\
+\hline
+{\em diff\+\_\+cons} & All different constraint in model like x-\/y $<$ c \\
+\hline
+{\em re\+\_\+vec} & the return dbm vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a4870799258dd6b425fec20603924ffb4}\label{classgraphsat_1_1_d_b_m_factory_a4870799258dd6b425fec20603924ffb4}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!randomDBM@{randomDBM}}
+\index{randomDBM@{randomDBM}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{randomDBM()}{randomDBM()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::random\+D\+BM (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=296pt]{classgraphsat_1_1_d_b_m_factory_a4870799258dd6b425fec20603924ffb4_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=270pt]{classgraphsat_1_1_d_b_m_factory_a4870799258dd6b425fec20603924ffb4_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a900f72a3876daf4cd4142a3704873025}\label{classgraphsat_1_1_d_b_m_factory_a900f72a3876daf4cd4142a3704873025}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!randomFeasiableDBM@{randomFeasiableDBM}}
+\index{randomFeasiableDBM@{randomFeasiableDBM}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{randomFeasiableDBM()}{randomFeasiableDBM()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::random\+Feasiable\+D\+BM (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=301pt]{classgraphsat_1_1_d_b_m_factory_a900f72a3876daf4cd4142a3704873025_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=296pt]{classgraphsat_1_1_d_b_m_factory_a900f72a3876daf4cd4142a3704873025_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_aecc4c6f42165cbce7cc7465e4558846e}\label{classgraphsat_1_1_d_b_m_factory_aecc4c6f42165cbce7cc7465e4558846e}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!reset@{reset}}
+\index{reset@{reset}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::reset (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm,  }\item[{const int}]{x,  }\item[{const C}]{m }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+In forwards exploration this operation is used to set clocks to specific values x\+:=m Can not modify value of D 
+\begin{DoxyParams}{Parameters}
+{\em x} & the reset clock id \\
+\hline
+{\em m} & rhe reset clock value \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=270pt]{classgraphsat_1_1_d_b_m_factory_aecc4c6f42165cbce7cc7465e4558846e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a2b760cdec73147a8bb44d043b349074b}\label{classgraphsat_1_1_d_b_m_factory_a2b760cdec73147a8bb44d043b349074b}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!resetImpl@{resetImpl}}
+\index{resetImpl@{resetImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{resetImpl()}{resetImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::reset\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const int}]{x,  }\item[{const C}]{m }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_a2b760cdec73147a8bb44d043b349074b_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ab3c0c83274b0cda4d0899e529ada4138}\label{classgraphsat_1_1_d_b_m_factory_ab3c0c83274b0cda4d0899e529ada4138}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!setClockNum@{setClockNum}}
+\index{setClockNum@{setClockNum}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{setClockNum()}{setClockNum()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::set\+Clock\+Num (\begin{DoxyParamCaption}\item[{int}]{num }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a2d0b5e437a030cf28fca6f291ed1b1f6}\label{classgraphsat_1_1_d_b_m_factory_a2d0b5e437a030cf28fca6f291ed1b1f6}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!shift@{shift}}
+\index{shift@{shift}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{shift()}{shift()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::shift (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm,  }\item[{const int}]{x,  }\item[{const C}]{m }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+x-\/$>$ x+m The last reset operation is shifting a clock, i.\+e. adding or substracting a clock with an integer value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & the shift clock id \\
+\hline
+{\em m} & the reset clock value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a9dd1531e9f728bbf69c0fa3d8545ef35}\label{classgraphsat_1_1_d_b_m_factory_a9dd1531e9f728bbf69c0fa3d8545ef35}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!shiftImpl@{shiftImpl}}
+\index{shiftImpl@{shiftImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{shiftImpl()}{shiftImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::shift\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const int}]{x,  }\item[{const C}]{m }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classgraphsat_1_1_d_b_m_factory_a9dd1531e9f728bbf69c0fa3d8545ef35_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a8bcb9646051ac1004cccf3c6c845b20d}\label{classgraphsat_1_1_d_b_m_factory_a8bcb9646051ac1004cccf3c6c845b20d}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!split@{split}}
+\index{split@{split}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{split()}{split()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::split (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm,  }\item[{const vector$<$ \mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$ C $>$$>$ \&}]{diff\+Cons,  }\item[{vector$<$ C $\ast$ $>$ \&}]{re\+\_\+vec }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+split (D and C) \&\& (D and -\/C) satisfies then using C to split D into two parts\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a3e5f7dfadf1c448c3a920d471962a354}\label{classgraphsat_1_1_d_b_m_factory_a3e5f7dfadf1c448c3a920d471962a354}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!up@{up}}
+\index{up@{up}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{up()}{up()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C$\ast$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::up (\begin{DoxyParamCaption}\item[{const C $\ast$const}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Can not modify value of D compute strongest post condition up(\+D)=\{u+d $\vert$ u \textbackslash{}in D, d\textbackslash{}in R+ \} \mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ab47c993ced812163852b176ac2b00110}\label{classgraphsat_1_1_d_b_m_factory_ab47c993ced812163852b176ac2b00110}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!upImpl@{upImpl}}
+\index{upImpl@{upImpl}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{upImpl()}{upImpl()}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+void \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::up\+Impl (\begin{DoxyParamCaption}\item[{C $\ast$}]{dbm }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ac5495ee1709f1c30767cf9cb7b33fa45}\label{classgraphsat_1_1_d_b_m_factory_ac5495ee1709f1c30767cf9cb7b33fa45}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!clock\_num@{clock\_num}}
+\index{clock\_num@{clock\_num}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{clock\_num}{clock\_num}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::clock\+\_\+num\hspace{0.3cm}{\ttfamily [private]}}
+
+number of clocks \mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_af348f08d8be1bc46a4cd6b89d63b19a6}\label{classgraphsat_1_1_d_b_m_factory_af348f08d8be1bc46a4cd6b89d63b19a6}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!clock\_uppuer\_bound@{clock\_uppuer\_bound}}
+\index{clock\_uppuer\_bound@{clock\_uppuer\_bound}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{clock\_uppuer\_bound}{clock\_uppuer\_bound}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+vector$<$C$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::clock\+\_\+uppuer\+\_\+bound\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a82c522596ca856797626cfa989863b3c}\label{classgraphsat_1_1_d_b_m_factory_a82c522596ca856797626cfa989863b3c}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!difference\_cons@{difference\_cons}}
+\index{difference\_cons@{difference\_cons}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{difference\_cons}{difference\_cons}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+vector$<$\mbox{\hyperlink{classgraphsat_1_1_clock_constraint}{Clock\+Constraint}}$<$C$>$ $>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::difference\+\_\+cons\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a71f57dc6a5e77ae6d8814e4bce286670}\label{classgraphsat_1_1_d_b_m_factory_a71f57dc6a5e77ae6d8814e4bce286670}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!distribution@{distribution}}
+\index{distribution@{distribution}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{distribution}{distribution}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+std\+::uniform\+\_\+int\+\_\+distribution$<$int$>$ \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::distribution\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ad072fe9626380dbb008aed5b14d392f2}\label{classgraphsat_1_1_d_b_m_factory_ad072fe9626380dbb008aed5b14d392f2}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!generator@{generator}}
+\index{generator@{generator}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{generator}{generator}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+std\+::default\+\_\+random\+\_\+engine \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::generator\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_a87e76925a7014706de170916fa25ad6e}\label{classgraphsat_1_1_d_b_m_factory_a87e76925a7014706de170916fa25ad6e}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!matrix\_size@{matrix\_size}}
+\index{matrix\_size@{matrix\_size}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{matrix\_size}{matrix\_size}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+int \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::matrix\+\_\+size\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classgraphsat_1_1_d_b_m_factory_ab31453fbd3195ee7bbe6e1571af9e420}\label{classgraphsat_1_1_d_b_m_factory_ab31453fbd3195ee7bbe6e1571af9e420}} 
+\index{graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}!MAX\_INT@{MAX\_INT}}
+\index{MAX\_INT@{MAX\_INT}!graphsat::DBMFactory$<$ C $>$@{graphsat::DBMFactory$<$ C $>$}}
+\subsubsection{\texorpdfstring{MAX\_INT}{MAX\_INT}}
+{\footnotesize\ttfamily template$<$typename C$>$ \\
+C \mbox{\hyperlink{classgraphsat_1_1_d_b_m_factory}{graphsat\+::\+D\+B\+M\+Factory}}$<$ C $>$\+::M\+A\+X\+\_\+\+I\+NT\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/domain/\mbox{\hyperlink{dbm_8hpp}{dbm.\+hpp}}\end{DoxyCompactItemize}
