@@ -1,7 +1,0 @@
-<map id="graphsat::Transition::ready" name="graphsat::Transition::ready">
-<area shape="rect" id="node1" title="Except synchronize signal, other state satisfies jump conditions." alt="" coords="5,100,144,139"/>
-<area shape="rect" id="node2" href="$classgraphsat_1_1_state_manager.html#af485c1cf6dc6cd88d4d535e499b5daa5" title=" " alt="" coords="192,5,356,44"/>
-<area shape="rect" id="node3" href="$classgraphsat_1_1_state_manager.html#a547a7cddfbcaf79244233151082201e5" title=" " alt="" coords="192,68,356,107"/>
-<area shape="rect" id="node4" href="$classgraphsat_1_1_state_manager.html#aaa40c4c9c14a1cbb69fbd517cada73d4" title=" " alt="" coords="192,131,356,169"/>
-<area shape="rect" id="node5" href="$classgraphsat_1_1_state_manager.html#a27f938ee768cecf571fe53f6a5c2e2cc" title=" " alt="" coords="192,193,356,232"/>
-</map>

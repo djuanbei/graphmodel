@@ -1,5 +1,0 @@
-<map id="graphsat::Location::isFreezeLocation" name="graphsat::Location::isFreezeLocation">
-<area shape="rect" id="node1" title=" " alt="" coords="5,37,136,76"/>
-<area shape="rect" id="node2" href="$classgraphsat_1_1_location.html#a446eebc27230db6d46e952d912d8a9c1" title="the commit freeze time. Semantically, urgent locations are equivalent to:" alt="" coords="184,5,315,44"/>
-<area shape="rect" id="node3" href="$classgraphsat_1_1_location.html#a052448735e1bad0bfb82db672a09b3a8" title="the commit freeze time. Furthermore, if any process is in a committed location, the next transition m..." alt="" coords="184,68,315,107"/>
-</map>

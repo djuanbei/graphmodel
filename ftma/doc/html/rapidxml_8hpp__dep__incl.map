@@ -1,7 +1,0 @@
-<map id="include/io/rapidxml.hpp" name="include/io/rapidxml.hpp">
-<area shape="rect" id="node1" title="This file contains rapidxml parser and DOM implementation." alt="" coords="226,5,383,31"/>
-<area shape="rect" id="node2" href="$rapidxml__iterators_8hpp.html" title="This file contains rapidxml iterators." alt="" coords="5,79,137,117"/>
-<area shape="rect" id="node3" href="$rapidxml__print_8hpp.html" title="This file contains rapidxml printer implementation." alt="" coords="161,79,293,117"/>
-<area shape="rect" id="node4" href="$rapidxml__utils_8hpp.html" title=" " alt="" coords="317,79,449,117"/>
-<area shape="rect" id="node5" href="$xmlconf_8cpp.html" title="xml config file" alt="" coords="473,85,587,111"/>
-</map>

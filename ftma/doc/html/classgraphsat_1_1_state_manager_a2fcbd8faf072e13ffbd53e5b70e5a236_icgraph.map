@@ -1,8 +1,0 @@
-<map id="graphsat::StateManager::getDBM" name="graphsat::StateManager::getDBM">
-<area shape="rect" id="node1" title=" " alt="" coords="404,131,569,169"/>
-<area shape="rect" id="node2" href="$classgraphsat_1_1_t_a_s.html#a0db4b452d57fd2096eb7a5fb4e221dc7" title=" " alt="" coords="198,5,350,44"/>
-<area shape="rect" id="node3" href="$classgraphsat_1_1_state_manager.html#a2a4f0e95d8c6b0d3692b239bf4b64538" title=" " alt="" coords="192,68,356,107"/>
-<area shape="rect" id="node4" href="$classgraphsat_1_1_state_manager.html#a57cf52e63dce0bc27daa2e0df138dc05" title=" " alt="" coords="192,131,356,169"/>
-<area shape="rect" id="node5" href="$classgraphsat_1_1_transition.html#a7ec1d0635ddfce028810457db91c3059" title="Except synchronize signal, other state satisfies jump conditions." alt="" coords="205,193,344,232"/>
-<area shape="rect" id="node6" href="$classgraphsat_1_1_transition.html#a9bca78149ee938dd36cb856538ce81f0" title="create new state" alt="" coords="5,223,144,261"/>
-</map>

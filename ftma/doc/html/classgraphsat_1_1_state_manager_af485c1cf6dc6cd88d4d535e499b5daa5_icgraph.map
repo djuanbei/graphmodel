@@ -1,6 +1,0 @@
-<map id="graphsat::StateManager::getClockManager" name="graphsat::StateManager::getClockManager">
-<area shape="rect" id="node1" title=" " alt="" coords="392,68,556,107"/>
-<area shape="rect" id="node2" href="$classgraphsat_1_1_t_a_s.html#a0db4b452d57fd2096eb7a5fb4e221dc7" title=" " alt="" coords="192,5,344,44"/>
-<area shape="rect" id="node3" href="$classgraphsat_1_1_transition.html#a7ec1d0635ddfce028810457db91c3059" title="Except synchronize signal, other state satisfies jump conditions." alt="" coords="199,68,337,107"/>
-<area shape="rect" id="node4" href="$classgraphsat_1_1_transition.html#a9bca78149ee938dd36cb856538ce81f0" title="create new state" alt="" coords="5,97,144,136"/>
-</map>

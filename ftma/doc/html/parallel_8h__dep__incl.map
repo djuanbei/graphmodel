@@ -1,8 +1,0 @@
-<map id="include/util/parallel.h" name="include/util/parallel.h">
-<area shape="rect" id="node1" title="parallel util" alt="" coords="123,5,265,31"/>
-<area shape="rect" id="node2" href="$reachability_8hpp.html" title="reachability problem of timed automata" alt="" coords="88,79,300,104"/>
-<area shape="rect" id="node3" href="$uppaalmodelparser_8h.html" title=" " alt="" coords="91,152,297,177"/>
-<area shape="rect" id="node4" href="$main_8cpp.html" title="a test main" alt="" coords="5,225,102,251"/>
-<area shape="rect" id="node6" href="$fisher_8cpp.html" title=" " alt="" coords="321,152,475,177"/>
-<area shape="rect" id="node5" href="$uppaalmodelparser_8cpp.html" title=" " alt="" coords="126,225,307,251"/>
-</map>
