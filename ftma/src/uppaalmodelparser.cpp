@@ -250,7 +250,7 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
 
   string content = declaration->getValue();
   if ( content.length() > 0 ) {
-    parseProblem( content, &system_data, &system_data );
+    parseProblem( content, this, &system_data, &system_data );
   }
 
   return 0;
@@ -270,7 +270,7 @@ int UppaalParser::parseTemplateDeclaration( child_type templates ) {
 
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
-      parseProblem( dec_content, &system_data, &template_data );
+      parseProblem( dec_content, this,  &system_data, &template_data );
       for ( auto key : keys ) {
         vector<pair<string, vector<int>>> temp_values =
             template_data.getValue( key );
@@ -351,7 +351,7 @@ int UppaalParser::parseSystem( XML_P system ) {
 
   string content = system->getValue();
 
-  parseProblem( content, &system_data, &system_data );
+  parseProblem( content, this,  &system_data, &system_data );
 
   int counter_num = system_data.getTypeNum( INT_STR );
   for ( int i = 0; i < counter_num; i++ ) {
@@ -621,7 +621,7 @@ void  UppaalParser::addClockConstraint( UppaalTemplateData *current_data,
 void UppaalParser::parseLabel( UppaalTemplateData &template_data,
                                string              guards ) {
   // template_data.clearPoints();
-  parseProblem( guards, &system_data, &template_data );
+  parseProblem( guards, this,  &system_data, &template_data );
 }
 
 int UppaalParser::getLocalId( UppaalTemplateData *current_data,

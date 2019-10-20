@@ -701,25 +701,25 @@ variable_declaration
 system_declaration
 : SYSTEM timed_automata_list ';'
 {
-  SystemDec * sys=new SystemDec( );
-  for( size_t i=0; i< $2->size( ); i++){
-    string name=(*$2)[ i];
-    if(system_data->hasValue(TEMPLATE_STR, name  )){
+  /* SystemDec * sys=new SystemDec( ); */
+  /* for( size_t i=0; i< $2->size( ); i++){ */
+  /*   string name=(*$2)[ i]; */
+  /*   if(system_data->hasValue(TEMPLATE_STR, name  )){ */
       
-      TaDec* temp=new TaDec( );
-      temp->no_parameter=true;
-      temp->name= name;
-      sys->timed_automata_list.push_back(temp );
-    }else{
-      void* sys_dec=system_data->getPointer(TEMPLATE_STR, name );
-      sys->timed_automata_list.push_back((TaDec*)sys_dec );
+  /*     TaDec* temp=new TaDec( ); */
+  /*     temp->no_parameter=true; */
+  /*     temp->name= name; */
+  /*     sys->timed_automata_list.push_back(temp ); */
+  /*   }else{ */
+  /*     void* sys_dec=system_data->getPointer(TEMPLATE_STR, name ); */
+  /*     sys->timed_automata_list.push_back((TaDec*)sys_dec ); */
       
-    }
-  }
+  /*   } */
+  /* } */
   
-  system_data->clearPoints(TEMPLATE_STR );
+  /* system_data->clearPoints(TEMPLATE_STR ); */
   
-  system_data->addPointer(SYSTEM_STR, SYSTEM_STR,sys );
+  /* system_data->addPointer(SYSTEM_STR, SYSTEM_STR,sys ); */
   delete $2;
 }
 

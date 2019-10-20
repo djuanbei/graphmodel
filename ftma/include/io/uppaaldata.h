@@ -218,7 +218,7 @@ private:
   friend class UppaalParser;
 };
 
-void parseProblem( const string &str, UppaalTemplateData *,
+void parseProblem( const string &str,  UppaalParser* parser,  UppaalTemplateData *,
                    UppaalTemplateData * );
 } // namespace graphsat
 

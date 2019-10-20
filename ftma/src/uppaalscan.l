@@ -51,7 +51,7 @@ int check_type();
 
 
 {E}       { count();
-  yylval.intVal=atoi(yytext);
+  yylval.int_value=atoi(yytext);
   return(CONSTANT);
 }
 
@@ -195,24 +195,23 @@ int check_type()
    if(current_data->hasValue(INT_STR, sym) ){
      yylval.int_value=current_data->getValue(INT_STR, sym);
      return CONSTANT;
-   }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){
-     yylval.int_value=system_data->getValue(INT_STR,   sys);
+   }else if ( system_data->hasValue(INT_STR, sym) ){
+     yylval.int_value=system_data->getValue(INT_STR,   sym);
      return CONSTANT;
    }
    
-   Token token=new Token();
+   Token *token=new Token();
    token->id=findSym( sym);
    token->xml_name=sym;
    token->code_name=sym;
    
    yylval.token_value= token;
    
-   if( yylval.intVal<0){
-      token->id=symbol_table.size( );
+   if(find(symbol_table.begin( ), symbol_table.end( ), sym ) ==symbol_table.end( ) ){
       symbol_table.push_back(sym);
    }
    if(current_data->hasPointer(PARAMETER_STR,sym)){
-      parameter_id=model_parser->getParameterId(current_data, sym);
+      int parameter_id=model_parser->getParameterId(current_data, sym);
       ParaElement* p = (ParaElement *) current_data->getPointer( PARAMETER_STR, sym );
       if(p->is_ref){
           return REF_PARAMETER_YY;
@@ -257,10 +256,9 @@ int check_type()
      return BOOL_YY;
    }
    
-   if ( system_data.hasValue( CHAN_STR, sym ) ) {
+   if ( system_data->hasValue( CHAN_STR, sym ) ) {
      return CHAN_YY;
    }
-
   
    return(IDENTIFIER);
   
