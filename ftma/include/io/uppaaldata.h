@@ -41,10 +41,17 @@ struct ParaElement {
   string   name;
 };
 
+struct ArgumentItem{
+  bool is_constant;
+  int id;
+  ArgumentItem( ):is_constant( false){
+  }
+};
+
 struct TaDec {
   bool        no_parameter;
   string      name;
-  vector<int> param_list;
+  vector<ArgumentItem> param_list;
   TaDec()
       : no_parameter( false ) {
     name = "";
@@ -52,10 +59,10 @@ struct TaDec {
 };
 
 struct SystemDec {
-  vector<TaDec *> ta_list;
+  vector<TaDec *> timed_automata_list;
 
   ~SystemDec() {
-    for ( vector<TaDec *>::iterator it = ta_list.begin(); it != ta_list.end();
+    for ( vector<TaDec *>::iterator it = timed_automata_list.begin(); it != timed_automata_list.end();
           it++ ) {
       delete *it;
     }
@@ -147,8 +154,8 @@ public:
   int getId( const string &type, const string &name ) const {
     return int_values.getId( type, name );
   }
-  int getClockId(  const string &name ) const {
-    return getId( CLOCK_STR, name)+1; // start with 1
+  int getClockId( const string &name ) const {
+    return getId( CLOCK_STR, name ) + 1; // start with 1
   }
 
   const pair<string, vector<int>> &getValue( const string &type,
@@ -218,8 +225,8 @@ private:
   friend class UppaalParser;
 };
 
-void parseProblem( const string &str,  UppaalParser* parser,  UppaalTemplateData *,
-                   UppaalTemplateData * );
+void parseProblem( const string &str, UppaalParser *parser,
+                   UppaalTemplateData *, UppaalTemplateData * );
 } // namespace graphsat
 
 #endif

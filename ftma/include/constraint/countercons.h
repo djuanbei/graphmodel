@@ -43,7 +43,7 @@ private:
 /**
  * A constant bool value  class.
  */
-class OneParamaterConstraint : public CounterConstraint {
+class OneParameterConstraint : public CounterConstraint {
 public:
   /**
    *
@@ -81,17 +81,17 @@ public:
   }
 
 protected:
-  ~OneParamaterConstraint() {}
+  ~OneParameterConstraint() {}
 
 private:
-  OneParamaterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs ) {
+  OneParameterConstraint( int eparameter_id, COMP_OPERATOR opp, int erhs ) {
     parameter_id = eparameter_id;
     op           = opp;
     rhs          = erhs;
   }
 
   CounterConstraint *copy() const {
-    return new OneParamaterConstraint( parameter_id, op, rhs );
+    return new OneParameterConstraint( parameter_id, op, rhs );
   }
 
   bool          value;
@@ -318,10 +318,10 @@ public:
 
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
-    if(parameter_id>-1 ){
-      rhs=parameter_value[parameter_id ];
+    if ( parameter_id > -1 ) {
+      rhs = parameter_value[ parameter_id ];
     }
-    
+
     global_counter_x = id_map.at( local_counter_x );
     global_counter_y = id_map.at( local_counter_y );
   }
@@ -330,8 +330,9 @@ protected:
   ~TwoCounterConstraint() {}
 
 private:
-  TwoCounterConstraint( int x, int y, COMP_OPERATOR p, int r, int out_parameter_id=-10 ) {
-    parameter_id=out_parameter_id;
+  TwoCounterConstraint( int x, int y, COMP_OPERATOR p, int r,
+                        int out_parameter_id = -10 ) {
+    parameter_id = out_parameter_id;
 
     local_counter_x = x;
     local_counter_y = y;
@@ -340,17 +341,16 @@ private:
   }
   CounterConstraint *copy() const {
 
-    return new TwoCounterConstraint( local_counter_x, local_counter_y, op,
-                                     rhs , parameter_id);
+    return new TwoCounterConstraint( local_counter_x, local_counter_y, op, rhs,
+                                     parameter_id );
   }
 
   int local_counter_x, local_counter_y, global_counter_x, global_counter_y;
   COMP_OPERATOR op;
   int           rhs;
-  int parameter_id;
+  int           parameter_id;
   friend class InstanceFactory;
 };
-
 
 /**
  * Form  \sum c_i counter_i op \sum f_i parameter_i

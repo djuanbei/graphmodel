@@ -16,10 +16,9 @@
 
 namespace graphsat {
 
-
 using namespace std;
 
-const int GLOBAL_CLOCK_ID=0;
+const int GLOBAL_CLOCK_ID = 0;
 
 /**
  *  clock_x -clock_y < ( <= ) realRight
@@ -28,41 +27,43 @@ const int GLOBAL_CLOCK_ID=0;
 template <typename C> class ClockConstraint {
 
 public:
-  int clock_x;
-  int clock_y;
+  int           clock_x;
+  int           clock_y;
   COMP_OPERATOR op;
-  C matrix_value;
+  C             matrix_value;
 
   ClockConstraint( const int clock_id1, const int clock_id2, const C rhs,
                    bool is_strict_ref = true ) {
-    parameter_id=-100;
-    clock_x            = clock_id1;
-    clock_y            = clock_id2;
+    parameter_id = -100;
+    clock_x      = clock_id1;
+    clock_y      = clock_id2;
     matrix_value = getMatrixValue( rhs, is_strict_ref );
   }
-  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR op, const C rhs ) {
-    parameter_id=-100;
-    init(clock_id1,  clock_id2,  op, rhs );
+  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR op,
+                   const C rhs ) {
+    parameter_id = -100;
+    init( clock_id1, clock_id2, op, rhs );
   }
 
-  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop, const int rhs, const int eparameter_id ) {
-    clock_x=clock_id1;
-    clock_y=clock_id2;
-    op=eop;
-    parameter_id=eparameter_id;
-    assert(parameter_id>=0 );
+  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
+                   const int rhs, const int eparameter_id ) {
+    clock_x      = clock_id1;
+    clock_y      = clock_id2;
+    op           = eop;
+    parameter_id = eparameter_id;
+    assert( parameter_id >= 0 );
   }
 
-  void globalUpdate( const vector<int> &  parameter_value ) {
-    if(parameter_id< 0 ){
-      return ;
+  void globalUpdate( const vector<int> &parameter_value ) {
+    if ( parameter_id < 0 ) {
+      return;
     }
     int rhs = parameter_value[ parameter_id ];
-    int id1=clock_x;
-    int id2=clock_y;
-    init( id1, id2, op, rhs);
+    int id1 = clock_x;
+    int id2 = clock_y;
+    init( id1, id2, op, rhs );
   }
-  
+
   void clockShift( int shift ) {
     if ( clock_x > 0 ) {
       clock_x += shift;
@@ -101,7 +102,8 @@ public:
       return negCons.matrix_value < matrix_value;
     }
 
-    if ( ( clock_x > 0 && clock_y > 0 ) && ( cons.clock_x > 0 && cons.clock_y > 0 ) ) {
+    if ( ( clock_x > 0 && clock_y > 0 ) &&
+         ( cons.clock_x > 0 && cons.clock_y > 0 ) ) {
       return true;
     }
     if ( clock_y > 0 && cons.clock_y > 0 ) {
@@ -160,34 +162,33 @@ public:
 private:
   void neg_impl( void ) {
     int temp     = clock_x;
-    clock_x            = clock_y;
-    clock_y            = temp;
+    clock_x      = clock_y;
+    clock_y      = temp;
     matrix_value = 1 - matrix_value;
   }
-  void init( const int clock_id1, const int clock_id2, COMP_OPERATOR op, const C rhs ) {
+  void init( const int clock_id1, const int clock_id2, COMP_OPERATOR op,
+             const C rhs ) {
     assert( op != NE );
     assert( op != EQ );
     if ( LE == op ) {
-      clock_x            = clock_id1;
-      clock_y            = clock_id2;
+      clock_x      = clock_id1;
+      clock_y      = clock_id2;
       matrix_value = getMatrixValue( rhs, false );
     } else if ( LT == op ) {
-      clock_x            = clock_id1;
-      clock_y            = clock_id2;
+      clock_x      = clock_id1;
+      clock_y      = clock_id2;
       matrix_value = getMatrixValue( rhs, true );
     } else if ( GE == op ) {
-      clock_x            = clock_id2;
-      clock_y            = clock_id1;
+      clock_x      = clock_id2;
+      clock_y      = clock_id1;
       matrix_value = getMatrixValue( -rhs, false ); // clock_y-clock_x <= -rhs
     } else if ( GT == op ) {
-      clock_x            = clock_id2;
-      clock_y            = clock_id1;
+      clock_x      = clock_id2;
+      clock_y      = clock_id1;
       matrix_value = getMatrixValue( -rhs, true ); // clock_y-clock_x < -rhs
     }
   }
 
-
-  
   int parameter_id;
 };
 } // namespace graphsat

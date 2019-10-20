@@ -43,6 +43,8 @@
     string  xml_name;
     string  code_name;
   };
+
+
   
  %}
 
@@ -51,6 +53,7 @@
   Token* token_value;
   TYPE_T type_value;
   vector<string> * str_vec_pointer;
+  vector<ArgumentItem>* item_vec_pointer;
   COMP_OPERATOR com_op;
   
  }
@@ -94,7 +97,7 @@
 
 %type<int_value> const_expression
 %type<type_value> type_specifier
-%type<token_value> identifier
+//%type<token_value> identifier
 %type<token_value>  clock_yy
 %type<token_value>  int_yy
 %type<token_value>  bool_yy
@@ -104,7 +107,7 @@
 %type<int_value> parameter_identifier
 %type<int_value> chan_identifier
 %type<str_vec_pointer> identifier_list
-%type<str_vec_pointer> argument_list
+%type<item_vec_pointer> argument_list
 %type<str_vec_pointer> timed_automata_list
 %type<com_op> compare_relation
 
@@ -145,18 +148,18 @@ type_specifier
 ;
 
 
-identifier:
-IDENTIFIER
-{
-  $$=$1;
-}
-|
-identifier '[' const_expression ']'
-{
-  $$=$1;
-  $$->code_name= arrayToVar($$->code_name, $3);
-}
-;
+/* identifier: */
+/* IDENTIFIER */
+/* { */
+/*   $$=$1; */
+/* } */
+/* | */
+/* identifier '[' const_expression ']' */
+/* { */
+/*   $$=$1; */
+/*   $$->code_name= arrayToVar($$->code_name, $3); */
+/* } */
+/* ; */
 
 clock_yy:
 CLOCK_YY
@@ -226,18 +229,58 @@ IDENTIFIER
 
 
 argument_list
-: identifier
+: counter_identifier
 {
-  $$=new vector<string> ( );
-  $$->push_back( $1->code_name);
-  delete $1;
+  $$=new vector<ArgumentItem> ( );
+  ArgumentItem item;
+  item.is_constant=false;
+  item.id=$1;
+  $$->push_back( item);
 }
-| identifier_list ',' identifier
+|
+chan_identifier
+{
+  $$=new vector<ArgumentItem> ( );
+  ArgumentItem item;
+  item.is_constant=false;
+  item.id=$1;
+  $$->push_back( item);
+}
+| const_expression
+{
+  $$=new vector<ArgumentItem> ( );
+  ArgumentItem item;
+  item.is_constant=true;
+  item.id=$1;
+  $$->push_back( item);
+}
+| argument_list ',' counter_identifier
 {
   $$=$1;
-  $$->push_back($3->code_name);
-  delete $3;
+  ArgumentItem item;
+  item.is_constant=false;
+  item.id=$3;
+  $$->push_back(item);
 }
+
+| argument_list ',' chan_identifier
+{
+  $$=$1;
+  ArgumentItem item;
+  item.is_constant=false;
+  item.id=$3;
+  $$->push_back(item);
+}
+
+| argument_list ',' const_expression
+{
+  $$=$1;
+  ArgumentItem item;
+  item.is_constant=true;
+  item.id=$3;
+  $$->push_back(item);
+}
+
 ;
 
 
@@ -329,12 +372,12 @@ clock_yy{
 
 counter_identifier:
 int_yy {
-  $$=model_parser->getLocalId( current_data, system_data->getId( INT_STR, $1->code_name) );
+  $$=model_parser->getGlobalId( current_data, INT_STR, $1->code_name);
   delete $1;
 }
 |
 bool_yy{
-  $$=model_parser->getLocalId( current_data, system_data->getId( BOOL_STR, $1->code_name) );
+  $$=model_parser->getGlobalId( current_data,  BOOL_STR, $1->code_name) ;
   delete $1;
 }
 |
@@ -353,7 +396,7 @@ PARAMETER_YY{
 
 chan_identifier:
 chan_yy{
-  $$=model_parser->getLocalId( current_data, system_data->getId( CHAN_STR, $1->code_name) );
+  $$=model_parser->getGlobalId( current_data,  CHAN_STR, $1->code_name );
   delete $1;
 };
 
@@ -383,7 +426,7 @@ parameter_identifier compare_relation clock_identifier
 |
 parameter_identifier compare_relation const_expression
 {
-  void*  cs=createParameterConstraint( $1, DUMMY_ID, $2, $3 );//  createOneParameterConstraint($1, $2, $3 );
+  void*  cs=createParameterConstraint( $1, DUMMY_ID, $2, $3 );
   current_data->addPointer( INT_CS, INT_CS, cs );
 }
 |
@@ -454,7 +497,7 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
 }
 |
 bool_yy{
-  int id=model_parser->getLocalId( current_data, system_data->getId( BOOL_STR, $1->code_name) );
+  int id=model_parser->getGlobalId( current_data, BOOL_STR, $1->code_name );
   void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
   current_data->addPointer( INT_CS, INT_CS, cs );
   delete $1;
@@ -462,7 +505,7 @@ bool_yy{
 |
 '!'
 bool_yy{
-  int id=model_parser->getLocalId( current_data, system_data->getId( BOOL_STR, $2->code_name) );
+  int id=model_parser->getGlobalId( current_data,BOOL_STR, $2->code_name) ;
   void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
   current_data->addPointer( INT_CS, INT_CS, cs );  
   delete $2;
@@ -473,48 +516,71 @@ assign_statement:
 single_assign_statement
 | assign_statement ',' single_assign_statement
 ;
+
 single_assign_statement:
 counter_identifier '=' const_expression
 {
-  SimpleCounterAction *cs=createSimpleCounterAction( $1, $3);
-  
- 
-  
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
+  CounterAction   *action=new CounterAction(ASSIGNMENT, RHS_CONSTANT_T,  $1, $3);
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier '=' counter_identifier
 {
-  //  model_parser->parseAssign( current_data, symbol_table[$1], symbol_table[$3] );
+  CounterAction *action =new CounterAction( ASSIGNMENT, RHS_COUNTER_T, $1, $3 );
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier '='  parameter_identifier
 {
-  
+  CounterAction *action =new CounterAction( ASSIGNMENT, RHS_PARAM_T , $1, $3 );
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
+|
+counter_identifier ADD_ASSIGN const_expression
+{
+  CounterAction   *action=new CounterAction(SELF_INC, RHS_CONSTANT_T,  $1, $3);
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+}
+|
+counter_identifier ADD_ASSIGN counter_identifier
+{
+  CounterAction *action =new CounterAction( SELF_INC, RHS_COUNTER_T, $1, $3 );
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+}
+|
+counter_identifier ADD_ASSIGN  parameter_identifier
+{
+  CounterAction *action =new CounterAction( SELF_INC, RHS_PARAM_T , $1, $3 );
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+}
+
+|
+counter_identifier SUB_ASSIGN const_expression
+{
+  CounterAction   *action=new CounterAction(SELF_DEC, RHS_CONSTANT_T,  $1, $3);
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+}
+|
+counter_identifier SUB_ASSIGN counter_identifier
+{
+  CounterAction *action =new CounterAction( SELF_DEC, RHS_COUNTER_T, $1, $3 );
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+}
+|
+counter_identifier SUB_ASSIGN  parameter_identifier
+{
+  CounterAction *action =new CounterAction( SELF_DEC, RHS_PARAM_T , $1, $3 );
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+}
+
 |
 IDENTIFIER '=' TEMPLATE_YY '(' argument_list ')'
 {
   
-  /* TaDec * ta=new TaDec( ); */
-  /* ta->name= $1->xml_name; */
-  
-  /* for(auto name: ( *( $5) ) ){ */
-    
-  /*   TYPE_T type=getType(name ); */
-  /*   int id=-1; */
-  /*   if(INT_T==type ){ */
-  /*     id= system_data->getId(INT_STR,  name ); */
-  /*   }else if(BOOL_T==type ){ */
-  /*     id= system_data->getId( BOOL_STR, name); */
-  /*   }else if( CHAN_T==type){ */
-  /*     id=system_data->getId( CHAN_STR, name); */
-  /*   } */
-  /*   assert( id>-1); */
-  /*   ta->param_list.push_back( id); */
-  /* } */
-  
-  /* system_data->addPointer(TEMPLATE_STR, $1->xml_name,  ta); */
+  TaDec * ta=new TaDec( );
+  ta->name= $1->xml_name;
+  ta->param_list.insert(ta->param_list.end( ), $5->begin( ), $5->end( ) );
+  system_data->addPointer(TEMPLATE_STR, $1->xml_name,  ta);
   
   delete $1;
   delete $5;
@@ -524,6 +590,7 @@ communicate_statement:
 
 chan_identifier '!'
 {
+  
   
 }
 |
@@ -701,25 +768,25 @@ variable_declaration
 system_declaration
 : SYSTEM timed_automata_list ';'
 {
-  /* SystemDec * sys=new SystemDec( ); */
-  /* for( size_t i=0; i< $2->size( ); i++){ */
-  /*   string name=(*$2)[ i]; */
-  /*   if(system_data->hasValue(TEMPLATE_STR, name  )){ */
+  SystemDec * sys=new SystemDec( );
+  for( size_t i=0; i< $2->size( ); i++){
+    string name=(*$2)[ i];
+    if(system_data->hasValue(TEMPLATE_STR, name  )){
       
-  /*     TaDec* temp=new TaDec( ); */
-  /*     temp->no_parameter=true; */
-  /*     temp->name= name; */
-  /*     sys->timed_automata_list.push_back(temp ); */
-  /*   }else{ */
-  /*     void* sys_dec=system_data->getPointer(TEMPLATE_STR, name ); */
-  /*     sys->timed_automata_list.push_back((TaDec*)sys_dec ); */
+      TaDec* temp=new TaDec( );
+      temp->no_parameter=true;
+      temp->name= name;
+      sys->timed_automata_list.push_back(temp );
+    }else{
+      void* sys_dec=system_data->getPointer(TEMPLATE_STR, name );
+      sys->timed_automata_list.push_back((TaDec*)sys_dec );
       
-  /*   } */
-  /* } */
+    }
+  }
   
-  /* system_data->clearPoints(TEMPLATE_STR ); */
+  system_data->clearPoints(TEMPLATE_STR );
   
-  /* system_data->addPointer(SYSTEM_STR, SYSTEM_STR,sys ); */
+  system_data->addPointer(SYSTEM_STR, SYSTEM_STR,sys );
   delete $2;
 }
 

@@ -273,7 +273,7 @@ void fisher( int n = 2 ) {
 
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
-  void *ccs1 = createCounterConstraint( 0, DUMMY_ID,  EQ, 0 ); // id==0
+  void *ccs1 = createCounterConstraint( 0, DUMMY_ID, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
 
@@ -287,9 +287,11 @@ void fisher( int n = 2 ) {
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  SimpleCounterPAction *caction = createSimpleCounterPAction( 0, 0 );
+  CounterAction *action =new CounterAction(ASSIGNMENT,  RHS_PARAM_T, 0, 0); //id=pid
+  
+  //SimpleCounterPAction *caction = createSimpleCounterPAction( 0, 0 );
 
-  req_wait.addCounterAction( caction );
+  req_wait.addCounterAction( action );
 
   typename INT_TAS_t::T_t wait_req( 2, 1 );
 
@@ -307,8 +309,8 @@ void fisher( int n = 2 ) {
 
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
-  SimpleCounterAction *caction1 =
-      createSimpleCounterAction( 0, 0 ); //( relations1 );
+  CounterAction *caction1 =new 
+      CounterAction( ASSIGNMENT, RHS_CONSTANT_T, 0, 0 ); //id=0 ( relations1 );
 
   cs_A.addCounterAction( caction1 );
 
@@ -373,8 +375,7 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t A_req( 0, 1 );
 
-  void *ccs1 =
-      createCounterConstraint( 0, DUMMY_ID,  EQ, 0 ); // id==0
+  void *ccs1 = createCounterConstraint( 0, DUMMY_ID, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
 
@@ -388,7 +389,7 @@ void incrementalTest() {
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  SimpleCounterPAction *caction = createSimpleCounterPAction( 0, 0 );
+  CounterAction  *caction = new CounterAction( ASSIGNMENT, RHS_PARAM_T, 0, 0 ); //id=pid
 
   req_wait.addCounterAction( caction );
 
@@ -408,8 +409,9 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
-  SimpleCounterAction *caction1 =
-      createSimpleCounterAction( 0, 0 ); //( relations1 );
+  
+  CounterAction  *caction1 =
+      new CounterAction(ASSIGNMENT, RHS_CONSTANT_T, 0, 0 ); //id=0;
 
   cs_A.addCounterAction( caction1 );
 
