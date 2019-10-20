@@ -52,6 +52,6 @@
   include/constraint/countercons.h include/util/instancefactory.h \
   include/io/uppaalmodelparser.h include/io/xmlconf.h \
   include/problem/reachability.hpp include/property/property.h \
-  include/util/parallel.h include/uppaalscan.h
+  include/util/parallel.h include/io/uppaalscan.h
 /Users/yunyun/mycode/c++/graphmodel/ftma/src/xmlconf.o /Users/yunyun/mycode/c++/graphmodel/ftma/src/xmlconf.or /Users/yunyun/mycode/c++/graphmodel/ftma/src/xmlconf.od /Users/yunyun/mycode/c++/graphmodel/ftma/src/xmlconf.op: /Users/yunyun/mycode/c++/graphmodel/ftma/src/xmlconf.cpp \
   include/io/rapidxml.hpp include/io/xmlconf.h

@@ -1,4 +1,3 @@
-
 D            [0-9]
 L            [a-zA-Z_]
 H            [a-fA-F0-9]
@@ -44,8 +43,8 @@ int check_type();
 "void"            { count(); return(VOID);   }
 "while"           { count(); return(WHILE);  }
 "system"          { count(); return(SYSTEM); }
-"true"         { count(); return(TRUE_Y); }
-"false"       { count(); return(FALSE_Y); }
+"true"         { count(); return(TRUE_YY); }
+"false"       { count(); return(FALSE_YY); }
 
 {L}({L}|{D})*        { count(); return(check_type()); }
 
@@ -111,6 +110,9 @@ int check_type();
 
 %%
 
+/*
+ when input return 0, then terminal
+ */
 int yywrap()
 {
     return(1);
@@ -176,7 +178,7 @@ int findSym(const string& name ){
 
 int check_type()
 {
-    /*OB
+    /*
      * pseudo code --- this is what it should check
      *
      *    if (yytext == type_name)
@@ -189,23 +191,79 @@ int check_type()
      *    it actually will only return IDENTIFIER
      */
    string  sym=string( yytext);
-   yylval.intVal=findSym( sym);
+
+   if(current_data->hasValue(INT_STR, sym) ){
+     yylval.int_value=current_data->getValue(INT_STR, sym);
+     return CONSTANT;
+   }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){
+     yylval.int_value=system_data->getValue(INT_STR,   sys);
+     return CONSTANT;
+   }
+   
+   Token token=new Token();
+   token->id=findSym( sym);
+   token->xml_name=sym;
+   token->code_name=sym;
+   
+   yylval.token_value= token;
+   
    if( yylval.intVal<0){
-      yylval.intVal=symbol_table.size( );
-      symbol_table.push_back( sym);
+      token->id=symbol_table.size( );
+      symbol_table.push_back(sym);
+   }
+   if(current_data->hasPointer(PARAMETER_STR,sym)){
+      parameter_id=model_parser->getParameterId(current_data, sym);
+      ParaElement* p = (ParaElement *) current_data->getPointer( PARAMETER_STR, sym );
+      if(p->is_ref){
+          return REF_PARAMETER_YY;
+      }
+      return PARAMETER_YY;
+   }
+   
+   if(system_data->hasValue(TEMPLATE_STR, sym ) ){
+     return TEMPLATE_YY;
+   }
+  
+   /**
+    * The clock variable only declare in template section and can not declare as global variable
+    *
+    */
+   
+   if ( current_data->hasValue( CLOCK_STR, sym ) ) {
+     return CLOCK_YY;
+   }
+   
+   string code_name = current_data->getVarFullName( sym );
+   token->code_name=code_name;
+  
+   if ( system_data->hasValue( INT_STR, code_name ) ) {
+     return INT_YY;
+   }
+   
+   if ( system_data->hasValue( BOOL_STR, code_name ) ) {
+     return BOOL_YY;
+   }
+   
+   if ( system_data->hasValue( CHAN_STR, code_name ) ) {
+     return CHAN_YY;
+   }
+  
+   token->code_name=sym;
+   if ( system_data->hasValue( INT_STR, sym ) ) {
+     return INT_YY;
+   }
+   
+   if ( system_data->hasValue( BOOL_STR, sym ) ) {
+     return BOOL_YY;
+   }
+   
+   if ( system_data.hasValue( CHAN_STR, sym ) ) {
+     return CHAN_YY;
    }
 
-   // if(current_data->hasPointer(PARAMETER_STR,sym)){
-   //   return PARAM;
-   // }
-   // else
-
-  if(system_data->hasValue(TEMPLATE_STR, sym ) ){
-     return TEMPLATE;
-   }
-   else{
-     return(IDENTIFIER);
-   }
+  
+   return(IDENTIFIER);
+  
    
 }
 

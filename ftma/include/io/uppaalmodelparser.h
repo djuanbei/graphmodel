@@ -38,53 +38,65 @@ public:
 
   const Property &getProp() const { return prop; }
 
-  /**
-   * @brief bool constraint
-   *
-   * @param current_data
-   * @param xml_name
-   * @param prefix
-   */
-  void parseConstraint( UppaalTemplateData *current_data,
-                        const string &xml_name, bool prefix = true );
-  /**
-   *@brief xml_name op rhs
-   * @param current_data
-   * @param name  variable name
-   * @param op  operator
-   * @param rhs  constant value
-   */
-  void parseConstraint( UppaalTemplateData *current_data,
-                        const string &xml_name, COMP_OPERATOR op, int rhs );
+  // /**
+  //  * @brief bool constraint
+  //  *
+  //  * @param current_data
+  //  * @param xml_name
+  //  * @param prefix
+  //  */
+  // void parseConstraint( UppaalTemplateData *current_data,
+  //                       const string &xml_name, bool prefix = true );
+  // /**
+  //  *@brief xml_name op rhs
+  //  * @param current_data
+  //  * @param name  variable name
+  //  * @param op  operator
+  //  * @param rhs  constant value
+  //  */
+  // void parseConstraint( UppaalTemplateData *current_data,
+  //                       const string &xml_name, COMP_OPERATOR op, int rhs );
 
-  /**
-   * @brief  constraint left_xml_name op  rhs_xml_name
-   *
-   * @param current_data
-   * @param left_xml_name
-   * @param op
-   * @param rhs_xml_name
-   */
-  void parseConstraint( UppaalTemplateData *current_data,
-                        const string &left_xml_name, COMP_OPERATOR op,
-                        const string &rhs_xml_name );
+  // /**
+  //  * @brief  constraint left_xml_name op  rhs_xml_name
+  //  *
+  //  * @param current_data
+  //  * @param left_xml_name
+  //  * @param op
+  //  * @param rhs_xml_name
+  //  */
+  // void parseConstraint( UppaalTemplateData *current_data,
+  //                       const string &left_xml_name, COMP_OPERATOR op,
+  //                       const string &rhs_xml_name );
 
-  /**
-   * @brief first_xml_name - second_xml_name op rhs
-   *
-   * @param current_data
-   * @param first_xml_name
-   * @param second_xml_name
-   * @param op
-   * @param rhs
-   */
-  void parseConstraint( UppaalTemplateData *current_data,
-                        const string &      first_xml_name,
-                        const string &second_xml_name, COMP_OPERATOR op,
-                        const int rhs );
-  void parseAssign( UppaalTemplateData *current_data, const string & xml_name,  const int rhs);
+  // /**
+  //  * @brief first_xml_name - second_xml_name op rhs
+  //  *
+  //  * @param current_data
+  //  * @param first_xml_name
+  //  * @param second_xml_name
+  //  * @param op
+  //  * @param rhs
+  //  */
+  // void parseConstraint( UppaalTemplateData *current_data,
+  //                       const string &      first_xml_name,
+  //                       const string &second_xml_name, COMP_OPERATOR op,
+  //                      const int rhs );
+  // void parseAssign( UppaalTemplateData *current_data, const string & xml_name,  const int rhs);
   
+  // void parseAssign( UppaalTemplateData *current_data, const string & lhs_xml_name,  const string & rhs_xml_name);
 
+  int getLocalId( UppaalTemplateData *current_data, const int real_id );
+
+  int getParameterId( UppaalTemplateData *current_data, const string &name );
+
+
+    void addClockConstraint( UppaalTemplateData *current_data, int clock1_id,
+                           int clock2_id, COMP_OPERATOR op, int rhs );
+
+  void addClockConstraint( UppaalTemplateData *current_data, int clock1_id,
+                           int clock2_id, COMP_OPERATOR op, int rhs, int parameter_id );
+  
 private:
   map<TYPE_T, string> type_name_map;
 
@@ -114,12 +126,10 @@ private:
 
   void parseLabel( UppaalTemplateData &data, string guards );
 
-  void addClockConstraint( UppaalTemplateData *current_data, int clock1_id,
-                           int clock2_id, COMP_OPERATOR op, int rhs );
 
-  int getLocalId( UppaalTemplateData *current_data, const int real_id );
+  
 
-  int getParameterId( UppaalTemplateData *current_data, const string &name );
+
 
   /**
    * @param current_data  current template

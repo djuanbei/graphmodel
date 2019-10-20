@@ -5,9 +5,7 @@
   #include<map>
   #include<vector>
   #include <utility>
-  
   #include "channel.h"
-
   #include "util/dbmutil.hpp"
   #include "io/uppaaldata.h"
   #include "io/uppaalmodelparser.h"
@@ -40,12 +38,17 @@
   extern int yyparse();
   extern FILE* yyin;
 
-
+  struct Token{
+    int id;
+    string  xml_name;
+    string  code_name;
+  };
   
  %}
 
 %union{
   int int_value;
+  Token* token_value;
   TYPE_T type_value;
   vector<string> * str_vec_pointer;
   COMP_OPERATOR com_op;
@@ -54,23 +57,25 @@
 
 %token <int_value> CONSTANT
 
-%token<int_value> IDENTIFIER
+%token<token_value> IDENTIFIER
+
+
+%token<token_value> TEMPLATE_YY
+
+%token<token_value> PARAMETER_YY
+
+%token<token_value> REF_PARAMETER_YY
+
+%token<token_value>  CLOCK_YY
+
+%token<token_value>  INT_YY
+
+%token<token_value>  BOOL_YY
+
+%token<token_value>  CHAN_YY
 
 
 
-%token<int_value> TEMPLATE
-
-
-%type<int_value> const_expression
-
-
-%type<type_value> type_specifier
-
-%type<str_vec_pointer> identifier_list
-
-%type<str_vec_pointer> ta_list
-
-%type<com_op> compare_relation
 
 %token STRING_LITERAL    URGENT BROADCAST META
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -80,11 +85,29 @@
 
 %token TYPEDEF  
 %token  INT     CONST  VOID  CLOCK CHAN BOOL
-%token TRUE_Y FALSE_Y
+%token TRUE_YY FALSE_YY
 
 %token STRUCT   ELLIPSIS
 
 %token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN  SYSTEM
+
+
+%type<int_value> const_expression
+%type<type_value> type_specifier
+%type<token_value> identifier
+%type<token_value>  clock_yy
+%type<token_value>  int_yy
+%type<token_value>  bool_yy
+%type<token_value>  chan_yy
+%type<int_value> clock_identifier
+%type<int_value> counter_identifier
+%type<int_value> parameter_identifier
+%type<int_value> chan_identifier
+%type<str_vec_pointer> identifier_list
+%type<str_vec_pointer> argument_list
+%type<str_vec_pointer> timed_automata_list
+%type<com_op> compare_relation
+
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -122,39 +145,127 @@ type_specifier
 ;
 
 
-identifier_list
-: IDENTIFIER
+identifier:
+IDENTIFIER
+{
+  $$=$1;
+}
+|
+identifier '[' const_expression ']'
+{
+  $$=$1;
+  $$->code_name= arrayToVar($$->code_name, $3);
+}
+;
+
+clock_yy:
+CLOCK_YY
+{
+  $$=$1;
+}
+|
+clock_yy '[' const_expression ']'
+{
+   $$=$1;
+   $$->code_name=arrayToVar($$->code_name, $3);
+}
+;
+
+int_yy:
+INT_YY
+{
+  $$=$1;
+}
+|
+int_yy '[' const_expression ']'
+{
+  $$=$1;
+  $$->code_name=arrayToVar($$->code_name, $3);
+}
+;
+
+bool_yy:
+BOOL_YY
+{
+  $$=$1;
+}
+|
+bool_yy '[' const_expression ']'
+{
+  $$=$1;
+  $$->code_name=arrayToVar($$->code_name, $3);
+};
+
+chan_yy:
+CHAN_YY
+{
+  $$=$1;
+}
+|
+chan_yy '[' const_expression ']'
+{
+  $$=$1;
+  $$->code_name=arrayToVar($$->code_name, $3);
+};
+
+
+identifier_list:
+IDENTIFIER
 {
   $$=new vector<string> ( );
-  $$->push_back( symbol_table[$1]);
+  $$->push_back( $1->code_name);
+  delete $1;
 }
 | identifier_list ',' IDENTIFIER
 {
   $$=$1;
-  $$->push_back(symbol_table[$3]);
+  $$->push_back($3->code_name);
+  delete $3;
 }
 ;
-ta_list
+
+
+argument_list
+: identifier
+{
+  $$=new vector<string> ( );
+  $$->push_back( $1->code_name);
+  delete $1;
+}
+| identifier_list ',' identifier
+{
+  $$=$1;
+  $$->push_back($3->code_name);
+  delete $3;
+}
+;
+
+
+timed_automata_list
 :IDENTIFIER
 {
   $$=new vector<string> ( );
-  $$->push_back( symbol_table[$1]);
+  $$->push_back($1->code_name);
+  delete $1;
 }
 |
-TEMPLATE
+TEMPLATE_YY
 {
   $$=new vector<string> ( );
-  $$->push_back( symbol_table[$1]);
+  $$->push_back($1->code_name);
+  delete $1;
 }
-| ta_list ',' IDENTIFIER
+| timed_automata_list ',' IDENTIFIER
 {
   $$=$1;
-  $$->push_back(symbol_table[$3]);
+  $$->push_back($3->code_name);
+  delete $3;
 }
-| ta_list ',' TEMPLATE
+| timed_automata_list ',' TEMPLATE_YY
 {
   $$=$1;
-  $$->push_back(symbol_table[$3]);
+  $$->push_back($3->code_name);
+  delete $3;
 }
 ;
 
@@ -195,6 +306,7 @@ external_declaration
 : variable_declaration
 | constraint_statement
 | assign_statement
+| communicate_statement 
 | system_declaration
 ;
 constraint_statement:
@@ -209,59 +321,151 @@ COMMENT
 comment_list COMMENT
 ;
 
+clock_identifier:
+clock_yy{
+  $$=current_data->getClockId($1->code_name);
+  delete $1;
+};
+
+counter_identifier:
+int_yy {
+  $$=model_parser->getLocalId( current_data, system_data->getId( INT_STR, $1->code_name) );
+  delete $1;
+}
+|
+bool_yy{
+  $$=model_parser->getLocalId( current_data, system_data->getId( BOOL_STR, $1->code_name) );
+  delete $1;
+}
+|
+REF_PARAMETER_YY{
+  $$=model_parser->getParameterId(current_data, $1->code_name);
+  delete $1;
+}
+;
+
+parameter_identifier:
+PARAMETER_YY{
+  $$=model_parser->getParameterId(current_data, $1->code_name);
+  delete $1;
+}
+;
+
+chan_identifier:
+chan_yy{
+  $$=model_parser->getLocalId( current_data, system_data->getId( CHAN_STR, $1->code_name) );
+  delete $1;
+};
+
+
 atomic_constraint:
-
-IDENTIFIER compare_relation  const_expression 
+clock_identifier compare_relation  const_expression
 {
-  model_parser->parseConstraint( current_data, symbol_table[$1], $2, $3 );
+  model_parser->addClockConstraint(current_data, $1, GLOBAL_CLOCK_ID, $2, $3);
 }
 |
-IDENTIFIER compare_relation  IDENTIFIER
+const_expression compare_relation clock_identifier
 {
-  model_parser->parseConstraint( current_data, symbol_table[ $1], $2,symbol_table[ $3] );
+  COMP_OPERATOR nop=negation( $2);
+  model_parser->addClockConstraint(current_data,  $3 , GLOBAL_CLOCK_ID, nop, $1);
 }
 |
-IDENTIFIER '-' IDENTIFIER  compare_relation  const_expression
+clock_identifier compare_relation parameter_identifier
 {
-  model_parser->parseConstraint( current_data, symbol_table[ $1], symbol_table[ $3], $4, $5 );
-    
-  /* if(getType( symbol_table[$1])==CLOCK_T &&getType( symbol_table[$3])==CLOCK_T  ){ */
-  /*   int clock_id1=current_data->getId( CLOCK_STR, symbol_table[$1])+1; */
-  /*   int clock_id2=current_data->getId( CLOCK_STR, symbol_table[$3])+1; */
-  /*   if( $4==EQ){ */
-      
-  /*     INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, GE,  $5  ); //x-y< rhs */
-
-  /*     current_data->addPointer( CLOCK_CS,CLOCK_CS, cs); */
-      
-  /*     cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, LE,  $5  ); //x-y< rhs */
-
-  /*     current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                      */
-  /*   }else{ */
-  /*     INT_TAS_t::CS_t *cs=new      INT_TAS_t::CS_t(clock_id1, clock_id2, $4,  $5  ); //x-y< rhs */
-  /*     current_data->addPointer( CLOCK_CS,CLOCK_CS, cs);                      */
-  /*   } */
-
-  /* } */
-  /* else if(getType( symbol_table[$1])==INT_T &&getType( symbol_table[$3])==INT_T  ){ */
-  /*   int counter_id1=system_data->getId( INT_STR, symbol_table[$1]); */
-  /*   int counter_id2=system_data->getId( INT_STR, symbol_table[$3]); */
-  /*   DiaCounterConstraint *cs=InstanceFactory::getInstance().createDiaCounterConstraint( counter_id1, counter_id2, $4, $5); */
-  /*   current_data->addPointer( INT_CS,INT_CS, cs); */
-  /* } */
-  
-
+  model_parser->addClockConstraint( current_data, $1, GLOBAL_CLOCK_ID, $2, 0, $3 ); 
 }
 |
-IDENTIFIER
+parameter_identifier compare_relation clock_identifier
 {
-  model_parser->parseConstraint( current_data, symbol_table[ $1] );
+  COMP_OPERATOR nop=negation( $2);
+  model_parser->addClockConstraint( current_data, $3, GLOBAL_CLOCK_ID, nop, 0, $1 ); 
 }
 |
-'!' IDENTIFIER
+parameter_identifier compare_relation const_expression
 {
-  model_parser->parseConstraint( current_data, symbol_table[ $2], false );
-  
+  void*  cs=createParameterConstraint( $1, DUMMY_ID, $2, $3 );//  createOneParameterConstraint($1, $2, $3 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+const_expression compare_relation parameter_identifier
+{
+  COMP_OPERATOR nop=negation( $2);
+  void*  cs=  createParameterConstraint($3, DUMMY_ID, nop, $1 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+parameter_identifier compare_relation parameter_identifier
+{
+  void* cs = createParameterConstraint( $1, $3, $2, 0 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+parameter_identifier '-'  parameter_identifier compare_relation const_expression
+{
+  void* cs = createParameterConstraint( $1, $3, $4, $5 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+counter_identifier compare_relation const_expression
+{
+  void *cs = createCounterConstraint( $1, DUMMY_ID, $2, $3 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+const_expression compare_relation counter_identifier
+{
+  COMP_OPERATOR nop=negation( $2);
+  void *cs = createCounterConstraint( $3, DUMMY_ID, nop, $1 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+counter_identifier compare_relation parameter_identifier
+{
+  void* cs = createCounterParameterConstraint( $1, $3, $2, 0 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+parameter_identifier  compare_relation  counter_identifier{
+  COMP_OPERATOR nop=negation( $2);
+  void* cs = createCounterParameterConstraint( $3, $1, nop, 0 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+clock_identifier '-' clock_identifier compare_relation const_expression
+{
+  model_parser->addClockConstraint( current_data, $1, $3, $4, $5 );
+}
+|
+clock_identifier '-' clock_identifier compare_relation parameter_identifier
+{
+  model_parser->addClockConstraint( current_data, $1, $3, $4, 0, $5 );
+}
+|
+counter_identifier '-' counter_identifier compare_relation const_expression
+{
+  void * cs = createCounterConstraint( $1, $3, $4, $5 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+counter_identifier '-' counter_identifier compare_relation parameter_identifier
+{
+  void * cs = createCounterConstraint( $1, $3, $4, 0, $5 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+}
+|
+bool_yy{
+  int id=model_parser->getLocalId( current_data, system_data->getId( BOOL_STR, $1->code_name) );
+  void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
+  current_data->addPointer( INT_CS, INT_CS, cs );
+  delete $1;
+}
+|
+'!'
+bool_yy{
+  int id=model_parser->getLocalId( current_data, system_data->getId( BOOL_STR, $2->code_name) );
+  void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
+  current_data->addPointer( INT_CS, INT_CS, cs );  
+  delete $2;
 }
 ;
 
@@ -270,66 +474,76 @@ single_assign_statement
 | assign_statement ',' single_assign_statement
 ;
 single_assign_statement:
-IDENTIFIER '=' const_expression
+counter_identifier '=' const_expression
 {
-  model_parser->parseAssign( current_data, symbol_table[$1], $3 );
+  SimpleCounterAction *cs=createSimpleCounterAction( $1, $3);
+  
+ 
+  
+  current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
+}
+|
+counter_identifier '=' counter_identifier
+{
+  //  model_parser->parseAssign( current_data, symbol_table[$1], symbol_table[$3] );
+}
+|
+counter_identifier '='  parameter_identifier
+{
   
 }
 |
-IDENTIFIER '=' IDENTIFIER
-{
-  model_parser->parseAssign( current_data, symbol_table[$1], symbol_table[$3] );
-}
-|
-IDENTIFIER '=' TEMPLATE '(' identifier_list ')'
+IDENTIFIER '=' TEMPLATE_YY '(' argument_list ')'
 {
   
-  TaDec * ta=new TaDec( );
-  ta->name=symbol_table[ $1];
+  /* TaDec * ta=new TaDec( ); */
+  /* ta->name= $1->xml_name; */
   
-  for(auto name: ( *( $5) ) ){
+  /* for(auto name: ( *( $5) ) ){ */
     
-    TYPE_T type=getType(name );
-    int id=-1;
-    if(INT_T==type ){
-      id= system_data->getId(INT_STR,  name );
-    }else if(BOOL_T==type ){
-      id= system_data->getId( BOOL_STR, name);
-    }else if( CHAN_T==type){
-      id=system_data->getId( CHAN_STR, name);
-    }
-    assert( id>-1);
-    ta->param_list.push_back( id);
-  }
+  /*   TYPE_T type=getType(name ); */
+  /*   int id=-1; */
+  /*   if(INT_T==type ){ */
+  /*     id= system_data->getId(INT_STR,  name ); */
+  /*   }else if(BOOL_T==type ){ */
+  /*     id= system_data->getId( BOOL_STR, name); */
+  /*   }else if( CHAN_T==type){ */
+  /*     id=system_data->getId( CHAN_STR, name); */
+  /*   } */
+  /*   assert( id>-1); */
+  /*   ta->param_list.push_back( id); */
+  /* } */
   
-  system_data->addPointer(TEMPLATE_STR,symbol_table[ $1],  ta);
+  /* system_data->addPointer(TEMPLATE_STR, $1->xml_name,  ta); */
   
+  delete $1;
   delete $5;
-}
+};
 
+communicate_statement:
+
+chan_identifier '!'
+{
+  
+}
+|
+chan_identifier '?'
+{
+  
+}
+;
 
 const_expression:
 CONSTANT
 {
   $$=$1;
 }
-/* | */
-/* IDENTIFIER */
-/* { */
-/*   $$=0; */
-/*   if(current_data->hasValue(INT_STR, symbol_table[$1]) ){ */
-/*     $$=current_data->getValue(INT_STR,symbol_table[$1]); */
-/*   }else if ( system_data->hasValue(INT_STR, symbol_table[$1]) ){ */
-/*     $$=system_data->getValue(INT_STR,   symbol_table[$1]); */
-/*   } */
-/* } */
 |
-
-TRUE_Y{
+TRUE_YY{
   $$=1;
 }
 |
-FALSE_Y{
+FALSE_YY{
   $$=0;
 }
 ;
@@ -382,16 +596,18 @@ variable_declaration
       delete $2;
       break ;
     }
+    default:
+      assert( false);
   }
 }
 
 | type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
-  string name=symbol_table[ $2];
+  string name= $2->code_name;
   switch( $1){
     case INT_T:{
       for( int i=0; i< $4; i++){
-        system_data->setValue( INT_STR, current_data->getVarFullName(arrayToVar(name, i)) );
+        system_data->setValue( INT_STR,  name);
       }
       break;
     }
@@ -404,29 +620,31 @@ variable_declaration
 
     case BOOL_T:{
       for( int i=0; i< $4; i++){
-        system_data->setValue( BOOL_STR, current_data->getVarFullName(arrayToVar(name, i )));
+        system_data->setValue( BOOL_STR, name);
       }
       break;
     }
      
     case CHAN_T:{
       for( int i=0; i< $4; i++){
-        system_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), ONE2ONE_CH);
+        system_data->setValue( CHAN_STR, arrayToVar(name, i ), ONE2ONE_CH);
       }
       break;
     }
     case URGENT_CHAN_T:{
       for( int i=0; i< $4; i++){
-        system_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), URGENT_CH);
+        system_data->setValue( CHAN_STR, arrayToVar(name, i ), URGENT_CH);
       }
       break;
     }
     case BROADCAST_CHAN_T: {
       for( int i=0; i< $4; i++){
-        system_data->setValue( CHAN_STR, current_data->getVarFullName(arrayToVar(name, i )), BROADCAST_CH);
+        system_data->setValue( CHAN_STR, arrayToVar(name, i ), BROADCAST_CH);
       }
       break;
     }
+    default:
+      assert( false);
   }
 }
 
@@ -434,15 +652,17 @@ variable_declaration
 {
   switch( $1){
     case INT_T:
-      system_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+      system_data->setValue(INT_STR, $2->code_name, $4);
       break;
     case CLOCK_T:
-      current_data->setValue(CLOCK_STR, symbol_table[$2], $4);
+      current_data->setValue(CLOCK_STR,  $2->code_name,  $4);
       break;
       
     case BOOL_T:
-      system_data->setValue(BOOL_STR, current_data->getVarFullName(symbol_table[$2]), $4);
+      system_data->setValue(BOOL_STR,  $2->code_name,  $4);
       break;
+    default:
+      assert( false);
   }
   
 }
@@ -451,15 +671,17 @@ variable_declaration
 {
   switch( $2){
     case INT_T:
-      system_data->setValue(INT_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+      system_data->setValue(INT_STR, $3->code_name, $5);
       break;
     case CLOCK_T:
-      current_data->setValue(CLOCK_STR, symbol_table[$3], $5);
+      current_data->setValue(CLOCK_STR,  $3->code_name, $5);
       break;
 
     case BOOL_T:
-      system_data->addValue(BOOL_STR, current_data->getVarFullName(symbol_table[$3]), $5);
+      system_data->addValue(BOOL_STR, $3->code_name, $5);
       break;
+    default:
+      assert( false);
   }
   
 }
@@ -472,12 +694,12 @@ variable_declaration
   for( int i=$4; i<=$6; i++  ){
     temp.push_back( i);
   }
-  system_data->addIntArray(current_data->getVarFullName(symbol_table[$8]),temp);
+  system_data->addIntArray($8->code_name,temp);
 }
 
 
 system_declaration
-: SYSTEM ta_list ';'
+: SYSTEM timed_automata_list ';'
 {
   SystemDec * sys=new SystemDec( );
   for( size_t i=0; i< $2->size( ); i++){
@@ -487,10 +709,10 @@ system_declaration
       TaDec* temp=new TaDec( );
       temp->no_parameter=true;
       temp->name= name;
-      sys->ta_list.push_back(temp );
+      sys->timed_automata_list.push_back(temp );
     }else{
       void* sys_dec=system_data->getPointer(TEMPLATE_STR, name );
-      sys->ta_list.push_back((TaDec*)sys_dec );
+      sys->timed_automata_list.push_back((TaDec*)sys_dec );
       
     }
   }
@@ -503,7 +725,7 @@ system_declaration
 
 %%
 
-#include "uppaalscan.h"
+#include "io/uppaalscan.h"
    
 /* extern int column; */
 

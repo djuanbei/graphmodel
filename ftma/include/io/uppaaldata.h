@@ -147,8 +147,8 @@ public:
   int getId( const string &type, const string &name ) const {
     return int_values.getId( type, name );
   }
-  int getClockId( const string &type, const string &name ) const {
-    return getId( type, name)+1;
+  int getClockId(  const string &name ) const {
+    return getId( CLOCK_STR, name)+1; // start with 1
   }
 
   const pair<string, vector<int>> &getValue( const string &type,

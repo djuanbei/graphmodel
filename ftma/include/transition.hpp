@@ -114,8 +114,8 @@ public:
    * @param action Add one counter action
    *
    */
-  void addCounterAction( const CounterAction *action ) {
-    actions.push_back( action );
+  void addCounterAction( const void *action ) {
+    actions.push_back( (CounterAction*) action );
   }
 
   /**
@@ -126,8 +126,8 @@ public:
    */
   void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
 
-  void addCounterCons( CounterConstraint *guards ) {
-    counter_cons.push_back( guards );
+  void addCounterCons( void *guards ) {
+    counter_cons.push_back( (CounterConstraint*) guards );
   }
 
   /**

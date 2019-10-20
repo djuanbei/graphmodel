@@ -274,7 +274,7 @@ public:
    * false, otherwise.
    */
   bool isSatisfied( const C *const dbm, const ClockConstraint<C> &cons ) const {
-    return cons.matrix_value + dbm[ LOC( cons.y, cons.x ) ] > LTEQ_ZERO;
+    return cons.matrix_value + dbm[ LOC( cons.clock_y, cons.clock_x ) ] > LTEQ_ZERO;
   }
 
   void upImpl( C *dbm ) const {
@@ -321,17 +321,17 @@ public:
       return;
     }
 
-    if ( cons.matrix_value + newD[ LOC( cons.y, cons.x ) ] <= LTEQ_ZERO ) {
+    if ( cons.matrix_value + newD[ LOC( cons.clock_y, cons.clock_x ) ] <= LTEQ_ZERO ) {
       newD[ 0 ] = getMatrixValue( -1, false );
-    } else if ( cons.matrix_value < newD[ LOC( cons.x, cons.y ) ] ) {
-      newD[ LOC( cons.x, cons.y ) ] = cons.matrix_value;
+    } else if ( cons.matrix_value < newD[ LOC( cons.clock_x, cons.clock_y ) ] ) {
+      newD[ LOC( cons.clock_x, cons.clock_y ) ] = cons.matrix_value;
       for ( int i = 0; i < clock_num; i++ ) {
         for ( int j = 0; j < clock_num; j++ ) {
-          C   temp  = ADD( newD[ LOC( i, cons.x ) ], newD[ LOC( cons.x, j ) ] );
+          C   temp  = ADD( newD[ LOC( i, cons.clock_x ) ], newD[ LOC( cons.clock_x, j ) ] );
           int k     = LOC( i, j );
           newD[ k ] = newD[ k ] < temp ? newD[ k ] : temp;
 
-          C DandC   = ADD( newD[ LOC( i, cons.y ) ], newD[ LOC( cons.y, j ) ] );
+          C DandC   = ADD( newD[ LOC( i, cons.clock_y ) ], newD[ LOC( cons.clock_y, j ) ] );
           newD[ k ] = newD[ k ] < DandC ? newD[ k ] : DandC;
         }
       }

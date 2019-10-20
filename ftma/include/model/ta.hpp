@@ -98,19 +98,19 @@ private:
 
   void updateUpperAndDiff( const CS_t &cs ) {
 
-    if ( cs.x > 0 && cs.y > 0 ) {
+    if ( cs.clock_x > 0 && cs.clock_y > 0 ) {
       template_difference_cons.push_back( cs );
     }
     C realRhs = getRight( cs.matrix_value );
-    if ( cs.x > 0 ) {
-      if ( realRhs > clock_max_value[ cs.x ] ) {
-        clock_max_value[ cs.x ] = realRhs;
+    if ( cs.clock_x > 0 ) {
+      if ( realRhs > clock_max_value[ cs.clock_x ] ) {
+        clock_max_value[ cs.clock_x ] = realRhs;
       }
     }
 
-    if ( cs.y > 0 ) {
-      if ( -realRhs > clock_max_value[ cs.y ] ) {
-        clock_max_value[ cs.y ] = -realRhs;
+    if ( cs.clock_y > 0 ) {
+      if ( -realRhs > clock_max_value[ cs.clock_y ] ) {
+        clock_max_value[ cs.clock_y ] = -realRhs;
       }
     }
   }

@@ -25,69 +25,69 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   parseQuery( queries );
 }
 
-/**
- Description bool constraint
- @param current_data <#current_data description#>
- @param xml_name <#xml_name description#>
- @param prefix <#prefix description#> positive or negative
- */
-void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
-                                    const string &xml_name, bool prefix ) {
-  if ( prefix ) {
-    parseConstraint( current_data, xml_name, NE, 0 );
-  } else {
-    parseConstraint( current_data, xml_name, EQ, 0 );
-  }
-}
+// /**
+//  Description bool constraint
+//  @param current_data <#current_data description#>
+//  @param xml_name <#xml_name description#>
+//  @param prefix <#prefix description#> positive or negative
+//  */
+// void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+//                                     const string &xml_name, bool prefix ) {
+//   if ( prefix ) {
+//     parseConstraint( current_data, xml_name, NE, 0 );
+//   } else {
+//     parseConstraint( current_data, xml_name, EQ, 0 );
+//   }
+// }
 
-/**
- * @brief xml_name op rhs
- * @param current_data
- * @param name  variable name
- * @param op  operator
- * @param int  constant value
- *
- */
-void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
-                                    const string &xml_name, COMP_OPERATOR op,
-                                    int rhs ) {
-  void *       cs;
-  string       code_name;
-  int          counter_id, param_id, clock_id;
-  ParaElement *p;
-  const TYPE_T type = getType( current_data, xml_name, code_name );
+// /**
+//  * @brief xml_name op rhs
+//  * @param current_data
+//  * @param name  variable name
+//  * @param op  operator
+//  * @param int  constant value
+//  *
+//  */
+// void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+//                                     const string &xml_name, COMP_OPERATOR op,
+//                                     int rhs ) {
+//   void *       cs;
+//   string       code_name;
+//   int          counter_id, param_id, clock_id;
+//   ParaElement *p;
+//   const TYPE_T type = getType( current_data, xml_name, code_name );
 
-  if ( CLOCK_T == type ) {
-    clock_id =
-        current_data->getId( CLOCK_STR, code_name ) + 1; // CLOCK ID START FROM 1
-    addClockConstraint( current_data, clock_id, 0, op, rhs );
-    return;
-  }
-  if ( PARAMETER_T == type ) {
-    param_id = getParameterId( current_data, code_name );
-    p = (ParaElement *) current_data->getPointer( PARAMETER_STR, code_name );
-    if ( p->is_ref ) { // the parameter for extern send
-      cs = createOneCounterConstraint( param_id, op, rhs );
-    } else {
-      cs = createOneParameterConstraint( param_id, op, rhs );
-    }
-  } else {
-    counter_id = getLocalId(
-        current_data, system_data.getId( type_name_map[ type ], code_name ) );
-    cs = createOneCounterConstraint( counter_id, op, rhs );
-  }
-  current_data->addPointer( INT_CS, INT_CS, cs );
-}
+//   if ( CLOCK_T == type ) {
+//     clock_id =
+//         current_data->getId( CLOCK_STR, code_name ) + 1; // CLOCK ID START FROM 1
+//     addClockConstraint( current_data, clock_id, 0, op, rhs );
+//     return;
+//   }
+//   if ( PARAMETER_T == type ) {
+//     param_id = getParameterId( current_data, code_name );
+//     p = (ParaElement *) current_data->getPointer( PARAMETER_STR, code_name );
+//     if ( p->is_ref ) { // the parameter for extern send
+//       cs = createCounterConstraint( param_id, DUMMY_ID, op, rhs );
+//     } else {
+//       cs = createParameterConstraint( param_id, DUMMY_ID, op, rhs );
+//     }
+//   } else {
+//     counter_id = getLocalId(
+//         current_data, system_data.getId( type_name_map[ type ], code_name ) );
+//     cs = createCounterConstraint( counter_id, DUMMY_ID, op, rhs );
+//   }
+//   current_data->addPointer( INT_CS, INT_CS, cs );
+// }
 
-/**
- * @brief  constraint left_xml_name op  rhs_xml_name
- */
-void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
-                                    const string &      lhs_xml_name,
-                                    COMP_OPERATOR       op,
-                                    const string &      rhs_xml_name ) {
-  parseConstraint( current_data, lhs_xml_name, rhs_xml_name, op, 0 );
-}
+// /**
+//  * @brief  constraint left_xml_name op  rhs_xml_name
+//  */
+// void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+//                                     const string &      lhs_xml_name,
+//                                     COMP_OPERATOR       op,
+//                                     const string &      rhs_xml_name ) {
+//   parseConstraint( current_data, lhs_xml_name, rhs_xml_name, op, 0 );
+// }
 
 /**
 
@@ -99,139 +99,148 @@ void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
  * @param rhs
  */
 
-void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
-                                    const string &      first_xml_name,
-                                    const string &      second_xml_name,
-                                    COMP_OPERATOR op, const int rhs ) {
+// void UppaalParser::parseConstraint( UppaalTemplateData *current_data,
+//                                     const string &      first_xml_name,
+//                                     const string &      second_xml_name,
+//                                     COMP_OPERATOR op, const int rhs ) {
 
-  void *       cs;
-  string       first_code_name, second_code_name;
-  const TYPE_T type1 = getType( current_data, first_xml_name, first_code_name );
-  const TYPE_T type2 =
-      getType( current_data, second_xml_name, second_code_name );
+//   void *       cs;
+//   string       first_code_name, second_code_name;
+//   const TYPE_T type1 = getType( current_data, first_xml_name, first_code_name );
+//   const TYPE_T type2 =
+//       getType( current_data, second_xml_name, second_code_name );
 
-  if ( type1 == CLOCK_T || type2 == CLOCK_T ) {
-    if ( type1 == CLOCK_T && type2 == CLOCK_T ) {
-      int clock1_id = current_data->getClockId( CLOCK_STR, first_code_name );
+//   if ( type1 == CLOCK_T || type2 == CLOCK_T ) {
+//     if ( type1 == CLOCK_T && type2 == CLOCK_T ) {
+//       int clock1_id = current_data->getClockId( CLOCK_STR, first_code_name );
       
-      int clock2_id = current_data->getClockId( CLOCK_STR, second_code_name );
+//       int clock2_id = current_data->getClockId( CLOCK_STR, second_code_name );
       
-      addClockConstraint( current_data, clock1_id, clock2_id, op, rhs );
-      return;
-    }
-    assert( false );
-  }
+//       addClockConstraint( current_data, clock1_id, clock2_id, op, rhs );
+//       return;
+//     }
+//     assert( false );
+//   }
 
-  if ( type1 == PARAMETER_T && type2 == PARAMETER_T ) {
-    int lhs_param_id = getParameterId( current_data, first_code_name );
-    int rhs_param_id = getParameterId( current_data, second_code_name );
+//   if ( type1 == PARAMETER_T && type2 == PARAMETER_T ) {
+//     int lhs_param_id = getParameterId( current_data, first_code_name );
+//     int rhs_param_id = getParameterId( current_data, second_code_name );
 
-    ParaElement *p1 = (ParaElement *) current_data->getPointer(
-        PARAMETER_STR, first_code_name );
-    ParaElement *p2 = (ParaElement *) current_data->getPointer(
-        PARAMETER_STR, second_code_name );
-    if ( p1->is_ref ) {
-      if ( p2->is_ref ) {
-        cs = createTwoCounterConstraint( lhs_param_id, rhs_param_id, op, rhs );
-      } else {
-        cs = createCounterParameterConstraint( lhs_param_id, rhs_param_id, op,
-                                               rhs );
-      }
-    } else {
-      if ( p2->is_ref ) {
-        cs = negCounterParameterConstraint( lhs_param_id, rhs_param_id, op,
-                                            rhs );
-      } else {
-        cs =
-            createTwoParameterConstraint( lhs_param_id, rhs_param_id, op, rhs );
-      }
-    }
-  } else if ( type1 == PARAMETER_T ) {
-    int lhs_param_id = getParameterId( current_data, first_code_name );
+//     ParaElement *p1 = (ParaElement *) current_data->getPointer(
+//         PARAMETER_STR, first_code_name );
+//     ParaElement *p2 = (ParaElement *) current_data->getPointer(
+//         PARAMETER_STR, second_code_name );
+//     if ( p1->is_ref ) {
+//       if ( p2->is_ref ) {
+//         cs = createCounterConstraint( lhs_param_id, rhs_param_id, op, rhs );
+//       } else {
+//         cs = createCounterParameterConstraint( lhs_param_id, rhs_param_id, op,
+//                                                rhs );
+//       }
+//     } else {
+//       if ( p2->is_ref ) {
+//         cs = negCounterParameterConstraint( lhs_param_id, rhs_param_id, op,
+//                                             rhs );
+//       } else {
+//         cs =
+//             createParameterConstraint( lhs_param_id, rhs_param_id, op, rhs );
+//       }
+//     }
+//   } else if ( type1 == PARAMETER_T ) {
+//     int lhs_param_id = getParameterId( current_data, first_code_name );
    
-    ParaElement *p1 = (ParaElement *) current_data->getPointer(
-        PARAMETER_STR, first_code_name );
+//     ParaElement *p1 = (ParaElement *) current_data->getPointer(
+//         PARAMETER_STR, first_code_name );
     
-    int rhs_counter_id =
-    getLocalId( current_data, system_data.getId( type_name_map[ type2 ],
-                                                second_code_name ) );
+//     int rhs_counter_id =
+//     getLocalId( current_data, system_data.getId( type_name_map[ type2 ],
+//                                                 second_code_name ) );
     
-    if ( p1->is_ref ) { // reference is counter
-      cs = createTwoCounterConstraint(lhs_param_id, rhs_counter_id, op,
-                                             rhs );
-    } else {
-      cs = negCounterParameterConstraint( lhs_param_id, rhs_counter_id, op,
-                                          rhs );
-    }
-  } else if ( type2 == PARAMETER_T ) {
-    int          rhs_param_id = getParameterId( current_data, second_code_name );
-    ParaElement *p2           = (ParaElement *) current_data->getPointer(
-        PARAMETER_STR, second_code_name );
+//     if ( p1->is_ref ) { // reference is counter
+//       cs = createCounterConstraint(lhs_param_id, rhs_counter_id, op,
+//                                              rhs );
+//     } else {
+//       cs = negCounterParameterConstraint( lhs_param_id, rhs_counter_id, op,
+//                                           rhs );
+//     }
+//   } else if ( type2 == PARAMETER_T ) {
+//     int          rhs_param_id = getParameterId( current_data, second_code_name );
+//     ParaElement *p2           = (ParaElement *) current_data->getPointer(
+//         PARAMETER_STR, second_code_name );
     
-    int lhs_counter_id= getLocalId(current_data, system_data.getId( type_name_map[ type1 ],
-                                                                   first_code_name ) );
+//     int lhs_counter_id= getLocalId(current_data, system_data.getId( type_name_map[ type1 ],
+//                                                                    first_code_name ) );
     
-    if(p2->is_ref){
-      cs = createTwoCounterConstraint(lhs_counter_id, rhs_param_id, op,
-                                    rhs );
-    }else{
-      cs = createCounterParameterConstraint( lhs_counter_id, rhs_param_id, op,
-                                         rhs );
-    }
+//     if(p2->is_ref){
+//       cs = createCounterConstraint(lhs_counter_id, rhs_param_id, op,
+//                                     rhs );
+//     }else{
+//       cs = createCounterParameterConstraint( lhs_counter_id, rhs_param_id, op,
+//                                          rhs );
+//     }
 
-  } else {
-    int lhs_counter_id= getLocalId(current_data, system_data.getId( type_name_map[ type1 ],
-                                                                   first_code_name ) );
-    int rhs_counter_id =
-    getLocalId( current_data, system_data.getId( type_name_map[ type2 ],
-                                                second_code_name ) );
+//   } else {
+//     int lhs_counter_id= getLocalId(current_data, system_data.getId( type_name_map[ type1 ],
+//                                                                    first_code_name ) );
+//     int rhs_counter_id =
+//     getLocalId( current_data, system_data.getId( type_name_map[ type2 ],
+//                                                 second_code_name ) );
     
-    cs = createTwoCounterConstraint(lhs_counter_id, rhs_counter_id, op,
-                                    rhs );
-  }
+//     cs = createCounterConstraint(lhs_counter_id, rhs_counter_id, op,
+//                                     rhs );
+//   }
 
-  current_data->addPointer( INT_CS, INT_CS, cs );
-}
+//   current_data->addPointer( INT_CS, INT_CS, cs );
+// }
 
 
-void UppaalParser::parseAssign( UppaalTemplateData *current_data, const string &      xml_name, const int rhs){
-  string code_name;
-  const TYPE_T type= getType(  current_data, xml_name, code_name);
+// void UppaalParser::parseAssign( UppaalTemplateData *current_data, const string & xml_name,  const int rhs){
+//   string code_name;
+//   const TYPE_T type= getType(  current_data, xml_name, code_name);
   
-  if( type==CLOCK_T){ // The clock variable can only de declared in template section
+//   if( type==CLOCK_T){ // The clock variable can only de declared in template section
     
-    int clock_id=current_data->getClockId( CLOCK_STR, code_name );
+//     int clock_id=current_data->getClockId( CLOCK_STR, code_name );
     
-    pair<int, int> *pp=new pair<int,int>(clock_id, rhs );
-    current_data->addPointer( RESET_STR,RESET_STR, pp);
+//     pair<int, int> *pp=new pair<int,int>(clock_id, rhs );
     
-  }
-  assert(type==INT_T || type==BOOL_T );
+//     current_data->addPointer( RESET_STR,RESET_STR, pp);
     
-  int counter_id=getLocalId(current_data,  system_data.getId(type_name_map[ type ], code_name ) );
-    
-  SimpleCounterAction *cs=createSimpleCounterAction( counter_id, rhs);
-    
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
+//   }
   
-}
-void UppaalParser::parseAssign( UppaalTemplateData *current_data, const string & lhs_xml_name,  const string & rhs_xml_name){
+  
+//   assert(type==INT_T || type==BOOL_T );
+    
+//   int counter_id=getLocalId(current_data,  system_data.getId(type_name_map[ type ], code_name ) );
+    
+//   SimpleCounterAction *cs=createSimpleCounterAction( counter_id, rhs);
+    
+//   current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
+// }
+  
+// void UppaalParser::parseAssign( UppaalTemplateData *current_data, const string & lhs_xml_name,  const string & rhs_xml_name){
 
-  string lhs_code_name, rhs_code_name;
-  const TYPE_T type1=getType( current_data, lhs_xml_name, lhs_code_name);
+//   string lhs_code_name, rhs_code_name;
+  
+//   const TYPE_T type1=getType( current_data, lhs_xml_name, lhs_code_name);
 
-  const TYPE_T type2= getType(  current_data, rhs_xml_name, rhs_code_name);
+//   const TYPE_T type2= getType(  current_data, rhs_xml_name, rhs_code_name);
+  
+//   if(type1==CLOCK_T){
+//     assert(false);
+//    //  int clock1_id = current_data->getClockId( CLOCK_STR, lhs_code_name);
+//   }
 
+//   assert(type1==INT_T || type1==BOOL_T );
+//   int counter1_id=getLocalId(current_data, system_data.getId( type_name_map[ type1 ],
+//                                              lhs_code_name))
+  
+  
   
 
-  assert(getType(symbol_table[$1] )==INT_T );
-  int counter_id=system_data->getId( INT_STR, symbol_table[$1]);
-    
-  int parameter_id=getParameterId(symbol_table[$3] );
-
-  SimpleCounterPAction *cs  =InstanceFactory::getInstance( ).createSimpleCounterPAction( counter_id,  parameter_id);
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
-}
+//   SimpleCounterPAction *cs  =createSimpleCounterPAction( counter_id,  parameter_id);
+//   current_data->addPointer( INT_UPDATE,INT_UPDATE, cs);
+// }
 
 
 int UppaalParser::parseDeclaration( XML_P declaration ) {
@@ -591,6 +600,24 @@ void UppaalParser::addClockConstraint( UppaalTemplateData *current_data,
   }
 }
 
+void  UppaalParser::addClockConstraint( UppaalTemplateData *current_data,
+                                       int clock1_id, int clock2_id,
+                                        COMP_OPERATOR op, int rhs, int parameter_id ) {
+
+  if ( EQ == op ) {
+    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, GE, rhs, parameter_id ); // x-y<= c
+    current_data->addPointer( CLOCK_CS, CLOCK_CS, cs );
+
+    cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, LE, rhs, parameter_id ); // x-y>= c
+    current_data->addPointer( CLOCK_CS, CLOCK_CS, cs );
+
+  } else {
+    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, op, rhs, parameter_id ); // x op c
+    current_data->addPointer( CLOCK_CS, CLOCK_CS, cs );
+  }
+}
+
+
 void UppaalParser::parseLabel( UppaalTemplateData &template_data,
                                string              guards ) {
   // template_data.clearPoints();
@@ -617,7 +644,6 @@ TYPE_T UppaalParser::getType( UppaalTemplateData *current_data,
   if ( system_data.hasValue( TEMPLATE_STR, code_name ) ) {
     return TEMPLATE_T;
   }
-
   /**
    * The clock variable only declare in template section and can not declare as global variable
    * 
@@ -655,5 +681,7 @@ TYPE_T UppaalParser::getType( UppaalTemplateData *current_data,
 
   return NO_T;
 }
+
+
 
 } // namespace graphsat

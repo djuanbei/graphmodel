@@ -4,7 +4,7 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Fri Mar 29 10:47:56 2019
  *
- * @brief  linear simple constraint such x-y < ( <= ) right
+ * @brief  linear simple constraint such clock_x-clock_y < ( <= ) right
  *
  *
  */
@@ -16,53 +16,59 @@
 
 namespace graphsat {
 
+
 using namespace std;
 
+const int GLOBAL_CLOCK_ID=0;
+
 /**
- *  x -y < ( <= ) realRight
+ *  clock_x -clock_y < ( <= ) realRight
  *
  */
 template <typename C> class ClockConstraint {
 
 public:
-  int x;
-  int y;
-
+  int clock_x;
+  int clock_y;
+  COMP_OPERATOR op;
   C matrix_value;
 
-  ClockConstraint( const int i, const int j, const C r,
+  ClockConstraint( const int clock_id1, const int clock_id2, const C rhs,
                    bool is_strict_ref = true ) {
-    x            = i;
-    y            = j;
-    matrix_value = getMatrixValue( r, is_strict_ref );
+    parameter_id=-100;
+    clock_x            = clock_id1;
+    clock_y            = clock_id2;
+    matrix_value = getMatrixValue( rhs, is_strict_ref );
   }
-  ClockConstraint( const int i, const int j, COMP_OPERATOR op, const C r ) {
-    assert( op != NE );
-    assert( op != EQ );
-    if ( LE == op ) {
-      x            = i;
-      y            = j;
-      matrix_value = getMatrixValue( r, false );
-    } else if ( LT == op ) {
-      x            = i;
-      y            = j;
-      matrix_value = getMatrixValue( r, true );
-    } else if ( GE == op ) {
-      x            = j;
-      y            = i;
-      matrix_value = getMatrixValue( -r, false ); // y-x <= -r
-    } else if ( GT == op ) {
-      x            = j;
-      y            = i;
-      matrix_value = getMatrixValue( -r, true ); // y-x < -r
+  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR op, const C rhs ) {
+    parameter_id=-100;
+    init(clock_id1,  clock_id2,  op, rhs );
+  }
+
+  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop, const int rhs, const int eparameter_id ) {
+    clock_x=clock_id1;
+    clock_y=clock_id2;
+    op=eop;
+    parameter_id=eparameter_id;
+    assert(parameter_id>=0 );
+  }
+
+  void globalUpdate( const vector<int> &  parameter_value ) {
+    if(parameter_id< 0 ){
+      return ;
     }
+    int rhs = parameter_value[ parameter_id ];
+    int id1=clock_x;
+    int id2=clock_y;
+    init( id1, id2, op, rhs);
   }
+  
   void clockShift( int shift ) {
-    if ( x > 0 ) {
-      x += shift;
+    if ( clock_x > 0 ) {
+      clock_x += shift;
     }
-    if ( y > 0 ) {
-      y += shift;
+    if ( clock_y > 0 ) {
+      clock_y += shift;
     }
   }
   ClockConstraint randConst( int num, int low, int up ) const {
@@ -88,29 +94,29 @@ public:
 
   bool isSat( const ClockConstraint<C> &cons ) const {
 
-    if ( ( cons.x == x ) && ( cons.y == y ) ) {
+    if ( ( cons.clock_x == clock_x ) && ( cons.clock_y == clock_y ) ) {
       return true;
-    } else if ( ( cons.x == y ) && ( cons.y == x ) ) {
+    } else if ( ( cons.clock_x == clock_y ) && ( cons.clock_y == clock_x ) ) {
       ClockConstraint<C> negCons = cons.neg();
       return negCons.matrix_value < matrix_value;
     }
 
-    if ( ( x > 0 && y > 0 ) && ( cons.x > 0 && cons.y > 0 ) ) {
+    if ( ( clock_x > 0 && clock_y > 0 ) && ( cons.clock_x > 0 && cons.clock_y > 0 ) ) {
       return true;
     }
-    if ( y > 0 && cons.y > 0 ) {
+    if ( clock_y > 0 && cons.clock_y > 0 ) {
       return true;
     }
 
-    if ( 0 == y ) {
-      if ( x != cons.y ) {
+    if ( 0 == clock_y ) {
+      if ( clock_x != cons.clock_y ) {
         return true;
       }
 
       return matrix_value + cons.matrix_value > LTEQ_ZERO;
 
     } else {
-      if ( y != cons.x ) {
+      if ( clock_y != cons.clock_x ) {
         return true;
       }
       return matrix_value + cons.matrix_value > LTEQ_ZERO;
@@ -121,30 +127,30 @@ public:
 
   friend std::ostream &operator<<( std::ostream &         os,
                                    const ClockConstraint &cons ) {
-    if ( cons.x >= 0 && cons.y >= 0 ) {
+    if ( cons.clock_x >= 0 && cons.clock_y >= 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
-        os << "x_" << cons.x << " - "
-           << "x_" << cons.y << " < " << getRight( cons.matrix_value );
+        os << "x_" << cons.clock_x << " - "
+           << "x_" << cons.clock_y << " < " << getRight( cons.matrix_value );
       } else {
-        os << "x_" << cons.x << " - "
-           << "x_" << cons.y << " <= " << getRight( cons.matrix_value );
+        os << "x_" << cons.clock_x << " - "
+           << "x_" << cons.clock_y << " <= " << getRight( cons.matrix_value );
       }
     }
-    if ( cons.x < 0 ) {
+    if ( cons.clock_x < 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
         os << "0     - "
-           << "x_" << cons.y << " < " << getRight( cons.matrix_value );
+           << "x_" << cons.clock_y << " < " << getRight( cons.matrix_value );
       } else {
         os << "0     - "
            << " - "
-           << "x_" << cons.y << " <= " << getRight( cons.matrix_value );
+           << "x_" << cons.clock_y << " <= " << getRight( cons.matrix_value );
       }
     } else {
       if ( isStrict<C>( cons.matrix_value ) ) {
-        os << "x_" << cons.x << "          <  "
+        os << "x_" << cons.clock_x << "          <  "
            << getRight( cons.matrix_value );
       } else {
-        os << "x_" << cons.x
+        os << "x_" << cons.clock_x
            << "          <= " << getRight( cons.matrix_value );
       }
     }
@@ -153,11 +159,36 @@ public:
 
 private:
   void neg_impl( void ) {
-    int temp     = x;
-    x            = y;
-    y            = temp;
+    int temp     = clock_x;
+    clock_x            = clock_y;
+    clock_y            = temp;
     matrix_value = 1 - matrix_value;
   }
+  void init( const int clock_id1, const int clock_id2, COMP_OPERATOR op, const C rhs ) {
+    assert( op != NE );
+    assert( op != EQ );
+    if ( LE == op ) {
+      clock_x            = clock_id1;
+      clock_y            = clock_id2;
+      matrix_value = getMatrixValue( rhs, false );
+    } else if ( LT == op ) {
+      clock_x            = clock_id1;
+      clock_y            = clock_id2;
+      matrix_value = getMatrixValue( rhs, true );
+    } else if ( GE == op ) {
+      clock_x            = clock_id2;
+      clock_y            = clock_id1;
+      matrix_value = getMatrixValue( -rhs, false ); // clock_y-clock_x <= -rhs
+    } else if ( GT == op ) {
+      clock_x            = clock_id2;
+      clock_y            = clock_id1;
+      matrix_value = getMatrixValue( -rhs, true ); // clock_y-clock_x < -rhs
+    }
+  }
+
+
+  
+  int parameter_id;
 };
 } // namespace graphsat
 #endif
