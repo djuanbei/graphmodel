@@ -16,7 +16,7 @@ int check_type();
 
 %%
 "/*"            { comment();  return (COMMENT); }
-"//"              { commentLine(); return (COMMENT); }
+"//"              {cout<<"comment"<<endl; commentLine(); return (COMMENT); }
 
 
 
@@ -35,7 +35,7 @@ int check_type();
 "int"            { count(); return(INT); }
 "clock"            { count(); return(CLOCK); }
 "chan"            { count(); return(CHAN); }
-"bool"           { count(); return(BOOL);}
+"bool"           { count(); cout<<"bool"<<endl; return(BOOL);}
 "return"        { count(); return(RETURN); }
 "struct"        { count(); return(STRUCT); }
 "switch"        { count(); return(SWITCH); }
@@ -210,18 +210,20 @@ int check_type()
       symbol_table.push_back(sym);
    }
    if(current_data->hasPointer(PARAMETER_STR,sym)){
+      cout<<"===parameter====  "<<sym<<endl;
       int parameter_id=model_parser->getParameterId(current_data, sym);
       ParaElement* p = (ParaElement *) current_data->getPointer( PARAMETER_STR, sym );
       if(p->is_ref){
+          cout<<"===ref_parameter====  "<<sym<<endl;
           return REF_PARAMETER_YY;
       }
       return PARAMETER_YY;
    }
-   
+   cout<<1<<endl;
    if(system_data->hasValue(TEMPLATE_STR, sym ) ){
      return TEMPLATE_YY;
    }
-  
+     cout<<2<<endl;
    /**
     * The clock variable only declare in template section and can not declare as global variable
     *
@@ -231,7 +233,7 @@ int check_type()
 
      return CLOCK_YY;
    }
-   
+        cout<<3<<endl;
    string code_name = current_data->getVarFullName( sym );
    token->code_name=code_name;
   
@@ -259,12 +261,10 @@ int check_type()
    if ( system_data->hasValue( CHAN_STR, sym ) ) {
      return CHAN_YY;
    }
+        cout<<30<<endl;
    return(IDENTIFIER);
-  
    
 }
-
-
 
 
 

@@ -1,9 +1,10 @@
 #include "io/uppaalmodelparser.h"
 #include "util/dbmutil.hpp"
+#include <iostream>
 #include <cassert>
 
 namespace graphsat {
-
+  using namespace std;
 UppaalParser::UppaalParser( const string &xmlfile ) {
 
   XmlConfig  xmldoc( xmlfile );
@@ -13,7 +14,6 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   child_type queries     = xmldoc.getChild( QUERIES_STR );
 
   parseDeclaration( declaration );
-
   parseTemplateDeclaration( templates );
 
   parseTemplate( templates );
@@ -114,7 +114,7 @@ int UppaalParser::parseSystem( XML_P system ) {
   assert( NULL != system );
 
   string content = system->getValue();
-
+  cout<<content<<endl;
   parseProblem( content, this, &system_data, &system_data );
 
   int counter_num = system_data.getTypeNum( INT_STR );
@@ -198,8 +198,10 @@ vector<INT_TAS_t::L_t>
     int location_id = template_data.getId( LOCATION_STR, id_str );
 
     INT_TAS_t::L_t location( location_id );
-    string location_name = ( *lit )->getOneChild( NAME_STR )->getValue();
-    location.setName( location_name );
+    if(NULL!=  ( *lit )->getOneChild( NAME_STR )){ // Not evvery location require name property
+      string location_name = ( *lit )->getOneChild( NAME_STR )->getValue();
+      location.setName( location_name );
+    }
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -230,49 +232,49 @@ int UppaalParser::parseTemplateParamter( UppaalTemplateData &template_data,
   string         para_content = parameter->getValue();
   vector<string> terms        = splitStr( para_content, "," );
   for ( auto str : terms ) {
-    ParaElement *temp_param = new ParaElement();
+    ParaElement *temp_parameter = new ParaElement();
     bool         is_ref     = false;
     size_t       start      = str.find( PARAMETER_REF_STR );
 
     if ( start != std::string::npos ) {
       str                = deleteChar( str, start, '&' );
       is_ref             = true;
-      temp_param->is_ref = true;
+      temp_parameter->is_ref = true;
     }
 
     vector<string> parts = splitStr( str, " " );
 
     string name = parts.back();
-    if ( is_ref ) {
-      name = name.substr( 1 );
-    }
-    temp_param->name      = name;
-    temp_param->type_name = parts[ parts.size() - 2 ];
+//    if ( is_ref ) {
+//      name = name.substr( 1 );
+//    }
+    temp_parameter->name      = name;
+    temp_parameter->type_name = parts[ parts.size() - 2 ];
 
     if ( find( parts.begin(), parts.end(), BOOL_STR ) != parts.end() ) {
       if ( is_ref ) {
-        temp_param->type = PARAM_BOOL_REF_T;
+        temp_parameter->type = PARAMETER_BOOL_REF_T;
       } else {
-        temp_param->type = PARAM_BOOL_T;
+        temp_parameter->type = PARAMETER_BOOL_T;
       }
     } else if ( find( parts.begin(), parts.end(), CHAN_STR ) != parts.end() ) {
       if ( is_ref ) {
-        temp_param->type = PARAM_CHANNEL_REF_T;
+        temp_parameter->type = PARAMETER_CHANNEL_REF_T;
       } else {
-        temp_param->type = PARAM_CHANNEL_T;
+        temp_parameter->type = PARAMETER_CHANNEL_T;
       }
 
     } else if ( find( parts.begin(), parts.end(), INT_STR ) != parts.end() ) {
       if ( is_ref ) {
-        temp_param->type = PARAM_INT_REF_T;
+        temp_parameter->type = PARAMETER_INT_REF_T;
       } else {
-        temp_param->type = PARAM_INT_T;
+        temp_parameter->type = PARAMETER_INT_T;
       }
     } else {
-      temp_param->type = PARAM_SCALAR_T;
+      temp_parameter->type = PARAMETER_SCALAR_T;
     }
 
-    template_data.addPointer( PARAMETER_STR, name, temp_param );
+    template_data.addPointer( PARAMETER_STR, name, temp_parameter );
   }
   return 0;
 }

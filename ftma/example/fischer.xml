@@ -3,7 +3,7 @@
 <nta>
 	<declaration>// Fischer's mutual exclusion protocol.
 
-typedef int[1,2] id_t;
+typedef int[1,4] id_t;
 int id;</declaration>
 	<template>
 		<name x="16" y="-8">P</name>

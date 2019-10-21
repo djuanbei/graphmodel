@@ -203,8 +203,6 @@ public:
 
     for ( auto act : actions ) {
       ( *act )( counterValue );
-      assert(counterValue[0]<3);
-      assert(counterValue[0]>=0);
     }
 
     //    return re_state;

@@ -513,8 +513,10 @@ void incrementalTest() {
   }
 }
 void fisher1() {
+  // UppaalParser parser(
+  //     "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
   UppaalParser parser(
-      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
+      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   INT_TAS_t sys = parser.getSYS();
   R_t       data( sys );
 
@@ -528,6 +530,7 @@ void fisher1() {
   // }
   reacher.computeAllReachableSet();
   cout << "reach data size: " << data.size() << endl;
+  data.generatorDot( "test.gv" );
 }
 
 void testOP() {
@@ -576,8 +579,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 2 );
-  return 0;
+ // fisher( 2 );
+ // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

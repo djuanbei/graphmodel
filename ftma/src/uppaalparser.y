@@ -23,6 +23,7 @@
   using std::endl;
   using std::cout;
 
+  
   vector<string> symbol_table;
   
   extern  int lineNum;
@@ -43,8 +44,6 @@
     string  xml_name;
     string  code_name;
   };
-
-
   
  %}
 
@@ -215,12 +214,14 @@ chan_yy '[' const_expression ']'
 identifier_list:
 IDENTIFIER
 {
+  cout<<"ide"<<endl;
   $$=new vector<string> ( );
   $$->push_back( $1->code_name);
   delete $1;
 }
 | identifier_list ',' IDENTIFIER
 {
+  cout<<"ide"<<endl;
   $$=$1;
   $$->push_back($3->code_name);
   delete $3;
@@ -342,7 +343,8 @@ NE_OP{
 translation_unit
 : external_declaration
 | translation_unit external_declaration
-| comment_list
+| COMMENT
+| translation_unit COMMENT
 ;
 
 external_declaration
@@ -357,12 +359,7 @@ atomic_constraint
 |
 constraint_statement AND_OP atomic_constraint
 
-;
-comment_list:
-COMMENT
-|
-comment_list COMMENT
-;
+
 
 clock_identifier:
 clock_yy{
@@ -510,6 +507,27 @@ bool_yy{
   current_data->addPointer( INT_CS, INT_CS, cs );  
   delete $2;
 }
+|
+PARAMETER_YY
+{
+  cout<<1<<endl;
+}
+|
+REF_PARAMETER_YY
+{
+  cout<<1<<endl;
+}
+
+|
+'!' PARAMETER_YY
+{
+  cout<<1<<endl;
+}
+|
+'!' REF_PARAMETER_YY
+{
+  cout<<1<<endl;
+}
 ;
 
 assign_statement:
@@ -624,34 +642,31 @@ FALSE_YY{
 variable_declaration
 : type_specifier identifier_list ';'
 {
+  cout<<"jhahha"<<endl;
   switch( $1){
     case INT_T:{
       for( auto v: *$2){
         system_data->setValue(INT_STR, current_data->getVarFullName(v)); //All the variables  in system_data
       }
-      delete $2;
       break ;
     }
     case CLOCK_T:{
       for( auto v: *$2){
         current_data->setValue(CLOCK_STR, v);  //clock variable only can declare in template
       }
-      delete $2;
       break ;
     }
-
     case BOOL_T: {
+      cout<<"boooo"<<endl;
       for( auto v: *$2){
         system_data->setValue(BOOL_STR, current_data->getVarFullName(v));
       }
-      delete $2;
       break ;
     }
     case CHAN_T: {
       for( auto v: *$2){
         system_data->setValue(CHAN_STR, current_data->getVarFullName(v), ONE2ONE_CH);
       }
-      delete $2;
       break ;
     }
 
@@ -659,21 +674,22 @@ variable_declaration
       for( auto v: *$2){
         system_data->setValue(CHAN_STR, current_data->getVarFullName(v), URGENT_CH);
       }
-      delete $2;
       break ;
     }
     case BROADCAST_CHAN_T:{
       for( auto v: *$2){
         system_data->setValue(CHAN_STR, current_data->getVarFullName(v), BROADCAST_CH);
       }
-      delete $2;
       break ;
     }
-    default:
+    default:{
+      cout<<"ss"<<endl;
       assert( false);
-  }
-}
+    }
 
+  }
+  delete $2;
+}
 | type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
   string name= $2->code_name;
@@ -803,20 +819,18 @@ system_declaration
 
 void yyerror(const char *s)
 {
-    fflush(stdout);
-    assert( false);
-    printf("\n jjj error\n");
+  printf("\n jjj error  %s\n",s);
+  fflush(stdout);
+  assert( false);
 }
 void yyerror(const string &s){
 
+
+  cout<<"error in: "<<endl;
   fflush(stdout);
   assert( false);
-  printf("\n kkk error\n");
   
 }
-
-
-
 
 
 namespace graphsat{
