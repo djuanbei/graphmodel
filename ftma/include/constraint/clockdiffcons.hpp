@@ -39,19 +39,22 @@ public:
     clock_y      = clock_id2;
     matrix_value = getMatrixValue( rhs, is_strict_ref );
   }
-  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR op,
-                   const C rhs ) {
-    parameter_id = -100;
-    init( clock_id1, clock_id2, op, rhs );
-  }
+//  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR op,
+//                   const C rhs ) {
+//    parameter_id = -100;
+//    init( clock_id1, clock_id2, op, rhs );
+//  }
 
   ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
                    const int rhs, const int eparameter_id ) {
+    if(eparameter_id<0){
+      init( clock_id1, clock_id2, eop, rhs );
+      return ;
+    }
     clock_x      = clock_id1;
     clock_y      = clock_id2;
     op           = eop;
     parameter_id = eparameter_id;
-    assert( parameter_id >= 0 );
   }
 
   void globalUpdate( const vector<int> &parameter_value ) {

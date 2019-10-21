@@ -5,12 +5,7 @@
 namespace graphsat {
 
 UppaalParser::UppaalParser( const string &xmlfile ) {
-  type_name_map[ CLOCK_T ] = CLOCK_STR;
-  type_name_map[ INT_T ]   = INT_STR;
-  type_name_map[ BOOL_T ]  = BOOL_STR;
-
-  type_name_map[ CHAN_T ] = CHAN_STR;
-
+  
   XmlConfig  xmldoc( xmlfile );
   XML_P      declaration = xmldoc.getOneChild( DECLARATION_STR );
   child_type templates   = xmldoc.getChild( TEMPLATE_STR );
@@ -18,6 +13,7 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   child_type queries     = xmldoc.getChild( QUERIES_STR );
 
   parseDeclaration( declaration );
+  
   parseTemplateDeclaration( templates );
 
   parseTemplate( templates );
@@ -34,14 +30,18 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
   if ( content.length() > 0 ) {
     parseProblem( content, this, &system_data, &system_data );
   }
+  int num = 0;
+  for ( auto key : gloabl_variable_types ) {
+    num += system_data.getTypeNum( key );
+  }
+  
+  system_data.setGlobalVarNum( num );
 
   return 0;
 }
 
 int UppaalParser::parseTemplateDeclaration( child_type templates ) {
   assert( NULL != templates );
-
-  string keys[] = {INT_STR, CLOCK_STR, BOOL_STR, CHAN_STR};
 
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
     UppaalTemplateData template_data;
@@ -53,17 +53,11 @@ int UppaalParser::parseTemplateDeclaration( child_type templates ) {
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
       parseProblem( dec_content, this, &system_data, &template_data );
-      for ( auto key : keys ) {
-        vector<pair<string, vector<int>>> temp_values =
-            template_data.getValue( key );
-        for ( auto e : temp_values ) {
-          system_data.setValue( key, e.first, e.second[ 0 ] );
-        }
-      }
     }
+    template_map[ template_data.name ] = template_data;
   }
   int num = 0;
-  for ( auto key : keys ) {
+  for ( auto key : gloabl_variable_types ) {
     num += system_data.getTypeNum( key );
   }
 
@@ -79,11 +73,10 @@ int UppaalParser::parseTemplate( child_type templates ) {
   }
 
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
-    UppaalTemplateData template_data;
-
+   
     XML_P nameConf = ( *it )->getOneChild( NAME_STR );
 
-    template_data.setName( nameConf->getValue() );
+    UppaalTemplateData& template_data=template_map[ nameConf->getValue() ];
 
     system_data.addValue( TEMPLATE_STR, template_data.name );
 
@@ -92,15 +85,6 @@ int UppaalParser::parseTemplate( child_type templates ) {
     if ( NULL != parameter ) {
       parseTemplateParamter( template_data, parameter );
     }
-
-    // XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
-
-    // if ( NULL != declaration ) {
-    //   string dec_content = declaration->getValue();
-    //   template_data.setDeclaration( true);
-    //   parseProblem( dec_content, &system_data, &template_data );
-    //   template_data.setDeclaration( false);
-    // }
 
     child_type location_comps = ( *it )->getChild( LOCATION_STR );
 
@@ -121,8 +105,6 @@ int UppaalParser::parseTemplate( child_type templates ) {
     template_data.tat =
         INT_TAS_t::TAT_t( locations, transitions, template_data.getInitialLoc(),
                           template_data.getTypeNum( CLOCK_STR ) );
-
-    template_map[ template_data.name ] = template_data;
   }
 
   return 0;

@@ -372,6 +372,7 @@ clock_yy{
 
 counter_identifier:
 int_yy {
+  cout<<"int"<<endl;
   $$=model_parser->getGlobalId( current_data, INT_STR, $1->code_name);
   delete $1;
 }
@@ -404,6 +405,7 @@ chan_yy{
 atomic_constraint:
 clock_identifier compare_relation  const_expression
 {
+  cout <<$2<<"kkk "<<EQ<<endl;
   model_parser->addClockConstraint(current_data, $1, GLOBAL_CLOCK_ID, $2, $3);
 }
 |
@@ -518,6 +520,11 @@ single_assign_statement
 ;
 
 single_assign_statement:
+clock_identifier '=' const_expression
+{
+  cout<<"here"<<endl;
+}
+|
 counter_identifier '=' const_expression
 {
   CounterAction   *action=new CounterAction(ASSIGNMENT, RHS_CONSTANT_T,  $1, $3);
@@ -780,7 +787,6 @@ system_declaration
     }else{
       void* sys_dec=system_data->getPointer(TEMPLATE_STR, name );
       sys->timed_automata_list.push_back((TaDec*)sys_dec );
-      
     }
   }
   

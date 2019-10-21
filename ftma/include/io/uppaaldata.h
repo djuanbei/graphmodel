@@ -102,6 +102,7 @@ public:
   void setName( const string &n ) { name = n; }
 
   string getName( void ) { return name; }
+  
   void   setGlobalVarNum( int n ) { global_var_num = n; }
 
   int getGlobalVarNum( void ) const { return global_var_num; }
