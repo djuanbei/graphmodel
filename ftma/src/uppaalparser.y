@@ -372,7 +372,6 @@ clock_yy{
 
 counter_identifier:
 int_yy {
-  cout<<"int"<<endl;
   $$=model_parser->getGlobalId( current_data, INT_STR, $1->code_name);
   delete $1;
 }
@@ -405,7 +404,6 @@ chan_yy{
 atomic_constraint:
 clock_identifier compare_relation  const_expression
 {
-  cout <<$2<<"kkk "<<EQ<<endl;
   model_parser->addClockConstraint(current_data, $1, GLOBAL_CLOCK_ID, $2, $3);
 }
 |
@@ -522,61 +520,62 @@ single_assign_statement
 single_assign_statement:
 clock_identifier '=' const_expression
 {
-  cout<<"here"<<endl;
+  pair<int, int> *reset=new pair<int, int>($1, $3 );
+  current_data->addPointer(RESET_STR, RESET_STR, reset );
 }
 |
 counter_identifier '=' const_expression
 {
-  CounterAction   *action=new CounterAction(ASSIGNMENT, RHS_CONSTANT_T,  $1, $3);
+  CounterAction   *action=new CounterAction(ASSIGNMENT_ACTION, RHS_CONSTANT_T,  $1, $3);
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier '=' counter_identifier
 {
-  CounterAction *action =new CounterAction( ASSIGNMENT, RHS_COUNTER_T, $1, $3 );
+  CounterAction *action =new CounterAction( ASSIGNMENT_ACTION, RHS_COUNTER_T, $1, $3 );
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier '='  parameter_identifier
 {
-  CounterAction *action =new CounterAction( ASSIGNMENT, RHS_PARAM_T , $1, $3 );
+  CounterAction *action =new CounterAction( ASSIGNMENT_ACTION, RHS_PARAMETER_T , $1, $3 );
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier ADD_ASSIGN const_expression
 {
-  CounterAction   *action=new CounterAction(SELF_INC, RHS_CONSTANT_T,  $1, $3);
+  CounterAction   *action=new CounterAction(SELF_INC_ACTION, RHS_CONSTANT_T,  $1, $3);
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier ADD_ASSIGN counter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_INC, RHS_COUNTER_T, $1, $3 );
+  CounterAction *action =new CounterAction( SELF_INC_ACTION, RHS_COUNTER_T, $1, $3 );
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier ADD_ASSIGN  parameter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_INC, RHS_PARAM_T , $1, $3 );
+  CounterAction *action =new CounterAction( SELF_INC_ACTION, RHS_PARAMETER_T , $1, $3 );
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 
 |
 counter_identifier SUB_ASSIGN const_expression
 {
-  CounterAction   *action=new CounterAction(SELF_DEC, RHS_CONSTANT_T,  $1, $3);
+  CounterAction   *action=new CounterAction(SELF_DEC_ACTION, RHS_CONSTANT_T,  $1, $3);
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier SUB_ASSIGN counter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_DEC, RHS_COUNTER_T, $1, $3 );
+  CounterAction *action =new CounterAction( SELF_DEC_ACTION, RHS_COUNTER_T, $1, $3 );
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 |
 counter_identifier SUB_ASSIGN  parameter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_DEC, RHS_PARAM_T , $1, $3 );
+  CounterAction *action =new CounterAction( SELF_DEC_ACTION, RHS_PARAMETER_T , $1, $3 );
   current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
 }
 

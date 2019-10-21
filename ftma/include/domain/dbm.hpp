@@ -129,7 +129,7 @@ public:
         int y = abs( distribution( generator ) ) % ( clock_num );
         if ( x != y ) {
           C                  rhs = distribution( generator );
-          ClockConstraint<C> cs( x, y, rhs );
+          ClockConstraint<C> cs( x, y, LT, rhs );
           andImpl( dbm, cs );
         }
         x = abs( distribution( generator ) ) % ( clock_num );
@@ -446,7 +446,7 @@ public:
    */
   C *shift( const C *const dbm, const int x, const C m ) const {
     C *newD = createDBM( dbm );
-    shiftImpl( newD, x, dbm );
+    shiftImpl( newD, x, m );
     return newD;
   }
 

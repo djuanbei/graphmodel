@@ -13,12 +13,13 @@ CounterConstraint *copy( CounterConstraint *other ) {
 // regist_to_factory( SimpleCounterAction, ( int counter_id, int value ),
 //                    ( counter_id, value ) );
 
-// regist_to_factory( SimpleCounterPAction, ( int counter_id, int eparameter_id ),
+// regist_to_factory( SimpleCounterPAction, ( int counter_id, int eparameter_id
+// ),
 //                    ( counter_id, eparameter_id ) );
 
 // regist_to_factory( DefaultCAction,
-//                    ( vector<pair<int, vector<pair<int, int>>>> & relations1 ),
-//                    ( relations1 ) );
+//                    ( vector<pair<int, vector<pair<int, int>>>> & relations1
+//                    ), ( relations1 ) );
 
 CounterAction *copy( const CounterAction *other ) {
   return InstanceFactory::getInstance().copy( other );

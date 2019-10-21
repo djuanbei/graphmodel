@@ -41,16 +41,16 @@ struct ParaElement {
   string   name;
 };
 
-struct ArgumentItem{
+struct ArgumentItem {
   bool is_constant;
-  int id;
-  ArgumentItem( ):is_constant( false){
-  }
+  int  id;
+  ArgumentItem()
+      : is_constant( false ) {}
 };
 
 struct TaDec {
-  bool        no_parameter;
-  string      name;
+  bool                 no_parameter;
+  string               name;
   vector<ArgumentItem> param_list;
   TaDec()
       : no_parameter( false ) {
@@ -62,8 +62,8 @@ struct SystemDec {
   vector<TaDec *> timed_automata_list;
 
   ~SystemDec() {
-    for ( vector<TaDec *>::iterator it = timed_automata_list.begin(); it != timed_automata_list.end();
-          it++ ) {
+    for ( vector<TaDec *>::iterator it = timed_automata_list.begin();
+          it != timed_automata_list.end(); it++ ) {
       delete *it;
     }
   }
@@ -102,8 +102,8 @@ public:
   void setName( const string &n ) { name = n; }
 
   string getName( void ) { return name; }
-  
-  void   setGlobalVarNum( int n ) { global_var_num = n; }
+
+  void setGlobalVarNum( int n ) { global_var_num = n; }
 
   int getGlobalVarNum( void ) const { return global_var_num; }
 

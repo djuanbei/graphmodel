@@ -28,9 +28,9 @@
 #include "io/uppaaldata.h"
 
 namespace graphsat {
-  
-  static const string gloabl_variable_types[] = {INT_STR, BOOL_STR, CHAN_STR};
-  
+
+static const string gloabl_variable_types[] = {INT_STR, BOOL_STR, CHAN_STR};
+
 class UppaalParser {
 
 public:
@@ -59,14 +59,13 @@ public:
                            int parameter_id = -10 );
 
 private:
-//  map<TYPE_T, string> type_name_map;
+  //  map<TYPE_T, string> type_name_map;
 
   UppaalTemplateData              system_data;
   map<string, UppaalTemplateData> template_map;
 
   INT_TAS_t sys;
   Property  prop;
-
 
   int parseDeclaration( XML_P system );
 

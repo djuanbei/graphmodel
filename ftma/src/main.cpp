@@ -10,7 +10,7 @@
  */
 //#define CHECK_MEMORY 1
 #define PRINT_STATE 1
-//#define DRAW_GRAPH 1
+#define DRAW_GRAPH 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -55,15 +55,15 @@ void example1( void ) {
   // e01.reset.push_back( 3 ); // z -->0
   typename INT_TAS_t::T_t e12( 1, 2 );
 
-  typename INT_TAS_t::CS_t cs1( 0, 2, -2, true ); // 0-y < -2
+  typename INT_TAS_t::CS_t cs1( 0, 2, LT, -2 ); // 0-y < -2
   e12 += cs1;
   pair<int, int> rest2( 2, 0 );
   e12.addReset( rest2 ); // y --> 0
 
   typename INT_TAS_t::T_t e23( 2, 3 );
 
-  typename INT_TAS_t::CS_t cs2( 1, 3, 1, true ); // x-z < 1
-  typename INT_TAS_t::CS_t cs3( 3, 2, 1, true ); // z-y < 1
+  typename INT_TAS_t::CS_t cs2( 1, 3, LT, 1 ); // x-z < 1
+  typename INT_TAS_t::CS_t cs3( 3, 2, LT, 1 ); // z-y < 1
   e23 += cs2;
   // e23.cons.push_back( cs2 );
   e23 += cs3;
@@ -104,20 +104,21 @@ void example50() {
 
   typename INT_TAS_t::T_t E00a( 0, 0 );
   pair<int, int>          reset1( 2, 0 );
-  E00a.addReset( reset1 );                        // y-->0
-  typename INT_TAS_t::CS_t cs1( 2, 0, 2, false ); // y<=2
+  E00a.addReset( reset1 );                     // y-->0
+  typename INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
   E00a += cs1;
 
   typename INT_TAS_t::T_t E00b( 0, 0 );
   pair<int, int>          reset2( 1, 0 );
-  E00b.addReset( reset2 );                        // x-->0
-  typename INT_TAS_t::CS_t cs2( 1, 0, 2, false ); // x<=2
+  E00b.addReset( reset2 );                     // x-->0
+  typename INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
   E00b += cs2;
 
   typename INT_TAS_t::T_t E01( 0, 1 );
 
-  typename INT_TAS_t::CS_t cs3( 2, 0, 2, false );  // y<=2
-  typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
+  typename INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
+  // typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
+  typename INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -155,20 +156,20 @@ void example2( void ) {
 
   typename INT_TAS_t::T_t E00a( 0, 0 );
   pair<int, int>          reset1( 2, 0 );
-  E00a.addReset( reset1 );                        // y-->0
-  typename INT_TAS_t::CS_t cs1( 2, 0, 2, false ); // y<=2
+  E00a.addReset( reset1 );                     // y-->0
+  typename INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
   E00a += cs1;
 
   typename INT_TAS_t::T_t E00b( 0, 0 );
   pair<int, int>          reset2( 1, 0 );
-  E00b.addReset( reset2 );                        // x-->0
-  typename INT_TAS_t::CS_t cs2( 1, 0, 2, false ); // x<=2
+  E00b.addReset( reset2 );                     // x-->0
+  typename INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
   E00b += cs2;
 
   typename INT_TAS_t::T_t E01( 0, 1 );
 
-  typename INT_TAS_t::CS_t cs3( 2, 0, 2, false );  // y<=2
-  typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
+  typename INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
+  typename INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -264,7 +265,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( 1, 0, k, false ); // x <= k
+  typename INT_TAS_t::CS_t cs1( 1, 0, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -278,18 +279,18 @@ void fisher( int n = 2 ) {
   A_req.addCounterCons( ccs1 );
 
   pair<int, int> reset1( 1, 0 ); // x-->0
+
   A_req.addReset( reset1 );
 
   typename INT_TAS_t::T_t  req_wait( 1, 2 );
-  typename INT_TAS_t::CS_t cs2( 1, 0, k, false ); // x <= k
+  typename INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
   req_wait += cs2;
 
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  CounterAction *action =new CounterAction(ASSIGNMENT,  RHS_PARAM_T, 0, 0); //id=pid
-  
-  //SimpleCounterPAction *caction = createSimpleCounterPAction( 0, 0 );
+  CounterAction *action =
+      new CounterAction( ASSIGNMENT_ACTION, RHS_PARAMETER_T, 0, 0 ); // id=pid
 
   req_wait.addCounterAction( action );
 
@@ -304,13 +305,14 @@ void fisher( int n = 2 ) {
   CounterParameterConstraint *ccs2 =
       createCounterParameterConstraint( 0, 0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
+  typename INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
-  CounterAction *caction1 =new 
-      CounterAction( ASSIGNMENT, RHS_CONSTANT_T, 0, 0 ); //id=0 ( relations1 );
+  CounterAction *caction1 =
+      new CounterAction( ASSIGNMENT_ACTION, RHS_CONSTANT_T, 0,
+                         0 ); // id=0 ( relations1 );
 
   cs_A.addCounterAction( caction1 );
 
@@ -325,9 +327,9 @@ void fisher( int n = 2 ) {
   es.push_back( wait_cs );
   es.push_back( cs_A );
   typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
-  // tma1.addOnePara();
+
   INT_TAS_t sys;
-  Counter   counter( 0, 100 );
+  Counter   counter( 0, n+1 );
   sys += counter;
 
   for ( int i = 1; i <= n; i++ ) {
@@ -366,7 +368,7 @@ void incrementalTest() {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( 1, 0, k, false ); // x <= k
+  typename INT_TAS_t::CS_t cs1( 1, 0, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -383,13 +385,14 @@ void incrementalTest() {
   A_req.addReset( reset1 );
 
   typename INT_TAS_t::T_t  req_wait( 1, 2 );
-  typename INT_TAS_t::CS_t cs2( 1, 0, k, false ); // x <= k
+  typename INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
   req_wait += cs2;
 
   pair<int, int> reset2( 1, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
-  CounterAction  *caction = new CounterAction( ASSIGNMENT, RHS_PARAM_T, 0, 0 ); //id=pid
+  CounterAction *caction =
+      new CounterAction( ASSIGNMENT_ACTION, RHS_PARAMETER_T, 0, 0 ); // id=pid
 
   req_wait.addCounterAction( caction );
 
@@ -404,14 +407,13 @@ void incrementalTest() {
   CounterParameterConstraint *ccs2 =
       createCounterParameterConstraint( 0, 0, EQ, 0 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( 0, 1, -k, true ); // x> k
+  typename INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( 3, 0 );
 
-  
-  CounterAction  *caction1 =
-      new CounterAction(ASSIGNMENT, RHS_CONSTANT_T, 0, 0 ); //id=0;
+  CounterAction *caction1 =
+      new CounterAction( ASSIGNMENT_ACTION, RHS_CONSTANT_T, 0, 0 ); // id=0;
 
   cs_A.addCounterAction( caction1 );
 
@@ -574,8 +576,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  // fisher( 2 );
-  // return 0;
+  fisher( 2 );
+  return 0;
   //  example5();
   //  return 0;
   //  State<int> s;
@@ -587,7 +589,7 @@ int main( int argc, const char *argv[] ) {
   example1();
   example2();
   return 0;
-  typename INT_TAS_t::CS_t cons( 1, 2, 2, false );
+  typename INT_TAS_t::CS_t cons( 1, 2, LE, 2 ); // x-y <= 2
 
   cout << "constrain: " << cons << endl;
 

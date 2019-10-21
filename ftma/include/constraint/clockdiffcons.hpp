@@ -32,24 +32,18 @@ public:
   COMP_OPERATOR op;
   C             matrix_value;
 
-  ClockConstraint( const int clock_id1, const int clock_id2, const C rhs,
-                   bool is_strict_ref = true ) {
-    parameter_id = -100;
-    clock_x      = clock_id1;
-    clock_y      = clock_id2;
-    matrix_value = getMatrixValue( rhs, is_strict_ref );
-  }
-//  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR op,
-//                   const C rhs ) {
-//    parameter_id = -100;
-//    init( clock_id1, clock_id2, op, rhs );
-//  }
+  //  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR
+  //  op,
+  //                   const C rhs ) {
+  //    parameter_id = -100;
+  //    init( clock_id1, clock_id2, op, rhs );
+  //  }
 
   ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
-                   const int rhs, const int eparameter_id ) {
-    if(eparameter_id<0){
+                   const int rhs, const int eparameter_id = -100 ) {
+    if ( eparameter_id < 0 ) {
       init( clock_id1, clock_id2, eop, rhs );
-      return ;
+      return;
     }
     clock_x      = clock_id1;
     clock_y      = clock_id2;
@@ -163,6 +157,18 @@ public:
   }
 
 private:
+  /**
+   is_strict_ref  is true : <
+   is_strict_ref  is true : <=
+   */
+  ClockConstraint( const int clock_id1, const int clock_id2, const C rhs,
+                   bool is_strict_ref = true ) {
+    parameter_id = -100;
+    clock_x      = clock_id1;
+    clock_y      = clock_id2;
+    matrix_value = getMatrixValue( rhs, is_strict_ref );
+  }
+
   void neg_impl( void ) {
     int temp     = clock_x;
     clock_x      = clock_y;

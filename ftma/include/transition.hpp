@@ -54,7 +54,7 @@ public:
     }
 
     for ( auto a : other.actions ) {
-      CounterAction *dummy =  a->copy( );
+      CounterAction *dummy = a->copy();
       dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
       actions.push_back( dummy );
     }
@@ -203,6 +203,8 @@ public:
 
     for ( auto act : actions ) {
       ( *act )( counterValue );
+      assert(counterValue[0]<3);
+      assert(counterValue[0]>=0);
     }
 
     //    return re_state;

@@ -191,7 +191,6 @@ int check_type()
      *    it actually will only return IDENTIFIER
      */
    string  sym=string( yytext);
-   cout<<sym<<endl;
    // if(current_data->hasValue(INT_STR, sym) ){
    //   yylval.int_value=current_data->getValue(INT_STR, sym);
    //   return CONSTANT;
@@ -229,7 +228,7 @@ int check_type()
     */
    
    if ( current_data->hasValue( CLOCK_STR, sym ) ) {
-     cout<<"clock"<<endl;
+
      return CLOCK_YY;
    }
    
@@ -237,36 +236,29 @@ int check_type()
    token->code_name=code_name;
   
    if ( system_data->hasValue( INT_STR, code_name ) ) {
-      cout<<"int"<<endl;
      return INT_YY;
    }
    
    if ( system_data->hasValue( BOOL_STR, code_name ) ) {
-      cout<<"bool"<<endl;
      return BOOL_YY;
    }
    
    if ( system_data->hasValue( CHAN_STR, code_name ) ) {
-      cout<<"chan"<<endl;
      return CHAN_YY;
    }
   
    token->code_name=sym;
    if ( system_data->hasValue( INT_STR, sym ) ) {
-      cout<<"int"<<endl;
      return INT_YY;
    }
    
    if ( system_data->hasValue( BOOL_STR, sym ) ) {
-      cout<<"bool"<<endl;
      return BOOL_YY;
    }
    
    if ( system_data->hasValue( CHAN_STR, sym ) ) {
-      cout<<"chan"<<endl;
      return CHAN_YY;
    }
-        cout<<"iddd"<<endl;
    return(IDENTIFIER);
   
    

@@ -5,7 +5,7 @@
 namespace graphsat {
 
 UppaalParser::UppaalParser( const string &xmlfile ) {
-  
+
   XmlConfig  xmldoc( xmlfile );
   XML_P      declaration = xmldoc.getOneChild( DECLARATION_STR );
   child_type templates   = xmldoc.getChild( TEMPLATE_STR );
@@ -13,7 +13,7 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   child_type queries     = xmldoc.getChild( QUERIES_STR );
 
   parseDeclaration( declaration );
-  
+
   parseTemplateDeclaration( templates );
 
   parseTemplate( templates );
@@ -34,7 +34,7 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
   for ( auto key : gloabl_variable_types ) {
     num += system_data.getTypeNum( key );
   }
-  
+
   system_data.setGlobalVarNum( num );
 
   return 0;
@@ -73,10 +73,10 @@ int UppaalParser::parseTemplate( child_type templates ) {
   }
 
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
-   
+
     XML_P nameConf = ( *it )->getOneChild( NAME_STR );
 
-    UppaalTemplateData& template_data=template_map[ nameConf->getValue() ];
+    UppaalTemplateData &template_data = template_map[ nameConf->getValue() ];
 
     system_data.addValue( TEMPLATE_STR, template_data.name );
 

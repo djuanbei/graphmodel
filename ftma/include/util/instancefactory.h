@@ -124,7 +124,8 @@ public:
   //                                                        int value );
 
   // friend SimpleCounterPAction *createSimpleCounterPAction( int counter_id,
-  //                                                          int eparameter_id );
+  //                                                          int eparameter_id
+  //                                                          );
 
   // friend DefaultCAction *createDefaultCAction(
   //     vector<pair<int, vector<pair<int, int>>>> &relations1 );

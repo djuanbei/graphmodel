@@ -52,6 +52,7 @@ public:
     for ( int i = 0; i < row_len; i++ ) {
       assert( data[ i ] >= bounds[ i ].first );
       assert( data[ i ] < bounds[ i ].second );
+      
       if ( shift[ i ] ) {
         j++;
         base = 1;
