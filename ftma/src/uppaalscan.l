@@ -205,7 +205,7 @@ int check_type()
    }
    
   TYPE_T type=current_data->getType(sym);
-  if(TYPE_T!=NO_T){
+  if(type!=NO_T){
     if(current_data->isConstant(sym)){
             yylval.int_value=current_data->getConstant(sym);
             return CONSTANT;

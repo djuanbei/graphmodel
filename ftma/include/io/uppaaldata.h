@@ -74,6 +74,9 @@ public:
     point_values.clear();
   }
 
+  void setStartId( int id){
+    startId=id;
+  }
   string getTypeName( const TYPE_T type ) const {
     return type_to_name.at( type );
   }
@@ -120,6 +123,7 @@ public:
   int getTypeNum( const TYPE_T type ) const {
     return int_values.getTypeNum( type_to_name.at( type ) );
   }
+  
 
   /**
    *
@@ -210,7 +214,9 @@ private:
 
   int         init_loc;
   UppaalData *parent;
-
+  
+  int startId;
+  
   typename INT_TAS_t::TAT_t tat;
   friend class UppaalParser;
 };

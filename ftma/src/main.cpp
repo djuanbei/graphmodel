@@ -319,9 +319,9 @@ void fisher( int n = 2 ) {
   cs_A.addCounterAction( caction1 );
 
   ls.push_back( A );
+  ls.push_back( cs );
   ls.push_back( req );
   ls.push_back( wait );
-  ls.push_back( cs );
 
   es.push_back( A_req );
   es.push_back( req_wait );

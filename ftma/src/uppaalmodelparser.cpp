@@ -30,12 +30,11 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
   if ( content.length() > 0 ) {
     parseProblem( content, this, &system_data, &system_data );
   }
-  int num = 0;
-  for ( auto key : gloabl_variable_types ) {
-    num += system_data.getTypeNum( key );
-  }
-
-  system_data.setGlobalVarNum( num );
+  // int num = 0;
+  // for ( auto key : gloabl_variable_types ) {
+  //   num += system_data.getTypeNum( key );
+  // }
+  // system_data.setGlobalVarNum( num );
 
   return 0;
 }
@@ -56,12 +55,12 @@ int UppaalParser::parseTemplateDeclaration( child_type templates ) {
     }
     template_map[ template_data.name ] = template_data;
   }
-  int num = 0;
-  for ( auto key : gloabl_variable_types ) {
-    num += system_data.getTypeNum( key );
-  }
+  // int num = 0;
+  // for ( auto key : gloabl_variable_types ) {
+  //   num += system_data.getTypeNum( key );
+  // }
 
-  system_data.setGlobalVarNum( num );
+  // system_data.setGlobalVarNum( num );
 
   return 0;
 }
@@ -131,6 +130,14 @@ int UppaalParser::parseSystem( XML_P system ) {
    Exactly one system declaration
    */
   assert( NULL != sys_dec );
+  int allVarNum=system_data.getVarNum( );
+  for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
+    string template_name = sys_dec->timed_automata_list[ i ]->tmt_name;
+    template_map[ template_name ].setStartId( allVarNum);
+    allVarNum+=template_map[ template_name ].getVarNum( );
+  }
+  
+  int startId=system_data.getVarNum( );
 
   for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
 
@@ -139,9 +146,8 @@ int UppaalParser::parseSystem( XML_P system ) {
         template_map[ template_name ].getPoints( PARAMETER_T );
 
     Parameter parameter_template;
-    int       global_num = system_data.getGlobalVarNum();
     int       param_num  = (int) template_parameter_vec.size();
-    for ( int i = 0; i < global_num; i++ ) {
+    for ( int i = 0; i < allVarNum; i++ ) {
       parameter_template.setCounterMap( i + param_num, i );
     }
 

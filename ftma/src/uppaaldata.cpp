@@ -5,7 +5,10 @@ namespace graphsat {
 UppaalData::UppaalData() {
   init_loc       = 0;
   name           = "";
+
   parent         = NULL;
+  startId=0;
+  
   TYPE_MAP( type_to_name, INT_T );
   base_types.push_back( INT_T );
   TYPE_MAP( type_to_name, CLOCK_T );
@@ -44,14 +47,7 @@ UppaalData::UppaalData() {
   type_to_name[ NO_T ] = STRING( NO_T );
 }
 
-int UppaalData::getVarNum( void ) const{
-  int re=0;
-  for ( vector<TYPE_T>::const_iterator it = base_types.begin();
-        it != base_types.end(); it++ ) {
-    re+=getTypeNum( *it);
-  }
-  return re;
-}
+
 
 TYPE_T UppaalData::getType( const string &name ) const {
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
@@ -108,6 +104,13 @@ int UppaalData::getConstant( const string &name ) const {
     return parent->isConstant( name );
   }
   return UN_DEFINE;
+}
+int UppaalData::getVarNum( void ) const{
+  int re=0;
+  for( auto e: base_types){
+    re+=getTypeNum( e);
+  }
+  return re;
 }
 
 } // namespace graphsat

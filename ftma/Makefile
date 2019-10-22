@@ -87,7 +87,7 @@ $(EXEC)_static:		LFLAGS += --static
 ## Dependencies
 $(EXEC):		$(COBJS)
 $(EXEC)_profile:	$(PCOBJS)
-$(EXEC)_debug:	parser	$(DCOBJS) 
+$(EXEC)_debug:		$(DCOBJS) 
 $(EXEC)_check:		$(CCOBJS)
 $(EXEC)_release:	$(RCOBJS)
 $(EXEC)_static:		$(RCOBJS)
