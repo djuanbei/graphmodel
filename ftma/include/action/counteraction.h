@@ -31,14 +31,14 @@ class CounterAction {
 public:
   CounterAction( Action_e ee, RHS_TYPE etype, int elocal_lhs_id,
                  int elocal_rhs_id ) {
-    
+
     action       = ee;
     type         = etype;
     local_lhs_id = elocal_lhs_id;
     local_rhs_id = elocal_rhs_id;
   }
   void operator()( int *counter_value ) const {
-   
+
     switch ( action ) {
     case ASSIGNMENT_ACTION: {
       switch ( type ) {
@@ -88,7 +88,7 @@ public:
                      const vector<int> &  parameter_value ) {
     global_lhs_id = id_map.at( local_lhs_id );
     if ( type == RHS_CONSTANT_T ) {
-       global_rhs_id=local_rhs_id;
+      global_rhs_id = local_rhs_id;
       return;
     }
     if ( type == RHS_PARAMETER_T ) {
@@ -107,7 +107,6 @@ private:
   int global_lhs_id;
   int global_rhs_id;
 };
-
 
 } // namespace graphsat
 #endif

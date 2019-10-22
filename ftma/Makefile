@@ -51,7 +51,7 @@ COPTIMIZE ?= -O2
 
 
 
-.PHONY : all s p d r c rs clean 
+.PHONY : all s p d r c rs clean  test
 
 
 
@@ -102,7 +102,7 @@ lib$(LIB)_release.a:	$(filter-out */$(MAINFILE).or, $(RCOBJS))
 parser: LEX YACC
 
 LEX: src/uppaalscan.l
-	lex -o include/io/uppaalscan.h src/uppaalscan.l
+	lex -d -o include/io/uppaalscan.h src/uppaalscan.l
 
 YACC: src/uppaalparser.y
 	bison  -o  src/uppaalparser.cpp  -v src/uppaalparser.y
@@ -147,6 +147,9 @@ clean:
 	  $(COBJS) $(PCOBJS) $(DCOBJS) $(RCOBJS) $(CCOBJS)  *.core depend.mk \
 	   lib$(LIB)_standard.a lib$(LIB)_profile.a lib$(LIB)_release.a lib$(LIB)_debug.a
 	 
+
+test:
+	test/runtest.sh  test
 
 ## Make dependencies
 depend.mk: $(CSRCS) $(CHDRS)

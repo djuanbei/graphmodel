@@ -68,18 +68,6 @@ private:
                          ( int counter_id, COMP_OPERATOR op, int rhs ),
                          ( counter_id, op, rhs ), CounterConstraint );
 
-  // regist_factory_method( SimpleCounterAction, ( int counter_id, int value ),
-  //                        ( counter_id, value ), CounterAction );
-
-  // regist_factory_method( SimpleCounterPAction,
-  //                        ( int counter_id, int eparameter_id ),
-  //                        ( counter_id, eparameter_id ), CounterAction );
-
-  // regist_factory_method( DefaultCAction,
-  //                        ( vector<pair<int, vector<pair<int, int>>>> &
-  //                          relations1 ),
-  //                        ( relations1 ), CounterAction );
-
 private:
   CounterConstraint *copy( CounterConstraint *other ) {
     CounterConstraint *re = other->copy();
@@ -140,16 +128,6 @@ CounterParameterConstraint *createCounterParameterConstraint( int counter_id,
                                                               int rhs );
 
 CounterConstraint *copy( CounterConstraint *other );
-
-// SimpleCounterAction *createSimpleCounterAction( int counter_id, int value );
-
-// SimpleCounterPAction *createSimpleCounterPAction( int counter_id,
-//                                                   int eparameter_id );
-
-// DefaultCAction *createDefaultCAction(
-//     vector<pair<int, vector<pair<int, int>>>> &relations1 );
-
-// CounterAction *copy( const CounterAction *other );
 
 CounterParameterConstraint *negCounterParameterConstraint( int parameter_id,
                                                            int counter_id,

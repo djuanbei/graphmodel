@@ -29,7 +29,7 @@
 
 namespace graphsat {
 
-static const string gloabl_variable_types[] = {INT_STR, BOOL_STR, CHAN_STR};
+static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, BOOL_T, CHAN_T};
 
 class UppaalParser {
 
@@ -49,20 +49,19 @@ public:
    *
    * @return
    */
-  int getGlobalId( UppaalTemplateData *current_data, string type,
-                   string code_name );
+  int getGlobalId( UppaalData *current_data, TYPE_T type, string code_name );
 
-  int getParameterId( UppaalTemplateData *current_data, const string &name );
+  int getParameterId( UppaalData *current_data, const string &name );
 
-  void addClockConstraint( UppaalTemplateData *current_data, int clock1_id,
+  void addClockConstraint( UppaalData *current_data, int clock1_id,
                            int clock2_id, COMP_OPERATOR op, int rhs,
                            int parameter_id = -10 );
 
 private:
   //  map<TYPE_T, string> type_name_map;
 
-  UppaalTemplateData              system_data;
-  map<string, UppaalTemplateData> template_map;
+  UppaalData              system_data;
+  map<string, UppaalData> template_map;
 
   INT_TAS_t sys;
   Property  prop;
@@ -77,15 +76,15 @@ private:
 
   int parseQuery( child_type queries );
 
-  int parseTemplateParamter( UppaalTemplateData &tempData, XML_P parameter );
+  int parseTemplateParamter( UppaalData &tempData, XML_P parameter );
 
-  vector<typename INT_TAS_t::L_t> parseLocation( UppaalTemplateData &tempData,
-                                                 child_type locations );
+  vector<typename INT_TAS_t::L_t> parseLocation( UppaalData &tempData,
+                                                 child_type  locations );
 
-  vector<typename INT_TAS_t::T_t> parseTransition( UppaalTemplateData &tempData,
-                                                   child_type transitions );
+  vector<typename INT_TAS_t::T_t> parseTransition( UppaalData &tempData,
+                                                   child_type  transitions );
 
-  void parseLabel( UppaalTemplateData &data, string guards );
+  void parseLabel( UppaalData &data, string guards );
 
   /**
    * @param current_data  current template
@@ -93,7 +92,7 @@ private:
    * @param save_name  the name in code level
    * @return  the type of name
    */
-  TYPE_T getType( UppaalTemplateData *current_data, const string &xml_name,
+  TYPE_T getType( UppaalData *current_data, const string &xml_name,
                   string &code_name );
 };
 

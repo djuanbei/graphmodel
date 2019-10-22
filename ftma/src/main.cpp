@@ -11,6 +11,7 @@
 //#define CHECK_MEMORY 1
 #define PRINT_STATE 1
 #define DRAW_GRAPH 1
+#define YYDEBUG 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -34,6 +35,7 @@
 #include <cstdint>
 #include <iostream>
 #include <limits>
+extern int yy_flex_debug;
 
 using std::vector;
 using namespace graphsat;
@@ -329,7 +331,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
 
   INT_TAS_t sys;
-  Counter   counter( 0, n+1 );
+  Counter   counter( 0, n + 1 );
   sys += counter;
 
   for ( int i = 1; i <= n; i++ ) {
@@ -514,7 +516,7 @@ void incrementalTest() {
 }
 void fisher1() {
   // UppaalParser parser(
-  //     "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
+  //       "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
   UppaalParser parser(
       "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   INT_TAS_t sys = parser.getSYS();
@@ -570,6 +572,7 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
+  yy_flex_debug = 1;
   //    incrementalTest( );
   // return 0;
   //  testcompression( );
@@ -579,8 +582,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
- // fisher( 2 );
- // return 0;
+  // fisher( 2 );
+  // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

@@ -21,24 +21,13 @@ using std::pair;
 using std::string;
 using std::vector;
 
-enum ParaType {
-  PARAMETER_BOOL_T,
-  PARAMETER_BOOL_REF_T,
-  PARAMETER_CHANNEL_T,
-  PARAMETER_CHANNEL_REF_T,
-  PARAMETER_URGENT_CHANNEL_T,
-  PARAMETER_URGENT_CHANNEL_REF_T,
-  PARAMETER_INT_T,
-  PARAMETER_INT_REF_T,
-  PARAMETER_SCALAR_T
-};
 struct ParaElement {
   ParaElement() { is_ref = false; }
-  bool     is_ref;
-  ParaType type;
-  int      id;
-  string   type_name;
-  string   name;
+  bool   is_ref;
+  TYPE_T type;
+  int    id;
+  string name;
+  string type_name;
 };
 
 struct ArgumentItem {
@@ -49,11 +38,12 @@ struct ArgumentItem {
 };
 
 struct TaDec {
-  bool                 no_parameter;
+  bool                 has_parameter;
   string               name;
+  string               tmt_name;
   vector<ArgumentItem> param_list;
   TaDec()
-      : no_parameter( false ) {
+      : has_parameter( true ) {
     name = "";
   }
 };
@@ -71,32 +61,31 @@ struct SystemDec {
 
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
 
-const static string CLOCK_CS = "clock_cons";
-
-const static string INT_CS = "counter_cons";
-
-const static string CLOCK_RESET = "clock_reset";
-
-const static string INT_UPDATE = "counter_update";
-
-const static string INT_ARRAY = "int_array";
-
-// const static string USING_GLOBAL = STRING( USING_GLOBAL );
+// const static string CLOCK_CS = "clock_cons";
+//
+// const static string INT_CS = "counter_cons";
+//
+// const static string CLOCK_RESET = "clock_reset";
+//
+// const static string INT_UPDATE = "counter_update";
+//
+// const static string INT_ARRAY = "int_array";
 
 const static int UN_DEFINE = 100000000;
 
 class UppaalParser;
 
-class UppaalTemplateData {
+class UppaalData {
 public:
-  UppaalTemplateData() {
-    init_loc       = 0;
-    name           = "";
-    global_var_num = 0;
-  }
+  UppaalData();
+  
   void clear() {
     int_values.clear();
     point_values.clear();
+  }
+
+  string getTypeName( const TYPE_T type ) const {
+    return type_to_name.at( type );
   }
 
   void setName( const string &n ) { name = n; }
@@ -107,22 +96,18 @@ public:
 
   int getGlobalVarNum( void ) const { return global_var_num; }
 
-  string getVarFullName( const string &var_name ) const {
-    if ( "" != name ) {
-      return name + "#" + var_name;
-    }
-    return var_name;
-  }
+  TYPE_T getType(const string &name ) const;
+
 
   void addIntArray( const string &key, vector<int> &v ) {
     for ( auto e : v ) {
-      addValue( INT_ARRAY, key, e );
+      addValue( ARRAY_INT_T, key, e );
     }
   }
   const vector<int> &getIntArray( const string &key ) const {
-    int id = getId( INT_ARRAY, key );
+    int id = getId( ARRAY_INT_T, key );
     if ( id > -1 ) {
-      const pair<string, vector<int>> &pp = getValue( INT_ARRAY, id );
+      const pair<string, vector<int>> &pp = getValue( ARRAY_INT_T, id );
       return pp.second;
     }
     static vector<int> dummy;
@@ -133,16 +118,16 @@ public:
 
   int getInitialLoc() const { return init_loc; }
 
-  void addValue( const string &type, const string &name, int v = UN_DEFINE ) {
-    int_values.addValue( type, name, v );
+  void addValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
+    int_values.addValue( type_to_name.at( type ), name, v );
   }
 
-  void setValue( const string &type, const string &name, int v = UN_DEFINE ) {
-    int_values.setValue( type, name, v );
+  void setValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
+    int_values.setValue( type_to_name.at( type ), name, v );
   }
 
-  int getTypeNum( const string &type ) const {
-    return int_values.getTypeNum( type );
+  int getTypeNum( const TYPE_T type ) const {
+    return int_values.getTypeNum( type_to_name.at( type ) );
   }
 
   /**
@@ -152,82 +137,96 @@ public:
    *
    * @return  -1 if name is not in int_values
    */
-  int getId( const string &type, const string &name ) const {
-    return int_values.getId( type, name );
+  int getId( const TYPE_T type, const string &name ) const {
+    return int_values.getId( type_to_name.at( type ), name );
   }
+
   int getClockId( const string &name ) const {
-    return getId( CLOCK_STR, name ) + 1; // start with 1
+    return getId( CLOCK_T, name ) + 1; // start with 1
   }
 
-  const pair<string, vector<int>> &getValue( const string &type,
-                                             int           id ) const {
-    return int_values.getValue( type, id );
+  const pair<string, vector<int>> &getValue( const TYPE_T type, int id ) const {
+    return int_values.getValue( type_to_name.at( type ), id );
   }
 
-  bool hasValue( const string &type, const string &name ) const {
+  bool hasValue( const TYPE_T type, const string &name ) const {
 
-    return int_values.hasValue( type, name );
+    return int_values.hasValue( type_to_name.at( type ), name );
   }
 
-  int getValue( const string &type, const string &name, int id = 0 ) const {
-    return int_values.getValue( type, name, id );
+  int getValue( const TYPE_T type, const string &name, int id = 0 ) const {
+    return int_values.getValue( type_to_name.at( type ), name, id );
   }
 
-  vector<pair<string, vector<int>>> getValue( const string &type ) const {
-    return int_values.getValue( type );
+  vector<pair<string, vector<int>>> getValue( const TYPE_T type ) const {
+    return int_values.getValue( type_to_name.at( type ) );
   }
 
-  void addPointer( const string &type, const string &name, void *v ) {
-    point_values.addValue( type, name, v );
+  void addPointer( const TYPE_T type, const string &name, void *v ) {
+    point_values.addValue( type_to_name.at( type ), name, v );
   }
 
-  bool hasPointer( const string &type, const string name ) const {
-    return point_values.hasValue( type, name );
+  void addPointer( const TYPE_T type, void *v ) {
+    point_values.addValue( type_to_name.at( type ), type_to_name.at( type ),
+                           v );
   }
 
-  int getPointerId( const string &type, const string &name ) const {
-    return point_values.getId( type, name );
+  bool hasPointer( const TYPE_T type, const string name ) const {
+    return point_values.hasValue( type_to_name.at( type ), name );
   }
 
-  vector<void *> getPoints( const string &type, const string name ) const {
-    int id = point_values.getId( type, name );
+  int getPointerId( const TYPE_T type, const string &name ) const {
+    return point_values.getId( type_to_name.at( type ), name );
+  }
+
+  vector<void *> getPoints( const TYPE_T type, const string name ) const {
+    int id = point_values.getId( type_to_name.at( type ), name );
     if ( id > -1 ) {
-      return point_values.getValue( type, id ).second;
+      return point_values.getValue( type_to_name.at( type ), id ).second;
     } else {
       vector<void *> dummy;
       return dummy;
     }
   }
-  void *getPointer( const string &type, const string &name ) const {
-    return point_values.getValue( type, name, 0 );
+  void *getPointer( const TYPE_T type ) const {
+    return point_values.getValue( type_to_name.at( type ),
+                                  type_to_name.at( type ), 0 );
+  }
+  void *getPointer( const TYPE_T type, const string &name ) const {
+    return point_values.getValue( type_to_name.at( type ), name, 0 );
+  }
+  int getPointNum( const TYPE_T type ) const {
+    return point_values.getTypeNum( type_to_name.at( type ) );
   }
 
-  int getPointNum( const string &type ) const {
-    return point_values.getTypeNum( type );
+  vector<pair<string, vector<void *>>> getPoints( const TYPE_T type ) const {
+    return point_values.getValue( type_to_name.at( type ) );
   }
 
-  vector<pair<string, vector<void *>>> getPoints( const string &type ) const {
-    return point_values.getValue( type );
+  void clearPoints( const TYPE_T type ) {
+    point_values.clear( type_to_name.at( type ) );
   }
-
-  void clearPoints( const string &type ) { point_values.clear( type ); }
 
   void clearPoints() { point_values.clear(); }
 
 private:
-  string         name;
-  int            global_var_num;
-  ValueData<int> int_values;
-  PointerData    point_values;
+  string              name;
+  int                 global_var_num;
+  ValueData<int>      int_values;
+  PointerData         point_values;
+  map<TYPE_T, string> type_to_name;
+  
+  vector<TYPE_T> base_types;
 
-  int init_loc;
+  int         init_loc;
+  UppaalData *parent;
 
   typename INT_TAS_t::TAT_t tat;
   friend class UppaalParser;
 };
 
-void parseProblem( const string &str, UppaalParser *parser,
-                   UppaalTemplateData *, UppaalTemplateData * );
+void parseProblem( const string &str, UppaalParser *parser, UppaalData *,
+                   UppaalData * );
 } // namespace graphsat
 
 #endif

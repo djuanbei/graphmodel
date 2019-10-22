@@ -12,6 +12,7 @@
 #define DBM_UTIL_HPP
 #include <iostream>
 #include <limits>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -19,7 +20,16 @@
 
 #define newA( __E, __n ) (__E *) malloc( ( __n ) * sizeof( __E ) )
 
+#define TYPE_TYPE( T ) T, REF_##T, CONST_##T, CONST_REF_##T, ARRAY_##T
+#define TYPE_MAP( M, T )                                                       \
+  M[ T ]             = #T;                                                     \
+  M[ REF_##T ]       = STRING( REF_##T );                                      \
+  M[ CONST_##T ]     = STRING( CONST_##T );                                    \
+  M[ CONST_REF_##T ] = STRING( CONST_REF_##T );                                \
+  M[ ARRAY_##T ]     = STRING( ARRAY_##T );
+
 namespace graphsat {
+using std::map;
 using std::string;
 using std::vector;
 const static int zero_clock_index = 0;
@@ -74,21 +84,13 @@ const static string COMMENT_STR = "comment";
 
 const static string RESET_STR = "reset";
 
-const static string INT_STR = "int";
-
-// const static string INT_DEC_STR           = "int_dec";
+// const static string INT_STR = "int";
 
 const static string CHAN_STR = "chan";
 
-// const static string CHAN_DEC_STR          = "chan_dec";
+// const static string CLOCK_STR = "clock";
 
-const static string CLOCK_STR = "clock";
-
-// const static string CLOCK_DEC_STR = "clock_dec";
-
-const static string BOOL_STR = "bool";
-
-// const static string BOOL_DEC_STR          = "bool_dec";
+// const static string BOOL_STR = "bool";
 
 const static string PARAMETER_REF_STR = "&";
 
@@ -121,16 +123,35 @@ static COMP_OPERATOR negation( COMP_OPERATOR op ) {
   }
 }
 enum TYPE_T {
-  INT_T,
-  CLOCK_T,
-  BOOL_T,
-  CHAN_T,
-  URGENT_CHAN_T,
-  BROADCAST_CHAN_T,
-  PARAMETER_T,
+  TYPE_TYPE( INT_T ),
+  TYPE_TYPE( CLOCK_T ),
+  TYPE_TYPE( BOOL_T ),
+  TYPE_TYPE( CHAN_T ),
+  TYPE_TYPE( URGENT_CHAN_T ),
+  TYPE_TYPE( BROADCAST_CHAN_T ),
+
+  SYSTEM_T,
   TEMPLATE_T,
+  LOCATION_T,
+  PARAMETER_T,
+  CLOCK_CS_T,
+  INT_CS_T,
+  INT_UPDATE_T,
+  RESET_T,
   NO_T
+
 };
+
+static   TYPE_T base_type(TYPE_T type ){
+  return ( TYPE_T)(type/5);
+}
+
+static bool isRefType( const TYPE_T type ) {
+  if ( type >= PARAMETER_T ) {
+    return false;
+  }
+  return type % 2 == 1;
+}
 
 /**
  *  Both have compare < and <=

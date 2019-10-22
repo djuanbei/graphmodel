@@ -25,20 +25,20 @@ TEST( TA, UNREACH ) {
 
   INT_TAS_t::T_t E00a( 0, 0 );
   pair<int, int> reset1( 2, 0 );
-  E00a.addReset( reset1 );               // y-->0
-  INT_TAS_t::CS_t cs1( 2, 0, 2, false ); // y<=2
+  E00a.addReset( reset1 );            // y-->0
+  INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
   E00a += cs1;
 
   INT_TAS_t::T_t E00b( 0, 0 );
   pair<int, int> reset2( 1, 0 );
-  E00b.addReset( reset2 );               // x-->0
-  INT_TAS_t::CS_t cs2( 1, 0, 2, false ); // x<=2
+  E00b.addReset( reset2 );            // x-->0
+  INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
   E00b += cs2;
 
   INT_TAS_t::T_t E01( 0, 1 );
 
-  INT_TAS_t::CS_t cs3( 2, 0, 2, false );  // y<=2
-  INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
+  INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
+  INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -51,8 +51,11 @@ TEST( TA, UNREACH ) {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  INT_TAS_t::TA_t tma1( ls, es, 0, 2 );
-  tma1.addOnePara();
+  INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
+  Parameter        param;
+  param.addParameterValue( 1 );
+  INT_TAS_t::TA_t tma1( &tmt1, param );
+  //  tma1.addOnePara();
   INT_TAS_t sys;
 
   sys += tma1;
@@ -71,7 +74,7 @@ TEST( REACHSET, TERIMINAL ) {
   INT_TAS_t::L_t start( 0 );
 
   INT_TAS_t::L_t  loop( 1 );
-  INT_TAS_t::CS_t cs1( 1, 0, 10, false ); // x <= 10
+  INT_TAS_t::CS_t cs1( 1, 0, LE, 10 ); // x <= 10
   loop += cs1;
 
   INT_TAS_t::L_t end( 2 );
@@ -84,15 +87,15 @@ TEST( REACHSET, TERIMINAL ) {
   start_loop.addReset( reset2 );
 
   INT_TAS_t::T_t  loop_loop( 1, 1 );
-  INT_TAS_t::CS_t cs2( 1, 0, 10, false );  // x <= 10
-  INT_TAS_t::CS_t cs3( 0, 1, -10, false ); // 0-x <= -10
+  INT_TAS_t::CS_t cs2( 1, 0, LE, 10 ); // x <= 10
+  INT_TAS_t::CS_t cs3( 1, 0, GE, 10 ); // x>=10 === 0-x <= -10
   loop_loop += cs2;
   loop_loop += cs3;
   pair<int, int> reset3( 1, 0 ); // x-->0
   loop_loop.addReset( reset3 );
 
   INT_TAS_t::T_t  loop_end( 1, 2 );
-  INT_TAS_t::CS_t cs4( 0, 2, -20, false ); // 0-y <= -20
+  INT_TAS_t::CS_t cs4( 2, 0, GE, 20 ); // y>=20=== 0-y <= -20
   loop_end += cs4;
   loop_end.addReset( reset1 );
   loop_end.addReset( reset2 );
@@ -103,8 +106,10 @@ TEST( REACHSET, TERIMINAL ) {
   es.push_back( start_loop );
   es.push_back( loop_loop );
   es.push_back( loop_end );
-  INT_TAS_t::TA_t tma1( ls, es, 0, 2 );
-  INT_TAS_t       sys;
+  INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
+  Parameter        param;
+  INT_TAS_t::TA_t  tma1( &tmt1, param );
+  INT_TAS_t        sys;
   sys += tma1;
   R_t data( sys );
 
@@ -123,7 +128,7 @@ TEST( REACHSET, FISHER ) {
   INT_TAS_t::L_t A( 0 );
 
   INT_TAS_t::L_t  req( 1 );
-  INT_TAS_t::CS_t cs1( 1, 0, k, false ); // x <= k
+  INT_TAS_t::CS_t cs1( 1, 0, LE, k ); // x <= k
   req += cs1;
 
   INT_TAS_t::L_t wait( 2 );
@@ -136,16 +141,16 @@ TEST( REACHSET, FISHER ) {
   vector<pair<int, int>> ps1, ps2;
   ps2.push_back( p );
 
-  DefaultCounterConstraint *ccs1 =
-      CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
-          ps1, ps2, 0, EQ ); // 1*id==0
+  void *ccs1 = createCounterConstraint( 0, DUMMY_ID, EQ, 0 );
+  // CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
+  //     ps1, ps2, 0, EQ ); // 1*id==0
   A_req.addCounterCons( ccs1 );
 
   pair<int, int> reset1( 1, 0 ); // x-->0
   A_req.addReset( reset1 );
 
   INT_TAS_t::T_t  req_wait( 1, 2 );
-  INT_TAS_t::CS_t cs2( 1, 0, k, false ); // x <= k
+  INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
   req_wait += cs2;
 
   pair<int, int> reset2( 1, 0 ); // x-->0
@@ -157,8 +162,9 @@ TEST( REACHSET, FISHER ) {
   passins.push_back( passin );
   pair<int, vector<pair<int, int>>> oneUpdate( 0, passins ); // id=1*pid
   relations.push_back( oneUpdate );
-  DefaultCAction *caction =
-      CounterActionFactory::getInstance().createDefaultCAction( relations );
+  CounterAction *caction =
+      new CounterAction( ASSIGNMENT_ACTION, RHS_PARAMETER_T, 0, 0 );
+  //      CounterActionFactory::getInstance().createDefaultCAction( relations );
 
   req_wait.addCounterAction( caction );
 
@@ -175,11 +181,12 @@ TEST( REACHSET, FISHER ) {
   pair<int, int>         id_id( 1, 0 ); // 1*id
   ps3.push_back( id_p );
   ps4.push_back( id_id );
-  DefaultCounterConstraint *ccs2 =
-      CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
-          ps3, ps4, 0, EQ ); // id==pid
+  void *ccs2 = createCounterConstraint( 0, DUMMY_ID, EQ, 0, 0 ); //  id==pid
+  // DefaultCounterConstraint *ccs2 =
+  //     CounterConstraintFactory::getInstance().createDefaultCounterConstraint(
+  //         ps3, ps4, 0, EQ ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  INT_TAS_t::CS_t cs3( 0, 1, -k ); // x> k
+  INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
   wait_cs += cs3;
 
   INT_TAS_t::T_t cs_A( 3, 0 );
@@ -190,9 +197,11 @@ TEST( REACHSET, FISHER ) {
 
   pair<int, vector<pair<int, int>>> oneUpdate1( 0, passins1 ); // id=0
   relations1.push_back( oneUpdate1 );
-  DefaultCAction *caction1 =
-      CounterActionFactory::getInstance().createDefaultCAction(
-          relations1 ); //( relations1 );
+  CounterAction *caction1 =
+      new CounterAction( ASSIGNMENT_ACTION, RHS_CONSTANT_T, 0, 0 );
+  // DefaultCAction *caction1 =
+  //     CounterActionFactory::getInstance().createDefaultCAction(
+  //         relations1 ); //( relations1 );
   cs_A.addCounterAction( caction1 );
 
   ls.push_back( A );
@@ -205,13 +214,20 @@ TEST( REACHSET, FISHER ) {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  INT_TAS_t::TA_t tma1( ls, es, 0, 1 );
+  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
+  //  INT_TAS_t::TA_t tma1( ls, es, 0, 1 );
   //  tma1.addOnePara();
   INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
+    Parameter param;
+    param.setCounterMap( 0, 0 ); // add relation between local id and global id
+    param.addParameterValue( i );
+
+    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+    sys += tma1;
     INT_TAS_t::TA_t tma2 = tma1;
-    tma2.addOnePara( i );
-    sys += tma2;
+    // tma2.addOnePara( i );
+    // sys += tma2;
   }
   // INT_TAS_t   sys = n * tma1;
   Counter counter( 0, n - 1 );

@@ -29,8 +29,8 @@
   extern  int lineNum;
 
 
-  UppaalTemplateData* system_data;
-  UppaalTemplateData* current_data;
+  //  UppaalData* system_data;
+  UppaalData* current_data;
   UppaalParser* model_parser;
   
   extern void yyerror(const char *); 
@@ -53,6 +53,7 @@
   TYPE_T type_value;
   vector<string> * str_vec_pointer;
   vector<ArgumentItem>* item_vec_pointer;
+  vector<ParaElement>* para_element_pointer;
   COMP_OPERATOR com_op;
   
  }
@@ -77,8 +78,6 @@
 %token<token_value>  CHAN_YY
 
 
-
-
 %token STRING_LITERAL    URGENT BROADCAST META
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -91,12 +90,16 @@
 
 %token STRUCT   ELLIPSIS
 
-%token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN  SYSTEM
+%token COMMENT CASE DEFAULT IF ELSE SWITCH WHILE DO FOR  CONTINUE BREAK RETURN  SYSTEM ARGUMENT
 
 
 %type<int_value> const_expression
+
+
 %type<type_value> type_specifier
-//%type<token_value> identifier
+%type<type_value> base_type_specifier
+
+
 %type<token_value>  clock_yy
 %type<token_value>  int_yy
 %type<token_value>  bool_yy
@@ -106,7 +109,9 @@
 %type<int_value> parameter_identifier
 %type<int_value> chan_identifier
 %type<str_vec_pointer> identifier_list
-%type<item_vec_pointer> argument_list
+
+%type<para_element_pointer> formal_argument_list
+%type<item_vec_pointer> real_argument_list
 %type<str_vec_pointer> timed_automata_list
 %type<com_op> compare_relation
 
@@ -118,8 +123,7 @@
 
 
 %%
-
-type_specifier
+base_type_specifier
 : INT
 {
   $$=INT_T;
@@ -147,18 +151,28 @@ type_specifier
 ;
 
 
-/* identifier: */
-/* IDENTIFIER */
-/* { */
-/*   $$=$1; */
-/* } */
-/* | */
-/* identifier '[' const_expression ']' */
-/* { */
-/*   $$=$1; */
-/*   $$->code_name= arrayToVar($$->code_name, $3); */
-/* } */
-/* ; */
+type_specifier:
+base_type_specifier
+{
+  $$=$1;
+}
+|
+CONST base_type_specifier
+{
+   $$=(TYPE_T)(((int)$2)+2);
+}
+|
+base_type_specifier '&'
+{
+   $$=(TYPE_T)(((int)$1)+1);
+}
+|
+CONST base_type_specifier '&'
+{
+  $$=(TYPE_T)(((int)$2)+3);
+}
+;
+
 
 clock_yy:
 CLOCK_YY
@@ -214,14 +228,12 @@ chan_yy '[' const_expression ']'
 identifier_list:
 IDENTIFIER
 {
-  cout<<"ide"<<endl;
   $$=new vector<string> ( );
   $$->push_back( $1->code_name);
   delete $1;
 }
 | identifier_list ',' IDENTIFIER
 {
-  cout<<"ide"<<endl;
   $$=$1;
   $$->push_back($3->code_name);
   delete $3;
@@ -229,7 +241,33 @@ IDENTIFIER
 ;
 
 
-argument_list
+formal_argument_list:
+type_specifier IDENTIFIER
+{
+  $$=new vector<ParaElement> ( );
+  ParaElement elem;
+  elem.is_ref=isRefType($1);
+  elem.name=$2->xml_name;
+  elem.type_name=current_data->getTypeName($1);
+  elem.type=$1;
+
+  $$->push_back(elem);
+  delete $2;
+}
+|
+formal_argument_list ',' type_specifier IDENTIFIER
+{
+  $$=$1;
+  ParaElement elem;
+  elem.is_ref=isRefType($3);
+  elem.name=$4->xml_name;
+  elem.type_name=current_data->getTypeName($3);
+  elem.type=$3;
+  $$->push_back(elem);
+  delete $4;
+}
+
+real_argument_list
 : counter_identifier
 {
   $$=new vector<ArgumentItem> ( );
@@ -255,7 +293,7 @@ chan_identifier
   item.id=$1;
   $$->push_back( item);
 }
-| argument_list ',' counter_identifier
+| real_argument_list ',' counter_identifier
 {
   $$=$1;
   ArgumentItem item;
@@ -264,7 +302,7 @@ chan_identifier
   $$->push_back(item);
 }
 
-| argument_list ',' chan_identifier
+| real_argument_list ',' chan_identifier
 {
   $$=$1;
   ArgumentItem item;
@@ -273,7 +311,7 @@ chan_identifier
   $$->push_back(item);
 }
 
-| argument_list ',' const_expression
+| real_argument_list ',' const_expression
 {
   $$=$1;
   ArgumentItem item;
@@ -351,7 +389,8 @@ external_declaration
 : variable_declaration
 | constraint_statement
 | assign_statement
-| communicate_statement 
+| communicate_statement
+| template_declaration
 | system_declaration
 ;
 constraint_statement:
@@ -369,12 +408,12 @@ clock_yy{
 
 counter_identifier:
 int_yy {
-  $$=model_parser->getGlobalId( current_data, INT_STR, $1->code_name);
+  $$=model_parser->getGlobalId( current_data, INT_T, $1->code_name);
   delete $1;
 }
 |
 bool_yy{
-  $$=model_parser->getGlobalId( current_data,  BOOL_STR, $1->code_name) ;
+  $$=model_parser->getGlobalId( current_data,  BOOL_T, $1->code_name) ;
   delete $1;
 }
 |
@@ -393,7 +432,7 @@ PARAMETER_YY{
 
 chan_identifier:
 chan_yy{
-  $$=model_parser->getGlobalId( current_data,  CHAN_STR, $1->code_name );
+  $$=model_parser->getGlobalId( current_data,  CHAN_T, $1->code_name );
   delete $1;
 };
 
@@ -424,51 +463,51 @@ parameter_identifier compare_relation clock_identifier
 parameter_identifier compare_relation const_expression
 {
   void*  cs=createParameterConstraint( $1, DUMMY_ID, $2, $3 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
 }
 |
 const_expression compare_relation parameter_identifier
 {
   COMP_OPERATOR nop=negation( $2);
   void*  cs=  createParameterConstraint($3, DUMMY_ID, nop, $1 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T, cs );
 }
 |
 parameter_identifier compare_relation parameter_identifier
 {
   void* cs = createParameterConstraint( $1, $3, $2, 0 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
 }
 |
 parameter_identifier '-'  parameter_identifier compare_relation const_expression
 {
   void* cs = createParameterConstraint( $1, $3, $4, $5 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
 }
 |
 counter_identifier compare_relation const_expression
 {
   void *cs = createCounterConstraint( $1, DUMMY_ID, $2, $3 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
 }
 |
 const_expression compare_relation counter_identifier
 {
   COMP_OPERATOR nop=negation( $2);
   void *cs = createCounterConstraint( $3, DUMMY_ID, nop, $1 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
 }
 |
 counter_identifier compare_relation parameter_identifier
 {
   void* cs = createCounterParameterConstraint( $1, $3, $2, 0 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T, cs );
 }
 |
 parameter_identifier  compare_relation  counter_identifier{
   COMP_OPERATOR nop=negation( $2);
   void* cs = createCounterParameterConstraint( $3, $1, nop, 0 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer(INT_CS_T , cs );
 }
 |
 clock_identifier '-' clock_identifier compare_relation const_expression
@@ -484,27 +523,27 @@ clock_identifier '-' clock_identifier compare_relation parameter_identifier
 counter_identifier '-' counter_identifier compare_relation const_expression
 {
   void * cs = createCounterConstraint( $1, $3, $4, $5 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T, cs );
 }
 |
 counter_identifier '-' counter_identifier compare_relation parameter_identifier
 {
   void * cs = createCounterConstraint( $1, $3, $4, 0, $5 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
 }
 |
 bool_yy{
-  int id=model_parser->getGlobalId( current_data, BOOL_STR, $1->code_name );
+  int id=model_parser->getGlobalId( current_data, BOOL_T, $1->code_name );
   void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
-  current_data->addPointer( INT_CS, INT_CS, cs );
+  current_data->addPointer( INT_CS_T,  cs );
   delete $1;
 }
 |
 '!'
 bool_yy{
-  int id=model_parser->getGlobalId( current_data,BOOL_STR, $2->code_name) ;
+  int id=model_parser->getGlobalId( current_data,BOOL_T, $2->code_name) ;
   void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
-  current_data->addPointer( INT_CS, INT_CS, cs );  
+  current_data->addPointer( INT_CS_T, cs );  
   delete $2;
 }
 |
@@ -536,77 +575,79 @@ single_assign_statement
 ;
 
 single_assign_statement:
-clock_identifier '=' const_expression
+clock_identifier '=' const_expression 
 {
   pair<int, int> *reset=new pair<int, int>($1, $3 );
-  current_data->addPointer(RESET_STR, RESET_STR, reset );
+  current_data->addPointer(RESET_T, reset );
 }
 |
 counter_identifier '=' const_expression
 {
   CounterAction   *action=new CounterAction(ASSIGNMENT_ACTION, RHS_CONSTANT_T,  $1, $3);
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier '=' counter_identifier
 {
   CounterAction *action =new CounterAction( ASSIGNMENT_ACTION, RHS_COUNTER_T, $1, $3 );
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier '='  parameter_identifier
 {
   CounterAction *action =new CounterAction( ASSIGNMENT_ACTION, RHS_PARAMETER_T , $1, $3 );
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN const_expression
 {
   CounterAction   *action=new CounterAction(SELF_INC_ACTION, RHS_CONSTANT_T,  $1, $3);
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN counter_identifier
 {
   CounterAction *action =new CounterAction( SELF_INC_ACTION, RHS_COUNTER_T, $1, $3 );
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN  parameter_identifier
 {
   CounterAction *action =new CounterAction( SELF_INC_ACTION, RHS_PARAMETER_T , $1, $3 );
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 
 |
 counter_identifier SUB_ASSIGN const_expression
 {
   CounterAction   *action=new CounterAction(SELF_DEC_ACTION, RHS_CONSTANT_T,  $1, $3);
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier SUB_ASSIGN counter_identifier
 {
   CounterAction *action =new CounterAction( SELF_DEC_ACTION, RHS_COUNTER_T, $1, $3 );
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier SUB_ASSIGN  parameter_identifier
 {
   CounterAction *action =new CounterAction( SELF_DEC_ACTION, RHS_PARAMETER_T , $1, $3 );
-  current_data->addPointer( INT_UPDATE,INT_UPDATE, action);
+  current_data->addPointer( INT_UPDATE_T, action);
 }
 
 |
-IDENTIFIER '=' TEMPLATE_YY '(' argument_list ')'
+IDENTIFIER '=' TEMPLATE_YY '(' real_argument_list ')' ';'
 {
-  
+
   TaDec * ta=new TaDec( );
   ta->name= $1->xml_name;
+  ta->tmt_name=$3->xml_name;
   ta->param_list.insert(ta->param_list.end( ), $5->begin( ), $5->end( ) );
-  system_data->addPointer(TEMPLATE_STR, $1->xml_name,  ta);
+  current_data->addPointer(TEMPLATE_T, $1->xml_name,  ta);
   
   delete $1;
+  delete $3;
   delete $5;
 };
 
@@ -642,48 +683,46 @@ FALSE_YY{
 variable_declaration
 : type_specifier identifier_list ';'
 {
-  cout<<"jhahha"<<endl;
-  switch( $1){
+  TYPE_T type=base_type($1 );
+  switch( type){
     case INT_T:{
       for( auto v: *$2){
-        system_data->setValue(INT_STR, current_data->getVarFullName(v)); //All the variables  in system_data
+        current_data->setValue(INT_T, v); //All the variables  in system_data
       }
       break ;
     }
     case CLOCK_T:{
       for( auto v: *$2){
-        current_data->setValue(CLOCK_STR, v);  //clock variable only can declare in template
+        current_data->setValue(CLOCK_T, v);  //clock variable only can declare in template
       }
       break ;
     }
     case BOOL_T: {
-      cout<<"boooo"<<endl;
       for( auto v: *$2){
-        system_data->setValue(BOOL_STR, current_data->getVarFullName(v));
+        current_data->setValue(BOOL_T, v);
       }
       break ;
     }
     case CHAN_T: {
       for( auto v: *$2){
-        system_data->setValue(CHAN_STR, current_data->getVarFullName(v), ONE2ONE_CH);
+        current_data->setValue(CHAN_T, v, ONE2ONE_CH);
       }
       break ;
     }
 
     case URGENT_CHAN_T:{
       for( auto v: *$2){
-        system_data->setValue(CHAN_STR, current_data->getVarFullName(v), URGENT_CH);
+       current_data->setValue(CHAN_T, v, URGENT_CH);
       }
       break ;
     }
     case BROADCAST_CHAN_T:{
       for( auto v: *$2){
-        system_data->setValue(CHAN_STR, current_data->getVarFullName(v), BROADCAST_CH);
+        current_data->setValue(CHAN_T, v, BROADCAST_CH);
       }
       break ;
     }
     default:{
-      cout<<"ss"<<endl;
       assert( false);
     }
 
@@ -693,42 +732,50 @@ variable_declaration
 | type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
   string name= $2->code_name;
-  switch( $1){
+  TYPE_T type=base_type($1 );
+  
+  switch( type){
     case INT_T:{
+      current_data->setValue( INT_T,  name);
       for( int i=0; i< $4; i++){
-        system_data->setValue( INT_STR,  name);
+        current_data->setValue( INT_T,  arrayToVar(name, i));
       }
       break;
     }
     case CLOCK_T: {
+      current_data->setValue( CLOCK_T, name );
       for( int i=0; i< $4; i++){
-        current_data->setValue( CLOCK_STR, arrayToVar(name, i ));
+        current_data->setValue( CLOCK_T, arrayToVar(name, i ));
       }
       break;
     }
 
     case BOOL_T:{
+      current_data->setValue( BOOL_T, name);
       for( int i=0; i< $4; i++){
-        system_data->setValue( BOOL_STR, name);
+        current_data->setValue( BOOL_T, arrayToVar(name, i));
       }
       break;
     }
      
     case CHAN_T:{
+      current_data->setValue( CHAN_T, name, ONE2ONE_CH);
       for( int i=0; i< $4; i++){
-        system_data->setValue( CHAN_STR, arrayToVar(name, i ), ONE2ONE_CH);
+        current_data->setValue( CHAN_T, arrayToVar(name, i ), ONE2ONE_CH);
       }
       break;
     }
     case URGENT_CHAN_T:{
+      current_data->setValue( CHAN_T, name, URGENT_CH);
       for( int i=0; i< $4; i++){
-        system_data->setValue( CHAN_STR, arrayToVar(name, i ), URGENT_CH);
+        current_data->setValue( CHAN_T, arrayToVar(name, i ), URGENT_CH);
       }
       break;
     }
     case BROADCAST_CHAN_T: {
+      current_data->setValue( CHAN_T,name, BROADCAST_CH);
       for( int i=0; i< $4; i++){
-        system_data->setValue( CHAN_STR, arrayToVar(name, i ), BROADCAST_CH);
+        current_data->setValue( CHAN_T, arrayToVar(name, i ), BROADCAST_CH);
       }
       break;
     }
@@ -739,42 +786,25 @@ variable_declaration
 
 |  type_specifier IDENTIFIER '=' const_expression ';'
 {
-  switch( $1){
+  TYPE_T type=base_type($1 );
+  
+  switch(type){
     case INT_T:
-      system_data->setValue(INT_STR, $2->code_name, $4);
+      current_data->setValue(INT_T, $2->code_name, $4);
       break;
+      
     case CLOCK_T:
-      current_data->setValue(CLOCK_STR,  $2->code_name,  $4);
+      current_data->setValue(CLOCK_T,  $2->code_name,  $4);
       break;
       
     case BOOL_T:
-      system_data->setValue(BOOL_STR,  $2->code_name,  $4);
+      current_data->setValue(BOOL_T,  $2->code_name,  $4);
       break;
     default:
       assert( false);
   }
   
 }
-| CONST type_specifier IDENTIFIER '=' const_expression ';'
-
-{
-  switch( $2){
-    case INT_T:
-      system_data->setValue(INT_STR, $3->code_name, $5);
-      break;
-    case CLOCK_T:
-      current_data->setValue(CLOCK_STR,  $3->code_name, $5);
-      break;
-
-    case BOOL_T:
-      system_data->addValue(BOOL_STR, $3->code_name, $5);
-      break;
-    default:
-      assert( false);
-  }
-  
-}
-
 
 |  TYPEDEF INT '[' const_expression ',' const_expression ']' IDENTIFIER ';'
 {
@@ -783,9 +813,18 @@ variable_declaration
   for( int i=$4; i<=$6; i++  ){
     temp.push_back( i);
   }
-  system_data->addIntArray($8->code_name,temp);
+  current_data->addIntArray($8->code_name,temp);
 }
 
+template_declaration:
+ARGUMENT  formal_argument_list
+{
+  for(auto e: *($2)){
+    current_data->addPointer( PARAMETER_T, e.name, new ParaElement(e));
+  }
+  delete $2;
+}
+;
 
 system_declaration
 : SYSTEM timed_automata_list ';'
@@ -793,21 +832,22 @@ system_declaration
   SystemDec * sys=new SystemDec( );
   for( size_t i=0; i< $2->size( ); i++){
     string name=(*$2)[ i];
-    if(system_data->hasValue(TEMPLATE_STR, name  )){
+    if(current_data->hasValue(TEMPLATE_T, name  )){
       
       TaDec* temp=new TaDec( );
-      temp->no_parameter=true;
+      temp->has_parameter=false;
       temp->name= name;
+      temp->tmt_name=name;
       sys->timed_automata_list.push_back(temp );
     }else{
-      void* sys_dec=system_data->getPointer(TEMPLATE_STR, name );
-      sys->timed_automata_list.push_back((TaDec*)sys_dec );
+      void* ta_dec=current_data->getPointer(TEMPLATE_T, name );
+      sys->timed_automata_list.push_back((TaDec*)ta_dec );
     }
   }
   
-  system_data->clearPoints(TEMPLATE_STR );
+  current_data->clearPoints(TEMPLATE_T );
   
-  system_data->addPointer(SYSTEM_STR, SYSTEM_STR,sys );
+  current_data->addPointer(SYSTEM_T,sys );
   delete $2;
 }
 
@@ -834,10 +874,9 @@ void yyerror(const string &s){
 
 
 namespace graphsat{
-  void parseProblem( const string &str, UppaalParser* parser,  UppaalTemplateData *pd,   UppaalTemplateData* d){
+  void parseProblem( const string &str, UppaalParser* parser,    UppaalData* d){
     
     model_parser=parser;
-    system_data=pd;
     current_data=d;
     yyin=tmpfile();
     fputs( str.c_str(), yyin);
