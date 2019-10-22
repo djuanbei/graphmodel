@@ -23,7 +23,11 @@ UppaalData::UppaalData() {
 
   type_to_name[ PARAMETER_T ] = STRING( PARAMETER_T );
   base_types.push_back( PARAMETER_T );
+  
 
+  type_to_name[ REF_PARAMETER_T ] = STRING( REF_PARAMETER_T );
+  base_types.push_back( REF_PARAMETER_T );
+  
   type_to_name[ TEMPLATE_T ] = STRING( TEMPLATE_T );
   base_types.push_back( TEMPLATE_T );
 

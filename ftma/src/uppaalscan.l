@@ -192,18 +192,10 @@ int check_type()
      *    it actually will only return IDENTIFIER
      */
    string  sym=string( yytext);
-   // if(current_data->hasValue(INT_STR, sym) ){
-   //   yylval.int_value=current_data->getValue(INT_STR, sym);
-   //   return CONSTANT;
-   // }else if ( system_data->hasValue(INT_STR, sym) ){
-   //   yylval.int_value=system_data->getValue(INT_STR,   sym);
-   //   return CONSTANT;
-   // }
    
    Token *token=new Token();
    token->id=findSym( sym);
-   token->xml_name=sym;
-   token->code_name=sym;
+   token->symbol=sym;
 
    yylval.token_value= token;
 
@@ -213,62 +205,40 @@ int check_type()
    }
    
   TYPE_T type=current_data->getType(sym);
+  if(TYPE_T!=NO_T){
+    if(current_data->isConstant(sym)){
+            yylval.int_value=current_data->getConstant(sym);
+            return CONSTANT;
+      }
+  }
+  
   
 switch(type){
-case 
+case INT_T:{
+    return INT_YY;     
 }
-  if(NO_T==type){
-    return IDENTIFIER;
-  }
-   if(current_data->hasPointer(PARAMETER_T,sym)){
-      int parameter_id=model_parser->getParameterId(current_data, sym);
-      ParaElement* p = (ParaElement *) current_data->getPointer( PARAMETER_T, sym );
-      if(p->is_ref){
-          return REF_PARAMETER_YY;
-      }
-      return PARAMETER_YY;
-   }
-   if(system_data->hasValue(TEMPLATE_T, sym ) ){
-
-     return TEMPLATE_YY;
-   }
-   /**
-    * The clock variable only declare in template section and can not declare as global variable
-    *
-    */
-   
-   if ( current_data->hasValue( CLOCK_T, sym ) ) {
-
+case CLOCK_T:{
      return CLOCK_YY;
-   }
-   string code_name = current_data->getVarFullName( sym );
-   token->code_name=code_name;
-  
-   if ( system_data->hasValue( INT_T, code_name ) ) {
-     return INT_YY;
-   }
-   
-   if ( system_data->hasValue( BOOL_T, code_name ) ) {
+}
+case BOOL_T: {
      return BOOL_YY;
-   }
-   
-   if ( system_data->hasValue( CHAN_T, code_name ) ) {
+}
+case CHAN_T: {
      return CHAN_YY;
-   }
-  
-   token->code_name=sym;
-   if ( system_data->hasValue( INT_T, sym ) ) {
-     return INT_YY;
-   }
-   
-   if ( system_data->hasValue( BOOL_T, sym ) ) {
-     return BOOL_YY;
-   }
-   
-   if ( system_data->hasValue( CHAN_T, sym ) ) {
-     return CHAN_YY;
-   }
-   return(IDENTIFIER);
+}
+case PARAMETER_T:{
+     return PARAMETER_YY;
+}
+case REF_PARAMETER_T :{
+     return REF_PARAMETER_YY;
+}
+case TEMPLATE_T: {
+     return TEMPLATE_YY;
+}
+default:
+    return IDENTIFIER;
+
+}
    
 }
 

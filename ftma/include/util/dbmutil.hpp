@@ -86,7 +86,7 @@ const static string RESET_STR = "reset";
 
 // const static string INT_STR = "int";
 
-const static string CHAN_STR = "chan";
+//const static string CHAN_STR = "chan";
 
 // const static string CLOCK_STR = "clock";
 
@@ -134,6 +134,7 @@ enum TYPE_T {
   TEMPLATE_T,
   LOCATION_T,
   PARAMETER_T,
+  REF_PARAMETER_T,
   CLOCK_CS_T,
   INT_CS_T,
   INT_UPDATE_T,

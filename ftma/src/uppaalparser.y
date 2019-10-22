@@ -29,7 +29,6 @@
   extern  int lineNum;
 
 
-  //  UppaalData* system_data;
   UppaalData* current_data;
   UppaalParser* model_parser;
   
@@ -41,8 +40,7 @@
 
   struct Token{
     int id;
-    string  xml_name;
-    string  code_name;
+    string  symbol;
   };
   
  %}
@@ -183,7 +181,7 @@ CLOCK_YY
 clock_yy '[' const_expression ']'
 {
    $$=$1;
-   $$->code_name=arrayToVar($$->code_name, $3);
+   $$->symbol=arrayToVar($$->symbol, $3);
 }
 ;
 
@@ -196,7 +194,7 @@ INT_YY
 int_yy '[' const_expression ']'
 {
   $$=$1;
-  $$->code_name=arrayToVar($$->code_name, $3);
+  $$->symbol=arrayToVar($$->symbol, $3);
 }
 ;
 
@@ -209,7 +207,7 @@ BOOL_YY
 bool_yy '[' const_expression ']'
 {
   $$=$1;
-  $$->code_name=arrayToVar($$->code_name, $3);
+  $$->symbol=arrayToVar($$->symbol, $3);
 };
 
 chan_yy:
@@ -221,7 +219,7 @@ CHAN_YY
 chan_yy '[' const_expression ']'
 {
   $$=$1;
-  $$->code_name=arrayToVar($$->code_name, $3);
+  $$->symbol=arrayToVar($$->symbol, $3);
 };
 
 
@@ -229,13 +227,13 @@ identifier_list:
 IDENTIFIER
 {
   $$=new vector<string> ( );
-  $$->push_back( $1->code_name);
+  $$->push_back( $1->symbol);
   delete $1;
 }
 | identifier_list ',' IDENTIFIER
 {
   $$=$1;
-  $$->push_back($3->code_name);
+  $$->push_back($3->symbol);
   delete $3;
 }
 ;
@@ -247,7 +245,7 @@ type_specifier IDENTIFIER
   $$=new vector<ParaElement> ( );
   ParaElement elem;
   elem.is_ref=isRefType($1);
-  elem.name=$2->xml_name;
+  elem.name=$2->symbol;
   elem.type_name=current_data->getTypeName($1);
   elem.type=$1;
 
@@ -260,7 +258,7 @@ formal_argument_list ',' type_specifier IDENTIFIER
   $$=$1;
   ParaElement elem;
   elem.is_ref=isRefType($3);
-  elem.name=$4->xml_name;
+  elem.name=$4->symbol;
   elem.type_name=current_data->getTypeName($3);
   elem.type=$3;
   $$->push_back(elem);
@@ -327,26 +325,26 @@ timed_automata_list
 :IDENTIFIER
 {
   $$=new vector<string> ( );
-  $$->push_back($1->code_name);
+  $$->push_back($1->symbol);
   delete $1;
 }
 |
 TEMPLATE_YY
 {
   $$=new vector<string> ( );
-  $$->push_back($1->code_name);
+  $$->push_back($1->symbol);
   delete $1;
 }
 | timed_automata_list ',' IDENTIFIER
 {
   $$=$1;
-  $$->push_back($3->code_name);
+  $$->push_back($3->symbol);
   delete $3;
 }
 | timed_automata_list ',' TEMPLATE_YY
 {
   $$=$1;
-  $$->push_back($3->code_name);
+  $$->push_back($3->symbol);
   delete $3;
 }
 ;
@@ -402,37 +400,37 @@ constraint_statement AND_OP atomic_constraint
 
 clock_identifier:
 clock_yy{
-  $$=current_data->getClockId($1->code_name);
+  $$=current_data->getClockId($1->symbol);
   delete $1;
 };
 
 counter_identifier:
 int_yy {
-  $$=model_parser->getGlobalId( current_data, INT_T, $1->code_name);
+  $$=model_parser->getGlobalId( current_data, INT_T, $1->symbol);
   delete $1;
 }
 |
 bool_yy{
-  $$=model_parser->getGlobalId( current_data,  BOOL_T, $1->code_name) ;
+  $$=model_parser->getGlobalId( current_data,  BOOL_T, $1->symbol) ;
   delete $1;
 }
 |
 REF_PARAMETER_YY{
-  $$=model_parser->getParameterId(current_data, $1->code_name);
+  $$=model_parser->getParameterId(current_data, $1->symbol);
   delete $1;
 }
 ;
 
 parameter_identifier:
 PARAMETER_YY{
-  $$=model_parser->getParameterId(current_data, $1->code_name);
+  $$=model_parser->getParameterId(current_data, $1->symbol);
   delete $1;
 }
 ;
 
 chan_identifier:
 chan_yy{
-  $$=model_parser->getGlobalId( current_data,  CHAN_T, $1->code_name );
+  $$=model_parser->getGlobalId( current_data,  CHAN_T, $1->symbol );
   delete $1;
 };
 
@@ -533,7 +531,7 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
 }
 |
 bool_yy{
-  int id=model_parser->getGlobalId( current_data, BOOL_T, $1->code_name );
+  int id=model_parser->getGlobalId( current_data, BOOL_T, $1->symbol );
   void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
   current_data->addPointer( INT_CS_T,  cs );
   delete $1;
@@ -541,7 +539,7 @@ bool_yy{
 |
 '!'
 bool_yy{
-  int id=model_parser->getGlobalId( current_data,BOOL_T, $2->code_name) ;
+  int id=model_parser->getGlobalId( current_data,BOOL_T, $2->symbol) ;
   void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
   current_data->addPointer( INT_CS_T, cs );  
   delete $2;
@@ -641,10 +639,10 @@ IDENTIFIER '=' TEMPLATE_YY '(' real_argument_list ')' ';'
 {
 
   TaDec * ta=new TaDec( );
-  ta->name= $1->xml_name;
-  ta->tmt_name=$3->xml_name;
+  ta->name= $1->symbol;
+  ta->tmt_name=$3->symbol;
   ta->param_list.insert(ta->param_list.end( ), $5->begin( ), $5->end( ) );
-  current_data->addPointer(TEMPLATE_T, $1->xml_name,  ta);
+  current_data->addPointer(TEMPLATE_T, $1->symbol,  ta);
   
   delete $1;
   delete $3;
@@ -731,7 +729,7 @@ variable_declaration
 }
 | type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
-  string name= $2->code_name;
+  string name= $2->symbol;
   TYPE_T type=base_type($1 );
   
   switch( type){
@@ -790,15 +788,15 @@ variable_declaration
   
   switch(type){
     case INT_T:
-      current_data->setValue(INT_T, $2->code_name, $4);
+      current_data->setValue(INT_T, $2->symbol, $4);
       break;
       
     case CLOCK_T:
-      current_data->setValue(CLOCK_T,  $2->code_name,  $4);
+      current_data->setValue(CLOCK_T,  $2->symbol,  $4);
       break;
       
     case BOOL_T:
-      current_data->setValue(BOOL_T,  $2->code_name,  $4);
+      current_data->setValue(BOOL_T,  $2->symbol,  $4);
       break;
     default:
       assert( false);
@@ -813,7 +811,7 @@ variable_declaration
   for( int i=$4; i<=$6; i++  ){
     temp.push_back( i);
   }
-  current_data->addIntArray($8->code_name,temp);
+  current_data->addIntArray($8->symbol,temp);
 }
 
 template_declaration:

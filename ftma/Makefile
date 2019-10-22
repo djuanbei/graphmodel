@@ -58,7 +58,7 @@ COPTIMIZE ?= -O2
 
 s:	$(EXEC)
 p:	$(EXEC)_profile
-d:	$(EXEC)_debug
+d:	$(EXEC)_debug 
 r:	$(EXEC)_release
 c:	$(EXEC)_check
 rs:	$(EXEC)_static
@@ -87,7 +87,7 @@ $(EXEC)_static:		LFLAGS += --static
 ## Dependencies
 $(EXEC):		$(COBJS)
 $(EXEC)_profile:	$(PCOBJS)
-$(EXEC)_debug:		$(DCOBJS)
+$(EXEC)_debug:	parser	$(DCOBJS) 
 $(EXEC)_check:		$(CCOBJS)
 $(EXEC)_release:	$(RCOBJS)
 $(EXEC)_static:		$(RCOBJS)
@@ -146,7 +146,6 @@ clean:
 	@rm -f $(EXEC) $(EXEC)_profile $(EXEC)_debug $(EXEC)_release $(EXEC)_static \
 	  $(COBJS) $(PCOBJS) $(DCOBJS) $(RCOBJS) $(CCOBJS)  *.core depend.mk \
 	   lib$(LIB)_standard.a lib$(LIB)_profile.a lib$(LIB)_release.a lib$(LIB)_debug.a
-	 
 
 test:
 	test/runtest.sh  test
