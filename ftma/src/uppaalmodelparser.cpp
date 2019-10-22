@@ -175,6 +175,7 @@ int UppaalParser::parseSystem( XML_P system ) {
         }
       }
     } else {
+      
     }
   }
 
