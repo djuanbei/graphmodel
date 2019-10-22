@@ -40,23 +40,6 @@ public:
 
   const Property &getProp() const { return prop; }
 
-  /**
-   * @brief the id of type variable code_name in template  current_data
-   *
-   * @param current_data
-   * @param type
-   * @param code_name
-   *
-   * @return
-   */
-  int getGlobalId( UppaalData *current_data, TYPE_T type, string code_name );
-
-  int getParameterId( UppaalData *current_data, const string &name );
-
-  void addClockConstraint( UppaalData *current_data, int clock1_id,
-                           int clock2_id, COMP_OPERATOR op, int rhs,
-                           int parameter_id = -10 );
-
 private:
   //  map<TYPE_T, string> type_name_map;
 

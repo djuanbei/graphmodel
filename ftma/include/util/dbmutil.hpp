@@ -86,7 +86,7 @@ const static string RESET_STR = "reset";
 
 // const static string INT_STR = "int";
 
-//const static string CHAN_STR = "chan";
+// const static string CHAN_STR = "chan";
 
 // const static string CLOCK_STR = "clock";
 

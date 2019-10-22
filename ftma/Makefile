@@ -58,7 +58,7 @@ COPTIMIZE ?= -O2
 
 s:	$(EXEC)
 p:	$(EXEC)_profile
-d:	$(EXEC)_debug 
+d:	$(EXEC)_debug  parser
 r:	$(EXEC)_release
 c:	$(EXEC)_check
 rs:	$(EXEC)_static

@@ -74,9 +74,7 @@ public:
     point_values.clear();
   }
 
-  void setStartId( int id){
-    startId=id;
-  }
+  void   setStartId( int id ) { startId = id; }
   string getTypeName( const TYPE_T type ) const {
     return type_to_name.at( type );
   }
@@ -86,7 +84,11 @@ public:
   string getName( void ) { return name; }
 
   int getVarNum( void ) const;
-  
+
+  int getParameterId( const string &name ) {
+    return getPointerId( PARAMETER_T, name );
+  }
+  int getGlobalId( TYPE_T type, string var_name ) const;
 
   TYPE_T getType( const string &name ) const;
 
@@ -123,7 +125,6 @@ public:
   int getTypeNum( const TYPE_T type ) const {
     return int_values.getTypeNum( type_to_name.at( type ) );
   }
-  
 
   /**
    *
@@ -203,6 +204,8 @@ public:
   }
 
   void clearPoints() { point_values.clear(); }
+  void addClockConstraint( int clock1_id, int clock2_id, COMP_OPERATOR op,
+                           int rhs, int parameter_id = -10 );
 
 private:
   string              name;
@@ -214,15 +217,14 @@ private:
 
   int         init_loc;
   UppaalData *parent;
-  
+
   int startId;
-  
+
   typename INT_TAS_t::TAT_t tat;
   friend class UppaalParser;
 };
 
-void parseProblem( const string &str, UppaalParser *parser, UppaalData *,
-                   UppaalData * );
+void parseProblem( const string &str, UppaalData * );
 } // namespace graphsat
 
 #endif

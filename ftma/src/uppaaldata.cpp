@@ -3,12 +3,12 @@
 namespace graphsat {
 
 UppaalData::UppaalData() {
-  init_loc       = 0;
-  name           = "";
+  init_loc = 0;
+  name     = "";
 
-  parent         = NULL;
-  startId=0;
-  
+  parent  = NULL;
+  startId = 0;
+
   TYPE_MAP( type_to_name, INT_T );
   base_types.push_back( INT_T );
   TYPE_MAP( type_to_name, CLOCK_T );
@@ -26,11 +26,10 @@ UppaalData::UppaalData() {
 
   type_to_name[ PARAMETER_T ] = STRING( PARAMETER_T );
   base_types.push_back( PARAMETER_T );
-  
 
   type_to_name[ REF_PARAMETER_T ] = STRING( REF_PARAMETER_T );
   base_types.push_back( REF_PARAMETER_T );
-  
+
   type_to_name[ TEMPLATE_T ] = STRING( TEMPLATE_T );
   base_types.push_back( TEMPLATE_T );
 
@@ -46,8 +45,6 @@ UppaalData::UppaalData() {
 
   type_to_name[ NO_T ] = STRING( NO_T );
 }
-
-
 
 TYPE_T UppaalData::getType( const string &name ) const {
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
@@ -105,12 +102,46 @@ int UppaalData::getConstant( const string &name ) const {
   }
   return UN_DEFINE;
 }
-int UppaalData::getVarNum( void ) const{
-  int re=0;
-  for( auto e: base_types){
-    re+=getTypeNum( e);
+int UppaalData::getVarNum( void ) const {
+  int re = 0;
+  for ( auto e : base_types ) {
+    re += getTypeNum( e );
   }
   return re;
 }
 
+int UppaalData::getGlobalId( TYPE_T type, string name ) const {
+  int id = getId( type, name );
+  if ( id < 0 ) {
+    assert( false );
+  }
+  id += getPointNum( PARAMETER_T ) + startId;
+  for ( vector<TYPE_T>::const_iterator it = base_types.begin();
+        it != base_types.end(); it++ ) {
+    if ( *it == type ) {
+      return id;
+    }
+    id += getTypeNum( *it );
+  }
+  return id;
+}
+
+void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
+                                     COMP_OPERATOR op, int rhs,
+                                     int parameter_id ) {
+  if ( EQ == op ) {
+    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, GE, rhs,
+                                    parameter_id ); // x-y<= c
+    addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
+
+    cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, LE, rhs,
+                              parameter_id ); // x-y>= c
+    addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
+
+  } else {
+    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, op, rhs,
+                                    parameter_id ); // x op c
+    addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
+  }
+}
 } // namespace graphsat

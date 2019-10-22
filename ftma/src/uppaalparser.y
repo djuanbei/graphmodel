@@ -8,7 +8,7 @@
   #include "channel.h"
   #include "util/dbmutil.hpp"
   #include "io/uppaaldata.h"
-  #include "io/uppaalmodelparser.h"
+  //  #include "io/uppaalmodelparser.h"
   #include "model/ta.hpp"
   
   using std::string;
@@ -30,7 +30,7 @@
 
 
   UppaalData* current_data;
-  UppaalParser* model_parser;
+  //  UppaalParser* model_parser;
   
   extern void yyerror(const char *); 
   extern void yyerror(const string&);
@@ -406,31 +406,31 @@ clock_yy{
 
 counter_identifier:
 int_yy {
-  $$=model_parser->getGlobalId( current_data, INT_T, $1->symbol);
+  $$=current_data->getGlobalId( INT_T, $1->symbol);
   delete $1;
 }
 |
 bool_yy{
-  $$=model_parser->getGlobalId( current_data,  BOOL_T, $1->symbol) ;
+  $$=current_data->getGlobalId(  BOOL_T, $1->symbol);
   delete $1;
 }
 |
 REF_PARAMETER_YY{
-  $$=model_parser->getParameterId(current_data, $1->symbol);
+  $$=current_data->getParameterId( $1->symbol);
   delete $1;
 }
 ;
 
 parameter_identifier:
 PARAMETER_YY{
-  $$=model_parser->getParameterId(current_data, $1->symbol);
+  $$=current_data->getParameterId( $1->symbol);
   delete $1;
 }
 ;
 
 chan_identifier:
 chan_yy{
-  $$=model_parser->getGlobalId( current_data,  CHAN_T, $1->symbol );
+  $$=current_data->getGlobalId(   CHAN_T, $1->symbol );
   delete $1;
 };
 
@@ -438,24 +438,24 @@ chan_yy{
 atomic_constraint:
 clock_identifier compare_relation  const_expression
 {
-  model_parser->addClockConstraint(current_data, $1, GLOBAL_CLOCK_ID, $2, $3);
+  current_data->addClockConstraint( $1, GLOBAL_CLOCK_ID, $2, $3);
 }
 |
 const_expression compare_relation clock_identifier
 {
   COMP_OPERATOR nop=negation( $2);
-  model_parser->addClockConstraint(current_data,  $3 , GLOBAL_CLOCK_ID, nop, $1);
+  current_data->addClockConstraint(  $3 , GLOBAL_CLOCK_ID, nop, $1);
 }
 |
 clock_identifier compare_relation parameter_identifier
 {
-  model_parser->addClockConstraint( current_data, $1, GLOBAL_CLOCK_ID, $2, 0, $3 ); 
+  current_data->addClockConstraint(  $1, GLOBAL_CLOCK_ID, $2, 0, $3 ); 
 }
 |
 parameter_identifier compare_relation clock_identifier
 {
   COMP_OPERATOR nop=negation( $2);
-  model_parser->addClockConstraint( current_data, $3, GLOBAL_CLOCK_ID, nop, 0, $1 ); 
+  current_data->addClockConstraint(  $3, GLOBAL_CLOCK_ID, nop, 0, $1 ); 
 }
 |
 parameter_identifier compare_relation const_expression
@@ -510,12 +510,12 @@ parameter_identifier  compare_relation  counter_identifier{
 |
 clock_identifier '-' clock_identifier compare_relation const_expression
 {
-  model_parser->addClockConstraint( current_data, $1, $3, $4, $5 );
+  current_data->addClockConstraint( $1, $3, $4, $5 );
 }
 |
 clock_identifier '-' clock_identifier compare_relation parameter_identifier
 {
-  model_parser->addClockConstraint( current_data, $1, $3, $4, 0, $5 );
+   current_data->addClockConstraint( $1, $3, $4, 0, $5 );
 }
 |
 counter_identifier '-' counter_identifier compare_relation const_expression
@@ -531,7 +531,7 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
 }
 |
 bool_yy{
-  int id=model_parser->getGlobalId( current_data, BOOL_T, $1->symbol );
+  int id=current_data->getGlobalId(  BOOL_T, $1->symbol );
   void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
   current_data->addPointer( INT_CS_T,  cs );
   delete $1;
@@ -539,7 +539,7 @@ bool_yy{
 |
 '!'
 bool_yy{
-  int id=model_parser->getGlobalId( current_data,BOOL_T, $2->symbol) ;
+  int id=current_data->getGlobalId( BOOL_T, $2->symbol) ;
   void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
   current_data->addPointer( INT_CS_T, cs );  
   delete $2;
@@ -872,9 +872,8 @@ void yyerror(const string &s){
 
 
 namespace graphsat{
-  void parseProblem( const string &str, UppaalParser* parser,    UppaalData* d){
+  void parseProblem( const string &str,   UppaalData* d){
     
-    model_parser=parser;
     current_data=d;
     yyin=tmpfile();
     fputs( str.c_str(), yyin);

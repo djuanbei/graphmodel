@@ -28,13 +28,8 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
 
   string content = declaration->getValue();
   if ( content.length() > 0 ) {
-    parseProblem( content, this, &system_data, &system_data );
+    parseProblem( content, &system_data );
   }
-  // int num = 0;
-  // for ( auto key : gloabl_variable_types ) {
-  //   num += system_data.getTypeNum( key );
-  // }
-  // system_data.setGlobalVarNum( num );
 
   return 0;
 }
@@ -42,25 +37,24 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
 int UppaalParser::parseTemplateDeclaration( child_type templates ) {
   assert( NULL != templates );
 
+  int allVarNum = system_data.getVarNum();
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
     UppaalData template_data;
-    XML_P      nameConf = ( *it )->getOneChild( NAME_STR );
+
+    template_data.parent = &system_data;
+    template_data.setStartId( allVarNum );
+    XML_P nameConf = ( *it )->getOneChild( NAME_STR );
     template_data.setName( nameConf->getValue() );
 
     XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
 
     if ( NULL != declaration ) {
       string dec_content = declaration->getValue();
-      parseProblem( dec_content, this, &system_data, &template_data );
+      parseProblem( dec_content, &template_data );
     }
     template_map[ template_data.name ] = template_data;
+    allVarNum += template_data.getVarNum();
   }
-  // int num = 0;
-  // for ( auto key : gloabl_variable_types ) {
-  //   num += system_data.getTypeNum( key );
-  // }
-
-  // system_data.setGlobalVarNum( num );
 
   return 0;
 }
@@ -115,7 +109,7 @@ int UppaalParser::parseSystem( XML_P system ) {
 
   string content = system->getValue();
   cout << content << endl;
-  parseProblem( content, this, &system_data, &system_data );
+  parseProblem( content, &system_data );
 
   int counter_num = system_data.getTypeNum( INT_T );
   for ( int i = 0; i < counter_num; i++ ) {
@@ -129,15 +123,8 @@ int UppaalParser::parseSystem( XML_P system ) {
   /**
    Exactly one system declaration
    */
-  assert( NULL != sys_dec );
-  int allVarNum=system_data.getVarNum( );
-  for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
-    string template_name = sys_dec->timed_automata_list[ i ]->tmt_name;
-    template_map[ template_name ].setStartId( allVarNum);
-    allVarNum+=template_map[ template_name ].getVarNum( );
-  }
-  
-  int startId=system_data.getVarNum( );
+
+  int startId = system_data.getVarNum();
 
   for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
 
@@ -146,7 +133,10 @@ int UppaalParser::parseSystem( XML_P system ) {
         template_map[ template_name ].getPoints( PARAMETER_T );
 
     Parameter parameter_template;
-    int       param_num  = (int) template_parameter_vec.size();
+    int       allVarNum =
+        system_data.getVarNum() + template_map[ template_name ].getVarNum();
+
+    int param_num = (int) template_parameter_vec.size();
     for ( int i = 0; i < allVarNum; i++ ) {
       parameter_template.setCounterMap( i + param_num, i );
     }
@@ -244,7 +234,7 @@ int UppaalParser::parseTemplateParamter( UppaalData &template_data,
                                          XML_P       parameter ) {
 
   string para_content = "argument " + parameter->getValue();
-  parseProblem( para_content, this, &system_data, &template_data );
+  parseProblem( para_content, &template_data );
 
   cout << template_data.getPointNum( PARAMETER_T ) << endl;
   // TODO:x
@@ -370,116 +360,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
 
 void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
   // template_data.clearPoints();
-  parseProblem( guards, this, &system_data, &template_data );
+  parseProblem( guards, &template_data );
 }
-
-void UppaalParser::addClockConstraint( UppaalData *current_data, int clock1_id,
-                                       int clock2_id, COMP_OPERATOR op, int rhs,
-                                       int parameter_id ) {
-  if ( EQ == op ) {
-    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, GE, rhs,
-                                    parameter_id ); // x-y<= c
-    current_data->addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
-
-    cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, LE, rhs,
-                              parameter_id ); // x-y>= c
-    current_data->addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
-
-  } else {
-    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, op, rhs,
-                                    parameter_id ); // x op c
-    current_data->addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
-  }
-}
-
-/**
- * @brief the id of type variable code_name in template  current_data
- *
- * @param current_data
- * @param type
- * @param code_name
- *
- * @return
- */
-
-int UppaalParser::getGlobalId( UppaalData *current_data, TYPE_T type,
-                               string code_name ) {
-
-  int id = system_data.getId( type, code_name );
-
-  if ( type == INT_T ) {
-    return id + current_data->getPointNum( PARAMETER_T );
-  } else if ( type == BOOL_T ) {
-    return id + system_data.getTypeNum( INT_T ) +
-           current_data->getPointNum( PARAMETER_T );
-  } else if ( type == CHAN_T ) {
-    return id + system_data.getTypeNum( INT_T ) +
-           system_data.getTypeNum( BOOL_T ) +
-           current_data->getPointNum( PARAMETER_T );
-  }
-
-  assert( false );
-  return -1;
-}
-
-int UppaalParser::getParameterId( UppaalData *  current_data,
-                                  const string &name ) {
-
-  return current_data->getPointerId( PARAMETER_T, name );
-}
-
-// TYPE_T UppaalParser::getType( UppaalData *current_data, const string
-// &xml_name
-//                                ) {
-//   for( vector<TYPE_T>::const_iterator it= base_types.begin( ); it!=
-//   base_types.end( ); it++ ){
-
-//   }
-
-//   if ( current_data->hasPointer( PARAMETER_T, code_name ) ) {
-//     return PARAMETER_T;
-//   }
-//   if ( system_data.hasValue( TEMPLATE_T, code_name ) ) {
-//     return TEMPLATE_T;
-//   }
-//   /**
-//    * The clock variable only declare in template section and can not declare
-//    as
-//    * global variable
-//    *
-//    */
-
-//   if ( current_data->hasValue( CLOCK_T, code_name ) ) {
-//     return CLOCK_T;
-//   }
-
-//   code_name = current_data-> xml_name ;
-
-//   if ( system_data.hasValue( INT_T, code_name ) ) {
-//     return INT_T;
-//   }
-//   if ( system_data.hasValue( BOOL_T, code_name ) ) {
-//     return BOOL_T;
-//   }
-//   if ( system_data.hasValue( CHAN_T, code_name ) ) {
-//     return CHAN_T;
-//   }
-
-//   code_name = xml_name;
-
-//   if ( system_data.hasValue( INT_T, code_name ) ) {
-//     return INT_T;
-//   }
-
-//   if ( system_data.hasValue( BOOL_T, code_name ) ) {
-//     return BOOL_T;
-//   }
-
-//   if ( system_data.hasValue( CHAN_T, code_name ) ) {
-//     return CHAN_T;
-//   }
-
-//   return NO_T;
-// }
 
 } // namespace graphsat
