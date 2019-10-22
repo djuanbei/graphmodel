@@ -422,11 +422,12 @@ int UppaalParser::getParameterId( UppaalData *  current_data,
   return current_data->getPointerId( PARAMETER_T, name );
 }
 
-// TYPE_T UppaalParser::getType( UppaalData *current_data, const string &xml_name
+// TYPE_T UppaalParser::getType( UppaalData *current_data, const string
+// &xml_name
 //                                ) {
-//   for( vector<TYPE_T>::const_iterator it= base_types.begin( ); it!= base_types.end( ); it++ ){
-    
-    
+//   for( vector<TYPE_T>::const_iterator it= base_types.begin( ); it!=
+//   base_types.end( ); it++ ){
+
 //   }
 
 //   if ( current_data->hasPointer( PARAMETER_T, code_name ) ) {
@@ -436,7 +437,8 @@ int UppaalParser::getParameterId( UppaalData *  current_data,
 //     return TEMPLATE_T;
 //   }
 //   /**
-//    * The clock variable only declare in template section and can not declare as
+//    * The clock variable only declare in template section and can not declare
+//    as
 //    * global variable
 //    *
 //    */

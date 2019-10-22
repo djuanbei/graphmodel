@@ -142,9 +142,7 @@ enum TYPE_T {
 
 };
 
-static   TYPE_T base_type(TYPE_T type ){
-  return ( TYPE_T)(type/5);
-}
+static TYPE_T base_type( TYPE_T type ) { return ( TYPE_T )( type / 5 ); }
 
 static bool isRefType( const TYPE_T type ) {
   if ( type >= PARAMETER_T ) {

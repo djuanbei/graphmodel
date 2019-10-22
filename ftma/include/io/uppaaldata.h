@@ -61,16 +61,6 @@ struct SystemDec {
 
 enum ParserType { GLOBAL_DEC, TEMPLATE_DEC };
 
-// const static string CLOCK_CS = "clock_cons";
-//
-// const static string INT_CS = "counter_cons";
-//
-// const static string CLOCK_RESET = "clock_reset";
-//
-// const static string INT_UPDATE = "counter_update";
-//
-// const static string INT_ARRAY = "int_array";
-
 const static int UN_DEFINE = 100000000;
 
 class UppaalParser;
@@ -78,7 +68,7 @@ class UppaalParser;
 class UppaalData {
 public:
   UppaalData();
-  
+
   void clear() {
     int_values.clear();
     point_values.clear();
@@ -92,12 +82,13 @@ public:
 
   string getName( void ) { return name; }
 
-  void setGlobalVarNum( int n ) { global_var_num = n; }
+  int getVarNum( void ) const;
+  
 
-  int getGlobalVarNum( void ) const { return global_var_num; }
+  TYPE_T getType( const string &name ) const;
 
-  TYPE_T getType(const string &name ) const;
-
+  bool isConstant( const string &name ) const;
+  int  getConstant( const string &name ) const;
 
   void addIntArray( const string &key, vector<int> &v ) {
     for ( auto e : v ) {
@@ -211,11 +202,10 @@ public:
 
 private:
   string              name;
-  int                 global_var_num;
   ValueData<int>      int_values;
   PointerData         point_values;
   map<TYPE_T, string> type_to_name;
-  
+
   vector<TYPE_T> base_types;
 
   int         init_loc;

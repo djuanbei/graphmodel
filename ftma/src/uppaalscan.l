@@ -213,7 +213,10 @@ int check_type()
    }
    
   TYPE_T type=current_data->getType(sym);
-
+  
+switch(type){
+case 
+}
   if(NO_T==type){
     return IDENTIFIER;
   }
