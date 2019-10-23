@@ -208,6 +208,14 @@ public:
       }
     }
   }
+  // void toDot(ostream &out ) const{
+  //   out<<"digraph G { "<<endl;
+    
+  //   for(auto e : transitions ){
+  //     string source=locations[ e.source].
+  //   }
+    
+  // }
 
 private:
   const TAT_t *ta_tempate;

@@ -275,7 +275,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::L_t cs( 3 );
 
   typename INT_TAS_t::T_t A_req( 0, 1 );
-
+  
   void *ccs1 = createCounterConstraint( 0, DUMMY_ID, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
@@ -319,10 +319,11 @@ void fisher( int n = 2 ) {
   cs_A.addCounterAction( caction1 );
 
   ls.push_back( A );
-  ls.push_back( cs );
+
   ls.push_back( req );
   ls.push_back( wait );
-
+  ls.push_back( cs );
+  
   es.push_back( A_req );
   es.push_back( req_wait );
   es.push_back( wait_req );
@@ -582,8 +583,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  //  fisher( 2 );
-  //return 0;
+  fisher( 2 );
+  return 0;
   //  example5();
   //  return 0;
   //  State<int> s;
