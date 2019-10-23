@@ -18,22 +18,23 @@ using std::vector;
 
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
-template <typename C_t, typename CS_t, typename DBMManager_t, typename DBMSet_t>
-class Location {
+template <typename C_t, typename CS_t, typename DBMManager_t> class Location {
 
 public:
 public:
   explicit Location( int loc_id ) {
     location_id = loc_id;
     type        = NORMOAL_LOC;
-    name= to_string( loc_id);
+    name        = to_string( loc_id );
   }
 
   explicit Location( int loc_id, Location_Type etype ) {
     location_id = loc_id;
     type        = etype;
-    name= to_string( loc_id);
+    name        = to_string( loc_id );
   }
+
+  int getId() const { return location_id; }
 
   void setName( const string &n ) { name = n; }
 
@@ -67,7 +68,7 @@ public:
   }
 
   inline void employInvariants( const DBMManager_t &dbm_manager,
-                                C_t *             dbm ) const {
+                                C_t *               dbm ) const {
     for ( auto cs : invariants ) {
       dbm_manager.andImpl( dbm, cs );
     }
@@ -123,7 +124,7 @@ public:
    *
    * @return a new location
    */
-  Location<C_t, CS_t, DBMManager_t, DBMSet_t> &operator+=( CS_t &cs ) {
+  Location<C_t, CS_t, DBMManager_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );
     return *this;
   }
@@ -133,17 +134,18 @@ public:
       invariants[ i ].clockShift( shift );
     }
   }
-  
+
   // string to_string( ) const{
   //   string re_str="name: "+name;
   //   if( !invariants.empty( )){
   //     re_str+"\n"+"invariants: ";
   //     for( auto e: invariants){
-        
+
   //     }
   //   }
   // }
-  friend ostream & operator << (ostream &os, const Location<C_t, CS_t, DBMManager_t, DBMSet_t>& loc);
+  friend ostream &operator<<( ostream &                                os,
+                              const Location<C_t, CS_t, DBMManager_t> &loc );
 
 private:
   vector<CS_t>  invariants; // set of invariants  in this Location

@@ -20,9 +20,11 @@
 
 namespace graphsat {
 using std::vector;
-template <typename C, typename CS, typename D> class Transition {
+template <typename C, typename CS, typename DBMManager> class Location;
 
-  typedef Transition<C, CS, D> Transition_t;
+template <typename C, typename CS, typename DBMManager> class Transition {
+
+  typedef Transition<C, CS, DBMManager> Transition_t;
 
 public:
   Transition() {
@@ -32,6 +34,12 @@ public:
   Transition( int s, int t ) {
     source      = s;
     target      = t;
+    has_channel = false;
+  }
+  Transition( const Location<C, CS, DBMManager> &lhs,
+              const Location<C, CS, DBMManager> &rhs ) {
+    source      = lhs.getId();
+    target      = rhs.getId();
     has_channel = false;
   }
 
@@ -144,8 +152,8 @@ public:
               const C *const state ) const {
     if ( !guards.empty() ) {
 
-      const D &dbm_manager = manager.getClockManager();
-      const C *source_DBM  = manager.getDBM( state );
+      const DBMManager &dbm_manager = manager.getClockManager();
+      const C *         source_DBM  = manager.getDBM( state );
       assert( dbm_manager.isConsistent( source_DBM ) );
       C *copy_DBM = dbm_manager.createDBM( source_DBM );
 
@@ -181,7 +189,7 @@ public:
                    C *re_state ) const {
     assert( ready( component, manager, re_state ) );
 
-    const D &dbm_manager = manager.getClockManager();
+    const DBMManager &dbm_manager = manager.getClockManager();
 
     C *source_DBM = manager.getDBM( re_state );
 

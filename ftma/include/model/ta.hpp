@@ -210,11 +210,11 @@ public:
   }
   // void toDot(ostream &out ) const{
   //   out<<"digraph G { "<<endl;
-    
+
   //   for(auto e : transitions ){
   //     string source=locations[ e.source].
   //   }
-    
+
   // }
 
 private:
@@ -377,7 +377,7 @@ typedef DBMset<C_t1>     DBMSet_t1;
 
 typedef ClockConstraint<C_t1> CS_t1;
 
-typedef Location<C_t1, CS_t1, DBMManager_t1, DBMSet_t1> L_t1;
+typedef Location<C_t1, CS_t1, DBMManager_t1> L_t1;
 
 typedef Transition<C_t1, CS_t1, DBMManager_t1> T_t1;
 

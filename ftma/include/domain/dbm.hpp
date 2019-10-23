@@ -147,34 +147,32 @@ public:
 
   int getSize() const { return matrix_size; }
 
-  std::string dump( const C *const dbm ) const {
-
-    std::stringstream ss;
+  ostream &dump( ostream &out, const C *const dbm ) const {
 
     for ( int i = 0; i < clock_num; i++ ) {
-      ss << "[ ";
+      out << "[ ";
       for ( int j = 0; j < clock_num; j++ ) {
-        ss << " (";
+        out << "(";
         C v = dbm[ LOC( i, j ) ];
-
+        out << setw( 3 );
         if ( isStrict<C>( v ) ) {
-          ss << "<  ";
+          out << "<";
         } else {
-          ss << "<= ";
+          out << "<=";
         }
-        ss.width( 4 );
+        out << setw( 4 );
         C right = getRight<C>( v );
         if ( right >= MAX_INT / 2 ) {
-          ss << std::left << ( (char) 126 );
+          out << std::left << ( (char) 126 );
         } else {
-          ss << std::left << (int) right;
+          out << std::left << (int) right;
         }
 
-        ss << ") ";
+        out << ") ";
       }
-      ss << "]\n";
+      out << "]\n";
     }
-    return ss.str();
+    return out;
   }
 
   uint32_t getHashValue( const C *const dbm ) const {

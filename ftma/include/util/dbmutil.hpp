@@ -16,17 +16,50 @@
 #include <string>
 #include <vector>
 
+#define STRING( s ) #s
+
+#ifdef PRINT_STATE
+
+#define PRINT_STATE_MACRO                                                      \
+  for ( int i = 0; i < component_num; i++ ) {                                  \
+    cout << setw( 3 ) << state[ i ];                                           \
+  }                                                                            \
+  cout << endl;                                                                \
+  manager.getClockManager().dump( cout, manager.getDBM( state ) ) << endl;
+
+#else
+
+#define PRINT_STATE_MACRO
+
+#endif
+
 #define LTEQ_ZERO ( (C) 1 )
 
 #define newA( __E, __n ) (__E *) malloc( ( __n ) * sizeof( __E ) )
 
 #define TYPE_TYPE( T ) T, REF_##T, CONST_##T, CONST_REF_##T, ARRAY_##T
-#define TYPE_MAP( M, T )                                                       \
-  M[ T ]             = #T;                                                     \
-  M[ REF_##T ]       = STRING( REF_##T );                                      \
-  M[ CONST_##T ]     = STRING( CONST_##T );                                    \
-  M[ CONST_REF_##T ] = STRING( CONST_REF_##T );                                \
-  M[ ARRAY_##T ]     = STRING( ARRAY_##T );
+#define TYPE_STR( T )                                                          \
+  case T:                                                                      \
+    return STRING( T );                                                        \
+  case REF_##T:                                                                \
+    return STRING( REF_##T );                                                  \
+  case CONST_##T:                                                              \
+    return STRING( CONST_##T );                                                \
+  case CONST_REF_##T:                                                          \
+    return STRING( CONST_REF_##T );                                            \
+  case ARRAY_##T:                                                              \
+    return STRING( ARRAY_##T );
+
+#define ENUM_ITEM_STR( T )                                                     \
+  case T:                                                                      \
+    return STRING( T );
+
+// #define TYPE_MAP( M, T )                                                       \
+//   M[ T ]             = #T;                                                     \
+//   M[ REF_##T ]       = STRING( REF_##T );                                      \
+//   M[ CONST_##T ]     = STRING( CONST_##T );                                    \
+//   M[ CONST_REF_##T ] = STRING( CONST_REF_##T );                                \
+//   M[ ARRAY_##T ]     = STRING( ARRAY_##T );
 
 namespace graphsat {
 using std::map;
@@ -92,7 +125,11 @@ const static string RESET_STR = "reset";
 
 // const static string BOOL_STR = "bool";
 
-const static string PARAMETER_REF_STR = "&";
+// const static string PARAMETER_REF_STR = "&";
+
+const static int OP_OUT_WIDTH = 3;
+
+const static int VALUE_OUT_WIDTH = 5;
 
 typedef long double DF_T;
 
@@ -100,28 +137,30 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
-static COMP_OPERATOR negation( COMP_OPERATOR op ) {
+template <typename T>
+bool executeOp( const T &lhs, COMP_OPERATOR op, const T &rhs ) {
+
   switch ( op ) {
-  case EQ: {
-    return NE;
-  }
-  case LE: {
-    return GT;
-  }
-  case GE: {
-    return LT;
-  }
-  case LT: {
-    return GE;
-  }
-  case GT: {
-    return LE;
-  }
-  case NE: {
-    return EQ;
-  }
+  case EQ:
+    return lhs == rhs;
+  case LE:
+    return lhs <= rhs;
+  case LT:
+    return lhs < rhs;
+  case GE:
+    return lhs >= rhs;
+  case GT:
+    return lhs > rhs;
+  case NE:
+    return lhs != rhs;
+  default:
+    return false;
   }
 }
+string getOpStr( COMP_OPERATOR op );
+
+COMP_OPERATOR negation( COMP_OPERATOR op );
+
 enum TYPE_T {
   TYPE_TYPE( INT_T ),
   TYPE_TYPE( CLOCK_T ),
@@ -143,15 +182,11 @@ enum TYPE_T {
 
 };
 
-static TYPE_T base_type( TYPE_T type ) { return ( TYPE_T )( type / 5 ); }
+string getTypeStr( TYPE_T type );
 
-static bool isRefType( const TYPE_T type ) {
-  if ( type >= PARAMETER_T ) {
-    return false;
-  }
-  return type % 2 == 1;
-}
+TYPE_T base_type( TYPE_T type );
 
+bool isRefType( const TYPE_T type );
 /**
  *  Both have compare < and <=
  *

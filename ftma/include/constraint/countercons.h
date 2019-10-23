@@ -11,6 +11,8 @@
 #ifndef COUNTER_CONS_H
 #define COUNTER_CONS_H
 
+#include <iomanip>
+#include <iostream>
 #include <vector>
 
 #include "util/dbmutil.hpp"
@@ -18,6 +20,9 @@
 #include "util/data.hpp"
 
 namespace graphsat {
+using std::ostream;
+using std::setw;
+using std::to_string;
 
 class InstanceFactory;
 
@@ -28,14 +33,21 @@ public:
   /**
    *Deley set the counter id
    */
-  virtual void globalUpdate( const map<int, int> &id_map,
-                             const vector<int> &  parameter_value ) = 0;
+  virtual void         globalUpdate( const map<int, int> &id_map,
+                                     const vector<int> &  parameter_value ) = 0;
+  friend std::ostream &operator<<( std::ostream &           out,
+                                   const CounterConstraint &cons ) {
+    return cons.dump( out );
+  }
 
 protected:
   virtual ~CounterConstraint() {}
 
 private:
-  virtual CounterConstraint *copy() const = 0;
+  virtual CounterConstraint *copy() const               = 0;
+  virtual std::ostream &     dump( ostream &out ) const = 0;
+  //   return out;
+  // }
 
   friend class InstanceFactory;
 };
@@ -56,28 +68,7 @@ public:
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
     int lhs = parameter_value[ parameter_id ];
-    switch ( op ) {
-    case EQ:
-      value = ( lhs == rhs );
-      break;
-    case LE:
-      value = ( lhs <= rhs );
-      break;
-    case LT:
-      value = ( lhs < rhs );
-      break;
-    case GE:
-      value = ( lhs >= rhs );
-      break;
-    case GT:
-      value = ( lhs > rhs );
-      break;
-    case NE:
-      value = ( lhs != rhs );
-      break;
-    default:
-      value = false;
-    }
+    value   = executeOp( lhs, op, rhs );
   }
 
 protected:
@@ -94,6 +85,15 @@ private:
     return new OneParameterConstraint( parameter_id, op, rhs );
   }
 
+  std::ostream &dump( ostream &out ) const {
+    out << std::setw( 5 );
+    if ( value ) {
+      out << "true";
+    } else {
+      out << "false";
+    }
+    return out;
+  }
   bool          value;
   int           parameter_id;
   COMP_OPERATOR op;
@@ -112,22 +112,7 @@ public:
    * @return true if  the vlaue corresponding counter op rhs, false otherwise.
    */
   bool operator()( const int *counter_value ) const {
-    switch ( op ) {
-    case EQ:
-      return counter_value[ global_counter_id ] == rhs;
-    case LE:
-      return counter_value[ global_counter_id ] <= rhs;
-    case LT:
-      return counter_value[ global_counter_id ] < rhs;
-    case GE:
-      return counter_value[ global_counter_id ] >= rhs;
-    case GT:
-      return counter_value[ global_counter_id ] > rhs;
-    case NE:
-      return counter_value[ global_counter_id ] != rhs;
-    default:
-      return false;
-    }
+    return executeOp( counter_value[ global_counter_id ], op, rhs );
   }
   void globalUpdate( const map<int, int> &id_map,
                      const vector<int> &  parameter_value ) {
@@ -151,6 +136,11 @@ private:
 
     return new OneCounterConstraint( local_counter_id, op, rhs );
   }
+  ostream &dump( ostream &out ) const {
+    out << "counter_" << global_counter_id << setw( 3 ) << getOpStr( op )
+        << setw( 5 ) << rhs;
+    return out;
+  }
 
   int           local_counter_id;
   int           global_counter_id;
@@ -170,24 +160,7 @@ public:
    * @return  true if the counter op parameter, false otherwise.
    */
   bool operator()( const int *counter_value ) const {
-
-    int diff = counter_value[ global_counter_id ];
-    switch ( op ) {
-    case EQ:
-      return diff == rhs;
-    case LE:
-      return diff <= rhs;
-    case LT:
-      return diff < rhs;
-    case GE:
-      return diff >= rhs;
-    case GT:
-      return diff > rhs;
-    case NE:
-      return diff != rhs;
-    default:
-      return false;
-    }
+    return executeOp( counter_value[ global_counter_id ], op, rhs );
   }
 
   void globalUpdate( const map<int, int> &id_map,
@@ -223,6 +196,11 @@ private:
     return new CounterParameterConstraint( local_counter_id, parameter_id, op,
                                            erhs );
   }
+  ostream &dump( ostream &out ) const {
+    out << "counter_" << global_counter_id << setw( 3 ) << getOpStr( op )
+        << setw( 5 ) << rhs;
+    return out;
+  }
 
   friend class InstanceFactory;
 };
@@ -237,28 +215,7 @@ public:
                      const vector<int> &  parameter_value ) {
     int lhs = parameter_value[ first_paramter_id ] -
               parameter_value[ second_parameter_id ];
-    switch ( op ) {
-    case EQ:
-      value = ( lhs == rhs );
-      break;
-    case LE:
-      value = ( lhs <= rhs );
-      break;
-    case LT:
-      value = ( lhs < rhs );
-      break;
-    case GE:
-      value = ( lhs >= rhs );
-      break;
-    case GT:
-      value = ( lhs > rhs );
-      break;
-    case NE:
-      value = ( lhs != rhs );
-      break;
-    default:
-      value = false;
-    }
+    value = executeOp( lhs, op, rhs );
   }
 
 protected:
@@ -277,6 +234,15 @@ private:
   CounterConstraint *copy() const {
     return new TwoParameterConstraint( first_paramter_id, second_parameter_id,
                                        op, rhs );
+  }
+  ostream &dump( ostream &out ) const {
+    out << std::setw( 5 );
+    if ( value ) {
+      out << "true";
+    } else {
+      out << "false";
+    }
+    return out;
   }
 
   bool          value;
@@ -298,22 +264,7 @@ public:
   bool operator()( const int *counter_value ) const {
     int diff =
         counter_value[ global_counter_x ] - counter_value[ global_counter_y ];
-    switch ( op ) {
-    case EQ:
-      return diff == rhs;
-    case LE:
-      return diff <= rhs;
-    case LT:
-      return diff < rhs;
-    case GE:
-      return diff >= rhs;
-    case GT:
-      return diff > rhs;
-    case NE:
-      return diff != rhs;
-    default:
-      return false;
-    }
+    return executeOp( diff, op, rhs );
   }
 
   void globalUpdate( const map<int, int> &id_map,
@@ -344,6 +295,12 @@ private:
     return new TwoCounterConstraint( local_counter_x, local_counter_y, op, rhs,
                                      parameter_id );
   }
+  ostream &dump( ostream &out ) const {
+    out << "counter_" << global_counter_x << setw( 3 ) << "-"
+        << "counter_" << global_counter_x << setw( 3 ) << getOpStr( op )
+        << setw( 5 ) << rhs;
+    return out;
+  }
 
   int local_counter_x, local_counter_y, global_counter_x, global_counter_y;
   COMP_OPERATOR op;
@@ -370,23 +327,7 @@ public:
       dummy +=
           local_constraint[ i ] * counter_value[ local_constraint[ i + 1 ] ];
     }
-
-    switch ( op ) {
-    case EQ:
-      return dummy == rhs;
-    case LE:
-      return dummy <= rhs;
-    case LT:
-      return dummy < rhs;
-    case GE:
-      return dummy >= rhs;
-    case GT:
-      return dummy > rhs;
-    case NE:
-      return dummy != rhs;
-    default:
-      return false;
-    }
+    return executeOp( dummy, op, rhs );
   }
 
   void globalUpdate( const map<int, int> &id_map,
@@ -420,6 +361,7 @@ private:
     return new DefaultCounterConstraint( pconstraint, local_constraint, rhs,
                                          op );
   }
+  ostream &dump( ostream &out ) const { return out; }
 
 private:
   vector<int>   pconstraint;

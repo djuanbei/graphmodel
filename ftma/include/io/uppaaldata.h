@@ -75,9 +75,7 @@ public:
   }
 
   void   setStartId( int id ) { startId = id; }
-  string getTypeName( const TYPE_T type ) const {
-    return type_to_name.at( type );
-  }
+  string getTypeName( const TYPE_T type ) const { return getTypeStr( type ); }
 
   void setName( const string &n ) { name = n; }
 
@@ -115,15 +113,15 @@ public:
   int getInitialLoc() const { return init_loc; }
 
   void addValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
-    int_values.addValue( type_to_name.at( type ), name, v );
+    int_values.addValue( getTypeStr( type ), name, v );
   }
 
   void setValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
-    int_values.setValue( type_to_name.at( type ), name, v );
+    int_values.setValue( getTypeStr( type ), name, v );
   }
 
   int getTypeNum( const TYPE_T type ) const {
-    return int_values.getTypeNum( type_to_name.at( type ) );
+    return int_values.getTypeNum( getTypeStr( type ) );
   }
 
   /**
@@ -134,7 +132,7 @@ public:
    * @return  -1 if name is not in int_values
    */
   int getId( const TYPE_T type, const string &name ) const {
-    return int_values.getId( type_to_name.at( type ), name );
+    return int_values.getId( getTypeStr( type ), name );
   }
 
   int getClockId( const string &name ) const {
@@ -142,65 +140,63 @@ public:
   }
 
   const pair<string, vector<int>> &getValue( const TYPE_T type, int id ) const {
-    return int_values.getValue( type_to_name.at( type ), id );
+    return int_values.getValue( getTypeStr( type ), id );
   }
 
   bool hasValue( const TYPE_T type, const string &name ) const {
 
-    return int_values.hasValue( type_to_name.at( type ), name );
+    return int_values.hasValue( getTypeStr( type ), name );
   }
 
   int getValue( const TYPE_T type, const string &name, int id = 0 ) const {
-    return int_values.getValue( type_to_name.at( type ), name, id );
+    return int_values.getValue( getTypeStr( type ), name, id );
   }
 
   vector<pair<string, vector<int>>> getValue( const TYPE_T type ) const {
-    return int_values.getValue( type_to_name.at( type ) );
+    return int_values.getValue( getTypeStr( type ) );
   }
 
   void addPointer( const TYPE_T type, const string &name, void *v ) {
-    point_values.addValue( type_to_name.at( type ), name, v );
+    point_values.addValue( getTypeStr( type ), name, v );
   }
 
   void addPointer( const TYPE_T type, void *v ) {
-    point_values.addValue( type_to_name.at( type ), type_to_name.at( type ),
-                           v );
+    point_values.addValue( getTypeStr( type ), getTypeStr( type ), v );
   }
 
   bool hasPointer( const TYPE_T type, const string name ) const {
-    return point_values.hasValue( type_to_name.at( type ), name );
+    return point_values.hasValue( getTypeStr( type ), name );
   }
 
   int getPointerId( const TYPE_T type, const string &name ) const {
-    return point_values.getId( type_to_name.at( type ), name );
+    return point_values.getId( getTypeStr( type ), name );
   }
 
   vector<void *> getPoints( const TYPE_T type, const string name ) const {
-    int id = point_values.getId( type_to_name.at( type ), name );
+    int id = point_values.getId( getTypeStr( type ), name );
     if ( id > -1 ) {
-      return point_values.getValue( type_to_name.at( type ), id ).second;
+      return point_values.getValue( getTypeStr( type ), id ).second;
     } else {
       vector<void *> dummy;
       return dummy;
     }
   }
   void *getPointer( const TYPE_T type ) const {
-    return point_values.getValue( type_to_name.at( type ),
-                                  type_to_name.at( type ), 0 );
+    return point_values.getValue( getTypeStr( type ), getTypeStr( type ), 0 );
   }
   void *getPointer( const TYPE_T type, const string &name ) const {
-    return point_values.getValue( type_to_name.at( type ), name, 0 );
+    return point_values.getValue( getTypeStr( type ), name, 0 );
   }
   int getPointNum( const TYPE_T type ) const {
-    return point_values.getTypeNum( type_to_name.at( type ) );
+    return point_values.getTypeNum( getTypeStr( type ) );
   }
 
   vector<pair<string, vector<void *>>> getPoints( const TYPE_T type ) const {
-    return point_values.getValue( type_to_name.at( type ) );
+    return point_values.getValue( getTypeStr( type ) );
   }
 
   void clearPoints( const TYPE_T type ) {
-    point_values.clear( type_to_name.at( type ) );
+    point_values.clear( getTypeStr( type ) );
   }
 
   void clearPoints() { point_values.clear(); }
@@ -208,10 +204,9 @@ public:
                            int rhs, int parameter_id = -10 );
 
 private:
-  string              name;
-  ValueData<int>      int_values;
-  PointerData         point_values;
-  map<TYPE_T, string> type_to_name;
+  string         name;
+  ValueData<int> int_values;
+  PointerData    point_values;
 
   vector<TYPE_T> base_types;
 

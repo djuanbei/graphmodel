@@ -10,6 +10,7 @@
 
 #ifndef __DATA_H
 #define __DATA_H
+#include <iomanip>
 #include <map>
 #include <sstream>
 #include <string>
@@ -21,23 +22,6 @@ using std::pair;
 using std::string;
 using std::stringstream;
 using std::vector;
-
-#define STRING( s ) #s
-
-#ifdef PRINT_STATE
-
-#define PRINT_STATE_MACRO                                                      \
-  for ( int i = 0; i < component_num; i++ ) {                                  \
-    cout << state[ i ] << " ";                                                 \
-  }                                                                            \
-  cout << endl                                                                 \
-       << manager.getClockManager().dump( manager.getDBM( state ) ) << endl;
-
-#else
-
-#define PRINT_STATE_MACRO
-
-#endif
 
 #define SINGLETON( T )                                                         \
 private:                                                                       \

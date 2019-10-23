@@ -11,6 +11,7 @@
 #ifndef LIN_SIMP_CONS_HPP
 #define LIN_SIMP_CONS_HPP
 #include "util/dbmutil.hpp"
+#include <iomanip>
 #include <iostream>
 #include <random>
 
@@ -31,13 +32,6 @@ public:
   int           clock_y;
   COMP_OPERATOR op;
   C             matrix_value;
-
-  //  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR
-  //  op,
-  //                   const C rhs ) {
-  //    parameter_id = -100;
-  //    init( clock_id1, clock_id2, op, rhs );
-  //  }
 
   ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
                    const int rhs, const int eparameter_id = -100 ) {
@@ -124,36 +118,40 @@ public:
     return true;
   }
 
-  friend std::ostream &operator<<( std::ostream &         os,
+  friend std::ostream &operator<<( std::ostream &         out,
                                    const ClockConstraint &cons ) {
     if ( cons.clock_x >= 0 && cons.clock_y >= 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
-        os << "x_" << cons.clock_x << " - "
-           << "x_" << cons.clock_y << " < " << getRight( cons.matrix_value );
+        out << "x_" << cons.clock_x << " - "
+            << "x_" << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
+            << getRight( cons.matrix_value );
       } else {
-        os << "x_" << cons.clock_x << " - "
-           << "x_" << cons.clock_y << " <= " << getRight( cons.matrix_value );
+        out << "x_" << cons.clock_x << " - "
+            << "x_" << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
+            << getRight( cons.matrix_value );
       }
     }
     if ( cons.clock_x < 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
-        os << "0     - "
-           << "x_" << cons.clock_y << " < " << getRight( cons.matrix_value );
+        out << "0     - "
+            << "x_" << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
+            << getRight( cons.matrix_value );
       } else {
-        os << "0     - "
-           << " - "
-           << "x_" << cons.clock_y << " <= " << getRight( cons.matrix_value );
+        out << "0     - "
+            << " - "
+            << "x_" << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
+            << getRight( cons.matrix_value );
       }
     } else {
       if ( isStrict<C>( cons.matrix_value ) ) {
-        os << "x_" << cons.clock_x << "          <  "
-           << getRight( cons.matrix_value );
+        out << "x_" << cons.clock_x << "          <  "
+            << getRight( cons.matrix_value );
       } else {
-        os << "x_" << cons.clock_x
-           << "          <= " << getRight( cons.matrix_value );
+        out << "x_" << cons.clock_x << "          <= " << setw( 5 )
+            << getRight( cons.matrix_value );
       }
     }
-    return os;
+    return out;
   }
 
 private:

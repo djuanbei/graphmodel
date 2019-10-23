@@ -274,8 +274,8 @@ void fisher( int n = 2 ) {
 
   typename INT_TAS_t::L_t cs( 3 );
 
-  typename INT_TAS_t::T_t A_req( 0, 1 );
-  
+  typename INT_TAS_t::T_t A_req( A, req );
+
   void *ccs1 = createCounterConstraint( 0, DUMMY_ID, EQ, 0 ); // id==0
 
   A_req.addCounterCons( ccs1 );
@@ -284,7 +284,7 @@ void fisher( int n = 2 ) {
 
   A_req.addReset( reset1 );
 
-  typename INT_TAS_t::T_t  req_wait( 1, 2 );
+  typename INT_TAS_t::T_t  req_wait( req, wait );
   typename INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
   req_wait += cs2;
 
@@ -296,13 +296,13 @@ void fisher( int n = 2 ) {
 
   req_wait.addCounterAction( action );
 
-  typename INT_TAS_t::T_t wait_req( 2, 1 );
+  typename INT_TAS_t::T_t wait_req( wait, req );
 
   pair<int, int> reset3( 1, 0 ); // x-->0
   wait_req.addReset( reset3 );
   wait_req.addCounterCons( ccs1 ); // id==0
 
-  typename INT_TAS_t::T_t wait_cs( 2, 3 );
+  typename INT_TAS_t::T_t wait_cs( wait, cs );
 
   CounterParameterConstraint *ccs2 =
       createCounterParameterConstraint( 0, 0, EQ, 0 ); // id==pid
@@ -310,7 +310,7 @@ void fisher( int n = 2 ) {
   typename INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
   wait_cs += cs3;
 
-  typename INT_TAS_t::T_t cs_A( 3, 0 );
+  typename INT_TAS_t::T_t cs_A( cs, A );
 
   CounterAction *caction1 =
       new CounterAction( ASSIGNMENT_ACTION, RHS_CONSTANT_T, 0,
@@ -323,7 +323,7 @@ void fisher( int n = 2 ) {
   ls.push_back( req );
   ls.push_back( wait );
   ls.push_back( cs );
-  
+
   es.push_back( A_req );
   es.push_back( req_wait );
   es.push_back( wait_req );
@@ -583,7 +583,7 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 2 );
+  fisher( 3 );
   return 0;
   //  example5();
   //  return 0;
@@ -604,22 +604,27 @@ int main( int argc, const char *argv[] ) {
   // insert code here...
   typename INT_TAS_t::DBMManager_t exampleDBM( 4 );
   typename INT_TAS_t::C_t *        D = exampleDBM.randomDBM();
-  cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
+  cout << "matrix dump :\n";
+  exampleDBM.dump( cout, D ) << endl;
 
   cout << "========================" << endl;
   exampleDBM.canonicalForm( D );
-  cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
+  cout << "matrix dump :\n";
+  exampleDBM.dump( cout, D ) << endl;
 
   cout << "========================" << endl;
   exampleDBM.canonicalForm( D );
-  cout << "matrix dump :\n" << exampleDBM.dump( D ) << endl;
+  cout << "matrix dump :\n";
+  exampleDBM.dump( cout, D ) << endl;
   std::cout << "Hello, World!\n";
 
   typename INT_TAS_t::C_t *D1 = exampleDBM.createDBM();
-  cout << "matrix dump :\n" << exampleDBM.dump( D1 ) << endl;
+  cout << "matrix dump :\n";
+  exampleDBM.dump( cout, D1 ) << endl;
   typename INT_TAS_t::C_t *D2 =
       exampleDBM.reset( D1, 1, (typename INT_TAS_t::C_t) 10 );
-  cout << "matrix dump :\n" << exampleDBM.dump( D2 ) << endl;
+  cout << "matrix dump :\n";
+  exampleDBM.dump( cout, D2 ) << endl;
 
   // cout<<"constrain: "<<cons<<endl;
 
@@ -627,7 +632,8 @@ int main( int argc, const char *argv[] ) {
   typename INT_TAS_t::C_t *D3 =
       exampleDBM.reset( D2, 2, (typename INT_TAS_t::C_t) 10 );
 
-  cout << "matrix dump :\n" << exampleDBM.dump( D3 ) << endl;
+  cout << "matrix dump :\n";
+  exampleDBM.dump( cout, D3 ) << endl;
   /*
     vector<L_t> locs;
 
