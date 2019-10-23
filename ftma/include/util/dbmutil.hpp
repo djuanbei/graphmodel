@@ -22,7 +22,7 @@
 
 #define PRINT_STATE_MACRO                                                      \
   for ( int i = 0; i < component_num; i++ ) {                                  \
-    cout << setw( 3 ) << state[ i ];                                           \
+    cout << setw( LOC_OUT_WIDTH ) << state[ i ];                               \
   }                                                                            \
   cout << endl;                                                                \
   manager.getClockManager().dump( cout, manager.getDBM( state ) ) << endl;
@@ -127,7 +127,8 @@ const static string RESET_STR = "reset";
 
 // const static string PARAMETER_REF_STR = "&";
 
-const static int OP_OUT_WIDTH = 3;
+const static int LOC_OUT_WIDTH = 3;
+const static int OP_OUT_WIDTH  = 3;
 
 const static int VALUE_OUT_WIDTH = 5;
 

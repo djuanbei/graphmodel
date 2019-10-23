@@ -86,7 +86,7 @@ private:
   }
 
   std::ostream &dump( ostream &out ) const {
-    out << std::setw( 5 );
+    out << std::setw( VALUE_OUT_WIDTH );
     if ( value ) {
       out << "true";
     } else {
@@ -137,8 +137,8 @@ private:
     return new OneCounterConstraint( local_counter_id, op, rhs );
   }
   ostream &dump( ostream &out ) const {
-    out << "counter_" << global_counter_id << setw( 3 ) << getOpStr( op )
-        << setw( 5 ) << rhs;
+    out << "counter_" << global_counter_id << setw( OP_OUT_WIDTH )
+        << getOpStr( op ) << setw( VALUE_OUT_WIDTH ) << rhs;
     return out;
   }
 
@@ -197,8 +197,8 @@ private:
                                            erhs );
   }
   ostream &dump( ostream &out ) const {
-    out << "counter_" << global_counter_id << setw( 3 ) << getOpStr( op )
-        << setw( 5 ) << rhs;
+    out << "counter_" << global_counter_id << setw( OP_OUT_WIDTH )
+        << getOpStr( op ) << setw( VALUE_OUT_WIDTH ) << rhs;
     return out;
   }
 
@@ -236,7 +236,7 @@ private:
                                        op, rhs );
   }
   ostream &dump( ostream &out ) const {
-    out << std::setw( 5 );
+    out << std::setw( VALUE_OUT_WIDTH );
     if ( value ) {
       out << "true";
     } else {
@@ -296,9 +296,9 @@ private:
                                      parameter_id );
   }
   ostream &dump( ostream &out ) const {
-    out << "counter_" << global_counter_x << setw( 3 ) << "-"
-        << "counter_" << global_counter_x << setw( 3 ) << getOpStr( op )
-        << setw( 5 ) << rhs;
+    out << "counter_" << global_counter_x << setw( OP_OUT_WIDTH ) << "-"
+        << "counter_" << global_counter_x << setw( OP_OUT_WIDTH )
+        << getOpStr( op ) << setw( VALUE_OUT_WIDTH ) << rhs;
     return out;
   }
 

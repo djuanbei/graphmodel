@@ -12,12 +12,14 @@
 #define ACTION_HPP
 
 #include <vector>
-
+#include "util/dbmutil.hpp"
 #include "util/data.hpp"
 
 namespace graphsat {
 using std::pair;
 using std::vector;
+using std::ostream;
+using std::setw;
 
 enum Action_e {
   ASSIGNMENT_ACTION, //=
@@ -28,7 +30,7 @@ enum Action_e {
 enum RHS_TYPE { RHS_CONSTANT_T, RHS_COUNTER_T, RHS_PARAMETER_T };
 
 class CounterAction {
-public:
+ public:
   CounterAction( Action_e ee, RHS_TYPE etype, int elocal_lhs_id,
                  int elocal_rhs_id ) {
 
@@ -40,45 +42,45 @@ public:
   void operator()( int *counter_value ) const {
 
     switch ( action ) {
-    case ASSIGNMENT_ACTION: {
-      switch ( type ) {
-      case RHS_CONSTANT_T:
-        counter_value[ global_lhs_id ] = global_rhs_id;
-        return;
-      case RHS_COUNTER_T:
-        counter_value[ global_lhs_id ] = counter_value[ global_rhs_id ];
-        return;
-      case RHS_PARAMETER_T:
-        counter_value[ global_lhs_id ] = global_rhs_id;
-        return;
+      case ASSIGNMENT_ACTION: {
+        switch ( type ) {
+          case RHS_CONSTANT_T:
+            counter_value[ global_lhs_id ] = global_rhs_id;
+            return;
+          case RHS_COUNTER_T:
+            counter_value[ global_lhs_id ] = counter_value[ global_rhs_id ];
+            return;
+          case RHS_PARAMETER_T:
+            counter_value[ global_lhs_id ] = global_rhs_id;
+            return;
+        }
       }
-    }
-    case SELF_INC_ACTION: {
-      switch ( type ) {
-      case RHS_CONSTANT_T:
-        counter_value[ global_lhs_id ] += global_rhs_id;
-        return;
-      case RHS_COUNTER_T:
-        counter_value[ global_lhs_id ] += counter_value[ global_rhs_id ];
-        return;
-      case RHS_PARAMETER_T:
-        counter_value[ global_lhs_id ] += global_rhs_id;
-        return;
+      case SELF_INC_ACTION: {
+        switch ( type ) {
+          case RHS_CONSTANT_T:
+            counter_value[ global_lhs_id ] += global_rhs_id;
+            return;
+          case RHS_COUNTER_T:
+            counter_value[ global_lhs_id ] += counter_value[ global_rhs_id ];
+            return;
+          case RHS_PARAMETER_T:
+            counter_value[ global_lhs_id ] += global_rhs_id;
+            return;
+        }
       }
-    }
-    case SELF_DEC_ACTION: {
-      switch ( type ) {
-      case RHS_CONSTANT_T:
-        counter_value[ global_lhs_id ] -= global_rhs_id;
-        return;
-      case RHS_COUNTER_T:
-        counter_value[ global_lhs_id ] -= counter_value[ global_rhs_id ];
-        return;
-      case RHS_PARAMETER_T:
-        counter_value[ global_lhs_id ] -= global_rhs_id;
-        return;
+      case SELF_DEC_ACTION: {
+        switch ( type ) {
+          case RHS_CONSTANT_T:
+            counter_value[ global_lhs_id ] -= global_rhs_id;
+            return;
+          case RHS_COUNTER_T:
+            counter_value[ global_lhs_id ] -= counter_value[ global_rhs_id ];
+            return;
+          case RHS_PARAMETER_T:
+            counter_value[ global_lhs_id ] -= global_rhs_id;
+            return;
+        }
       }
-    }
     }
   }
   CounterAction *copy() const {
@@ -97,8 +99,71 @@ public:
     }
     global_rhs_id = id_map.at( local_rhs_id );
   }
+  friend ostream &operator<<( ostream &out, const CounterAction &act ) {
+    switch ( act.action ) {
+      case ASSIGNMENT_ACTION: {
+        string op_str="=";
+        switch ( act.type ) {
+        
+          case RHS_CONSTANT_T:
+            out << "counter_" <<  act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                << op_str << setw( VALUE_OUT_WIDTH ) << act.global_rhs_id;
+            return out;
+          case RHS_COUNTER_T:
+            out << "counter_" <<  act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                << op_str
+                << "counter_" << act.global_rhs_id;
 
-private:
+            return out;
+          case RHS_PARAMETER_T:
+            out << "counter_" <<  act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                <<op_str << setw( VALUE_OUT_WIDTH ) << act.global_rhs_id;
+
+            return out;
+        }
+      }
+      case SELF_INC_ACTION: {
+        string op_str="+=";
+        switch ( act.type ) {
+        
+          case RHS_CONSTANT_T:
+            out << "counter_" <<  act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                << op_str << setw( VALUE_OUT_WIDTH ) << act.global_rhs_id;
+            return out;
+          case RHS_COUNTER_T:
+            out << "counter_" <<  act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                << op_str
+                << "counter_" << act.global_rhs_id;
+            return out;
+          case RHS_PARAMETER_T:
+            out << "counter_" <<  act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                <<op_str << setw( VALUE_OUT_WIDTH ) << act.global_rhs_id;
+            return out;
+        }
+      }
+      case SELF_DEC_ACTION: {
+        string op_str="-=";
+        switch ( act.type ) {
+        
+          case RHS_CONSTANT_T:
+            out << "counter_" << act.global_lhs_id << setw( OP_OUT_WIDTH )
+                << op_str << setw( VALUE_OUT_WIDTH ) << act.global_rhs_id;
+            return out;
+          case RHS_COUNTER_T:
+            out << "counter_" << act.global_lhs_id  << setw( OP_OUT_WIDTH )
+                << op_str
+                << "counter_" << act.global_rhs_id;
+            return out;
+          case RHS_PARAMETER_T:
+            out << "counter_" <<  act.global_lhs_id << setw( OP_OUT_WIDTH )
+                <<op_str << setw( VALUE_OUT_WIDTH ) << act.global_rhs_id;
+            return out;
+        }
+      }
+    }
+  }
+
+ private:
   Action_e action;
   RHS_TYPE type;
   int      local_lhs_id;
