@@ -266,7 +266,7 @@ int UppaalParser::parseTemplateParamter( UppaalData &template_data,
   string para_content = "argument " + parameter->getValue();
   parseProblem( para_content, &template_data );
 
-  cout << template_data.getPointNum( PARAMETER_T ) << endl;
+  cout << template_data.getTypeNum( PARAMETER_T ) << endl;
   // TODO:x
   return 0;
 }

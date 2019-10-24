@@ -121,7 +121,9 @@ public:
   }
 
   int getTypeNum( const TYPE_T type ) const {
-    return int_values.getTypeNum( getTypeStr( type ) );
+    if(int_values.hasValue(getTypeStr( type )) )
+      return int_values.getTypeNum(getTypeStr( type ) );
+    return point_values.getTypeNum(getTypeStr( type ) );
   }
 
   /**
@@ -148,14 +150,10 @@ public:
   }
 
   bool hasValue( const TYPE_T type, const string &name ) const {
-   
     return  int_values.hasValue( getTypeStr( type ), name );
-
   }
 
   bool hasPointer( const TYPE_T type, const string &name ) const {
-
-    
     return point_values.hasValue( getTypeStr( type ), name );
   }
   
@@ -191,9 +189,9 @@ public:
   void *getPointer( const TYPE_T type, const string &name ) const {
     return point_values.getValue( getTypeStr( type ), name, 0 );
   }
-  int getPointNum( const TYPE_T type ) const {
-    return point_values.getTypeNum( getTypeStr( type ) );
-  }
+  // int getPointNum( const TYPE_T type ) const {
+  //   return point_values.getTypeNum( getTypeStr( type ) );
+  // }
 
   vector<pair<string, vector<void *>>> getPoints( const TYPE_T type ) const {
     return point_values.getValue( getTypeStr( type ) );

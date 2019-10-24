@@ -144,7 +144,7 @@ public:
     return false;
   }
   
-  bool hasValue( const string &type){
+  bool hasValue( const string &type) const{
     return values.find( type ) != values.end();
   }
 
