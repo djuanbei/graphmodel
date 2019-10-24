@@ -246,7 +246,8 @@ type_specifier IDENTIFIER
   ParaElement elem;
   elem.is_ref=isRefType($1);
   elem.name=$2->symbol;
-  elem.type_name=current_data->getTypeName($1);
+  elem.type_name=getTypeStr( $1);
+  //current_data->getTypeName($1);
   elem.type=$1;
 
   $$->push_back(elem);
@@ -259,7 +260,7 @@ formal_argument_list ',' type_specifier IDENTIFIER
   ParaElement elem;
   elem.is_ref=isRefType($3);
   elem.name=$4->symbol;
-  elem.type_name=current_data->getTypeName($3);
+  elem.type_name=getTypeStr( $3);// current_data->getTypeName($3);
   elem.type=$3;
   $$->push_back(elem);
   delete $4;
@@ -406,12 +407,12 @@ clock_yy{
 
 counter_identifier:
 int_yy {
-  $$=current_data->getGlobalId( INT_T, $1->symbol);
+  $$=current_data->getGlobalId(  $1->symbol);
   delete $1;
 }
 |
 bool_yy{
-  $$=current_data->getGlobalId(  BOOL_T, $1->symbol);
+  $$=current_data->getGlobalId(  $1->symbol);
   delete $1;
 }
 |
@@ -430,7 +431,7 @@ PARAMETER_YY{
 
 chan_identifier:
 chan_yy{
-  $$=current_data->getGlobalId(   CHAN_T, $1->symbol );
+  $$=current_data->getGlobalId(    $1->symbol );
   delete $1;
 };
 
@@ -531,7 +532,7 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
 }
 |
 bool_yy{
-  int id=current_data->getGlobalId(  BOOL_T, $1->symbol );
+  int id=current_data->getGlobalId( $1->symbol );
   void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
   current_data->addPointer( INT_CS_T,  cs );
   delete $1;
@@ -539,7 +540,7 @@ bool_yy{
 |
 '!'
 bool_yy{
-  int id=current_data->getGlobalId( BOOL_T, $2->symbol) ;
+  int id=current_data->getGlobalId( $2->symbol) ;
   void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
   current_data->addPointer( INT_CS_T, cs );  
   delete $2;

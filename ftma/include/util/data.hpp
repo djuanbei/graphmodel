@@ -49,6 +49,8 @@ public:                                                                        \
     Var.clear( #TYPE );                                                        \
   }
 
+const static  int  NOT_FOUND=-1;
+
 inline string arrayToVar( const string &name, int id ) {
   stringstream ss;
   ss << id;
@@ -102,11 +104,11 @@ public:
    * @param type Element type which wants to find
    * @param name The name of element
    *
-   * @return  -1 if name is not in values
+   * @return  @NOT_FOUND if name is not in values
    */
   int getId( const string &type, const string &name ) const {
     if ( values.find( type ) == values.end() ) {
-      return -1;
+      return NOT_FOUND;
     }
 
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
@@ -114,7 +116,7 @@ public:
         return (int) i;
       }
     }
-    return -1;
+    return NOT_FOUND;
   }
 
   const pair<string, vector<T>> &getValue( const string &type, int id ) const {
@@ -149,7 +151,7 @@ public:
       }
     }
     assert( false );
-    return (T) -1;
+    return (T) NOT_FOUND;
   }
 
 private:

@@ -108,7 +108,7 @@ int UppaalParser::parseSystem( XML_P system ) {
   assert( NULL != system );
 
   string content = system->getValue();
-  cout << content << endl;
+
   parseProblem( content, &system_data );
 
   int counter_num = system_data.getTypeNum( INT_T );

@@ -75,7 +75,8 @@ public:
   }
 
   void   setStartId( int id ) { startId = id; }
-  string getTypeName( const TYPE_T type ) const { return getTypeStr( type ); }
+  
+  int getGlobalId(const string & name ) const;
 
   void setName( const string &n ) { name = n; }
 
@@ -86,7 +87,7 @@ public:
   int getParameterId( const string &name ) {
     return getPointerId( PARAMETER_T, name );
   }
-  int getGlobalId( TYPE_T type, string var_name ) const;
+  
 
   TYPE_T getType( const string &name ) const;
 
@@ -100,7 +101,7 @@ public:
   }
   const vector<int> &getIntArray( const string &key ) const {
     int id = getId( ARRAY_INT_T, key );
-    if ( id > -1 ) {
+    if ( id != NOT_FOUND ) {
       const pair<string, vector<int>> &pp = getValue( ARRAY_INT_T, id );
       return pp.second;
     }
@@ -129,7 +130,7 @@ public:
    * @param type  The type of element which want to find.
    * @param name The element name which want to find.
    *
-   * @return  -1 if name is not in int_values
+   * @return  NOT_FOUND if name is not in int_values
    */
   int getId( const TYPE_T type, const string &name ) const {
     return int_values.getId( getTypeStr( type ), name );
@@ -174,7 +175,7 @@ public:
 
   vector<void *> getPoints( const TYPE_T type, const string name ) const {
     int id = point_values.getId( getTypeStr( type ), name );
-    if ( id > -1 ) {
+    if ( id !=NOT_FOUND ) {
       return point_values.getValue( getTypeStr( type ), id ).second;
     } else {
       vector<void *> dummy;
@@ -200,6 +201,7 @@ public:
   }
 
   void clearPoints() { point_values.clear(); }
+  
   void addClockConstraint( int clock1_id, int clock2_id, COMP_OPERATOR op,
                            int rhs, int parameter_id = -10 );
 

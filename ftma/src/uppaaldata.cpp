@@ -94,21 +94,23 @@ int UppaalData::getVarNum( void ) const {
   return re;
 }
 
-int UppaalData::getGlobalId( TYPE_T type, string name ) const {
-  int id = getId( type, name );
-  if ( id < 0 ) {
-    assert( false );
-  }
-  id += getPointNum( PARAMETER_T ) + startId;
+int UppaalData::getGlobalId(const string & name ) const{
+  int re=startId;
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
         it != base_types.end(); it++ ) {
-    if ( *it == type ) {
-      return id;
+    int typeId=getId( *it, name);
+    if(typeId!=NOT_FOUND ){
+      return re+typeId;
     }
-    id += getTypeNum( *it );
+    re+=getTypeNum( *it);
   }
-  return id;
+  if( NULL!= parent){
+    return parent->getGlobalId( name);
+  }
+  return NOT_FOUND;
 }
+
+
 
 void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
                                      COMP_OPERATOR op, int rhs,

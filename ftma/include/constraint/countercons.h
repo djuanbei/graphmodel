@@ -33,7 +33,7 @@ public:
   /**
    *Deley set the counter id
    */
-  virtual void         globalUpdate( const map<int, int> &id_map,
+  virtual void         globalUpdate( const vector<int> &id_map,
                                      const vector<int> &  parameter_value ) = 0;
   friend std::ostream &operator<<( std::ostream &           out,
                                    const CounterConstraint &cons ) {
@@ -58,14 +58,11 @@ private:
 class OneParameterConstraint : public CounterConstraint {
 public:
   /**
-   *
-   *
-   *
    * @return  a constant bool value which does not depend on value of
    * counter_value
    */
   bool operator()( const int *counter_value ) const { return value; }
-  void globalUpdate( const map<int, int> &id_map,
+  void globalUpdate( const vector<int> &id_map,
                      const vector<int> &  parameter_value ) {
     int lhs = parameter_value[ parameter_id ];
     value   = executeOp( lhs, op, rhs );
@@ -114,19 +111,19 @@ public:
   bool operator()( const int *counter_value ) const {
     return executeOp( counter_value[ global_counter_id ], op, rhs );
   }
-  void globalUpdate( const map<int, int> &id_map,
+  void globalUpdate( const vector<int> &id_map,
                      const vector<int> &  parameter_value ) {
 
-    global_counter_id = id_map.at( local_counter_id );
+    global_counter_id = vector[ref_parameter_id];
   }
 
 protected:
   ~OneCounterConstraint() {}
 
 private:
-  OneCounterConstraint( int ecounter_id, COMP_OPERATOR opp, int right_side ) {
+  OneCounterConstraint( int out_ref_parameter_id, COMP_OPERATOR opp, int right_side ) {
 
-    local_counter_id  = ecounter_id;
+    ref_parameter_id  = out_ref_parameter_id;
     global_counter_id = 0;
     op                = opp;
     rhs               = right_side;
@@ -134,7 +131,7 @@ private:
 
   CounterConstraint *copy() const {
 
-    return new OneCounterConstraint( local_counter_id, op, rhs );
+    return new OneCounterConstraint( ref_parameter_id, op, rhs );
   }
   ostream &dump( ostream &out ) const {
     out << "counter_" << global_counter_id << setw( OP_OUT_WIDTH )
@@ -142,7 +139,7 @@ private:
     return out;
   }
 
-  int           local_counter_id;
+  int           ref_parameter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
   int           rhs;
@@ -163,10 +160,10 @@ public:
     return executeOp( counter_value[ global_counter_id ], op, rhs );
   }
 
-  void globalUpdate( const map<int, int> &id_map,
+  void globalUpdate( const vector<int> &id_map,
                      const vector<int> &  parameter_value ) {
 
-    global_counter_id = id_map.at( local_counter_id );
+    global_counter_id = id_map[ref_parameter_id];
     rhs               = parameter_value[ parameter_id ] + erhs;
   }
 
@@ -174,17 +171,17 @@ protected:
   ~CounterParameterConstraint() {}
 
 private:
-  int           local_counter_id;
+  int           ref_parameter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
   int           parameter_id;
   int           erhs;
   int           rhs;
 
-  CounterParameterConstraint( int ecounter_id, int eparameter_id,
+  CounterParameterConstraint( int out_ref_parameter_id, int eparameter_id,
                               COMP_OPERATOR opp, int out_rhs ) {
 
-    local_counter_id = ecounter_id;
+    ref_parameter_id = out_ref_parameter_id;
     op               = opp;
     parameter_id     = eparameter_id;
     erhs             = out_rhs;
@@ -193,7 +190,7 @@ private:
 
   CounterConstraint *copy() const {
 
-    return new CounterParameterConstraint( local_counter_id, parameter_id, op,
+    return new CounterParameterConstraint( ref_parameter_id, parameter_id, op,
                                            erhs );
   }
   ostream &dump( ostream &out ) const {
@@ -211,7 +208,7 @@ private:
 class TwoParameterConstraint : public CounterConstraint {
 public:
   bool operator()( const int *counter_value ) const { return value; }
-  void globalUpdate( const map<int, int> &id_map,
+  void globalUpdate( const vector<int> &id_map,
                      const vector<int> &  parameter_value ) {
     int lhs = parameter_value[ first_paramter_id ] -
               parameter_value[ second_parameter_id ];
@@ -267,14 +264,14 @@ public:
     return executeOp( diff, op, rhs );
   }
 
-  void globalUpdate( const map<int, int> &id_map,
+  void globalUpdate( const vector<int> &id_map,
                      const vector<int> &  parameter_value ) {
     if ( parameter_id > -1 ) {
       rhs = parameter_value[ parameter_id ];
     }
 
-    global_counter_x = id_map.at( local_counter_x );
-    global_counter_y = id_map.at( local_counter_y );
+    global_counter_x = id_map[ ref_parameter_id_x ];
+    global_counter_y = id_map[ref_parameter_id_y];
   }
 
 protected:
@@ -285,14 +282,14 @@ private:
                         int out_parameter_id = -10 ) {
     parameter_id = out_parameter_id;
 
-    local_counter_x = x;
-    local_counter_y = y;
+    ref_parameter_id_x = x;
+    ref_parameter_id_y = y;
     op              = p;
     rhs             = r;
   }
   CounterConstraint *copy() const {
 
-    return new TwoCounterConstraint( local_counter_x, local_counter_y, op, rhs,
+    return new TwoCounterConstraint( ref_parameter_id_x, ref_parameter_id_y, op, rhs,
                                      parameter_id );
   }
   ostream &dump( ostream &out ) const {
@@ -302,7 +299,7 @@ private:
     return out;
   }
 
-  int local_counter_x, local_counter_y, global_counter_x, global_counter_y;
+  int ref_parameter_id_x, ref_parameter_id_y, global_counter_x, global_counter_y;
   COMP_OPERATOR op;
   int           rhs;
   int           parameter_id;
@@ -330,11 +327,11 @@ public:
     return executeOp( dummy, op, rhs );
   }
 
-  void globalUpdate( const map<int, int> &id_map,
+  void globalUpdate( const vector<int> & id_map,
                      const vector<int> &  parameter_value ) {
 
     for ( size_t i = 1; i < local_constraint.size(); i += 2 ) {
-      global_constraint[ i ] = id_map.at( local_constraint[ i ] );
+      global_constraint[ i ] = id_map[local_constraint[ i ]];
     }
 
     parameter_part = 0;
