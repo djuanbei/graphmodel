@@ -50,6 +50,8 @@ string getTypeStr( TYPE_T type ) {
 
     ENUM_ITEM_STR( TEMPLATE_T );
 
+    ENUM_ITEM_STR( AUTOMATA_T );
+
     ENUM_ITEM_STR( LOCATION_T );
 
     ENUM_ITEM_STR( PARAMETER_T );
@@ -64,11 +66,13 @@ string getTypeStr( TYPE_T type ) {
 
     ENUM_ITEM_STR( RESET_T );
 
+    ENUM_ITEM_STR( SELF_DEF_T );
+
     ENUM_ITEM_STR( NO_T );
   }
 }
 
-TYPE_T base_type( TYPE_T type ) { return ( TYPE_T )( type / 5 ); }
+TYPE_T base_type( TYPE_T type ) { return ( TYPE_T )( ( type / 5 ) * 5 ); }
 
 bool isRefType( const TYPE_T type ) {
   if ( type >= PARAMETER_T ) {

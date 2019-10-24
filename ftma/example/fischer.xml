@@ -3,7 +3,7 @@
 <nta>
 	<declaration>// Fischer's mutual exclusion protocol.
 
-typedef int[1,4] id_t;
+typedef int[1,2] id_t;
 int id;</declaration>
 	<template>
 		<name x="16" y="-8">P</name>
@@ -15,7 +15,7 @@ const int k = 2;</declaration>
 		</location>
 		<location id="id1" x="34" y="-52">
 			<name x="34" y="-84">req</name>
-			<label kind="invariant" x="56" y="-66">x&lt;=3</label>
+			<label kind="invariant" x="56" y="-66">x&lt;=k</label>
 		</location>
 		<location id="id2" x="-119" y="-51">
 			<name x="-144" y="-102">A</name>
@@ -33,7 +33,7 @@ const int k = 2;</declaration>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id0"/>
-			<label kind="guard" x="-34" y="-25">x&lt;=3</label>
+			<label kind="guard" x="-34" y="-25">x&lt;=k</label>
 			<label kind="assignment" x="-38" y="4">x = 0,
 id = pid</label>
 		</transition>
@@ -48,7 +48,7 @@ id = pid</label>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-85" y="84">x&gt;3 &amp;&amp; id==pid</label>
+			<label kind="guard" x="-85" y="84">x&gt;k &amp;&amp; id==pid</label>
 		</transition>
 		<transition>
 			<source ref="id3"/>

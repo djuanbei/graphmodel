@@ -54,13 +54,6 @@
   case T:                                                                      \
     return STRING( T );
 
-// #define TYPE_MAP( M, T )                                                       \
-//   M[ T ]             = #T;                                                     \
-//   M[ REF_##T ]       = STRING( REF_##T );                                      \
-//   M[ CONST_##T ]     = STRING( CONST_##T );                                    \
-//   M[ CONST_REF_##T ] = STRING( CONST_REF_##T );                                \
-//   M[ ARRAY_##T ]     = STRING( ARRAY_##T );
-
 namespace graphsat {
 using std::map;
 using std::string;
@@ -115,17 +108,7 @@ const static string FORMULA_STR = "formula";
 
 const static string COMMENT_STR = "comment";
 
-const static string RESET_STR = "reset";
-
-// const static string INT_STR = "int";
-
-// const static string CHAN_STR = "chan";
-
-// const static string CLOCK_STR = "clock";
-
-// const static string BOOL_STR = "bool";
-
-// const static string PARAMETER_REF_STR = "&";
+// const static string RESET_STR = "reset";
 
 const static int LOC_OUT_WIDTH = 3;
 const static int OP_OUT_WIDTH  = 3;
@@ -172,6 +155,7 @@ enum TYPE_T {
 
   SYSTEM_T,
   TEMPLATE_T,
+  AUTOMATA_T,
   LOCATION_T,
   PARAMETER_T,
   REF_PARAMETER_T,
@@ -179,6 +163,7 @@ enum TYPE_T {
   INT_CS_T,
   INT_UPDATE_T,
   RESET_T,
+  SELF_DEF_T,
   NO_T
 
 };

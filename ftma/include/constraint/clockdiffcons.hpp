@@ -173,8 +173,9 @@ private:
     clock_y      = temp;
     matrix_value = 1 - matrix_value;
   }
-  void init( const int clock_id1, const int clock_id2, COMP_OPERATOR op,
+  void init( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
              const C rhs ) {
+    op = eop;
     assert( op != NE );
     assert( op != EQ );
     if ( LE == op ) {

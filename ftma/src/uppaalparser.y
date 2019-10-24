@@ -10,7 +10,7 @@
   #include "io/uppaaldata.h"
   //  #include "io/uppaalmodelparser.h"
   #include "model/ta.hpp"
-  
+#define  LEX_RETURN( T) case T##_T: return T##_YY 
   using std::string;
   using std::map;
   using std::vector;
@@ -50,8 +50,8 @@
   Token* token_value;
   TYPE_T type_value;
   vector<string> * str_vec_pointer;
-  vector<ArgumentItem>* item_vec_pointer;
-  vector<ParaElement>* para_element_pointer;
+  vector<RealParameterItem>* item_vec_pointer;
+  vector<FormalParameterItem>* para_element_pointer;
   COMP_OPERATOR com_op;
   
  }
@@ -62,6 +62,8 @@
 
 
 %token<token_value> TEMPLATE_YY
+
+%token<token_value> AUTOMATA_YY
 
 %token<token_value> PARAMETER_YY
 
@@ -75,6 +77,7 @@
 
 %token<token_value>  CHAN_YY
 
+%token<token_value>  SELF_DEF_YY
 
 %token STRING_LITERAL    URGENT BROADCAST META
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -242,12 +245,12 @@ IDENTIFIER
 formal_argument_list:
 type_specifier IDENTIFIER
 {
-  $$=new vector<ParaElement> ( );
-  ParaElement elem;
+  $$=new vector<FormalParameterItem> ( );
+  FormalParameterItem elem;
   elem.is_ref=isRefType($1);
   elem.name=$2->symbol;
   elem.type_name=getTypeStr( $1);
-  //current_data->getTypeName($1);
+
   elem.type=$1;
 
   $$->push_back(elem);
@@ -257,7 +260,7 @@ type_specifier IDENTIFIER
 formal_argument_list ',' type_specifier IDENTIFIER
 {
   $$=$1;
-  ParaElement elem;
+  FormalParameterItem elem;
   elem.is_ref=isRefType($3);
   elem.name=$4->symbol;
   elem.type_name=getTypeStr( $3);// current_data->getTypeName($3);
@@ -265,12 +268,37 @@ formal_argument_list ',' type_specifier IDENTIFIER
   $$->push_back(elem);
   delete $4;
 }
+|
+SELF_DEF_YY IDENTIFIER
+{
+  $$=new vector<FormalParameterItem> ( );
+  FormalParameterItem elem;
+  elem.name= $2->symbol;
+  elem.type_name=$1->symbol;
+  elem.type=SELF_DEF_T;
+  $$->push_back(elem);
+  delete  $1;
+  delete  $2;
+}
+|
+CONST SELF_DEF_YY IDENTIFIER
+{
+  $$=new vector<FormalParameterItem> ( );
+  FormalParameterItem elem;
+  elem.name= $3->symbol;
+  elem.type=SELF_DEF_T;
+  elem.type_name=$2->symbol;
+  $$->push_back(elem);
+  delete  $2;
+  delete $3;
+}
+;
 
 real_argument_list
 : counter_identifier
 {
-  $$=new vector<ArgumentItem> ( );
-  ArgumentItem item;
+  $$=new vector<RealParameterItem> ( );
+  RealParameterItem item;
   item.is_constant=false;
   item.id=$1;
   $$->push_back( item);
@@ -278,16 +306,16 @@ real_argument_list
 |
 chan_identifier
 {
-  $$=new vector<ArgumentItem> ( );
-  ArgumentItem item;
+  $$=new vector<RealParameterItem> ( );
+  RealParameterItem item;
   item.is_constant=false;
   item.id=$1;
   $$->push_back( item);
 }
 | const_expression
 {
-  $$=new vector<ArgumentItem> ( );
-  ArgumentItem item;
+  $$=new vector<RealParameterItem> ( );
+  RealParameterItem item;
   item.is_constant=true;
   item.id=$1;
   $$->push_back( item);
@@ -295,7 +323,7 @@ chan_identifier
 | real_argument_list ',' counter_identifier
 {
   $$=$1;
-  ArgumentItem item;
+  RealParameterItem item;
   item.is_constant=false;
   item.id=$3;
   $$->push_back(item);
@@ -304,7 +332,7 @@ chan_identifier
 | real_argument_list ',' chan_identifier
 {
   $$=$1;
-  ArgumentItem item;
+  RealParameterItem item;
   item.is_constant=false;
   item.id=$3;
   $$->push_back(item);
@@ -313,7 +341,7 @@ chan_identifier
 | real_argument_list ',' const_expression
 {
   $$=$1;
-  ArgumentItem item;
+  RealParameterItem item;
   item.is_constant=true;
   item.id=$3;
   $$->push_back(item);
@@ -323,7 +351,7 @@ chan_identifier
 
 
 timed_automata_list
-:IDENTIFIER
+:AUTOMATA_YY
 {
   $$=new vector<string> ( );
   $$->push_back($1->symbol);
@@ -336,7 +364,7 @@ TEMPLATE_YY
   $$->push_back($1->symbol);
   delete $1;
 }
-| timed_automata_list ',' IDENTIFIER
+| timed_automata_list ',' AUTOMATA_YY
 {
   $$=$1;
   $$->push_back($3->symbol);
@@ -643,7 +671,7 @@ IDENTIFIER '=' TEMPLATE_YY '(' real_argument_list ')' ';'
   ta->name= $1->symbol;
   ta->tmt_name=$3->symbol;
   ta->param_list.insert(ta->param_list.end( ), $5->begin( ), $5->end( ) );
-  current_data->addPointer(TEMPLATE_T, $1->symbol,  ta);
+  current_data->addValue(AUTOMATA_T, $1->symbol,  ta);
   
   delete $1;
   delete $3;
@@ -819,7 +847,7 @@ template_declaration:
 ARGUMENT  formal_argument_list
 {
   for(auto e: *($2)){
-    current_data->addPointer( PARAMETER_T, e.name, new ParaElement(e));
+    current_data->addValue( PARAMETER_T, e.name, new FormalParameterItem(e));
   }
   delete $2;
 }
@@ -831,20 +859,20 @@ system_declaration
   SystemDec * sys=new SystemDec( );
   for( size_t i=0; i< $2->size( ); i++){
     string name=(*$2)[ i];
-    if(current_data->hasValue(TEMPLATE_T, name  )){
-      
+    
+    if(!current_data->hasValue(AUTOMATA_T, name  )){
       TaDec* temp=new TaDec( );
       temp->has_parameter=false;
       temp->name= name;
       temp->tmt_name=name;
       sys->timed_automata_list.push_back(temp );
     }else{
-      void* ta_dec=current_data->getPointer(TEMPLATE_T, name );
+      void* ta_dec=current_data->getPointer(AUTOMATA_T, name );
       sys->timed_automata_list.push_back((TaDec*)ta_dec );
     }
   }
   
-  current_data->clearPoints(TEMPLATE_T );
+  current_data->clear(TEMPLATE_T );
   
   current_data->addPointer(SYSTEM_T,sys );
   delete $2;

@@ -34,7 +34,7 @@ public:
    *Deley set the counter id
    */
   virtual void         globalUpdate( const vector<int> &id_map,
-                                     const vector<int> &  parameter_value ) = 0;
+                                     const vector<int> &parameter_value ) = 0;
   friend std::ostream &operator<<( std::ostream &           out,
                                    const CounterConstraint &cons ) {
     return cons.dump( out );
@@ -46,8 +46,6 @@ protected:
 private:
   virtual CounterConstraint *copy() const               = 0;
   virtual std::ostream &     dump( ostream &out ) const = 0;
-  //   return out;
-  // }
 
   friend class InstanceFactory;
 };
@@ -63,7 +61,7 @@ public:
    */
   bool operator()( const int *counter_value ) const { return value; }
   void globalUpdate( const vector<int> &id_map,
-                     const vector<int> &  parameter_value ) {
+                     const vector<int> &parameter_value ) {
     int lhs = parameter_value[ parameter_id ];
     value   = executeOp( lhs, op, rhs );
   }
@@ -112,26 +110,22 @@ public:
     return executeOp( counter_value[ global_counter_id ], op, rhs );
   }
   void globalUpdate( const vector<int> &id_map,
-                     const vector<int> &  parameter_value ) {
-
-    global_counter_id = vector[ref_parameter_id];
-  }
+                     const vector<int> &parameter_value ) {}
 
 protected:
   ~OneCounterConstraint() {}
 
 private:
-  OneCounterConstraint( int out_ref_parameter_id, COMP_OPERATOR opp, int right_side ) {
+  OneCounterConstraint( int g_counter_id, COMP_OPERATOR opp, int right_side ) {
 
-    ref_parameter_id  = out_ref_parameter_id;
-    global_counter_id = 0;
+    global_counter_id = g_counter_id;
     op                = opp;
     rhs               = right_side;
   }
 
   CounterConstraint *copy() const {
 
-    return new OneCounterConstraint( ref_parameter_id, op, rhs );
+    return new OneCounterConstraint( global_counter_id, op, rhs );
   }
   ostream &dump( ostream &out ) const {
     out << "counter_" << global_counter_id << setw( OP_OUT_WIDTH )
@@ -161,10 +155,9 @@ public:
   }
 
   void globalUpdate( const vector<int> &id_map,
-                     const vector<int> &  parameter_value ) {
+                     const vector<int> &parameter_value ) {
 
-    global_counter_id = id_map[ref_parameter_id];
-    rhs               = parameter_value[ parameter_id ] + erhs;
+    rhs = parameter_value[ parameter_id ] + erhs;
   }
 
 protected:
@@ -178,19 +171,18 @@ private:
   int           erhs;
   int           rhs;
 
-  CounterParameterConstraint( int out_ref_parameter_id, int eparameter_id,
+  CounterParameterConstraint( int g_parameter_id, int eparameter_id,
                               COMP_OPERATOR opp, int out_rhs ) {
-
-    ref_parameter_id = out_ref_parameter_id;
-    op               = opp;
-    parameter_id     = eparameter_id;
-    erhs             = out_rhs;
-    rhs              = 0;
+    global_counter_id = g_parameter_id;
+    op                = opp;
+    parameter_id      = eparameter_id;
+    erhs              = out_rhs;
+    rhs               = 0;
   }
 
   CounterConstraint *copy() const {
 
-    return new CounterParameterConstraint( ref_parameter_id, parameter_id, op,
+    return new CounterParameterConstraint( global_counter_id, parameter_id, op,
                                            erhs );
   }
   ostream &dump( ostream &out ) const {
@@ -209,7 +201,7 @@ class TwoParameterConstraint : public CounterConstraint {
 public:
   bool operator()( const int *counter_value ) const { return value; }
   void globalUpdate( const vector<int> &id_map,
-                     const vector<int> &  parameter_value ) {
+                     const vector<int> &parameter_value ) {
     int lhs = parameter_value[ first_paramter_id ] -
               parameter_value[ second_parameter_id ];
     value = executeOp( lhs, op, rhs );
@@ -265,13 +257,10 @@ public:
   }
 
   void globalUpdate( const vector<int> &id_map,
-                     const vector<int> &  parameter_value ) {
+                     const vector<int> &parameter_value ) {
     if ( parameter_id > -1 ) {
       rhs = parameter_value[ parameter_id ];
     }
-
-    global_counter_x = id_map[ ref_parameter_id_x ];
-    global_counter_y = id_map[ref_parameter_id_y];
   }
 
 protected:
@@ -282,15 +271,15 @@ private:
                         int out_parameter_id = -10 ) {
     parameter_id = out_parameter_id;
 
-    ref_parameter_id_x = x;
-    ref_parameter_id_y = y;
-    op              = p;
-    rhs             = r;
+    global_counter_x = x;
+    global_counter_y = y;
+    op               = p;
+    rhs              = r;
   }
   CounterConstraint *copy() const {
 
-    return new TwoCounterConstraint( ref_parameter_id_x, ref_parameter_id_y, op, rhs,
-                                     parameter_id );
+    return new TwoCounterConstraint( global_counter_x, global_counter_y, op,
+                                     rhs, parameter_id );
   }
   ostream &dump( ostream &out ) const {
     out << "counter_" << global_counter_x << setw( OP_OUT_WIDTH ) << "-"
@@ -299,7 +288,7 @@ private:
     return out;
   }
 
-  int ref_parameter_id_x, ref_parameter_id_y, global_counter_x, global_counter_y;
+  int           global_counter_x, global_counter_y;
   COMP_OPERATOR op;
   int           rhs;
   int           parameter_id;
@@ -320,20 +309,15 @@ public:
   bool operator()( const int *counter_value ) const {
     int dummy = parameter_part;
 
-    for ( size_t i = 0; i < local_constraint.size(); i += 2 ) {
+    for ( size_t i = 0; i < global_constraint.size(); i += 2 ) {
       dummy +=
-          local_constraint[ i ] * counter_value[ local_constraint[ i + 1 ] ];
+          global_constraint[ i ] * counter_value[ global_constraint[ i + 1 ] ];
     }
     return executeOp( dummy, op, rhs );
   }
 
-  void globalUpdate( const vector<int> & id_map,
-                     const vector<int> &  parameter_value ) {
-
-    for ( size_t i = 1; i < local_constraint.size(); i += 2 ) {
-      global_constraint[ i ] = id_map[local_constraint[ i ]];
-    }
-
+  void globalUpdate( const vector<int> &id_map,
+                     const vector<int> &parameter_value ) {
     parameter_part = 0;
     for ( size_t i = 0; i < pconstraint.size(); i += 2 ) {
       parameter_part +=
@@ -348,21 +332,19 @@ private:
   DefaultCounterConstraint( const vector<int> &pcons, const vector<int> &cons,
                             int erhs, COMP_OPERATOR eop )
       : pconstraint( pcons )
-      , local_constraint( cons )
       , global_constraint( cons )
       , rhs( erhs )
       , op( eop ) {}
 
   CounterConstraint *copy() const {
 
-    return new DefaultCounterConstraint( pconstraint, local_constraint, rhs,
+    return new DefaultCounterConstraint( pconstraint, global_constraint, rhs,
                                          op );
   }
   ostream &dump( ostream &out ) const { return out; }
 
 private:
   vector<int>   pconstraint;
-  vector<int>   local_constraint;
   vector<int>   global_constraint;
   int           rhs;
   COMP_OPERATOR op;

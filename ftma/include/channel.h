@@ -30,10 +30,11 @@ struct Channel {
       : local_id( -1 )
       , gloabl_id( -1 )
       , type( ONE2ONE_CH )
-      , is_urgent( false ) {}
-  void globalIpUpdate( const std::map<int, int> &id_map ) {
+      , is_urgent( false )
+      , action( CHANNEL_RECEIVE ) {}
+  void globalIpUpdate( const std::vector<int> &id_map ) {
 
-    gloabl_id = id_map.at( local_id );
+    gloabl_id = id_map[ local_id ];
   }
 };
 

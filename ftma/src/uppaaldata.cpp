@@ -28,15 +28,17 @@ UppaalData::UppaalData() {
   base_types.push_back( CLOCK_CS_T );
 
   base_types.push_back( INT_CS_T );
+
+  base_types.push_back( SELF_DEF_T );
 }
 
 TYPE_T UppaalData::getType( const string &name ) const {
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
         it != base_types.end(); it++ ) {
-    if ( hasPointer( *it, name ) ) {
+    if ( hasValue( *it, name ) ) {
       return *it;
     }
-    if ( hasValue( *it, name ) ) {
+    if ( hasPointer( *it, name ) ) {
       return *it;
     }
   }
@@ -94,23 +96,21 @@ int UppaalData::getVarNum( void ) const {
   return re;
 }
 
-int UppaalData::getGlobalId(const string & name ) const{
-  int re=startId;
+int UppaalData::getGlobalId( const string &name ) const {
+  int re = startId;
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
         it != base_types.end(); it++ ) {
-    int typeId=getId( *it, name);
-    if(typeId!=NOT_FOUND ){
-      return re+typeId;
+    int typeId = getId( *it, name );
+    if ( typeId != NOT_FOUND ) {
+      return re + typeId;
     }
-    re+=getTypeNum( *it);
+    re += getTypeNum( *it );
   }
-  if( NULL!= parent){
-    return parent->getGlobalId( name);
+  if ( NULL != parent ) {
+    return parent->getGlobalId( name );
   }
   return NOT_FOUND;
 }
-
-
 
 void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
                                      COMP_OPERATOR op, int rhs,
@@ -118,16 +118,16 @@ void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
   if ( EQ == op ) {
     void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, GE, rhs,
                                     parameter_id ); // x-y<= c
-    addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
+    addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
 
     cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, LE, rhs,
                               parameter_id ); // x-y>= c
-    addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
+    addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
 
   } else {
     void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, op, rhs,
                                     parameter_id ); // x op c
-    addPointer( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
+    addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
   }
 }
 } // namespace graphsat

@@ -115,8 +115,20 @@ int UppaalParser::parseSystem( XML_P system ) {
   for ( int i = 0; i < counter_num; i++ ) {
     Counter                          counter( 0, MAX_COUNTER_VALUE );
     const pair<string, vector<int>> &hh = system_data.getValue( INT_T, i );
+    // TODO: update counter initial value
     counter.setValue( hh.second[ 0 ] );
     sys += counter;
+  }
+
+  for ( auto e : template_map ) {
+    counter_num = e.second.getTypeNum( INT_T );
+    for ( int i = 0; i < counter_num; i++ ) {
+      Counter                          counter( 0, MAX_COUNTER_VALUE );
+      const pair<string, vector<int>> &hh = system_data.getValue( INT_T, i );
+      // TODO: update counter initial value
+      counter.setValue( hh.second[ 0 ] );
+      sys += counter;
+    }
   }
 
   SystemDec *sys_dec = (SystemDec *) system_data.getPointer( SYSTEM_T );
@@ -129,17 +141,17 @@ int UppaalParser::parseSystem( XML_P system ) {
   for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
 
     string template_name = sys_dec->timed_automata_list[ i ]->tmt_name;
+
+    vector<RealParameterItem> param_list =
+        sys_dec->timed_automata_list[ i ]->param_list;
+
     vector<pair<string, vector<void *>>> template_parameter_vec =
         template_map[ template_name ].getPoints( PARAMETER_T );
 
-    Parameter parameter_template;
-    int       allVarNum =
-        system_data.getVarNum() + template_map[ template_name ].getVarNum();
-
-    int param_num = (int) template_parameter_vec.size();
-    for ( int i = 0; i < allVarNum; i++ ) {
-      parameter_template.setCounterMap( i + param_num, i );
-    }
+    int parameter_num = (int) template_parameter_vec.size();
+    // int allVarNum =
+    //     system_data.getVarNum() + template_map[ template_name ].getVarNum();
+    Parameter parameter_template( parameter_num );
 
     if ( template_parameter_vec.empty() ) {
       Parameter parameter = parameter_template;
@@ -152,14 +164,32 @@ int UppaalParser::parseSystem( XML_P system ) {
      * System declaration the corresponding  automation without parameter.
      */
     if ( sys_dec->timed_automata_list[ i ]->has_parameter ) {
-
-      for ( auto e : template_parameter_vec ) {
-        ParaElement *p = (ParaElement *) e.second[ 0 ];
+      Parameter parameter = parameter_template;
+      for ( int j = 0; j < parameter_num; j++ ) {
+        FormalParameterItem *p =
+            (FormalParameterItem *) template_parameter_vec[ j ].second[ 0 ];
         if ( p->is_ref ) {
+          if ( p->type == INT_T || p->type == BOOL_T ) {
+            parameter.setCounterMap( j, param_list[ j ].id );
+          } else if ( p->type == CHAN_T ) {
+            parameter.setChanMap( j, param_list[ j ].id );
+          } else if ( p->type == CLOCK_T ) {
+            // TODO : add clock parameter support
+            assert( false );
+          }
 
         } else {
+          if ( p->type == INT_T || p->type == BOOL_T ) {
+            parameter.setParameterMap( j, param_list[ j ].id );
+          } else {
+            assert( false );
+          }
         }
       }
+      typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+                                    parameter );
+      sys += tma;
+
     } else {
 
       // If template has paramters, then the number of parameters is exactly
@@ -168,12 +198,12 @@ int UppaalParser::parseSystem( XML_P system ) {
       assert( 1 == template_parameter_vec.size() );
 
       const vector<int> &iarray = system_data.getIntArray(
-          ( (ParaElement *) template_parameter_vec[ 0 ].second[ 0 ] )
+          ( (FormalParameterItem *) template_parameter_vec[ 0 ].second[ 0 ] )
               ->type_name );
       for ( auto e : iarray ) {
         Parameter parameter = parameter_template;
 
-        parameter.addParameterValue( e );
+        parameter.setParameterMap( 0, e );
         typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
                                       parameter );
         sys += tma;
@@ -221,7 +251,7 @@ vector<INT_TAS_t::L_t> UppaalParser::parseLocation( UppaalData &template_data,
           for ( auto cs : cons ) {
             location += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
-          template_data.clearPoints( CLOCK_CS_T );
+          template_data.clear( CLOCK_CS_T );
         }
       }
     }
@@ -238,53 +268,6 @@ int UppaalParser::parseTemplateParamter( UppaalData &template_data,
 
   cout << template_data.getPointNum( PARAMETER_T ) << endl;
   // TODO:x
-
-  //  vector<string> terms        = splitStr( para_content, "," );
-  //  for ( auto str : terms ) {
-  //    ParaElement *temp_parameter = new ParaElement();
-  //    bool         is_ref     = false;
-  //    size_t       start      = str.find( PARAMETER_REF_STR );
-  //
-  //    if ( start != std::string::npos ) {
-  //      str                = deleteChar( str, start, '&' );
-  //      is_ref             = true;
-  //      temp_parameter->is_ref = true;
-  //    }
-  //
-  //    vector<string> parts = splitStr( str, " " );
-  //
-  //    string name = parts.back();
-  //
-  //    temp_parameter->name      = name;
-  //    temp_parameter->type_name = parts[ parts.size() - 2 ];
-  //
-  //    if ( find( parts.begin(), parts.end(), BOOL_STR ) != parts.end() ) {
-  //      if ( is_ref ) {
-  //        temp_parameter->type = PARAMETER_BOOL_REF_T;
-  //      } else {
-  //        temp_parameter->type = PARAMETER_BOOL_T;
-  //      }
-  //    } else if ( find( parts.begin(), parts.end(), CHAN_STR ) != parts.end()
-  //    ) {
-  //      if ( is_ref ) {
-  //        temp_parameter->type = PARAMETER_CHANNEL_REF_T;
-  //      } else {
-  //        temp_parameter->type = PARAMETER_CHANNEL_T;
-  //      }
-  //
-  //    } else if ( find( parts.begin(), parts.end(), INT_STR ) != parts.end() )
-  //    {
-  //      if ( is_ref ) {
-  //        temp_parameter->type = PARAMETER_INT_REF_T;
-  //      } else {
-  //        temp_parameter->type = PARAMETER_INT_T;
-  //      }
-  //    } else {
-  //      temp_parameter->type = PARAMETER_SCALAR_T;
-  //    }
-  //
-  //    template_data.addPointer( PARAMETER_STR, name, temp_parameter );
-  //  }
   return 0;
 }
 
@@ -321,7 +304,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
             transition += *( (INT_TAS_t::CS_t *) ( cs ) );
           }
 
-          template_data.clearPoints( CLOCK_CS_T );
+          template_data.clear( CLOCK_CS_T );
 
           vector<void *> counterCs =
               template_data.getPoints( INT_CS_T, STRING( INT_CS_T ) );
@@ -329,7 +312,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
             transition.addCounterCons( (CounterConstraint *) cs );
           }
 
-          template_data.clearPoints( INT_CS_T );
+          template_data.clear( INT_CS_T );
 
         } else if ( ASSIGNMENT_STR == kind ) {
           string assign_statement = ( *llit )->getValue();
@@ -339,14 +322,15 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
           for ( auto update : updates ) {
             transition.addCounterAction( (CounterAction *) update );
           }
-          template_data.clearPoints( INT_UPDATE_T );
+          template_data.clear( INT_UPDATE_T );
 
-          vector<void *> resets = template_data.getPoints( RESET_T, RESET_STR );
+          vector<void *> resets =
+              template_data.getPoints( RESET_T, getTypeStr( RESET_T ) );
           for ( auto reset : resets ) {
             transition.addReset( *( (pair<int, int> *) reset ) );
             delete (pair<int, int> *) reset;
           }
-          template_data.clearPoints( RESET_T );
+          template_data.clear( RESET_T );
 
         } else if ( SYNCHRONISATION_STR == kind ) {
           cout << kind << ": " << ( *llit )->getValue() << endl;
@@ -359,7 +343,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
 }
 
 void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
-  // template_data.clearPoints();
+  // template_data.clear();
   parseProblem( guards, &template_data );
 }
 

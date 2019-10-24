@@ -49,7 +49,7 @@ public:                                                                        \
     Var.clear( #TYPE );                                                        \
   }
 
-const static  int  NOT_FOUND=-1;
+const static int NOT_FOUND = -1;
 
 inline string arrayToVar( const string &name, int id ) {
   stringstream ss;
@@ -143,8 +143,15 @@ public:
     }
     return false;
   }
+  
+  bool hasValue( const string &type){
+    return values.find( type ) != values.end();
+  }
 
   T getValue( const string &type, const string &name, int id = 0 ) const {
+    if(values.find( type)==values.end( ) ){
+      return (T) NOT_FOUND;
+    }
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
       if ( values.at( type )[ i ].first == name ) {
         return values.at( type )[ i ].second[ id ];

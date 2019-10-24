@@ -81,7 +81,7 @@ void example1( void ) {
   es.push_back( e23 );
   typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 3 );
 
-  Parameter                param;
+  Parameter                param( 1 );
   INT_TAS_t                sys;
   typename INT_TAS_t::TA_t tma1( &tmt1, param );
   sys += tma1;
@@ -135,7 +135,7 @@ void example50() {
 
   typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
 
-  Parameter                param;
+  Parameter                param( 1 );
   INT_TAS_t                sys;
   typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
@@ -187,7 +187,7 @@ void example2( void ) {
   typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
 
   INT_TAS_t                sys;
-  Parameter                param;
+  Parameter                param( 1 );
   typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
   sys += tma1;
@@ -337,10 +337,10 @@ void fisher( int n = 2 ) {
 
   for ( int i = 1; i <= n; i++ ) {
 
-    Parameter param;
+    Parameter param( 1 );
     param.setCounterMap( 0, 0 ); // add relation between local id and global id
 
-    param.addParameterValue( i );
+    param.setParameterMap( 0, i );
     typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
     sys += tma1;
@@ -434,8 +434,8 @@ void incrementalTest() {
   // tma1.addOnePara();
   INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
-    Parameter param;
-    param.addParameterValue( i );
+    Parameter param( 1 );
+    param.setParameterMap( 0, i );
     typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
     sys += tma1;
@@ -461,8 +461,8 @@ void incrementalTest() {
 
   INT_TAS_t sys1;
   for ( int i = 1; i <= 2; i++ ) {
-    Parameter param;
-    param.addParameterValue( i );
+    Parameter param( 1 );
+    param.setParameterMap( 0, i );
     typename INT_TAS_t::TA_t tma1( &tmt1, param );
 
     sys1 += tma1;
@@ -516,10 +516,10 @@ void incrementalTest() {
   }
 }
 void fisher1() {
-  // UppaalParser parser(
-  //       "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
   UppaalParser parser(
-      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
+  // UppaalParser parser(
+  //"/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   INT_TAS_t sys = parser.getSYS();
   R_t       data( sys );
 
@@ -583,8 +583,8 @@ int main( int argc, const char *argv[] ) {
   //  example2( );
   //  return 0;
 
-  fisher( 3 );
-  return 0;
+  //  fisher( 2 );
+  // return 0;
   //  example5();
   //  return 0;
   //  State<int> s;

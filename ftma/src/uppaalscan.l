@@ -198,43 +198,45 @@ int check_type()
    token->symbol=sym;
 
    yylval.token_value= token;
-
    
    if(find(symbol_table.begin( ), symbol_table.end( ), sym ) ==symbol_table.end( ) ){
       symbol_table.push_back(sym);
    }
+
    
   TYPE_T type=current_data->getType(sym);
   if(type!=NO_T){
+    if(SELF_DEF_T==type){
+        return SELF_DEF_YY;
+    }
     if(current_data->isConstant(sym)){
             yylval.int_value=current_data->getConstant(sym);
             return CONSTANT;
       }
   }
+
   
   
 switch(type){
-case INT_T:{
-    return INT_YY;     
-}
-case CLOCK_T:{
-     return CLOCK_YY;
-}
-case BOOL_T: {
-     return BOOL_YY;
-}
-case CHAN_T: {
-     return CHAN_YY;
-}
-case PARAMETER_T:{
-     return PARAMETER_YY;
-}
-case REF_PARAMETER_T :{
-     return REF_PARAMETER_YY;
-}
-case TEMPLATE_T: {
-     return TEMPLATE_YY;
-}
+
+LEX_RETURN(INT);
+
+LEX_RETURN(CLOCK);
+
+LEX_RETURN(BOOL);
+
+LEX_RETURN(CHAN);
+
+LEX_RETURN(PARAMETER);
+
+LEX_RETURN(REF_PARAMETER);
+
+LEX_RETURN(TEMPLATE);
+
+LEX_RETURN(AUTOMATA);
+
+
+
 default:
     return IDENTIFIER;
 

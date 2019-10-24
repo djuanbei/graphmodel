@@ -51,7 +51,8 @@ public:
     for ( auto e : other.counter_cons ) {
       CounterConstraint *dummy = copy( e );
 
-      dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
+      dummy->globalUpdate( param.getCounterMap(), param.getParameterMap() );
+
       counter_cons.push_back( dummy );
     }
 
@@ -63,7 +64,7 @@ public:
 
     for ( auto a : other.actions ) {
       CounterAction *dummy = a->copy();
-      dummy->globalUpdate( param.getCounterMap(), param.getParameterValue() );
+      dummy->globalUpdate( param.getCounterMap(), param.getParameterMap() );
       actions.push_back( dummy );
     }
     resets = other.resets;

@@ -21,8 +21,8 @@ using std::pair;
 using std::string;
 using std::vector;
 
-struct ParaElement {
-  ParaElement() { is_ref = false; }
+struct FormalParameterItem {
+  FormalParameterItem() { is_ref = false; }
   bool   is_ref;
   TYPE_T type;
   int    id;
@@ -30,18 +30,18 @@ struct ParaElement {
   string type_name;
 };
 
-struct ArgumentItem {
+struct RealParameterItem {
   bool is_constant;
   int  id;
-  ArgumentItem()
+  RealParameterItem()
       : is_constant( false ) {}
 };
 
 struct TaDec {
-  bool                 has_parameter;
-  string               name;
-  string               tmt_name;
-  vector<ArgumentItem> param_list;
+  bool                      has_parameter;
+  string                    name;
+  string                    tmt_name;
+  vector<RealParameterItem> param_list;
   TaDec()
       : has_parameter( true ) {
     name = "";
@@ -74,9 +74,9 @@ public:
     point_values.clear();
   }
 
-  void   setStartId( int id ) { startId = id; }
-  
-  int getGlobalId(const string & name ) const;
+  void setStartId( int id ) { startId = id; }
+
+  int getGlobalId( const string &name ) const;
 
   void setName( const string &n ) { name = n; }
 
@@ -85,9 +85,8 @@ public:
   int getVarNum( void ) const;
 
   int getParameterId( const string &name ) {
-    return getPointerId( PARAMETER_T, name );
+    return getId( PARAMETER_T, name );
   }
-  
 
   TYPE_T getType( const string &name ) const;
 
@@ -96,13 +95,13 @@ public:
 
   void addIntArray( const string &key, vector<int> &v ) {
     for ( auto e : v ) {
-      addValue( ARRAY_INT_T, key, e );
+      addValue( SELF_DEF_T, key, e );
     }
   }
   const vector<int> &getIntArray( const string &key ) const {
-    int id = getId( ARRAY_INT_T, key );
+    int id = getId( SELF_DEF_T, key );
     if ( id != NOT_FOUND ) {
-      const pair<string, vector<int>> &pp = getValue( ARRAY_INT_T, id );
+      const pair<string, vector<int>> &pp = getValue( SELF_DEF_T, id );
       return pp.second;
     }
     static vector<int> dummy;
@@ -133,7 +132,11 @@ public:
    * @return  NOT_FOUND if name is not in int_values
    */
   int getId( const TYPE_T type, const string &name ) const {
-    return int_values.getId( getTypeStr( type ), name );
+    int re=int_values.getId( getTypeStr( type ), name );
+    if(re>-1){
+      return re;
+    }
+    return point_values.getId( getTypeStr( type ), name );
   }
 
   int getClockId( const string &name ) const {
@@ -145,9 +148,17 @@ public:
   }
 
   bool hasValue( const TYPE_T type, const string &name ) const {
+   
+    return  int_values.hasValue( getTypeStr( type ), name );
 
-    return int_values.hasValue( getTypeStr( type ), name );
   }
+
+  bool hasPointer( const TYPE_T type, const string &name ) const {
+
+    
+    return point_values.hasValue( getTypeStr( type ), name );
+  }
+  
 
   int getValue( const TYPE_T type, const string &name, int id = 0 ) const {
     return int_values.getValue( getTypeStr( type ), name, id );
@@ -157,7 +168,7 @@ public:
     return int_values.getValue( getTypeStr( type ) );
   }
 
-  void addPointer( const TYPE_T type, const string &name, void *v ) {
+  void addValue( const TYPE_T type, const string &name, void *v ) {
     point_values.addValue( getTypeStr( type ), name, v );
   }
 
@@ -165,17 +176,9 @@ public:
     point_values.addValue( getTypeStr( type ), getTypeStr( type ), v );
   }
 
-  bool hasPointer( const TYPE_T type, const string name ) const {
-    return point_values.hasValue( getTypeStr( type ), name );
-  }
-
-  int getPointerId( const TYPE_T type, const string &name ) const {
-    return point_values.getId( getTypeStr( type ), name );
-  }
-
   vector<void *> getPoints( const TYPE_T type, const string name ) const {
     int id = point_values.getId( getTypeStr( type ), name );
-    if ( id !=NOT_FOUND ) {
+    if ( id != NOT_FOUND ) {
       return point_values.getValue( getTypeStr( type ), id ).second;
     } else {
       vector<void *> dummy;
@@ -196,11 +199,18 @@ public:
     return point_values.getValue( getTypeStr( type ) );
   }
 
-  void clearPoints( const TYPE_T type ) {
-    point_values.clear( getTypeStr( type ) );
+  
+  void clear( const TYPE_T type ) {
+    string type_str=getTypeStr( type );
+    if(point_values.hasValue( type_str) ){
+      point_values.clear( type_str );
+    }else if( int_values.hasValue( type_str )){
+      int_values.clear( type_str );
+    }
   }
 
   void clearPoints() { point_values.clear(); }
+
   
   void addClockConstraint( int clock1_id, int clock2_id, COMP_OPERATOR op,
                            int rhs, int parameter_id = -10 );
