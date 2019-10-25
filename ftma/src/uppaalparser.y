@@ -72,7 +72,7 @@
 %token<token_value> REF_PARAMETER_CLOCK_YY
 
 
-%token<token_value> PARAMETER_BOOL_YY
+//%token<token_value> PARAMETER_BOOL_YY
 
 %token<token_value> REF_PARAMETER_BOOL_YY
 
@@ -84,7 +84,7 @@
 
 %token<token_value>  INT_YY
 
-%token<token_value>  BOOL_YY
+//%token<token_value>  BOOL_YY
 
 %token<token_value>  CHAN_YY
 
@@ -114,7 +114,7 @@
 
 %type<token_value>  clock_yy
 %type<token_value>  int_yy
-%type<token_value>  bool_yy
+//%type<token_value>  bool_yy
 %type<token_value>  chan_yy
 %type<int_value> clock_identifier
 %type<int_value> counter_identifier
@@ -146,7 +146,7 @@ base_type_specifier
 }
 | BOOL
 {
-  $$=BOOL_T;
+  $$=INT_T;
 }
 | CHAN
 {
@@ -211,17 +211,17 @@ int_yy '[' const_expression ']'
 }
 ;
 
-bool_yy:
-BOOL_YY
-{
-  $$=$1;
-}
-|
-bool_yy '[' const_expression ']'
-{
-  $$=$1;
-  $$->symbol=arrayToVar($$->symbol, $3);
-};
+/* bool_yy: */
+/* BOOL_YY */
+/* { */
+/*   $$=$1; */
+/* } */
+/* | */
+/* bool_yy '[' const_expression ']' */
+/* { */
+/*   $$=$1; */
+/*   $$->symbol=arrayToVar($$->symbol, $3); */
+/* }; */
 
 chan_yy:
 CHAN_YY
@@ -448,16 +448,16 @@ int_yy {
   $$=current_data->getGlobalCounterId(  $1->symbol);
   delete $1;
 }
-|
-bool_yy{
-  $$=current_data->getGlobalCounterId(  $1->symbol);
-  delete $1;
-}
-|
-REF_PARAMETER_BOOL_YY{
-  $$=current_data->getFormalParameterId( $1->symbol);
-  delete $1;
-}
+//|
+/* bool_yy{ */
+/*   $$=current_data->getGlobalCounterId(  $1->symbol); */
+/*   delete $1; */
+/* } */
+/* | */
+/* REF_PARAMETER_BOOL_YY{ */
+/*   $$=current_data->getFormalParameterId( $1->symbol); */
+/*   delete $1; */
+/* } */
 ;
 
 parameter_identifier:
@@ -465,11 +465,16 @@ FORMAL_PARAMETER_YY{
   $$=current_data->getFormalParameterId( $1->symbol);
   delete $1;
 }
+|
+PARAMETER_INT_YY {
+  $$=current_data->getFormalParameterId( $1->symbol);
+  delete $1;
+}
 ;
 
 chan_identifier:
 chan_yy{
-  $$=current_data->getGlobalCounterId(    $1->symbol );
+  $$=current_data->getGlobalChannelId(    $1->symbol );
   delete $1;
 };
 
@@ -569,49 +574,66 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
-bool_yy{
-  int id=current_data->getGlobalCounterId( $1->symbol );
-  void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
+counter_identifier{
+  void *cs = createCounterConstraint( $1, DUMMY_ID, NE, 0 );
   current_data->addPointer( INT_CS_T,  cs );
-  delete $1;
 }
 |
 '!'
-bool_yy{
-  int id=current_data->getGlobalCounterId( $2->symbol) ;
-  void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
+counter_identifier{
+  void *cs = createCounterConstraint( $2, DUMMY_ID, EQ, 0 );
   current_data->addPointer( INT_CS_T, cs );  
-  delete $2;
 }
 |
-PARAMETER_BOOL_YY
+PARAMETER_INT_YY
 {
-  cout<<1<<endl;
+  int pid=current_data->getFormalParameterId( $1->symbol);
+  void *cs=createCounterConstraint( DUMMY_ID, DUMMY_ID, NE, 0, pid );
+  current_data->addPointer( INT_CS_T, cs);
+  delete $1;
 }
 |
-REF_PARAMETER_BOOL_YY
+REF_PARAMETER_INT_YY
 {
-  cout<<1<<endl;
+  int pid=current_data->getFormalParameterId( $1->symbol);
+  void *cs = createCounterConstraint( pid, DUMMY_ID, NE, 0 );
+  current_data->addPointer( INT_CS_T,  cs );
+  delete $1;
 }
 
 |
-'!' PARAMETER_BOOL_YY
+'!' PARAMETER_INT_YY
 {
-  cout<<1<<endl;
+  int pid=current_data->getFormalParameterId( $2->symbol);
+  void *cs=createCounterConstraint( DUMMY_ID, DUMMY_ID, EQ, 0, pid );
+  current_data->addPointer( INT_CS_T, cs);
+  delete $2;
+
 }
 |
-'!' REF_PARAMETER_BOOL_YY
+'!' REF_PARAMETER_INT_YY
 {
-  cout<<1<<endl;
+  int pid=current_data->getFormalParameterId( $2->symbol);
+  void *cs = createCounterConstraint( pid, DUMMY_ID, EQ, 0 );
+  current_data->addPointer( INT_CS_T,  cs );
+  delete $2;
 }
 |
 REF_PARAMETER_CHAN_YY '?'
 {
+  int pid=current_data->getFormalParameterId( $1->symbol);
+
+  current_data->addValue(REF_CHAN_ACTION_T, -pid );
+  delete $1;
   //TODO:   send signal
 }
 |
 REF_PARAMETER_CHAN_YY '!'
 {
+  int pid=current_data->getFormalParameterId( $1->symbol);
+  current_data->addValue(REF_CHAN_ACTION_T, pid );
+  delete $1;
+  
   //TODO:   receive signal
 }
 ;
@@ -696,19 +718,31 @@ IDENTIFIER '=' TEMPLATE_YY '(' real_argument_list ')' ';'
   delete $1;
   delete $3;
   delete $5;
-};
+}
+|
+PARAMETER_INT_YY '=' const_expression{
+  //TODO:
+}
+|
+REF_PARAMETER_INT_YY '=' const_expression{
+  //TODO:
+  //  int pid=current_data->getFormalParameterId( $1->symbol);
+  //  CounterAction   *action=new CounterAction(ASSIGNMENT_ACTION, RHS_CONSTANT_T,  pid, $3);
+
+  delete $1;
+}
+;
 
 communicate_statement:
 
 chan_identifier '!'
 {
-  current_data->addValue(CHAN_T, $1 );
+  current_data->addValue(CHAN_ACTION_T, $1 );
 }
 |
 chan_identifier '?'
 {
-  current_data->addValue(CHAN_T, -$1 );
-  
+  current_data->addValue(CHAN_ACTION_T, -$1 );
 }
 ;
 
@@ -741,12 +775,6 @@ variable_declaration
     case CLOCK_T:{
       for( auto v: *$2){
         current_data->setValue(CLOCK_T, v);  //clock variable only can declare in template
-      }
-      break ;
-    }
-    case BOOL_T: {
-      for( auto v: *$2){
-        current_data->setValue(INT_T, v);
       }
       break ;
     }
@@ -795,16 +823,7 @@ variable_declaration
         current_data->setValue( CLOCK_T, arrayToVar(name, i ));
       }
       break;
-    }
-
-    case BOOL_T:{
-      current_data->setValue( INT_T, name);
-      for( int i=0; i< $4; i++){
-        current_data->setValue( INT_T, arrayToVar(name, i));
-      }
-      break;
-    }
-     
+    }     
     case CHAN_T:{
       current_data->setValue( CHAN_T, name, ONE2ONE_CH);
       for( int i=0; i< $4; i++){
@@ -843,10 +862,6 @@ variable_declaration
     case CLOCK_T:
       current_data->setValue(CLOCK_T,  $2->symbol,  $4);
       break;
-      
-    case BOOL_T:
-      current_data->setValue(INT_T,  $2->symbol,  $4);
-      break;
     default:
       assert( false);
   }
@@ -867,6 +882,12 @@ template_declaration:
 ARGUMENT  formal_argument_list
 {
   for(auto e: *($2)){
+    
+    TYPE_T type=get_formal_paramter_type(e.type );
+
+    current_data->addValue(type, e.name  );
+
+        
     current_data->addValue(FORMAL_PARAMETER_T , e.name, new FormalParameterItem(e));
   }
   delete $2;

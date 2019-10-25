@@ -155,7 +155,7 @@ COMP_OPERATOR negation( COMP_OPERATOR op );
 enum TYPE_T {
   TYPE_TYPE( INT_T ),
   TYPE_TYPE( CLOCK_T ),
-  TYPE_TYPE( BOOL_T ),
+  //  TYPE_TYPE( BOOL_T ),
   TYPE_TYPE( CHAN_T ),
   TYPE_TYPE( URGENT_CHAN_T ),
   TYPE_TYPE( BROADCAST_CHAN_T ),
@@ -171,6 +171,8 @@ enum TYPE_T {
   INT_UPDATE_T,
   RESET_T,
   SELF_DEF_T,
+  CHAN_ACTION_T,
+  REF_CHAN_ACTION_T,
   NO_T
 
 };
@@ -179,7 +181,7 @@ string getTypeStr( TYPE_T type );
 
 TYPE_T base_type( TYPE_T type );
 
-TYPE_T get_formal_paramter_type( TYPE_T type);
+TYPE_T get_formal_paramter_type( TYPE_T type );
 
 bool isRefType( const TYPE_T type );
 

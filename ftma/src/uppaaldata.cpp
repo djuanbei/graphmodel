@@ -18,9 +18,9 @@ UppaalData::UppaalData() {
   base_types.push_back( PARAMETER_CLOCK_T );
   base_types.push_back( REF_PARAMETER_CLOCK_T );
 
-  base_types.push_back( BOOL_T );
-  base_types.push_back( PARAMETER_BOOL_T );
-  base_types.push_back( REF_PARAMETER_BOOL_T );
+  //  base_types.push_back( BOOL_T );
+  //  base_types.push_back( PARAMETER_BOOL_T );
+  //  base_types.push_back( REF_PARAMETER_BOOL_T );
 
   base_types.push_back( CHAN_T );
   base_types.push_back( REF_PARAMETER_CHAN_T );
@@ -31,7 +31,7 @@ UppaalData::UppaalData() {
 
   base_types.push_back( TEMPLATE_T );
 
-  base_types.push_back( FORMAL_PARAMETER_T );
+  //  base_types.push_back( FORMAL_PARAMETER_T );
 
   base_types.push_back( CLOCK_CS_T );
 

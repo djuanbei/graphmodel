@@ -29,7 +29,7 @@
 
 namespace graphsat {
 
-static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, BOOL_T, CHAN_T};
+static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, CHAN_T};
 
 class UppaalParser {
 

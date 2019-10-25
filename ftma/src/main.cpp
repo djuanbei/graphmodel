@@ -521,10 +521,10 @@ void incrementalTest() {
   }
 }
 void fisher1() {
+  //  UppaalParser parser(
+  //  "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
   UppaalParser parser(
-      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
-  // UppaalParser parser(
-  //"/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   INT_TAS_t sys = parser.getSYS();
   R_t       data( sys );
 

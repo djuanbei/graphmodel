@@ -48,6 +48,7 @@ void *createParameterConstraint( const int parameter_id1,
 
 void *createCounterConstraint( const int counter_id1, const int counter_id2,
                                COMP_OPERATOR op, const int rhs, int pid ) {
+
   if ( counter_id1 > -1 && counter_id2 > -1 ) {
     return InstanceFactory::getInstance().createTwoCounterConstraint(
         counter_id1, counter_id2, op, rhs, pid );
@@ -61,6 +62,10 @@ void *createCounterConstraint( const int counter_id1, const int counter_id2,
     COMP_OPERATOR nop = negation( op );
     return InstanceFactory::getInstance().createOneCounterConstraint(
         counter_id2, nop, rhs * -1 );
+  }
+  if ( pid > -1 ) {
+    return InstanceFactory::getInstance().createOneParameterConstraint( pid, op,
+                                                                        rhs );
   }
 
   assert( false );

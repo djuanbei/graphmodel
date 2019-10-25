@@ -41,7 +41,7 @@ string getTypeStr( TYPE_T type ) {
   switch ( type ) {
     TYPE_STR( INT_T );
     TYPE_STR( CLOCK_T );
-    TYPE_STR( BOOL_T );
+    //    TYPE_STR( BOOL_T );
     TYPE_STR( CHAN_T );
     TYPE_STR( URGENT_CHAN_T );
     TYPE_STR( BROADCAST_CHAN_T );
@@ -68,6 +68,10 @@ string getTypeStr( TYPE_T type ) {
 
     ENUM_ITEM_STR( SELF_DEF_T );
 
+    ENUM_ITEM_STR( CHAN_ACTION_T );
+
+    ENUM_ITEM_STR( REF_CHAN_ACTION_T );
+
     ENUM_ITEM_STR( NO_T );
   }
 }
@@ -76,42 +80,50 @@ TYPE_T base_type( TYPE_T type ) {
   return ( TYPE_T )( ( type / TYPE_FAMILY_LEN ) * TYPE_FAMILY_LEN );
 }
 
-TYPE_T get_formal_paramter_type( TYPE_T type){
-  if( INT_T== type || CONST_INT_T== type){
+TYPE_T get_formal_paramter_type( TYPE_T type ) {
+  if ( INT_T == type || CONST_INT_T == type ) {
     return PARAMETER_INT_T;
   }
-  if( REF_INT_T==type || CONST_REF_INT_T ==type){
+  if ( REF_INT_T == type || CONST_REF_INT_T == type ) {
     return REF_PARAMETER_INT_T;
   }
 
-  if( CLOCK_T== type || CONST_CLOCK_T== type){
+  if ( CLOCK_T == type || CONST_CLOCK_T == type ) {
     return PARAMETER_CLOCK_T;
   }
-  if( REF_CLOCK_T==type || CONST_REF_CLOCK_T ==type){
+  if ( REF_CLOCK_T == type || CONST_REF_CLOCK_T == type ) {
     return REF_PARAMETER_CLOCK_T;
   }
 
-  if( BOOL_T== type || CONST_BOOL_T== type){
-    return PARAMETER_BOOL_T;
-  }
-  if( REF_BOOL_T==type || CONST_REF_BOOL_T ==type){
-    return REF_PARAMETER_BOOL_T;
-  }
-
-
-  if( CHAN_T== type || CONST_CHAN_T== type){
+  if ( CHAN_T == type || CONST_CHAN_T == type ) {
     return PARAMETER_CHAN_T;
   }
-  
-  if( REF_CHAN_T==type || CONST_REF_CHAN_T ==type){
+
+  if ( REF_CHAN_T == type || CONST_REF_CHAN_T == type ) {
     return REF_PARAMETER_CHAN_T;
   }
-  
-  if(SELF_DEF_T==type){
-    return type;
+
+  if ( URGENT_CHAN_T == type || CONST_URGENT_CHAN_T ) {
+    return PARAMETER_CHAN_T;
   }
 
-  assert( false);
+  if ( REF_URGENT_CHAN_T == type || CONST_REF_URGENT_CHAN_T ) {
+    return REF_PARAMETER_CHAN_T;
+  }
+
+  if ( BROADCAST_CHAN_T == type || CONST_BROADCAST_CHAN_T ) {
+    return PARAMETER_CHAN_T;
+  }
+
+  if ( REF_BROADCAST_CHAN_T == type || CONST_BROADCAST_CHAN_T ) {
+    return REF_PARAMETER_CHAN_T;
+  }
+
+  if ( SELF_DEF_T == type ) {
+    return PARAMETER_INT_T;
+  }
+
+  assert( false );
   return NO_T;
 }
 

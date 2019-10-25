@@ -134,7 +134,7 @@ int UppaalParser::parseSystem( XML_P system ) {
         FormalParameterItem *p =
             (FormalParameterItem *) template_parameter_vec[ j ].second[ 0 ];
         if ( p->is_ref ) {
-          if ( p->type == INT_T || p->type == BOOL_T ) {
+          if ( p->type == INT_T ) {
             parameter.setCounterMap( j, param_list[ j ].id );
           } else if ( p->type == CHAN_T ) {
             parameter.setChanMap( j, param_list[ j ].id );
@@ -144,7 +144,7 @@ int UppaalParser::parseSystem( XML_P system ) {
           }
 
         } else {
-          if ( p->type == INT_T || p->type == BOOL_T ) {
+          if ( p->type == INT_T ) {
             parameter.setParameterMap( j, param_list[ j ].id );
           } else {
             assert( false );
