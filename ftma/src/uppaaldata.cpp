@@ -6,25 +6,32 @@ UppaalData::UppaalData() {
   init_loc = 0;
   name     = "";
 
-  parent  = NULL;
-  next_id=0;
-  //  startId = 0;
+  parent = NULL;
+
+  next_counter_id = next_channel_id = 0;
 
   base_types.push_back( INT_T );
+  base_types.push_back( PARAMETER_INT_T );
+  base_types.push_back( REF_PARAMETER_INT_T );
 
   base_types.push_back( CLOCK_T );
+  base_types.push_back( PARAMETER_CLOCK_T );
+  base_types.push_back( REF_PARAMETER_CLOCK_T );
 
   base_types.push_back( BOOL_T );
+  base_types.push_back( PARAMETER_BOOL_T );
+  base_types.push_back( REF_PARAMETER_BOOL_T );
 
   base_types.push_back( CHAN_T );
+  base_types.push_back( REF_PARAMETER_CHAN_T );
 
   base_types.push_back( SYSTEM_T );
 
-  base_types.push_back( PARAMETER_T );
-
-  base_types.push_back( REF_PARAMETER_T );
+  //  base_types.push_back( REF_PARAMETER_T );
 
   base_types.push_back( TEMPLATE_T );
+
+  base_types.push_back( FORMAL_PARAMETER_T );
 
   base_types.push_back( CLOCK_CS_T );
 
@@ -97,21 +104,36 @@ int UppaalData::getVarNum( void ) const {
   return re;
 }
 
-int UppaalData::getGlobalId( const string &name ) {
-  if ( id_map.find( name ) != id_map.end() ) {
-    return id_map.at( name );
+int UppaalData::getGlobalCounterId( const string &name ) {
+  if ( counter_id_map.find( name ) != counter_id_map.end() ) {
+    return counter_id_map.at( name );
   }
 
-  for ( vector<TYPE_T>::const_iterator it = base_types.begin();
-        it != base_types.end(); it++ ) {
-    if (hasValue( *it, name)) {
-      int re=getNextId( );
-      id_map[ name ] = re;
-      return re;
-    }
+  if ( hasValue( INT_T, name ) ) {
+    int re                 = getNextCounterId();
+    counter_id_map[ name ] = re;
+    return re;
   }
+
   if ( NULL != parent ) {
-    return parent->getGlobalId( name );
+    return parent->getGlobalCounterId( name );
+  }
+  return NOT_FOUND;
+}
+
+int UppaalData::getGlobalChannelId( const string &name ) {
+  if ( channel_id_map.find( name ) != channel_id_map.end() ) {
+    return channel_id_map.at( name );
+  }
+
+  if ( hasValue( CHAN_T, name ) ) {
+    int re                 = getNextChannelId();
+    channel_id_map[ name ] = re;
+    return re;
+  }
+
+  if ( NULL != parent ) {
+    return parent->getGlobalChannelId( name );
   }
   return NOT_FOUND;
 }

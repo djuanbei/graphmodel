@@ -162,14 +162,14 @@ void count()
     //ECHO;
 }
 
-int findSym(const string& name ){
-   vector<string>::iterator it=find(symbol_table.begin( ), symbol_table.end( ), name );
-   if( it==symbol_table.end( )){
-     return -1;
-   }
-   return it-symbol_table.begin( );
+// int findSym(const string& name ){
+//    vector<string>::iterator it=find(symbol_table.begin( ), symbol_table.end( ), name );
+//    if( it==symbol_table.end( )){
+//      return -1;
+//    }
+//    return it-symbol_table.begin( );
 
-}
+// }
 
 /**
 @return PARAM if sym is one of template parameter;
@@ -194,14 +194,14 @@ int check_type()
    string  sym=string( yytext);
    
    Token *token=new Token();
-   token->id=findSym( sym);
+//   token->id=findSym( sym);
    token->symbol=sym;
 
    yylval.token_value= token;
    
-   if(find(symbol_table.begin( ), symbol_table.end( ), sym ) ==symbol_table.end( ) ){
-      symbol_table.push_back(sym);
-   }
+   // if(find(symbol_table.begin( ), symbol_table.end( ), sym ) ==symbol_table.end( ) ){
+   //    symbol_table.push_back(sym);
+   // }
 
    
   TYPE_T type=current_data->getType(sym);
@@ -221,15 +221,29 @@ switch(type){
 
 LEX_RETURN(INT);
 
+LEX_RETURN(PARAMETER_INT);
+
+LEX_RETURN(REF_PARAMETER_INT);
+
 LEX_RETURN(CLOCK);
+
+LEX_RETURN(PARAMETER_CLOCK);
+
+LEX_RETURN(REF_PARAMETER_CLOCK);
 
 LEX_RETURN(BOOL);
 
+LEX_RETURN(PARAMETER_BOOL);
+
+LEX_RETURN(REF_PARAMETER_BOOL);
+
 LEX_RETURN(CHAN);
 
-LEX_RETURN(PARAMETER);
+LEX_RETURN(REF_PARAMETER_CHAN);
 
-LEX_RETURN(REF_PARAMETER);
+//LEX_RETURN(PARAMETER);
+
+//LEX_RETURN(REF_PARAMETER);
 
 LEX_RETURN(TEMPLATE);
 

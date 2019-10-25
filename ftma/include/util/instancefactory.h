@@ -21,13 +21,14 @@
 #define regist_factory_method( T, V, V1, C )                                   \
   T *create##T V {                                                             \
     T *re = new T V1;                                                          \
-    pdata.addValue( STRING( C ), STRING( T ), re );                            \
+    pdata.addValue( 0, STRING( T ), re );                                      \
     return re;                                                                 \
   }
 
 namespace graphsat {
 
-const int DUMMY_ID = -1;
+const int        DUMMY_ID   = -1;
+const static int CLASS_TYPE = 0;
 
 class InstanceFactory {
   SINGLETON( InstanceFactory );
@@ -71,14 +72,13 @@ private:
 private:
   CounterConstraint *copy( CounterConstraint *other ) {
     CounterConstraint *re = other->copy();
-    pdata.addValue( STRING( CounterConstraint ), STRING( CounterConstraint ),
-                    re );
+    pdata.addValue( CLASS_TYPE, STRING( CounterConstraint ), re );
     return re;
   }
 
   CounterAction *copy( const CounterAction *other ) {
     CounterAction *re = other->copy();
-    pdata.addValue( STRING( CounterAction ), STRING( CounterAction ), re );
+    pdata.addValue( CLASS_TYPE, STRING( CounterAction ), re );
     return re;
   }
 

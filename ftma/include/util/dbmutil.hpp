@@ -37,7 +37,10 @@
 
 #define newA( __E, __n ) (__E *) malloc( ( __n ) * sizeof( __E ) )
 
-#define TYPE_TYPE( T ) T, REF_##T, CONST_##T, CONST_REF_##T, ARRAY_##T
+#define TYPE_TYPE( T )                                                         \
+  T, REF_##T, CONST_##T, CONST_REF_##T, PARAMETER_##T, REF_PARAMETER_##T,      \
+      ARRAY_##T
+
 #define TYPE_STR( T )                                                          \
   case T:                                                                      \
     return STRING( T );                                                        \
@@ -48,7 +51,13 @@
   case CONST_REF_##T:                                                          \
     return STRING( CONST_REF_##T );                                            \
   case ARRAY_##T:                                                              \
-    return STRING( ARRAY_##T );
+    return STRING( ARRAY_##T );                                                \
+  case PARAMETER_##T:                                                          \
+    return STRING( PARAMETER_##T );                                            \
+  case REF_PARAMETER_##T:                                                      \
+    return STRING( REF_PARAMETER_##T );
+
+const static int TYPE_FAMILY_LEN = 7;
 
 #define ENUM_ITEM_STR( T )                                                     \
   case T:                                                                      \
@@ -108,8 +117,6 @@ const static string FORMULA_STR = "formula";
 
 const static string COMMENT_STR = "comment";
 
-// const static string RESET_STR = "reset";
-
 const static int LOC_OUT_WIDTH = 3;
 const static int OP_OUT_WIDTH  = 3;
 
@@ -157,8 +164,8 @@ enum TYPE_T {
   TEMPLATE_T,
   AUTOMATA_T,
   LOCATION_T,
-  PARAMETER_T,
-  REF_PARAMETER_T,
+  FORMAL_PARAMETER_T,
+  //  REF_PARAMETER_T,
   CLOCK_CS_T,
   INT_CS_T,
   INT_UPDATE_T,
@@ -172,7 +179,10 @@ string getTypeStr( TYPE_T type );
 
 TYPE_T base_type( TYPE_T type );
 
+TYPE_T get_formal_paramter_type( TYPE_T type);
+
 bool isRefType( const TYPE_T type );
+
 /**
  *  Both have compare < and <=
  *

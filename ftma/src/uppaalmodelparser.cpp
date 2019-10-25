@@ -85,7 +85,6 @@ int UppaalParser::parseTemplate( child_type templates ) {
     allVarNum += template_data.getVarNum();
   }
 
-
   return 0;
 }
 
@@ -97,32 +96,13 @@ int UppaalParser::parseSystem( XML_P system ) {
 
   parseProblem( content, &system_data );
 
-  int counter_num = system_data.getTypeNum( INT_T );
-  for ( int i = 0; i < counter_num; i++ ) {
-    Counter                          counter( 0, MAX_COUNTER_VALUE );
-    const pair<string, vector<int>> &hh = system_data.getValue( INT_T, i );
-    // TODO: update counter initial value
-    counter.setValue( hh.second[ 0 ] );
-    sys += counter;
-  }
-
-  for ( auto e : template_map ) {
-    counter_num = e.second.getTypeNum( INT_T );
-    for ( int i = 0; i < counter_num; i++ ) {
-      Counter                          counter( 0, MAX_COUNTER_VALUE );
-      const pair<string, vector<int>> &hh = system_data.getValue( INT_T, i );
-      // TODO: update counter initial value
-      counter.setValue( hh.second[ 0 ] );
-      sys += counter;
-    }
-  }
+  setCounter();
+  // TODO: setChannel( );
 
   SystemDec *sys_dec = (SystemDec *) system_data.getPointer( SYSTEM_T );
   /**
    Exactly one system declaration
    */
-
-  int startId = system_data.getVarNum();
 
   for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
 
@@ -132,11 +112,10 @@ int UppaalParser::parseSystem( XML_P system ) {
         sys_dec->timed_automata_list[ i ]->param_list;
 
     vector<pair<string, vector<void *>>> template_parameter_vec =
-        template_map[ template_name ].getPoints( PARAMETER_T );
+        template_map[ template_name ].getPoints( FORMAL_PARAMETER_T );
 
     int parameter_num = (int) template_parameter_vec.size();
-    // int allVarNum =
-    //     system_data.getVarNum() + template_map[ template_name ].getVarNum();
+
     Parameter parameter_template( parameter_num );
 
     if ( template_parameter_vec.empty() ) {
@@ -252,7 +231,7 @@ int UppaalParser::parseTemplateParamter( UppaalData &template_data,
   string para_content = "argument " + parameter->getValue();
   parseProblem( para_content, &template_data );
 
-  cout << template_data.getTypeNum( PARAMETER_T ) << endl;
+  //  cout << template_data.getTypeNum( PARAMETER_T ) << endl;
   // TODO:x
   return 0;
 }
@@ -331,6 +310,27 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
 void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
   // template_data.clear();
   parseProblem( guards, &template_data );
+}
+
+int UppaalParser::setCounter() {
+  int counter_num = system_data.getTotalCounterNum();
+  sys.setCounterNum( counter_num );
+  for ( auto e : system_data.counter_id_map ) {
+    Counter counter( 0, MAX_COUNTER_VALUE );
+    int     v = system_data.getValue( INT_T, e.first );
+    counter.setValue( v );
+    sys.setCounter( e.second, counter );
+  }
+
+  for ( auto temp : template_map ) {
+    for ( auto e : temp.second.counter_id_map ) {
+      Counter counter( 0, MAX_COUNTER_VALUE );
+      int     v = temp.second.getValue( INT_T, e.first );
+      counter.setValue( v );
+      sys.setCounter( e.second, counter );
+    }
+  }
+  return 0;
 }
 
 } // namespace graphsat

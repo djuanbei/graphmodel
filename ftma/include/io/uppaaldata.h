@@ -74,8 +74,9 @@ public:
     point_values.clear();
   }
 
+  int getGlobalCounterId( const string &name );
 
-  int getGlobalId( const string &name );
+  int getGlobalChannelId( const string &name );
 
   void setName( const string &n ) { name = n; }
 
@@ -83,9 +84,8 @@ public:
 
   int getVarNum( void ) const;
 
-  int getParameterId( const string &name ) {
-    return point_values.getId( getTypeStr( PARAMETER_T ), name );
-    //    return getId( PARAMETER_T, name );
+  int getFormalParameterId( const string &name ) {
+    return getId( FORMAL_PARAMETER_T, name );
   }
 
   TYPE_T getType( const string &name ) const;
@@ -99,7 +99,7 @@ public:
     }
   }
   const vector<int> &getIntArray( const string &key ) const {
-    int id = int_values.getId( getTypeStr(SELF_DEF_T), key );
+    int id = int_values.getId( SELF_DEF_T, key );
     if ( id != NOT_FOUND ) {
       const pair<string, vector<int>> &pp = getValue( SELF_DEF_T, id );
       return pp.second;
@@ -113,17 +113,16 @@ public:
   int getInitialLoc() const { return init_loc; }
 
   void addValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
-    int_values.addValue( getTypeStr( type ), name, v );
+    int_values.addValue( type, name, v );
   }
 
   void setValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
-    int_values.setValue( getTypeStr( type ), name, v );
+    int_values.setValue( type, name, v );
   }
 
   int getTypeNum( const TYPE_T type ) const {
-    if ( int_values.hasValue( getTypeStr( type ) ) )
-      return int_values.getTypeNum( getTypeStr( type ) );
-    return point_values.getTypeNum( getTypeStr( type ) );
+    if ( int_values.hasValue( type ) ) return int_values.getTypeNum( type );
+    return point_values.getTypeNum( type );
   }
 
   /**
@@ -134,74 +133,76 @@ public:
    * @return  NOT_FOUND if name is not in int_values
    */
   int getId( const TYPE_T type, const string &name ) const {
-    int re = int_values.getId( getTypeStr( type ), name );
+    int re = int_values.getId( type, name );
     if ( re > -1 ) {
       return re;
     }
-    return point_values.getId( getTypeStr( type ), name );
+    return point_values.getId( type, name );
   }
 
   int getClockId( const string &name ) const {
-    return int_values.getId(getTypeStr(CLOCK_T), name ) + 1; // start with 1
+    return int_values.getId( CLOCK_T, name ) + 1; // start with 1
   }
 
   const pair<string, vector<int>> &getValue( const TYPE_T type, int id ) const {
-    return int_values.getValue( getTypeStr( type ), id );
+    return int_values.getValue( type, id );
   }
 
   bool hasValue( const TYPE_T type, const string &name ) const {
-    return int_values.hasValue( getTypeStr( type ), name );
+    return int_values.hasValue( type, name );
   }
 
   bool hasPointer( const TYPE_T type, const string &name ) const {
-    return point_values.hasValue( getTypeStr( type ), name );
+    return point_values.hasValue( type, name );
   }
 
   int getValue( const TYPE_T type, const string &name, int id = 0 ) const {
-    return int_values.getValue( getTypeStr( type ), name, id );
+    return int_values.getValue( type, name, id );
   }
 
   vector<pair<string, vector<int>>> getValue( const TYPE_T type ) const {
-    return int_values.getValue( getTypeStr( type ) );
+    return int_values.getValue( type );
   }
 
   void addValue( const TYPE_T type, const string &name, void *v ) {
-    point_values.addValue( getTypeStr( type ), name, v );
+    point_values.addValue( type, name, v );
   }
   void addValue( const TYPE_T type, int value ) {
-    int_values.addValue( getTypeStr( type ), getTypeStr( type ), value );
+    int_values.addValue( type, getTypeStr( type ), value );
   }
 
   void addPointer( const TYPE_T type, void *v ) {
-    point_values.addValue( getTypeStr( type ), getTypeStr( type ), v );
+    point_values.addValue( type, getTypeStr( type ), v );
   }
 
   vector<void *> getPoints( const TYPE_T type, const string name ) const {
-    int id = point_values.getId( getTypeStr( type ), name );
+    int id = point_values.getId( type, name );
     if ( id != NOT_FOUND ) {
-      return point_values.getValue( getTypeStr( type ), id ).second;
+      return point_values.getValue( type, id ).second;
     } else {
       vector<void *> dummy;
       return dummy;
     }
   }
+
   void *getPointer( const TYPE_T type ) const {
-    return point_values.getValue( getTypeStr( type ), getTypeStr( type ), 0 );
+    return point_values.getValue( type, getTypeStr( type ), 0 );
   }
+
   void *getPointer( const TYPE_T type, const string &name ) const {
-    return point_values.getValue( getTypeStr( type ), name, 0 );
+    return point_values.getValue( type, name, 0 );
   }
 
   vector<pair<string, vector<void *>>> getPoints( const TYPE_T type ) const {
-    return point_values.getValue( getTypeStr( type ) );
+    return point_values.getValue( type );
   }
 
   void clear( const TYPE_T type ) {
-    string type_str = getTypeStr( type );
-    if ( point_values.hasValue( type_str ) ) {
-      point_values.clear( type_str );
-    } else if ( int_values.hasValue( type_str ) ) {
-      int_values.clear( type_str );
+
+    if ( point_values.hasValue( type ) ) {
+      point_values.clear( type );
+    } else if ( int_values.hasValue( type ) ) {
+      int_values.clear( type );
     }
   }
 
@@ -209,11 +210,31 @@ public:
 
   void addClockConstraint( int clock1_id, int clock2_id, COMP_OPERATOR op,
                            int rhs, int parameter_id = -10 );
-  int getNextId( ){
-    if( NULL==parent){
-      return next_id++;
+  int  getNextCounterId() {
+    if ( NULL == parent ) {
+      return next_counter_id++;
     }
-    return parent->getNextId( );
+    return parent->getNextCounterId();
+  }
+
+  int getNextChannelId() {
+    if ( NULL == parent ) {
+      return next_channel_id++;
+    }
+    return parent->getNextChannelId();
+  }
+  int getTotalCounterNum() const {
+    if ( NULL == parent ) {
+      return next_counter_id;
+    }
+    return parent->getTotalCounterNum();
+  }
+
+  int getTotalChannelNum() const {
+    if ( NULL == parent ) {
+      return next_channel_id;
+    }
+    return parent->getTotalChannelNum();
   }
 
 private:
@@ -226,10 +247,11 @@ private:
   int         init_loc;
   UppaalData *parent;
 
-  int next_id;
-  
+  int next_counter_id;
+  int next_channel_id;
 
-  map<string, int> id_map;
+  map<string, int> counter_id_map;
+  map<string, int> channel_id_map;
 
   typename INT_TAS_t::TAT_t tat;
   friend class UppaalParser;

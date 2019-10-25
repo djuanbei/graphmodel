@@ -333,7 +333,9 @@ void fisher( int n = 2 ) {
 
   INT_TAS_t sys;
   Counter   counter( 0, n + 1 );
-  sys += counter;
+  sys.setCounterNum( 1 );
+  sys.setCounter( 0, counter );
+  //  sys += counter;
 
   for ( int i = 1; i <= n; i++ ) {
 
@@ -442,7 +444,9 @@ void incrementalTest() {
   }
   //  INT_TAS_t   sys = n * tma1;
   Counter counter( 0, 100 );
-  sys += counter;
+  sys.setCounterNum( 1 );
+  sys.setCounter( 0, counter );
+  //  sys += counter;
 
   R_t data( sys );
 
@@ -467,8 +471,9 @@ void incrementalTest() {
 
     sys1 += tma1;
   }
-
-  sys1 += counter;
+  sys1.setCounterNum( 1 );
+  sys1.setCounter( 0, counter );
+  //  sys1 += counter;
 
   R_t data1( sys1 );
 

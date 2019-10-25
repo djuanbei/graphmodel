@@ -54,9 +54,9 @@ string getTypeStr( TYPE_T type ) {
 
     ENUM_ITEM_STR( LOCATION_T );
 
-    ENUM_ITEM_STR( PARAMETER_T );
+    ENUM_ITEM_STR( FORMAL_PARAMETER_T );
 
-    ENUM_ITEM_STR( REF_PARAMETER_T );
+    //    ENUM_ITEM_STR( REF_PARAMETER_T );
 
     ENUM_ITEM_STR( CLOCK_CS_T );
 
@@ -72,13 +72,55 @@ string getTypeStr( TYPE_T type ) {
   }
 }
 
-TYPE_T base_type( TYPE_T type ) { return ( TYPE_T )( ( type / 5 ) * 5 ); }
+TYPE_T base_type( TYPE_T type ) {
+  return ( TYPE_T )( ( type / TYPE_FAMILY_LEN ) * TYPE_FAMILY_LEN );
+}
+
+TYPE_T get_formal_paramter_type( TYPE_T type){
+  if( INT_T== type || CONST_INT_T== type){
+    return PARAMETER_INT_T;
+  }
+  if( REF_INT_T==type || CONST_REF_INT_T ==type){
+    return REF_PARAMETER_INT_T;
+  }
+
+  if( CLOCK_T== type || CONST_CLOCK_T== type){
+    return PARAMETER_CLOCK_T;
+  }
+  if( REF_CLOCK_T==type || CONST_REF_CLOCK_T ==type){
+    return REF_PARAMETER_CLOCK_T;
+  }
+
+  if( BOOL_T== type || CONST_BOOL_T== type){
+    return PARAMETER_BOOL_T;
+  }
+  if( REF_BOOL_T==type || CONST_REF_BOOL_T ==type){
+    return REF_PARAMETER_BOOL_T;
+  }
+
+
+  if( CHAN_T== type || CONST_CHAN_T== type){
+    return PARAMETER_CHAN_T;
+  }
+  
+  if( REF_CHAN_T==type || CONST_REF_CHAN_T ==type){
+    return REF_PARAMETER_CHAN_T;
+  }
+  
+  if(SELF_DEF_T==type){
+    return type;
+  }
+
+  assert( false);
+  return NO_T;
+}
 
 bool isRefType( const TYPE_T type ) {
-  if ( type >= PARAMETER_T ) {
+  if ( type >= SYSTEM_T ) {
     return false;
   }
-  return type % 2 == 1;
+  int m = type % TYPE_FAMILY_LEN;
+  return m == 1 || m == 3 || m == 5;
 }
 
 std::vector<string> splitStr( const string &string_to_splitted,

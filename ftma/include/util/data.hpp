@@ -40,18 +40,16 @@ public:                                                                        \
 
 #define deleteType( Var, TYPE )                                                \
   {                                                                            \
-    vector<pair<string, vector<void *>>> temp = Var.getValue( #TYPE );         \
-    for ( auto e : temp ) {                                                    \
-      for ( auto ee : e.second ) {                                             \
-        delete (TYPE *) ee;                                                    \
-      }                                                                        \
+    vector<void *> temp = Var.getValue( CLASS_TYPE, #TYPE );                   \
+    for ( auto ee : temp ) {                                                   \
+      delete (TYPE *) ee;                                                      \
     }                                                                          \
-    Var.clear( #TYPE );                                                        \
+    Var.clear( CLASS_TYPE, #TYPE );                                            \
   }
 
 const static int NOT_FOUND = -1;
 
-inline string arrayToVar( const string &name, int id ) {
+inline static string arrayToVar( const string &name, int id ) {
   stringstream ss;
   ss << id;
   return name + "#" + ss.str();
@@ -60,9 +58,15 @@ inline string arrayToVar( const string &name, int id ) {
 template <typename T> class ValueData {
 public:
   void clear() { values.clear(); }
-  void clear( const string &type ) { values[ type ].clear(); }
-
-  void addValue( const string &type, const string &name, T v = 0 ) {
+  void clear( const int type ) { values[ type ].clear(); }
+  void clear( const int type, const string &name ) {
+    for ( size_t i = 0; i < values[ type ].size(); i++ ) {
+      if ( values[ type ][ i ].first == name ) {
+        values[ type ][ i ].second.clear();
+      }
+    }
+  }
+  void addValue( const int type, const string &name, T v = 0 ) {
 
     for ( size_t i = 0; i < values[ type ].size(); i++ ) {
       if ( values[ type ][ i ].first == name ) {
@@ -76,7 +80,7 @@ public:
     values[ type ].push_back( make_pair( name, vec_v ) );
   }
 
-  void setValue( const string &type, const string &name, T v ) {
+  void setValue( const int type, const string &name, T v ) {
 
     for ( size_t i = 0; i < values[ type ].size(); i++ ) {
       if ( values[ type ][ i ].first == name ) {
@@ -91,7 +95,7 @@ public:
     addValue( type, name, v );
   }
 
-  int getTypeNum( const string &type ) const {
+  int getTypeNum( const int type ) const {
     if ( values.find( type ) == values.end() ) {
       return 0;
     }
@@ -106,7 +110,7 @@ public:
    *
    * @return  @NOT_FOUND if name is not in values
    */
-  int getId( const string &type, const string &name ) const {
+  int getId( const int type, const string &name ) const {
     if ( values.find( type ) == values.end() ) {
       return NOT_FOUND;
     }
@@ -119,11 +123,22 @@ public:
     return NOT_FOUND;
   }
 
-  const pair<string, vector<T>> &getValue( const string &type, int id ) const {
+  const pair<string, vector<T>> &getValue( const int type, int id ) const {
     return values.at( type )[ id ];
   }
 
-  vector<pair<string, vector<T>>> getValue( const string &type ) const {
+  vector<T> getValue( const int type, const string &name ) const {
+
+    for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
+      if ( values.at( type )[ i ].first == name ) {
+        return values.at( type )[ i ].second;
+      }
+    }
+    vector<T> dummy;
+    return dummy;
+  }
+
+  vector<pair<string, vector<T>>> getValue( const int type ) const {
 
     if ( values.find( type ) != values.end() ) {
       return values.at( type );
@@ -132,7 +147,7 @@ public:
     return vector<pair<string, vector<T>>>();
   }
 
-  bool hasValue( const string &type, const string &name ) const {
+  bool hasValue( const int type, const string &name ) const {
     if ( values.find( type ) == values.end() ) {
       return false;
     }
@@ -144,11 +159,11 @@ public:
     return false;
   }
 
-  bool hasValue( const string &type ) const {
+  bool hasValue( const int type ) const {
     return values.find( type ) != values.end();
   }
 
-  T getValue( const string &type, const string &name, int id = 0 ) const {
+  T getValue( const int type, const string &name, int id ) const {
     if ( values.find( type ) == values.end() ) {
       return (T) NOT_FOUND;
     }
@@ -162,7 +177,7 @@ public:
   }
 
 private:
-  map<string, vector<pair<string, vector<T>>>> values;
+  map<int, vector<pair<string, vector<T>>>> values;
 };
 
 typedef ValueData<void *> PointerData;

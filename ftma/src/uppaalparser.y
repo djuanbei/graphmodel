@@ -8,7 +8,7 @@
   #include "channel.h"
   #include "util/dbmutil.hpp"
   #include "io/uppaaldata.h"
-  //  #include "io/uppaalmodelparser.h"
+
   #include "model/ta.hpp"
 #define  LEX_RETURN( T) case T##_T: return T##_YY 
   using std::string;
@@ -22,10 +22,6 @@
   using std::cerr;
   using std::endl;
   using std::cout;
-
-  
-  vector<string> symbol_table;
-  
   extern  int lineNum;
 
 
@@ -64,9 +60,25 @@
 
 %token<token_value> AUTOMATA_YY
 
-%token<token_value> PARAMETER_YY
+%token<token_value> FORMAL_PARAMETER_YY
 
-%token<token_value> REF_PARAMETER_YY
+%token<token_value> PARAMETER_INT_YY
+
+%token<token_value> REF_PARAMETER_INT_YY
+
+
+%token<token_value> PARAMETER_CLOCK_YY
+
+%token<token_value> REF_PARAMETER_CLOCK_YY
+
+
+%token<token_value> PARAMETER_BOOL_YY
+
+%token<token_value> REF_PARAMETER_BOOL_YY
+
+%token<token_value> REF_PARAMETER_CHAN_YY
+
+//%token<token_value> REF_PARAMETER_YY
 
 %token<token_value>  CLOCK_YY
 
@@ -172,7 +184,6 @@ CONST base_type_specifier '&'
   $$=(TYPE_T)(((int)$2)+3);
 }
 ;
-
 
 clock_yy:
 CLOCK_YY
@@ -434,31 +445,31 @@ clock_yy{
 
 counter_identifier:
 int_yy {
-  $$=current_data->getGlobalId(  $1->symbol);
+  $$=current_data->getGlobalCounterId(  $1->symbol);
   delete $1;
 }
 |
 bool_yy{
-  $$=current_data->getGlobalId(  $1->symbol);
+  $$=current_data->getGlobalCounterId(  $1->symbol);
   delete $1;
 }
 |
-REF_PARAMETER_YY{
-  $$=current_data->getParameterId( $1->symbol);
+REF_PARAMETER_BOOL_YY{
+  $$=current_data->getFormalParameterId( $1->symbol);
   delete $1;
 }
 ;
 
 parameter_identifier:
-PARAMETER_YY{
-  $$=current_data->getParameterId( $1->symbol);
+FORMAL_PARAMETER_YY{
+  $$=current_data->getFormalParameterId( $1->symbol);
   delete $1;
 }
 ;
 
 chan_identifier:
 chan_yy{
-  $$=current_data->getGlobalId(    $1->symbol );
+  $$=current_data->getGlobalCounterId(    $1->symbol );
   delete $1;
 };
 
@@ -559,7 +570,7 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
 }
 |
 bool_yy{
-  int id=current_data->getGlobalId( $1->symbol );
+  int id=current_data->getGlobalCounterId( $1->symbol );
   void *cs = createCounterConstraint( id, DUMMY_ID, NE, 0 );
   current_data->addPointer( INT_CS_T,  cs );
   delete $1;
@@ -567,39 +578,39 @@ bool_yy{
 |
 '!'
 bool_yy{
-  int id=current_data->getGlobalId( $2->symbol) ;
+  int id=current_data->getGlobalCounterId( $2->symbol) ;
   void *cs = createCounterConstraint( id, DUMMY_ID, EQ, 0 );
   current_data->addPointer( INT_CS_T, cs );  
   delete $2;
 }
 |
-PARAMETER_YY
+PARAMETER_BOOL_YY
 {
   cout<<1<<endl;
 }
 |
-REF_PARAMETER_YY
+REF_PARAMETER_BOOL_YY
 {
   cout<<1<<endl;
 }
 
 |
-'!' PARAMETER_YY
+'!' PARAMETER_BOOL_YY
 {
   cout<<1<<endl;
 }
 |
-'!' REF_PARAMETER_YY
+'!' REF_PARAMETER_BOOL_YY
 {
   cout<<1<<endl;
 }
 |
-REF_PARAMETER_YY '?'
+REF_PARAMETER_CHAN_YY '?'
 {
   //TODO:   send signal
 }
 |
-REF_PARAMETER_YY '!'
+REF_PARAMETER_CHAN_YY '!'
 {
   //TODO:   receive signal
 }
@@ -735,7 +746,7 @@ variable_declaration
     }
     case BOOL_T: {
       for( auto v: *$2){
-        current_data->setValue(BOOL_T, v);
+        current_data->setValue(INT_T, v);
       }
       break ;
     }
@@ -787,9 +798,9 @@ variable_declaration
     }
 
     case BOOL_T:{
-      current_data->setValue( BOOL_T, name);
+      current_data->setValue( INT_T, name);
       for( int i=0; i< $4; i++){
-        current_data->setValue( BOOL_T, arrayToVar(name, i));
+        current_data->setValue( INT_T, arrayToVar(name, i));
       }
       break;
     }
@@ -834,7 +845,7 @@ variable_declaration
       break;
       
     case BOOL_T:
-      current_data->setValue(BOOL_T,  $2->symbol,  $4);
+      current_data->setValue(INT_T,  $2->symbol,  $4);
       break;
     default:
       assert( false);
@@ -856,7 +867,7 @@ template_declaration:
 ARGUMENT  formal_argument_list
 {
   for(auto e: *($2)){
-    current_data->addValue( PARAMETER_T, e.name, new FormalParameterItem(e));
+    current_data->addValue(FORMAL_PARAMETER_T , e.name, new FormalParameterItem(e));
   }
   delete $2;
 }
