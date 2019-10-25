@@ -143,13 +143,13 @@ public:
     }
     return false;
   }
-  
-  bool hasValue( const string &type) const{
+
+  bool hasValue( const string &type ) const {
     return values.find( type ) != values.end();
   }
 
   T getValue( const string &type, const string &name, int id = 0 ) const {
-    if(values.find( type)==values.end( ) ){
+    if ( values.find( type ) == values.end() ) {
       return (T) NOT_FOUND;
     }
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {

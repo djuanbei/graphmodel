@@ -74,9 +74,8 @@ public:
     point_values.clear();
   }
 
-  void setStartId( int id ) { startId = id; }
 
-  int getGlobalId( const string &name ) const;
+  int getGlobalId( const string &name );
 
   void setName( const string &n ) { name = n; }
 
@@ -85,7 +84,8 @@ public:
   int getVarNum( void ) const;
 
   int getParameterId( const string &name ) {
-    return getId( PARAMETER_T, name );
+    return point_values.getId( getTypeStr( PARAMETER_T ), name );
+    //    return getId( PARAMETER_T, name );
   }
 
   TYPE_T getType( const string &name ) const;
@@ -99,7 +99,7 @@ public:
     }
   }
   const vector<int> &getIntArray( const string &key ) const {
-    int id = getId( SELF_DEF_T, key );
+    int id = int_values.getId( getTypeStr(SELF_DEF_T), key );
     if ( id != NOT_FOUND ) {
       const pair<string, vector<int>> &pp = getValue( SELF_DEF_T, id );
       return pp.second;
@@ -121,9 +121,9 @@ public:
   }
 
   int getTypeNum( const TYPE_T type ) const {
-    if(int_values.hasValue(getTypeStr( type )) )
-      return int_values.getTypeNum(getTypeStr( type ) );
-    return point_values.getTypeNum(getTypeStr( type ) );
+    if ( int_values.hasValue( getTypeStr( type ) ) )
+      return int_values.getTypeNum( getTypeStr( type ) );
+    return point_values.getTypeNum( getTypeStr( type ) );
   }
 
   /**
@@ -134,15 +134,15 @@ public:
    * @return  NOT_FOUND if name is not in int_values
    */
   int getId( const TYPE_T type, const string &name ) const {
-    int re=int_values.getId( getTypeStr( type ), name );
-    if(re>-1){
+    int re = int_values.getId( getTypeStr( type ), name );
+    if ( re > -1 ) {
       return re;
     }
     return point_values.getId( getTypeStr( type ), name );
   }
 
   int getClockId( const string &name ) const {
-    return getId( CLOCK_T, name ) + 1; // start with 1
+    return int_values.getId(getTypeStr(CLOCK_T), name ) + 1; // start with 1
   }
 
   const pair<string, vector<int>> &getValue( const TYPE_T type, int id ) const {
@@ -150,13 +150,12 @@ public:
   }
 
   bool hasValue( const TYPE_T type, const string &name ) const {
-    return  int_values.hasValue( getTypeStr( type ), name );
+    return int_values.hasValue( getTypeStr( type ), name );
   }
 
   bool hasPointer( const TYPE_T type, const string &name ) const {
     return point_values.hasValue( getTypeStr( type ), name );
   }
-  
 
   int getValue( const TYPE_T type, const string &name, int id = 0 ) const {
     return int_values.getValue( getTypeStr( type ), name, id );
@@ -168,6 +167,9 @@ public:
 
   void addValue( const TYPE_T type, const string &name, void *v ) {
     point_values.addValue( getTypeStr( type ), name, v );
+  }
+  void addValue( const TYPE_T type, int value ) {
+    int_values.addValue( getTypeStr( type ), getTypeStr( type ), value );
   }
 
   void addPointer( const TYPE_T type, void *v ) {
@@ -189,29 +191,30 @@ public:
   void *getPointer( const TYPE_T type, const string &name ) const {
     return point_values.getValue( getTypeStr( type ), name, 0 );
   }
-  // int getPointNum( const TYPE_T type ) const {
-  //   return point_values.getTypeNum( getTypeStr( type ) );
-  // }
 
   vector<pair<string, vector<void *>>> getPoints( const TYPE_T type ) const {
     return point_values.getValue( getTypeStr( type ) );
   }
 
-  
   void clear( const TYPE_T type ) {
-    string type_str=getTypeStr( type );
-    if(point_values.hasValue( type_str) ){
+    string type_str = getTypeStr( type );
+    if ( point_values.hasValue( type_str ) ) {
       point_values.clear( type_str );
-    }else if( int_values.hasValue( type_str )){
+    } else if ( int_values.hasValue( type_str ) ) {
       int_values.clear( type_str );
     }
   }
 
   void clearPoints() { point_values.clear(); }
 
-  
   void addClockConstraint( int clock1_id, int clock2_id, COMP_OPERATOR op,
                            int rhs, int parameter_id = -10 );
+  int getNextId( ){
+    if( NULL==parent){
+      return next_id++;
+    }
+    return parent->getNextId( );
+  }
 
 private:
   string         name;
@@ -223,7 +226,10 @@ private:
   int         init_loc;
   UppaalData *parent;
 
-  int startId;
+  int next_id;
+  
+
+  map<string, int> id_map;
 
   typename INT_TAS_t::TAT_t tat;
   friend class UppaalParser;

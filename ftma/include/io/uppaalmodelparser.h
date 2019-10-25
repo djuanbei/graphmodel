@@ -41,8 +41,6 @@ public:
   const Property &getProp() const { return prop; }
 
 private:
-  //  map<TYPE_T, string> type_name_map;
-
   UppaalData              system_data;
   map<string, UppaalData> template_map;
 
@@ -50,8 +48,6 @@ private:
   Property  prop;
 
   int parseDeclaration( XML_P system );
-
-  int parseTemplateDeclaration( child_type templates );
 
   int parseTemplate( child_type templates );
 

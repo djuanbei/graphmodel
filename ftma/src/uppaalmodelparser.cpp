@@ -14,8 +14,6 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
   child_type queries     = xmldoc.getChild( QUERIES_STR );
 
   parseDeclaration( declaration );
-  parseTemplateDeclaration( templates );
-
   parseTemplate( templates );
   parseSystem( system );
   parseQuery( queries );
@@ -34,15 +32,18 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
   return 0;
 }
 
-int UppaalParser::parseTemplateDeclaration( child_type templates ) {
-  assert( NULL != templates );
+int UppaalParser::parseTemplate( child_type templates ) {
 
+  if ( NULL == templates ) {
+    return 0;
+  }
   int allVarNum = system_data.getVarNum();
   for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
+
     UppaalData template_data;
 
     template_data.parent = &system_data;
-    template_data.setStartId( allVarNum );
+
     XML_P nameConf = ( *it )->getOneChild( NAME_STR );
     template_data.setName( nameConf->getValue() );
 
@@ -52,26 +53,6 @@ int UppaalParser::parseTemplateDeclaration( child_type templates ) {
       string dec_content = declaration->getValue();
       parseProblem( dec_content, &template_data );
     }
-    template_map[ template_data.name ] = template_data;
-    allVarNum += template_data.getVarNum();
-  }
-
-  return 0;
-}
-
-int UppaalParser::parseTemplate( child_type templates ) {
-
-  if ( NULL == templates ) {
-    return 0;
-  }
-
-  for ( child_iterator it = templates->begin(); it != templates->end(); it++ ) {
-
-    XML_P nameConf = ( *it )->getOneChild( NAME_STR );
-
-    UppaalData &template_data = template_map[ nameConf->getValue() ];
-
-    system_data.addValue( TEMPLATE_T, template_data.name );
 
     XML_P parameter = ( *it )->getOneChild( PARAMETER_STR );
 
@@ -98,7 +79,12 @@ int UppaalParser::parseTemplate( child_type templates ) {
     template_data.tat =
         INT_TAS_t::TAT_t( locations, transitions, template_data.getInitialLoc(),
                           template_data.getTypeNum( CLOCK_T ) );
+    template_map[ template_data.name ] = template_data;
+
+    system_data.addValue( TEMPLATE_T, template_data.name );
+    allVarNum += template_data.getVarNum();
   }
+
 
   return 0;
 }

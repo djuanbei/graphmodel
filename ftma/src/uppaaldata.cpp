@@ -7,7 +7,8 @@ UppaalData::UppaalData() {
   name     = "";
 
   parent  = NULL;
-  startId = 0;
+  next_id=0;
+  //  startId = 0;
 
   base_types.push_back( INT_T );
 
@@ -96,15 +97,18 @@ int UppaalData::getVarNum( void ) const {
   return re;
 }
 
-int UppaalData::getGlobalId( const string &name ) const {
-  int re = startId;
+int UppaalData::getGlobalId( const string &name ) {
+  if ( id_map.find( name ) != id_map.end() ) {
+    return id_map.at( name );
+  }
+
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
         it != base_types.end(); it++ ) {
-    int typeId = getId( *it, name );
-    if ( typeId != NOT_FOUND ) {
-      return re + typeId;
+    if (hasValue( *it, name)) {
+      int re=getNextId( );
+      id_map[ name ] = re;
+      return re;
     }
-    re += getTypeNum( *it );
   }
   if ( NULL != parent ) {
     return parent->getGlobalId( name );

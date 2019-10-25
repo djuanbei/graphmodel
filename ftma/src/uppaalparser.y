@@ -30,7 +30,6 @@
 
 
   UppaalData* current_data;
-  //  UppaalParser* model_parser;
   
   extern void yyerror(const char *); 
   extern void yyerror(const string&);
@@ -594,6 +593,16 @@ REF_PARAMETER_YY
 {
   cout<<1<<endl;
 }
+|
+REF_PARAMETER_YY '?'
+{
+  //TODO:   send signal
+}
+|
+REF_PARAMETER_YY '!'
+{
+  //TODO:   receive signal
+}
 ;
 
 assign_statement:
@@ -682,12 +691,12 @@ communicate_statement:
 
 chan_identifier '!'
 {
-  
-  
+  current_data->addValue(CHAN_T, $1 );
 }
 |
 chan_identifier '?'
 {
+  current_data->addValue(CHAN_T, -$1 );
   
 }
 ;
