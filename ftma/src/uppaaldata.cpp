@@ -31,6 +31,8 @@ UppaalData::UppaalData() {
 
   base_types.push_back( TEMPLATE_T );
 
+  base_types.push_back( AUTOMATA_T );
+
   //  base_types.push_back( FORMAL_PARAMETER_T );
 
   base_types.push_back( CLOCK_CS_T );

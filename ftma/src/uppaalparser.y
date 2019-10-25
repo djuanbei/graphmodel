@@ -48,7 +48,7 @@
   vector<RealParameterItem>* item_vec_pointer;
   vector<FormalParameterItem>* para_element_pointer;
   COMP_OPERATOR com_op;
-  
+
  }
 
 %token <int_value> CONSTANT
@@ -72,19 +72,15 @@
 %token<token_value> REF_PARAMETER_CLOCK_YY
 
 
-//%token<token_value> PARAMETER_BOOL_YY
-
 %token<token_value> REF_PARAMETER_BOOL_YY
 
 %token<token_value> REF_PARAMETER_CHAN_YY
 
-//%token<token_value> REF_PARAMETER_YY
 
 %token<token_value>  CLOCK_YY
 
 %token<token_value>  INT_YY
 
-//%token<token_value>  BOOL_YY
 
 %token<token_value>  CHAN_YY
 
@@ -114,7 +110,7 @@
 
 %type<token_value>  clock_yy
 %type<token_value>  int_yy
-//%type<token_value>  bool_yy
+
 %type<token_value>  chan_yy
 %type<int_value> clock_identifier
 %type<int_value> counter_identifier
@@ -211,17 +207,7 @@ int_yy '[' const_expression ']'
 }
 ;
 
-/* bool_yy: */
-/* BOOL_YY */
-/* { */
-/*   $$=$1; */
-/* } */
-/* | */
-/* bool_yy '[' const_expression ']' */
-/* { */
-/*   $$=$1; */
-/*   $$->symbol=arrayToVar($$->symbol, $3); */
-/* }; */
+
 
 chan_yy:
 CHAN_YY
@@ -260,9 +246,7 @@ type_specifier IDENTIFIER
   elem.is_ref=isRefType($1);
   elem.name=$2->symbol;
   elem.type_name=getTypeStr( $1);
-
   elem.type=$1;
-
   $$->push_back(elem);
   delete $2;
 }
@@ -273,7 +257,7 @@ formal_argument_list ',' type_specifier IDENTIFIER
   FormalParameterItem elem;
   elem.is_ref=isRefType($3);
   elem.name=$4->symbol;
-  elem.type_name=getTypeStr( $3);// current_data->getTypeName($3);
+  elem.type_name=getTypeStr( $3);
   elem.type=$3;
   $$->push_back(elem);
   delete $4;
@@ -448,16 +432,6 @@ int_yy {
   $$=current_data->getGlobalCounterId(  $1->symbol);
   delete $1;
 }
-//|
-/* bool_yy{ */
-/*   $$=current_data->getGlobalCounterId(  $1->symbol); */
-/*   delete $1; */
-/* } */
-/* | */
-/* REF_PARAMETER_BOOL_YY{ */
-/*   $$=current_data->getFormalParameterId( $1->symbol); */
-/*   delete $1; */
-/* } */
 ;
 
 parameter_identifier:
@@ -474,7 +448,7 @@ PARAMETER_INT_YY {
 
 chan_identifier:
 chan_yy{
-  $$=current_data->getGlobalChannelId(    $1->symbol );
+  $$=current_data->getGlobalChannelId( $1->symbol );
   delete $1;
 };
 
@@ -504,51 +478,84 @@ parameter_identifier compare_relation clock_identifier
 |
 parameter_identifier compare_relation const_expression
 {
-  void*  cs=createParameterConstraint( $1, DUMMY_ID, $2, $3 );
+  Argument first( PARAMETER_ARG, $1);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, $3);
+  void*  cs=createConstraint( first, second, $2, rhs );
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 const_expression compare_relation parameter_identifier
 {
   COMP_OPERATOR nop=negation( $2);
-  void*  cs=  createParameterConstraint($3, DUMMY_ID, nop, $1 );
+  Argument first( PARAMETER_ARG, $3);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, $1);
+
+  void*  cs=createConstraint( first, second, nop, rhs );
   current_data->addPointer( INT_CS_T, cs );
 }
 |
 parameter_identifier compare_relation parameter_identifier
 {
-  void* cs = createParameterConstraint( $1, $3, $2, 0 );
+  Argument first( PARAMETER_ARG, $1);
+  Argument second( PARAMETER_ARG, $3);
+  Argument rhs( CONST_ARG, 0);
+  
+  void* cs = createConstraint( first, second, $2, rhs);
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 parameter_identifier '-'  parameter_identifier compare_relation const_expression
 {
-  void* cs = createParameterConstraint( $1, $3, $4, $5 );
+  Argument first( PARAMETER_ARG, $1);
+  Argument second( PARAMETER_ARG, $3);
+  Argument rhs( CONST_ARG, $5);
+  void* cs = createConstraint( first, second, $4, rhs);
+
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 counter_identifier compare_relation const_expression
 {
-  void *cs = createCounterConstraint( $1, DUMMY_ID, $2, $3 );
+
+  Argument first( COUNTER_ARG, $1);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, $3);
+  void* cs = createConstraint( first, second, $2, rhs);
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 const_expression compare_relation counter_identifier
 {
   COMP_OPERATOR nop=negation( $2);
-  void *cs = createCounterConstraint( $3, DUMMY_ID, nop, $1 );
+  
+  Argument first( COUNTER_ARG, $3);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, $1);
+  void* cs = createConstraint( first, second, nop, rhs);
+  
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 counter_identifier compare_relation parameter_identifier
 {
-  void* cs = createCounterParameterConstraint( $1, $3, $2, 0 );
+  Argument first( COUNTER_ARG, $1);
+  Argument second( PARAMETER_ARG, $3);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second, $2, rhs);
+
   current_data->addPointer( INT_CS_T, cs );
 }
 |
 parameter_identifier  compare_relation  counter_identifier{
   COMP_OPERATOR nop=negation( $2);
-  void* cs = createCounterParameterConstraint( $3, $1, nop, 0 );
+
+  Argument first( COUNTER_ARG, $3);
+  Argument second( PARAMETER_ARG, $1);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second, nop, rhs);
+
   current_data->addPointer(INT_CS_T , cs );
 }
 |
@@ -564,31 +571,49 @@ clock_identifier '-' clock_identifier compare_relation parameter_identifier
 |
 counter_identifier '-' counter_identifier compare_relation const_expression
 {
-  void * cs = createCounterConstraint( $1, $3, $4, $5 );
+  Argument first( COUNTER_ARG, $1);
+  Argument second( COUNTER_ARG, $3);
+  Argument rhs( CONST_ARG, $5);
+  void* cs = createConstraint( first, second, $4, rhs);
   current_data->addPointer( INT_CS_T, cs );
 }
 |
 counter_identifier '-' counter_identifier compare_relation parameter_identifier
 {
-  void * cs = createCounterConstraint( $1, $3, $4, 0, $5 );
+  Argument first( COUNTER_ARG, $1);
+  Argument second( COUNTER_ARG, $3);
+  Argument rhs( PARAMETER_ARG, $5);
+  void* cs = createConstraint( first, second, $4, rhs);
+
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 counter_identifier{
-  void *cs = createCounterConstraint( $1, DUMMY_ID, NE, 0 );
+  Argument first( COUNTER_ARG, $1);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second,NE, rhs);
+
   current_data->addPointer( INT_CS_T,  cs );
 }
 |
 '!'
 counter_identifier{
-  void *cs = createCounterConstraint( $2, DUMMY_ID, EQ, 0 );
+  Argument first( COUNTER_ARG, $2);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second, EQ, rhs);
   current_data->addPointer( INT_CS_T, cs );  
 }
 |
 PARAMETER_INT_YY
 {
   int pid=current_data->getFormalParameterId( $1->symbol);
-  void *cs=createCounterConstraint( DUMMY_ID, DUMMY_ID, NE, 0, pid );
+  Argument first( PARAMETER_ARG, pid);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second,NE, rhs);
+
   current_data->addPointer( INT_CS_T, cs);
   delete $1;
 }
@@ -596,7 +621,10 @@ PARAMETER_INT_YY
 REF_PARAMETER_INT_YY
 {
   int pid=current_data->getFormalParameterId( $1->symbol);
-  void *cs = createCounterConstraint( pid, DUMMY_ID, NE, 0 );
+  Argument first( REF_PARAMETER_ARG, pid);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second, NE, rhs);
   current_data->addPointer( INT_CS_T,  cs );
   delete $1;
 }
@@ -605,7 +633,11 @@ REF_PARAMETER_INT_YY
 '!' PARAMETER_INT_YY
 {
   int pid=current_data->getFormalParameterId( $2->symbol);
-  void *cs=createCounterConstraint( DUMMY_ID, DUMMY_ID, EQ, 0, pid );
+
+  Argument first( PARAMETER_ARG, pid);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second, EQ, rhs);
   current_data->addPointer( INT_CS_T, cs);
   delete $2;
 
@@ -614,7 +646,10 @@ REF_PARAMETER_INT_YY
 '!' REF_PARAMETER_INT_YY
 {
   int pid=current_data->getFormalParameterId( $2->symbol);
-  void *cs = createCounterConstraint( pid, DUMMY_ID, EQ, 0 );
+  Argument first( REF_PARAMETER_ARG, pid);
+  Argument second( EMPTY_ARG, 0);
+  Argument rhs( CONST_ARG, 0);
+  void* cs = createConstraint( first, second, EQ, rhs);
   current_data->addPointer( INT_CS_T,  cs );
   delete $2;
 }
@@ -652,56 +687,74 @@ clock_identifier '=' const_expression
 |
 counter_identifier '=' const_expression
 {
-  CounterAction   *action=new CounterAction(ASSIGNMENT_ACTION, RHS_CONSTANT_T,  $1, $3);
+  Argument lhs(COUNTER_ARG, $1 );
+  Argument rhs( CONST_ARG, $3);
+  CounterAction   *action=new CounterAction(lhs, ASSIGNMENT_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier '=' counter_identifier
 {
-  CounterAction *action =new CounterAction( ASSIGNMENT_ACTION, RHS_COUNTER_T, $1, $3 );
+  Argument lhs(COUNTER_ARG, $1 );
+  Argument rhs( COUNTER_ARG, $3);
+  CounterAction *action =new CounterAction(lhs, ASSIGNMENT_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier '='  parameter_identifier
 {
-  CounterAction *action =new CounterAction( ASSIGNMENT_ACTION, RHS_PARAMETER_T , $1, $3 );
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( PARAMETER_ARG, $3);
+  CounterAction *action =new CounterAction(lhs, ASSIGNMENT_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN const_expression
 {
-  CounterAction   *action=new CounterAction(SELF_INC_ACTION, RHS_CONSTANT_T,  $1, $3);
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( CONST_ARG, $3);
+  CounterAction   *action=new CounterAction(lhs, SELF_INC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN counter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_INC_ACTION, RHS_COUNTER_T, $1, $3 );
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( COUNTER_ARG, $3);
+  CounterAction *action =new CounterAction(lhs, SELF_INC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN  parameter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_INC_ACTION, RHS_PARAMETER_T , $1, $3 );
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( PARAMETER_ARG, $3);
+  CounterAction *action =new CounterAction(lhs, SELF_INC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 
 |
 counter_identifier SUB_ASSIGN const_expression
 {
-  CounterAction   *action=new CounterAction(SELF_DEC_ACTION, RHS_CONSTANT_T,  $1, $3);
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( CONST_ARG, $3);
+  CounterAction   *action=new CounterAction(lhs, SELF_DEC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier SUB_ASSIGN counter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_DEC_ACTION, RHS_COUNTER_T, $1, $3 );
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( COUNTER_ARG, $3);
+  CounterAction *action =new CounterAction(lhs, SELF_DEC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier SUB_ASSIGN  parameter_identifier
 {
-  CounterAction *action =new CounterAction( SELF_DEC_ACTION, RHS_PARAMETER_T , $1, $3 );
+  Argument lhs( COUNTER_ARG, $1);
+  Argument rhs( PARAMETER_ARG, $3);
+  CounterAction *action =new CounterAction(lhs, SELF_DEC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 
@@ -884,10 +937,8 @@ ARGUMENT  formal_argument_list
   for(auto e: *($2)){
     
     TYPE_T type=get_formal_paramter_type(e.type );
-
     current_data->addValue(type, e.name  );
-
-        
+    
     current_data->addValue(FORMAL_PARAMETER_T , e.name, new FormalParameterItem(e));
   }
   delete $2;
@@ -901,7 +952,7 @@ system_declaration
   for( size_t i=0; i< $2->size( ); i++){
     string name=(*$2)[ i];
     
-    if(!current_data->hasValue(AUTOMATA_T, name  )){
+    if(!current_data->hasPointer(AUTOMATA_T, name  )){
       TaDec* temp=new TaDec( );
       temp->has_parameter=false;
       temp->name= name;
@@ -909,6 +960,7 @@ system_declaration
       sys->timed_automata_list.push_back(temp );
     }else{
       void* ta_dec=current_data->getPointer(AUTOMATA_T, name );
+      
       sys->timed_automata_list.push_back((TaDec*)ta_dec );
     }
   }

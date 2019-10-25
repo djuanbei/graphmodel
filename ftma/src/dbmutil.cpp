@@ -103,19 +103,19 @@ TYPE_T get_formal_paramter_type( TYPE_T type ) {
     return REF_PARAMETER_CHAN_T;
   }
 
-  if ( URGENT_CHAN_T == type || CONST_URGENT_CHAN_T ) {
+  if ( URGENT_CHAN_T == type || CONST_URGENT_CHAN_T == type ) {
     return PARAMETER_CHAN_T;
   }
 
-  if ( REF_URGENT_CHAN_T == type || CONST_REF_URGENT_CHAN_T ) {
+  if ( REF_URGENT_CHAN_T == type || CONST_REF_URGENT_CHAN_T == type ) {
     return REF_PARAMETER_CHAN_T;
   }
 
-  if ( BROADCAST_CHAN_T == type || CONST_BROADCAST_CHAN_T ) {
+  if ( BROADCAST_CHAN_T == type || CONST_BROADCAST_CHAN_T == type ) {
     return PARAMETER_CHAN_T;
   }
 
-  if ( REF_BROADCAST_CHAN_T == type || CONST_BROADCAST_CHAN_T ) {
+  if ( REF_BROADCAST_CHAN_T == type || CONST_BROADCAST_CHAN_T == type ) {
     return REF_PARAMETER_CHAN_T;
   }
 

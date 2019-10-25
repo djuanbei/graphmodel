@@ -201,7 +201,7 @@ int check_type()
 
    
   TYPE_T type=current_data->getType(sym);
-
+  cout<<"lex: "<<getTypeStr( type)<<" "<<sym<<endl;
   if(type!=NO_T){
 
     if(SELF_DEF_T==type){
@@ -229,11 +229,6 @@ LEX_RETURN(PARAMETER_CLOCK);
 
 LEX_RETURN(REF_PARAMETER_CLOCK);
 
-//LEX_RETURN(BOOL);
-
-//LEX_RETURN(PARAMETER_BOOL);
-
-//LEX_RETURN(REF_PARAMETER_BOOL);
 
 LEX_RETURN(CHAN);
 
@@ -241,8 +236,7 @@ LEX_RETURN(REF_PARAMETER_CHAN);
 
 LEX_RETURN(TEMPLATE);
 
-LEX_RETURN(AUTOMATA);
-
+LEX_RETURN(AUTOMATA );
 
 default:
     return IDENTIFIER;

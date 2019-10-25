@@ -128,6 +128,26 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
+enum ARGUMENT_TYPE {
+  CONST_ARG,
+  COUNTER_ARG,
+  PARAMETER_ARG,
+  REF_PARAMETER_ARG,
+  EMPTY_ARG
+};
+
+struct Argument {
+  ARGUMENT_TYPE type;
+  int           value;
+  Argument()
+      : type( CONST_ARG )
+      , value( 0 ) {}
+  Argument( ARGUMENT_TYPE t, int v ) {
+    type  = t;
+    value = v;
+  }
+};
+
 template <typename T>
 bool executeOp( const T &lhs, COMP_OPERATOR op, const T &rhs ) {
 

@@ -133,13 +133,53 @@ private:
     return out;
   }
 
-  int           ref_parameter_id;
+  //  int           ref_parameter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
   int           rhs;
   friend class InstanceFactory;
 };
 
+class OneRefCounterConstraint : public CounterConstraint {
+
+public:
+  /**
+   * @return true if  the vlaue corresponding counter op rhs, false otherwise.
+   */
+  bool operator()( const int *counter_value ) const {
+    return executeOp( counter_value[ global_counter_id ], op, rhs );
+  }
+  void globalUpdate( const vector<int> &id_map,
+                     const vector<int> &parameter_value ) {
+    global_counter_id = id_map[ ref_id ];
+  }
+
+protected:
+  ~OneRefCounterConstraint() {}
+
+private:
+  OneRefCounterConstraint( int out_ref_id, COMP_OPERATOR opp, int right_side ) {
+    ref_id = out_ref_id;
+    op     = opp;
+    rhs    = right_side;
+  }
+
+  CounterConstraint *copy() const {
+
+    return new OneRefCounterConstraint( ref_id, op, rhs );
+  }
+  ostream &dump( ostream &out ) const {
+    out << "counter_" << global_counter_id << setw( OP_OUT_WIDTH )
+        << getOpStr( op ) << setw( VALUE_OUT_WIDTH ) << rhs;
+    return out;
+  }
+
+  int           ref_id;
+  int           global_counter_id;
+  COMP_OPERATOR op;
+  int           rhs;
+  friend class InstanceFactory;
+};
 /**
  *  Form of counter - parameter op rhs
  */

@@ -45,6 +45,9 @@ private:
   regist_factory_method( OneParameterConstraint,
                          ( int parameter_id, COMP_OPERATOR op, int rhs ),
                          ( parameter_id, op, rhs ), CounterConstraint );
+  regist_factory_method( OneRefCounterConstraint,
+                         ( int out_ref_id, COMP_OPERATOR opp, int right_side ),
+                         ( out_ref_id, opp, right_side ), CounterConstraint );
 
   regist_factory_method( CounterParameterConstraint,
                          ( int counter_id, int parameter_id, COMP_OPERATOR op,
@@ -96,36 +99,18 @@ public:
 
   friend CounterAction *copy( const CounterAction *other );
 
-  friend CounterParameterConstraint *
-      createCounterParameterConstraint( int counter_id, int parameter_id,
-                                        COMP_OPERATOR op, int rhs );
 
-  friend void *createParameterConstraint( const int     parameter_id1,
-                                          const int     parameter_id2,
-                                          COMP_OPERATOR op, const int rhs );
 
-  friend void *createCounterConstraint( const int counter_id1,
-                                        const int counter_id2, COMP_OPERATOR op,
-                                        const int rhs, int pid );
+  friend void *createConstraint( Argument first, Argument second,
+                                 COMP_OPERATOR op, Argument rhs );
 
-  // friend SimpleCounterAction *createSimpleCounterAction( int counter_id,
-  //                                                        int value );
 
-  // friend SimpleCounterPAction *createSimpleCounterPAction( int counter_id,
-  //                                                          int eparameter_id
-  //                                                          );
-
-  // friend DefaultCAction *createDefaultCAction(
-  //     vector<pair<int, vector<pair<int, int>>>> &relations1 );
 
 private:
   PointerData pdata;
 };
 
-CounterParameterConstraint *createCounterParameterConstraint( int counter_id,
-                                                              int parameter_id,
-                                                              COMP_OPERATOR op,
-                                                              int rhs );
+
 
 CounterConstraint *copy( CounterConstraint *other );
 
@@ -134,31 +119,21 @@ CounterParameterConstraint *negCounterParameterConstraint( int parameter_id,
                                                            COMP_OPERATOR op,
                                                            int           rhs );
 
-/**
- * @brief parameter_id1 - parameter_id2 op rhs
- *
- * @param parameter_id1
- * @param parameter_id2
- * @param rhs
- *
- * @return
- */
-void *createParameterConstraint( const int parameter_id1,
-                                 const int parameter_id2, COMP_OPERATOR op,
-                                 const int rhs );
+
 
 /**
- * @brief counter_id1 - counter_id2 op rhs
+ * @brief first -second op rhs
  *
- * @param counter_id1
- * @param counter_id2
+ * @param first
+ * @param second
  * @param op
  * @param rhs
  *
  * @return
  */
-void *createCounterConstraint( const int counter_id1, const int counter_id2,
-                               COMP_OPERATOR op, const int rhs, int pid = -10 );
+void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
+                        Argument rhs );
+
 
 } // namespace graphsat
 

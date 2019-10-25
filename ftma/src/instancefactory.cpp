@@ -2,10 +2,7 @@
 #include "util/instancefactory.h"
 namespace graphsat {
 
-regist_to_factory( CounterParameterConstraint,
-                   ( int counter_id, int parameter_id, COMP_OPERATOR op,
-                     int rhs ),
-                   ( counter_id, parameter_id, op, rhs ) );
+
 
 CounterConstraint *copy( CounterConstraint *other ) {
   return InstanceFactory::getInstance().copy( other );
@@ -15,61 +12,54 @@ CounterAction *copy( const CounterAction *other ) {
   return InstanceFactory::getInstance().copy( other );
 }
 
-CounterParameterConstraint *negCounterParameterConstraint( int parameter_id,
-                                                           int counter_id,
-                                                           COMP_OPERATOR op,
-                                                           int           rhs ) {
-  COMP_OPERATOR nop = negation( op );
-  return createCounterParameterConstraint( counter_id, parameter_id, nop,
-                                           rhs * -1 );
-}
 
-void *createParameterConstraint( const int parameter_id1,
-                                 const int parameter_id2, COMP_OPERATOR op,
-                                 const int rhs ) {
 
-  if ( parameter_id1 > -1 && parameter_id2 ) {
-    return InstanceFactory::getInstance().createTwoParameterConstraint(
-        parameter_id1, parameter_id2, op, rhs );
-  }
+void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
+                        Argument rhs ) {
 
-  if ( parameter_id1 > -1 ) {
-    return InstanceFactory::getInstance().createOneParameterConstraint(
-        parameter_id1, op, rhs );
-  }
-  if ( parameter_id2 > -1 ) {
-    COMP_OPERATOR nop = negation( op );
-    return InstanceFactory::getInstance().createOneParameterConstraint(
-        parameter_id2, nop, rhs * -1 );
-  }
-  assert( false );
-  return NULL;
-}
-
-void *createCounterConstraint( const int counter_id1, const int counter_id2,
-                               COMP_OPERATOR op, const int rhs, int pid ) {
-
-  if ( counter_id1 > -1 && counter_id2 > -1 ) {
+  if ( first.type == COUNTER_ARG && second.type == COUNTER_ARG &&
+       rhs.type == CONST_ARG ) {
     return InstanceFactory::getInstance().createTwoCounterConstraint(
-        counter_id1, counter_id2, op, rhs, pid );
+        first.value, second.value, op, rhs.value, 0 );
   }
 
-  if ( counter_id1 > -1 ) {
-    return InstanceFactory::getInstance().createOneCounterConstraint(
-        counter_id1, op, rhs );
+  if ( first.type == PARAMETER_ARG && second.type == PARAMETER_ARG &&
+       rhs.type == CONST_ARG ) {
+    return InstanceFactory::getInstance().createTwoParameterConstraint(
+        first.value, second.value, op, rhs.value );
   }
-  if ( counter_id2 > -1 ) {
+
+  if ( first.type == COUNTER_ARG && second.type == PARAMETER_ARG &&
+       rhs.type == CONST_ARG ) {
+    return InstanceFactory::getInstance().createCounterParameterConstraint(
+        first.value, second.value, op, rhs.value );
+  }
+  if ( first.type == PARAMETER_ARG && second.type == COUNTER_ARG &&
+       rhs.type == CONST_ARG ) {
+    COMP_OPERATOR nop = negation( op );
+    return InstanceFactory::getInstance().createCounterParameterConstraint(
+        second.value, first.value, nop, rhs.value * -1 );
+  }
+  if ( first.type == COUNTER_ARG && second.type == EMPTY_ARG &&
+       rhs.type == CONST_ARG ) {
+    return InstanceFactory::getInstance().createOneCounterConstraint(
+        first.value, op, rhs.value );
+  }
+
+  if ( second.type == COUNTER_ARG && first.type == EMPTY_ARG &&
+       rhs.type == CONST_ARG ) {
     COMP_OPERATOR nop = negation( op );
     return InstanceFactory::getInstance().createOneCounterConstraint(
-        counter_id2, nop, rhs * -1 );
+        second.value, nop, -1 * rhs.value );
   }
-  if ( pid > -1 ) {
-    return InstanceFactory::getInstance().createOneParameterConstraint( pid, op,
-                                                                        rhs );
+  if ( first.type == REF_PARAMETER_ARG && second.type == EMPTY_ARG &&
+       rhs.type == CONST_ARG ) {
+    return InstanceFactory::getInstance().createOneRefCounterConstraint(
+        first.value, op, rhs.value );
   }
 
   assert( false );
-  return NULL;
 }
+
 
 } // namespace graphsat
