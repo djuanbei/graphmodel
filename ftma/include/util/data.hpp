@@ -128,6 +128,10 @@ public:
   }
 
   vector<T> getValue( const int type, const string &name ) const {
+    if( values.find( type)==values.end( )){
+      vector<T> dummy;
+      return dummy;
+    }
 
     for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
       if ( values.at( type )[ i ].first == name ) {

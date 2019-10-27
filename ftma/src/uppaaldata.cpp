@@ -8,7 +8,8 @@ UppaalData::UppaalData() {
 
   parent = NULL;
 
-  next_counter_id = next_channel_id = 0;
+  next_counter_id =0;
+  next_channel_id = 1; //the channel starts with 1
 
   base_types.push_back( INT_T );
   base_types.push_back( PARAMETER_INT_T );

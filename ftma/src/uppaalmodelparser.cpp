@@ -298,6 +298,38 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
           template_data.clear( RESET_T );
 
         } else if ( SYNCHRONISATION_STR == kind ) {
+          vector<int> chan_actions1=  template_data.getValue(CHAN_ACTION_T);
+
+          for( auto e: chan_actions1 ){
+            Channel chan;
+            if( e>0){
+              chan.action=CHANNEL_SEND;
+              chan.gloabl_id=e;
+            }else{
+              chan.action=CHANNEL_RECEIVE;
+              chan.gloabl_id=-e;
+            }
+            transition.setChannel( chan);
+          }
+          vector<int> chan_actions2=  template_data.getValue(REF_CHAN_ACTION_T);
+
+          for( auto e: chan_actions2 ){
+            Channel chan;
+            chan.is_ref=true;
+            if( e>0){
+              chan.action=CHANNEL_SEND;
+              chan.local_id=e;
+            }else{
+              chan.action=CHANNEL_RECEIVE;
+              chan.local_id=-e;
+            }
+            transition.setChannel( chan);
+          }
+          assert(chan_actions1.size( )+chan_actions2.size( )<2 );
+          
+          template_data.clear( CHAN_ACTION_T );
+          template_data.clear( REF_CHAN_ACTION_T );
+          assert( false);
           cout << kind << ": " << ( *llit )->getValue() << endl;
         }
       }

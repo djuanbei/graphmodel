@@ -163,7 +163,11 @@ public:
   vector<pair<string, vector<int>>> getValue( const TYPE_T type ) const {
     return int_values.getValue( type );
   }
-
+  
+  vector<int> getValue(const TYPE_T type ){
+    return int_values.getValue( type, getTypeStr( type));
+  }
+  
   void addValue( const TYPE_T type, const string &name, void *v ) {
     point_values.addValue( type, name, v );
   }
