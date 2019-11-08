@@ -22,8 +22,8 @@ using std::string;
 using std::vector;
 
 struct FormalParameterItem {
-  FormalParameterItem() { is_ref = false; }
-  bool   is_ref;
+  FormalParameterItem() {  }
+  //  bool   is_ref;
   TYPE_T type;
   int    id;
   string name;
@@ -41,7 +41,7 @@ struct TaDec {
   bool                      has_parameter;
   string                    name;
   string                    tmt_name;
-  vector<RealParameterItem> param_list;
+  vector<RealParameterItem> real_param_list;
   TaDec()
       : has_parameter( true ) {
     name = "";
@@ -117,10 +117,10 @@ public:
   }
 
   void setValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
-    if( CHAN_T==type){
-      getGlobalChannelId( name);
-    }else if( INT_T==type){
-      getGlobalCounterId( name);
+    if ( CHAN_T == type ) {
+      getGlobalChannelId( name );
+    } else if ( INT_T == type ) {
+      getGlobalCounterId( name );
     }
     int_values.setValue( type, name, v );
   }

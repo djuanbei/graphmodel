@@ -273,17 +273,8 @@ public:
   }
   void setCounterNum( int n ) { counters.resize( n ); }
   void setCounter( int id, Counter c ) { counters[ id ] = c; }
-  void setChannelNum( int n) {
-    channels.resize( n);
-  }
-  void setChannel( int id, Channel ch){
-    channels[ id]=ch;
-  }
-
-  // TAS_t &operator+=( Channel &ch ) {
-  //   channels.push_back( ch );
-  //   return *this;
-  // }
+  void setChannelNum( int n ) { channels.resize( n ); }
+  void setChannel( int id, Channel ch ) { channels[ id ] = ch; }
 
   int             getComponentNum() const { return (int) tas.size(); }
   StateManager<C> getStateManager() const {

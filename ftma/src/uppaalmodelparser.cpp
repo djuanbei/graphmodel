@@ -91,86 +91,67 @@ int UppaalParser::parseTemplate( child_type templates ) {
 int UppaalParser::parseSystem( XML_P system ) {
 
   assert( NULL != system );
-
   string content = system->getValue();
-
   parseProblem( content, &system_data );
-
   setCounter();
-  // TODO:
-  setChannel( );
+  setChannel();
 
   SystemDec *sys_dec = (SystemDec *) system_data.getPointer( SYSTEM_T );
   /**
    Exactly one system declaration
    */
+  for ( auto component : sys_dec->timed_automata_list ) {
 
-  for ( size_t i = 0; i < sys_dec->timed_automata_list.size(); i++ ) {
+    auto formal__parameter_list =
+        template_map[ component->tmt_name ].getPoints( FORMAL_PARAMETER_T );
 
-    string template_name = sys_dec->timed_automata_list[ i ]->tmt_name;
-
-    vector<RealParameterItem> param_list =
-        sys_dec->timed_automata_list[ i ]->param_list;
-
-    vector<pair<string, vector<void *>>> template_parameter_vec =
-        template_map[ template_name ].getPoints( FORMAL_PARAMETER_T );
-
-    int parameter_num = (int) template_parameter_vec.size();
-
-    Parameter parameter_template( parameter_num );
-
-    if ( template_parameter_vec.empty() ) {
-      Parameter parameter = parameter_template;
-
-      typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
-                                    parameter );
-      sys += tma;
-    }
+    Parameter parameter( formal__parameter_list.size() );
     /**
      * System declaration the corresponding  automation without parameter.
      */
-    if ( sys_dec->timed_automata_list[ i ]->has_parameter ) {
-      Parameter parameter = parameter_template;
-      for ( int j = 0; j < parameter_num; j++ ) {
-        FormalParameterItem *p =
-            (FormalParameterItem *) template_parameter_vec[ j ].second[ 0 ];
-        if ( p->is_ref ) {
-          if ( p->type == INT_T ) {
-            parameter.setCounterMap( j, param_list[ j ].id );
-          } else if ( p->type == CHAN_T ) {
-            parameter.setChanMap( j, param_list[ j ].id );
-          } else if ( p->type == CLOCK_T ) {
-            // TODO : add clock parameter support
-            assert( false );
-          }
-
-        } else {
-          if ( p->type == INT_T ) {
-            parameter.setParameterMap( j, param_list[ j ].id );
-          } else {
-            assert( false );
-          }
+    if ( formal__parameter_list.empty() ) {
+      typename INT_TAS_t::TA_t tma( &template_map[ component->tmt_name ].tat,
+                                    parameter );
+      sys += tma;
+    } else if ( component->has_parameter ) {
+      int parameter_id = 0;
+      for ( auto formal__parameter : formal__parameter_list ) {
+        const FormalParameterItem *param_item =
+            (FormalParameterItem *) formal__parameter.second[ 0 ];
+        if ( ( param_item->type == REF_INT_T ) || ( param_item->type == CONST_REF_INT_T ) ) {
+          parameter.setCounterMap(
+              parameter_id, component->real_param_list[ parameter_id ].id );
+        } else if ( ( param_item->type == REF_CHAN_T ) ||
+                    ( param_item->type == CONST_REF_CHAN_T ) ) {
+          parameter.setChanMap(
+              parameter_id, component->real_param_list[ parameter_id ].id );
+        } else if ( param_item->type == CLOCK_T ) {
+          // TODO : add clock parameter support
+          assert( false );
         }
+        else if ( param_item->type == INT_T ) {
+          parameter.setParameterMap(
+              parameter_id, component->real_param_list[ parameter_id ].id );
+        } else {
+          assert( false );
+        }
+        parameter_id++;
       }
-      typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+      typename INT_TAS_t::TA_t tma( &template_map[ component->tmt_name ].tat,
                                     parameter );
       sys += tma;
 
     } else {
-
       // If template has paramters, then the number of parameters is exactly
       // one.
       // Only has one paramter to give the number of instances of this template
-      assert( 1 == template_parameter_vec.size() );
-
+      assert( 1 == formal__parameter_list.size() );
       const vector<int> &iarray = system_data.getIntArray(
-          ( (FormalParameterItem *) template_parameter_vec[ 0 ].second[ 0 ] )
+          ( (FormalParameterItem *) formal__parameter_list[ 0 ].second[ 0 ] )
               ->type_name );
       for ( auto e : iarray ) {
-        Parameter parameter = parameter_template;
-
         parameter.setParameterMap( 0, e );
-        typename INT_TAS_t::TA_t tma( &template_map[ template_name ].tat,
+        typename INT_TAS_t::TA_t tma( &template_map[ component->tmt_name ].tat,
                                       parameter );
         sys += tma;
       }
@@ -336,7 +317,7 @@ void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
 
 int UppaalParser::setCounter() {
   int counter_num = system_data.getTotalCounterNum();
-  
+
   sys.setCounterNum( counter_num );
   for ( auto e : system_data.counter_id_map ) {
     Counter counter( 0, MAX_COUNTER_VALUE );
@@ -355,22 +336,22 @@ int UppaalParser::setCounter() {
   }
   return 0;
 }
-int UppaalParser::setChannel( ){
-  int channel_num= system_data.getTotalChannelNum( );
-  sys.setChannelNum( channel_num);
-  for ( auto e : system_data.channel_id_map){
-    int v=system_data.getValue(CHAN_T, e.first );
+int UppaalParser::setChannel() {
+  int channel_num = system_data.getTotalChannelNum();
+  sys.setChannelNum( channel_num );
+  for ( auto e : system_data.channel_id_map ) {
+    int     v = system_data.getValue( CHAN_T, e.first );
     Channel ch;
-    ch.type=(CHANNEL_TYPE)v;
-    sys.setChannel( e.second, ch);
+    ch.type = (CHANNEL_TYPE) v;
+    sys.setChannel( e.second, ch );
   }
 
-  for( auto temp: template_map){
-    for ( auto e: temp.second.channel_id_map){
-      int v=temp.second.getValue( CHAN_T, e.first);
+  for ( auto temp : template_map ) {
+    for ( auto e : temp.second.channel_id_map ) {
+      int     v = temp.second.getValue( CHAN_T, e.first );
       Channel ch;
-      ch.type=(CHANNEL_TYPE)v;
-      sys.setChannel( e.second, ch);
+      ch.type = (CHANNEL_TYPE) v;
+      sys.setChannel( e.second, ch );
     }
   }
   return 0;

@@ -243,7 +243,6 @@ type_specifier IDENTIFIER
 {
   $$=new vector<FormalParameterItem> ( );
   FormalParameterItem elem;
-  elem.is_ref=isRefType($1);
   elem.name=$2->symbol;
   elem.type_name=getTypeStr( $1);
   elem.type=$1;
@@ -255,7 +254,6 @@ formal_argument_list ',' type_specifier IDENTIFIER
 {
   $$=$1;
   FormalParameterItem elem;
-  elem.is_ref=isRefType($3);
   elem.name=$4->symbol;
   elem.type_name=getTypeStr( $3);
   elem.type=$3;
@@ -656,7 +654,6 @@ REF_PARAMETER_INT_YY
 REF_PARAMETER_CHAN_YY '?'
 {
   int pid=current_data->getFormalParameterId( $1->symbol);
-
   current_data->addValue(REF_CHAN_ACTION_T, -pid );
   delete $1;
   //TODO:   send signal
@@ -764,7 +761,7 @@ IDENTIFIER '=' TEMPLATE_YY '(' real_argument_list ')' ';'
   TaDec * ta=new TaDec( );
   ta->name= $1->symbol;
   ta->tmt_name=$3->symbol;
-  ta->param_list.insert(ta->param_list.end( ), $5->begin( ), $5->end( ) );
+  ta->real_param_list.insert(ta->real_param_list.end( ), $5->begin( ), $5->end( ) );
   current_data->addValue(AUTOMATA_T, $1->symbol,  ta);
   
   delete $1;
