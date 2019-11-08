@@ -102,34 +102,33 @@ int UppaalParser::parseSystem( XML_P system ) {
    */
   for ( auto component : sys_dec->timed_automata_list ) {
 
-    auto formal__parameter_list =
+    auto formal_parameter_list =
         template_map[ component->tmt_name ].getPoints( FORMAL_PARAMETER_T );
 
-    Parameter parameter( formal__parameter_list.size() );
+    Parameter parameter( formal_parameter_list.size() );
     /**
      * System declaration the corresponding  automation without parameter.
      */
-    if ( formal__parameter_list.empty() ) {
+    if ( formal_parameter_list.empty() ) {
       typename INT_TAS_t::TA_t tma( &template_map[ component->tmt_name ].tat,
                                     parameter );
       sys += tma;
     } else if ( component->has_parameter ) {
       int parameter_id = 0;
-      for ( auto formal__parameter : formal__parameter_list ) {
+      for ( auto formal__parameter : formal_parameter_list ) {
         const FormalParameterItem *param_item =
             (FormalParameterItem *) formal__parameter.second[ 0 ];
-        if ( ( param_item->type == REF_INT_T ) || ( param_item->type == CONST_REF_INT_T ) ) {
+        if ( ( param_item->type == REF_INT_T ) ||
+             ( param_item->type == CONST_REF_INT_T ) ) {
           parameter.setCounterMap(
               parameter_id, component->real_param_list[ parameter_id ].id );
-        } else if ( ( param_item->type == REF_CHAN_T ) ||
-                    ( param_item->type == CONST_REF_CHAN_T ) ) {
-          parameter.setChanMap(
-              parameter_id, component->real_param_list[ parameter_id ].id );
+        } else if ( isRefChan( param_item->type ) ) {
+          parameter.setChanMap( parameter_id,
+                                component->real_param_list[ parameter_id ].id );
         } else if ( param_item->type == CLOCK_T ) {
           // TODO : add clock parameter support
           assert( false );
-        }
-        else if ( param_item->type == INT_T ) {
+        } else if ( param_item->type == INT_T ) {
           parameter.setParameterMap(
               parameter_id, component->real_param_list[ parameter_id ].id );
         } else {
@@ -145,9 +144,9 @@ int UppaalParser::parseSystem( XML_P system ) {
       // If template has paramters, then the number of parameters is exactly
       // one.
       // Only has one paramter to give the number of instances of this template
-      assert( 1 == formal__parameter_list.size() );
+      assert( 1 == formal_parameter_list.size() );
       const vector<int> &iarray = system_data.getIntArray(
-          ( (FormalParameterItem *) formal__parameter_list[ 0 ].second[ 0 ] )
+          ( (FormalParameterItem *) formal_parameter_list[ 0 ].second[ 0 ] )
               ->type_name );
       for ( auto e : iarray ) {
         parameter.setParameterMap( 0, e );
@@ -280,6 +279,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
           template_data.clear( RESET_T );
 
         } else if ( SYNCHRONISATION_STR == kind ) {
+
           string sync_statement = ( *llit )->getValue();
           parseLabel( template_data, sync_statement );
 

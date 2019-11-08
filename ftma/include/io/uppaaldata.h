@@ -22,7 +22,7 @@ using std::string;
 using std::vector;
 
 struct FormalParameterItem {
-  FormalParameterItem() {  }
+  FormalParameterItem() {}
   //  bool   is_ref;
   TYPE_T type;
   int    id;
@@ -117,12 +117,13 @@ public:
   }
 
   void setValue( const TYPE_T type, const string &name, int v = UN_DEFINE ) {
+
+    int_values.setValue( type, name, v );
     if ( CHAN_T == type ) {
       getGlobalChannelId( name );
     } else if ( INT_T == type ) {
       getGlobalCounterId( name );
     }
-    int_values.setValue( type, name, v );
   }
 
   int getTypeNum( const TYPE_T type ) const {

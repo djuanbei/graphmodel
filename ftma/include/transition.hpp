@@ -50,9 +50,7 @@ public:
 
     for ( auto e : other.counter_cons ) {
       CounterConstraint *dummy = copy( e );
-
       dummy->globalUpdate( param.getCounterMap(), param.getParameterMap() );
-
       counter_cons.push_back( dummy );
     }
 
@@ -107,9 +105,9 @@ public:
 
   void setChannel( const Channel &ch ) {
     channel = ch;
-    if ( ch.gloabl_id > NO_CHANNEL ) {
-      has_channel = true;
-    }
+    //  if ( ch.gloabl_id > NO_CHANNEL ) {
+    has_channel = true;
+    //}
   }
 
   const Channel &getChannel() const { return channel; }

@@ -22,7 +22,13 @@
 
 #define PRINT_STATE_MACRO                                                      \
   for ( int i = 0; i < component_num; i++ ) {                                  \
-    cout << setw( LOC_OUT_WIDTH ) << state[ i ];                               \
+    if ( state[ i + component_num ] == NO_CHANNEL )                            \
+      cout << setw( LOC_OUT_WIDTH ) << state[ i ];                             \
+    else {                                                                     \
+      int block_source;                                                        \
+      sys.tas[ i ].ta_tempate->graph.findSrc( state[ i ], block_source );      \
+      cout << setw( LOC_OUT_WIDTH ) << block_source;                           \
+    }                                                                          \
   }                                                                            \
   cout << endl;                                                                \
   manager.getClockManager().dump( cout, manager.getDBM( state ) ) << endl;
@@ -175,7 +181,7 @@ COMP_OPERATOR negation( COMP_OPERATOR op );
 enum TYPE_T {
   TYPE_TYPE( INT_T ),
   TYPE_TYPE( CLOCK_T ),
-  //  TYPE_TYPE( BOOL_T ),
+
   TYPE_TYPE( CHAN_T ),
   TYPE_TYPE( URGENT_CHAN_T ),
   TYPE_TYPE( BROADCAST_CHAN_T ),
@@ -185,7 +191,7 @@ enum TYPE_T {
   AUTOMATA_T,
   LOCATION_T,
   FORMAL_PARAMETER_T,
-  //  REF_PARAMETER_T,
+
   CLOCK_CS_T,
   INT_CS_T,
   INT_UPDATE_T,
@@ -200,6 +206,8 @@ enum TYPE_T {
 string getTypeStr( TYPE_T type );
 
 TYPE_T base_type( TYPE_T type );
+
+bool isRefChan( TYPE_T type );
 
 TYPE_T get_formal_paramter_type( TYPE_T type );
 

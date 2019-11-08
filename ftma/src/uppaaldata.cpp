@@ -59,6 +59,9 @@ bool UppaalData::isConstant( const string &name ) const {
   for ( vector<TYPE_T>::const_iterator it = base_types.begin();
         it != base_types.end(); it++ ) {
     if ( hasValue( *it, name ) ) {
+      if ( *it == CHAN_T ) { // every channel  has value as its type
+        continue;
+      }
 
       if ( getValue( *it, name ) == UN_DEFINE ) {
         return false;

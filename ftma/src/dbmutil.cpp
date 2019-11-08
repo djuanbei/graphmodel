@@ -41,7 +41,6 @@ string getTypeStr( TYPE_T type ) {
   switch ( type ) {
     TYPE_STR( INT_T );
     TYPE_STR( CLOCK_T );
-    //    TYPE_STR( BOOL_T );
     TYPE_STR( CHAN_T );
     TYPE_STR( URGENT_CHAN_T );
     TYPE_STR( BROADCAST_CHAN_T );
@@ -55,8 +54,6 @@ string getTypeStr( TYPE_T type ) {
     ENUM_ITEM_STR( LOCATION_T );
 
     ENUM_ITEM_STR( FORMAL_PARAMETER_T );
-
-    //    ENUM_ITEM_STR( REF_PARAMETER_T );
 
     ENUM_ITEM_STR( CLOCK_CS_T );
 
@@ -80,6 +77,14 @@ TYPE_T base_type( TYPE_T type ) {
   return ( TYPE_T )( ( type / TYPE_FAMILY_LEN ) * TYPE_FAMILY_LEN );
 }
 
+bool isRefChan( TYPE_T type ) {
+  TYPE_T base_t = base_type( type );
+  if ( base_t != CHAN_T && base_t != URGENT_CHAN_T &&
+       base_t != BROADCAST_CHAN_T ) {
+    return false;
+  }
+  return isRefType( type );
+}
 TYPE_T get_formal_paramter_type( TYPE_T type ) {
   if ( INT_T == type || CONST_INT_T == type ) {
     return PARAMETER_INT_T;

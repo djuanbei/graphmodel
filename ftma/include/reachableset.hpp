@@ -99,14 +99,14 @@ public:
     return UNKOWN;
   }
 
-  bool oneStep( const Property *prop, C_t *state ) {
+  bool oneDiscreteStep( const Property *prop, C_t *state ) {
 #ifdef DRAW_GRAPH
     current_parent++;
 #endif
 
     PRINT_STATE_MACRO;
 
-    if ( state[ manager.getFreezeLocation() ] > 0 ) {
+    if ( manager.isFreeze( state ) ) {
       for ( int component = 0; component < component_num; component++ ) {
         if ( manager.isCommitComp( component, state ) ) {
           return oneComponent( component, prop, state );
@@ -502,12 +502,22 @@ private:
     bool is_commit = sys.tas[ component ].locations[ target ].isCommit();
 
     bool re_bool = false;
-    if ( 0 == state[ manager.getFreezeLocation() ] ) {
-      for ( int comp_id = 0; comp_id < component_num; comp_id++ ) {
-        sys.tas[ comp_id ]
-            .locations[ manager.getLoc( comp_id, state ) ]
-            .employInvariants( manager.getClockManager(),
-                               manager.getDBM( state ) );
+    if ( !manager.isFreeze( state ) ) {
+      for ( int component_id = 0; component_id < component_num;
+            component_id++ ) {
+
+        if ( manager.withoutChannel( component_id, state ) ) {
+          sys.tas[ component_id ]
+              .locations[ manager.getLoc( component_id, state ) ]
+              .employInvariants( manager.getClockManager(),
+                                 manager.getDBM( state ) );
+        } else {
+          int block_source;
+          sys.tas[ component_id ].ta_tempate->graph.findSrc(
+              state[ component_id ], block_source );
+          sys.tas[ component_id ].locations[ block_source ].employInvariants(
+              manager.getClockManager(), manager.getDBM( state ) );
+        }
       }
     }
     if ( manager.hasDiffCons() ) {

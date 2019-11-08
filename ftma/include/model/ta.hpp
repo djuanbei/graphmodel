@@ -294,10 +294,14 @@ public:
     for ( size_t i = 0; i < tas.size(); i++ ) {
       node_n.push_back( tas[ i ].ta_tempate->graph.getVertex_num() );
     }
+    vector<int> link_num;
+    for ( auto e : tas ) {
+      link_num.push_back( e.ta_tempate->graph.getLink_num() );
+    }
 
     StateManager<C> re( (int) tas.size(), counters, clock_num,
                         temp_clock_upperbound, difference_cons, node_n,
-                        (int) channels.size() );
+                        link_num, (int) channels.size() );
 
     return re;
   }

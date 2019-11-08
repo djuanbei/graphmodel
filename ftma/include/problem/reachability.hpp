@@ -85,7 +85,7 @@ public:
       }
 #endif
 
-      if ( data.oneStep( prop, state ) ) {
+      if ( data.oneDiscreteStep( prop, state ) ) {
         delete[] state;
         return true;
       }

@@ -88,14 +88,15 @@ public:
   StateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
                 const vector<C> &                 clock_upper_bounds,
                 const vector<ClockConstraint<C>> &edifference_cons,
-                const vector<int> &nodes, int channel_n ) {
+                const vector<int> &nodes, const vector<int> &links,
+                int channel_n ) {
     state_length  = 0;
     component_num = comp_num;
 
     difference_constraints = edifference_cons;
     node_nums              = nodes;
-
-    channel_num = channel_n;
+    link_nums              = links;
+    channel_num            = channel_n;
 
     if ( channel_num > 0 ) {
       counter_start_loc = 2 * component_num;
@@ -121,14 +122,29 @@ public:
 
   int getFreezeLocation() const { return freeze_location_index; }
 
+  bool isFreeze( const C *const state ) const {
+    return state[ freeze_location_index ] > 0;
+  }
+
   Compression<C> getHeadCompression() const {
     Compression<C> re_comp( clock_start_loc );
-    for ( int i = 0; i < component_num; i++ ) {
-      re_comp.setBound( i, -node_nums[ i ] - 1, node_nums[ i ] + 1 );
+    for ( int component_id = 0; component_id < component_num; component_id++ ) {
+
+      if ( channel_num > 1 ) {
+        // the value contain link id
+        // TODO:
+        int m = max( node_nums[ component_id ], link_nums[ component_id ] );
+        re_comp.setBound( component_id, -m, m );
+      } else {
+        re_comp.setBound( component_id, -node_nums[ component_id ],
+                          node_nums[ component_id ] );
+      }
     }
     if ( channel_num > 0 ) {
-      for ( int i = 0; i < component_num; i++ ) {
-        re_comp.setBound( i + component_num, -channel_num, channel_num + 1 );
+      for ( int component_id = 0; component_id < component_num;
+            component_id++ ) {
+        re_comp.setBound( component_id + component_num, -channel_num,
+                          channel_num );
       }
     }
     int k = 0;
@@ -159,7 +175,12 @@ public:
     if ( isCommitComp( component, state ) ) { // commit location
       return getCommitLoc( component, state );
     }
+
     return state[ component ];
+  }
+
+  bool withoutChannel( int component, const C *const state ) const {
+    return state[ component + component_num ] == NO_CHANNEL;
   }
 
   C *newState() const {
@@ -291,6 +312,7 @@ private:
   vector<Counter>   counters;
   vector<Parameter> parameters;
   vector<int>       node_nums;
+  vector<int>       link_nums;
 };
 } // namespace graphsat
 #endif

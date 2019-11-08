@@ -4,7 +4,7 @@
  * @date   Mon Jun 10 11:25:22 2019
  *
  * @brief  compression to unsign int when known the lower bound and upper bound
- * of data
+ * of data [ low, up]
  *
  *
  */
@@ -36,10 +36,10 @@ public:
   }
 
   void setBound( int id, int low, int up ) {
-    assert( up > low );
+    assert( up >= low );
     bounds[ id ].first  = low;
     bounds[ id ].second = up;
-    UINT bound          = up - low;
+    UINT bound          = up - low + 1;
     domain[ id ]        = bound;
     update();
   }
@@ -51,7 +51,7 @@ public:
     UINT base = 1;
     for ( int i = 0; i < row_len; i++ ) {
       assert( data[ i ] >= bounds[ i ].first );
-      assert( data[ i ] < bounds[ i ].second );
+      assert( data[ i ] <= bounds[ i ].second );
 
       if ( shift[ i ] ) {
         j++;
