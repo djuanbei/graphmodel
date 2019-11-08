@@ -128,7 +128,7 @@ public:
   }
 
   vector<T> getValue( const int type, const string &name ) const {
-    if( values.find( type)==values.end( )){
+    if ( values.find( type ) == values.end() ) {
       vector<T> dummy;
       return dummy;
     }

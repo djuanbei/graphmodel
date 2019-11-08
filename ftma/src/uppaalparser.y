@@ -420,7 +420,6 @@ atomic_constraint
 constraint_statement AND_OP atomic_constraint
 
 
-
 clock_identifier:
 clock_yy{
   $$=current_data->getClockId($1->symbol);
@@ -866,7 +865,8 @@ variable_declaration
     case INT_T:{
       current_data->setValue( INT_T,  name);
       for( int i=0; i< $4; i++){
-        current_data->setValue( INT_T,  arrayToVar(name, i));
+        string temp_str=arrayToVar(name, i);
+        current_data->setValue( INT_T,  arrayToVar(temp_str, i));
       }
       break;
     }
@@ -880,14 +880,17 @@ variable_declaration
     case CHAN_T:{
       current_data->setValue( CHAN_T, name, ONE2ONE_CH);
       for( int i=0; i< $4; i++){
-        current_data->setValue( CHAN_T, arrayToVar(name, i ), ONE2ONE_CH);
+        string temp_str=arrayToVar(name, i);
+        current_data->setValue( CHAN_T, temp_str, ONE2ONE_CH);
       }
       break;
     }
     case URGENT_CHAN_T:{
+
       current_data->setValue( CHAN_T, name, URGENT_CH);
       for( int i=0; i< $4; i++){
-        current_data->setValue( CHAN_T, arrayToVar(name, i ), URGENT_CH);
+        string temp_str=arrayToVar(name, i);
+        current_data->setValue( CHAN_T, temp_str, URGENT_CH);
       }
       break;
     }

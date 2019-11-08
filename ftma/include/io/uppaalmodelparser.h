@@ -58,6 +58,7 @@ private:
   int parseTemplateParamter( UppaalData &tempData, XML_P parameter );
 
   int setCounter();
+  int setChannel( );
 
   vector<typename INT_TAS_t::L_t> parseLocation( UppaalData &tempData,
                                                  child_type  locations );

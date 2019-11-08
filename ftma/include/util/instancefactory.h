@@ -99,18 +99,12 @@ public:
 
   friend CounterAction *copy( const CounterAction *other );
 
-
-
   friend void *createConstraint( Argument first, Argument second,
                                  COMP_OPERATOR op, Argument rhs );
-
-
 
 private:
   PointerData pdata;
 };
-
-
 
 CounterConstraint *copy( CounterConstraint *other );
 
@@ -118,8 +112,6 @@ CounterParameterConstraint *negCounterParameterConstraint( int parameter_id,
                                                            int counter_id,
                                                            COMP_OPERATOR op,
                                                            int           rhs );
-
-
 
 /**
  * @brief first -second op rhs
@@ -133,7 +125,6 @@ CounterParameterConstraint *negCounterParameterConstraint( int parameter_id,
  */
 void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
                         Argument rhs );
-
 
 } // namespace graphsat
 

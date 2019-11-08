@@ -2,8 +2,6 @@
 #include "util/instancefactory.h"
 namespace graphsat {
 
-
-
 CounterConstraint *copy( CounterConstraint *other ) {
   return InstanceFactory::getInstance().copy( other );
 }
@@ -11,8 +9,6 @@ CounterConstraint *copy( CounterConstraint *other ) {
 CounterAction *copy( const CounterAction *other ) {
   return InstanceFactory::getInstance().copy( other );
 }
-
-
 
 void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
                         Argument rhs ) {
@@ -60,6 +56,5 @@ void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
 
   assert( false );
 }
-
 
 } // namespace graphsat

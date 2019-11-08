@@ -97,7 +97,8 @@ int UppaalParser::parseSystem( XML_P system ) {
   parseProblem( content, &system_data );
 
   setCounter();
-  // TODO: setChannel( );
+  // TODO:
+  setChannel( );
 
   SystemDec *sys_dec = (SystemDec *) system_data.getPointer( SYSTEM_T );
   /**
@@ -298,38 +299,27 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
           template_data.clear( RESET_T );
 
         } else if ( SYNCHRONISATION_STR == kind ) {
-          vector<int> chan_actions1=  template_data.getValue(CHAN_ACTION_T);
+          string sync_statement = ( *llit )->getValue();
+          parseLabel( template_data, sync_statement );
 
-          for( auto e: chan_actions1 ){
-            Channel chan;
-            if( e>0){
-              chan.action=CHANNEL_SEND;
-              chan.gloabl_id=e;
-            }else{
-              chan.action=CHANNEL_RECEIVE;
-              chan.gloabl_id=-e;
-            }
-            transition.setChannel( chan);
-          }
-          vector<int> chan_actions2=  template_data.getValue(REF_CHAN_ACTION_T);
+          vector<int> normol_chan_actions1 =
+              template_data.getValue( CHAN_ACTION_T );
 
-          for( auto e: chan_actions2 ){
-            Channel chan;
-            chan.is_ref=true;
-            if( e>0){
-              chan.action=CHANNEL_SEND;
-              chan.local_id=e;
-            }else{
-              chan.action=CHANNEL_RECEIVE;
-              chan.local_id=-e;
-            }
-            transition.setChannel( chan);
+          for ( auto e : normol_chan_actions1 ) {
+
+            transition.setChannel( Channel( e ) );
           }
-          assert(chan_actions1.size( )+chan_actions2.size( )<2 );
-          
+          vector<int> ref_chan_actions =
+              template_data.getValue( REF_CHAN_ACTION_T );
+
+          for ( auto e : ref_chan_actions ) {
+            transition.setChannel( Channel( e, true ) );
+          }
+          assert( normol_chan_actions1.size() + ref_chan_actions.size() < 2 );
+
           template_data.clear( CHAN_ACTION_T );
           template_data.clear( REF_CHAN_ACTION_T );
-          assert( false);
+          //  assert( false );
           cout << kind << ": " << ( *llit )->getValue() << endl;
         }
       }
@@ -346,6 +336,7 @@ void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
 
 int UppaalParser::setCounter() {
   int counter_num = system_data.getTotalCounterNum();
+  
   sys.setCounterNum( counter_num );
   for ( auto e : system_data.counter_id_map ) {
     Counter counter( 0, MAX_COUNTER_VALUE );
@@ -360,6 +351,26 @@ int UppaalParser::setCounter() {
       int     v = temp.second.getValue( INT_T, e.first );
       counter.setValue( v );
       sys.setCounter( e.second, counter );
+    }
+  }
+  return 0;
+}
+int UppaalParser::setChannel( ){
+  int channel_num= system_data.getTotalChannelNum( );
+  sys.setChannelNum( channel_num);
+  for ( auto e : system_data.channel_id_map){
+    int v=system_data.getValue(CHAN_T, e.first );
+    Channel ch;
+    ch.type=(CHANNEL_TYPE)v;
+    sys.setChannel( e.second, ch);
+  }
+
+  for( auto temp: template_map){
+    for ( auto e: temp.second.channel_id_map){
+      int v=temp.second.getValue( CHAN_T, e.first);
+      Channel ch;
+      ch.type=(CHANNEL_TYPE)v;
+      sys.setChannel( e.second, ch);
     }
   }
   return 0;

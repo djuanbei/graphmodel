@@ -8,8 +8,8 @@ UppaalData::UppaalData() {
 
   parent = NULL;
 
-  next_counter_id =0;
-  next_channel_id = 1; //the channel starts with 1
+  next_counter_id = 0;
+  next_channel_id = 1; // the channel starts with 1
 
   base_types.push_back( INT_T );
   base_types.push_back( PARAMETER_INT_T );
@@ -19,22 +19,18 @@ UppaalData::UppaalData() {
   base_types.push_back( PARAMETER_CLOCK_T );
   base_types.push_back( REF_PARAMETER_CLOCK_T );
 
-  //  base_types.push_back( BOOL_T );
-  //  base_types.push_back( PARAMETER_BOOL_T );
-  //  base_types.push_back( REF_PARAMETER_BOOL_T );
+
 
   base_types.push_back( CHAN_T );
   base_types.push_back( REF_PARAMETER_CHAN_T );
 
   base_types.push_back( SYSTEM_T );
 
-  //  base_types.push_back( REF_PARAMETER_T );
 
   base_types.push_back( TEMPLATE_T );
 
   base_types.push_back( AUTOMATA_T );
 
-  //  base_types.push_back( FORMAL_PARAMETER_T );
 
   base_types.push_back( CLOCK_CS_T );
 
