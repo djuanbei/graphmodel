@@ -73,12 +73,12 @@ string getTypeStr( TYPE_T type ) {
   }
 }
 
-TYPE_T base_type( TYPE_T type ) {
+TYPE_T baseType( TYPE_T type ) {
   return ( TYPE_T )( ( type / TYPE_FAMILY_LEN ) * TYPE_FAMILY_LEN );
 }
 
 bool isRefChan( TYPE_T type ) {
-  TYPE_T base_t = base_type( type );
+  TYPE_T base_t = baseType( type );
   if ( base_t != CHAN_T && base_t != URGENT_CHAN_T &&
        base_t != BROADCAST_CHAN_T ) {
     return false;
@@ -177,5 +177,13 @@ string deleteChar( const string &value, const size_t start, const char ch ) {
   }
   buf[ k ] = '\0';
   return string( buf );
+}
+
+int fromPidToChanId( int id) {
+  return id+1;
+}
+  
+int chanIdToFromPid( int id) {
+  return id-1;
 }
 } // namespace graphsat

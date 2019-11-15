@@ -205,7 +205,13 @@ enum TYPE_T {
 
 string getTypeStr( TYPE_T type );
 
-TYPE_T base_type( TYPE_T type );
+TYPE_T baseType( TYPE_T type );
+
+//TYPE_T getRef( TYPE_T type );
+
+int fromPidToChanId( int id);
+  
+int chanIdToFromPid( int id); 
 
 bool isRefChan( TYPE_T type );
 

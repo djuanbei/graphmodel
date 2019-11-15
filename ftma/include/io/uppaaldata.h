@@ -87,6 +87,8 @@ public:
   int getFormalParameterId( const string &name ) {
     return getId( FORMAL_PARAMETER_T, name );
   }
+  
+
 
   TYPE_T getType( const string &name ) const;
 

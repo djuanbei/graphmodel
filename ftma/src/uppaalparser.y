@@ -642,7 +642,9 @@ REF_PARAMETER_INT_YY
 |
 '!' REF_PARAMETER_INT_YY
 {
+  
   int pid=current_data->getFormalParameterId( $2->symbol);
+
   Argument first( REF_PARAMETER_ARG, pid);
   Argument second( EMPTY_ARG, 0);
   Argument rhs( CONST_ARG, 0);
@@ -654,18 +656,21 @@ REF_PARAMETER_INT_YY
 REF_PARAMETER_CHAN_YY '?'
 {
   int pid=current_data->getFormalParameterId( $1->symbol);
+  pid=fromPidToChanId( pid);
   current_data->addValue(REF_CHAN_ACTION_T, -pid );
+  assert( pid>0);
   delete $1;
-  //TODO:   send signal
+  //TODO:   receive signal
 }
 |
 REF_PARAMETER_CHAN_YY '!'
 {
   int pid=current_data->getFormalParameterId( $1->symbol);
+  pid=fromPidToChanId( pid);
   current_data->addValue(REF_CHAN_ACTION_T, pid );
   delete $1;
   
-  //TODO:   receive signal
+  //TODO:  send signal
 }
 ;
 
@@ -813,7 +818,7 @@ FALSE_YY{
 variable_declaration
 : type_specifier identifier_list ';'
 {
-  TYPE_T type=base_type($1 );
+  TYPE_T type=baseType($1 );
   switch( type){
     case INT_T:{
       for( auto v: *$2){
@@ -856,7 +861,7 @@ variable_declaration
 | type_specifier IDENTIFIER '[' const_expression  ']' ';'
 {
   string name= $2->symbol;
-  TYPE_T type=base_type($1 );
+  TYPE_T type=baseType($1 );
   
   switch( type){
     case INT_T:{
@@ -905,7 +910,7 @@ variable_declaration
 
 |  type_specifier IDENTIFIER '=' const_expression ';'
 {
-  TYPE_T type=base_type($1 );
+  TYPE_T type=baseType($1 );
   
   switch(type){
     case INT_T:
