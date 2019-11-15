@@ -114,27 +114,27 @@ int UppaalParser::parseSystem( XML_P system ) {
                                     parameter );
       sys += tma;
     } else if ( component->has_parameter ) {
-      int parameter_id = 0;
-      for ( auto formal__parameter : formal_parameter_list ) {
-        const FormalParameterItem *param_item =
-            (FormalParameterItem *) formal__parameter.second[ 0 ];
-        if ( ( param_item->type == REF_INT_T ) ||
-             ( param_item->type == CONST_REF_INT_T ) ) {
-          parameter.setCounterMap(
-              parameter_id, component->real_param_list[ parameter_id ].id );
-        } else if ( isRefChan( param_item->type ) ) {
-          parameter.setChanMap( parameter_id,
-                                component->real_param_list[ parameter_id ].id );
-        } else if ( param_item->type == CLOCK_T ) {
+      int para_id = 0;
+      for ( auto formal_p : formal_parameter_list ) {
+        const FormalParameterItem *para_item =
+            (FormalParameterItem *) formal_p.second[ 0 ];
+        if ( ( para_item->type == REF_INT_T ) ||
+             ( para_item->type == CONST_REF_INT_T ) ) {
+          parameter.setCounterMap( para_id,
+                                   component->real_param_list[ para_id ].id );
+        } else if ( isRefChan( para_item->type ) ) {
+          parameter.setChanMap( para_id,
+                                component->real_param_list[ para_id ].id );
+        } else if ( para_item->type == CLOCK_T ) {
           // TODO : add clock parameter support
           assert( false );
-        } else if ( param_item->type == INT_T ) {
-          parameter.setParameterMap(
-              parameter_id, component->real_param_list[ parameter_id ].id );
+        } else if ( para_item->type == INT_T ) {
+          parameter.setParameterMap( para_id,
+                                     component->real_param_list[ para_id ].id );
         } else {
           assert( false );
         }
-        parameter_id++;
+        para_id++;
       }
       typename INT_TAS_t::TA_t tma( &template_map[ component->tmt_name ].tat,
                                     parameter );

@@ -13,8 +13,8 @@
 #include <vector>
 
 #include "discretestate.hpp"
+#include "model/parameter.h"
 #include "model/ta.hpp"
-#include "parameter.h"
 #include "util/datacompression.h"
 
 namespace graphsat {

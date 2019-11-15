@@ -15,10 +15,10 @@
 
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.hpp"
-#include "location.hpp"
+#include "model/location.hpp"
 
+#include "model/transition.hpp"
 #include "problem/reachability.hpp"
-#include "transition.hpp"
 
 #include "util/dbmutil.hpp"
 

@@ -14,7 +14,7 @@
 
 #include "channel.h"
 #include "constraint/countercons.h"
-#include "statemanager.hpp"
+#include "state/statemanager.hpp"
 
 #include "util/instancefactory.h"
 

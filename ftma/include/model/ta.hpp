@@ -15,13 +15,13 @@
 #include "action/counteraction.h"
 #include "channel.h"
 #include "counter.hpp"
-#include "discretestate.hpp"
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
 #include "location.hpp"
 #include "parameter.h"
-#include "statemanager.hpp"
+#include "state/discretestate.hpp"
+#include "state/statemanager.hpp"
 #include "transition.hpp"
 
 namespace graphsat {

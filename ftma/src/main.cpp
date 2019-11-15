@@ -16,19 +16,19 @@
 
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.hpp"
-#include "location.hpp"
+#include "model/location.hpp"
 #include "model/ta.hpp"
+#include "model/transition.hpp"
 #include "problem/reachability.hpp"
-#include "transition.hpp"
 
 #include "util/dbmutil.hpp"
 
 #include "domain/dbm.hpp"
 #include "domain/dbmset.hpp"
 #include "io/uppaalmodelparser.h"
-#include "reachableset.hpp"
+#include "state/reachableset.hpp"
 
-#include "discretestate.hpp"
+#include "state/discretestate.hpp"
 
 #include "util/datacompression.h"
 
@@ -538,11 +538,10 @@ void incrementalTest() {
 }
 void fisher1() {
   // UppaalParser parser(
-  // "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
-  UppaalParser parser(
-      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
-  INT_TAS_t sys = parser.getSYS();
-  R_t       data( sys );
+  // "/Users/yun/mycode/c++/ftma/ftma/example/fischer.xml" );
+  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/2doors.xml" );
+  INT_TAS_t    sys = parser.getSYS();
+  R_t          data( sys );
 
   Reachability<R_t> reacher( data );
   //  FischerMutual     prop;

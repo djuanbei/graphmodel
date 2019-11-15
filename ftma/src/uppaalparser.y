@@ -5,7 +5,7 @@
   #include<map>
   #include<vector>
   #include <utility>
-  #include "channel.h"
+  #include "model/channel.h"
   #include "util/dbmutil.hpp"
   #include "io/uppaaldata.h"
 
