@@ -179,11 +179,7 @@ string deleteChar( const string &value, const size_t start, const char ch ) {
   return string( buf );
 }
 
-int fromPidToChanId( int id) {
-  return id+1;
-}
-  
-int chanIdToFromPid( int id) {
-  return id-1;
-}
+int fromPidToChanId( int id ) { return id + 1; }
+
+int chanIdToFromPid( int id ) { return id - 1; }
 } // namespace graphsat

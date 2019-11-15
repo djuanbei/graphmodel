@@ -10,8 +10,8 @@
 
 #ifndef CHANNEL_H
 #define CHANNEL_H
-#include <map>
 #include "util/dbmutil.hpp"
+#include <map>
 namespace graphsat {
 
 enum CHANNEL_TYPE { ONE2ONE_CH, BROADCAST_CH, URGENT_CH };
@@ -24,7 +24,6 @@ struct Channel {
   int            local_id;
   int            gloabl_id; // start from 1
   CHANNEL_TYPE   type;
-  bool           is_urgent;
   CHANNEL_ACTION action;
   bool           is_ref;
 
@@ -32,14 +31,12 @@ struct Channel {
       : local_id( -1 )
       , gloabl_id( -1 )
       , type( ONE2ONE_CH )
-      , is_urgent( false )
       , action( CHANNEL_RECEIVE )
       , is_ref( false ) {}
   Channel( int id )
       : local_id( -1 )
       , gloabl_id( -1 )
       , type( ONE2ONE_CH )
-      , is_urgent( false )
       , action( CHANNEL_RECEIVE )
       , is_ref( false ) {
     if ( id > 0 ) {
@@ -54,7 +51,6 @@ struct Channel {
       : local_id( -1 )
       , gloabl_id( -1 )
       , type( ONE2ONE_CH )
-      , is_urgent( false )
       , action( CHANNEL_RECEIVE )
       , is_ref( false ) {
     is_ref = ref;
@@ -65,7 +61,8 @@ struct Channel {
       id *= -1;
     }
     if ( ref ) {
-      local_id = chanIdToFromPid(id);
+      assert( id > 0 );
+      local_id = chanIdToFromPid( id );
     } else {
       gloabl_id = id;
     }

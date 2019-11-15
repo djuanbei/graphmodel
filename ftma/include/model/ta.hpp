@@ -76,6 +76,12 @@ public:
 
   int getInitialLoc() const { return initial_loc; }
 
+  // void updateChannel( vector<Channel> & channels ){
+  //   for(auto e: template_locations ){
+  //     e.type=channels[ e.gloabl_id];
+  //   }
+  // }
+
 private:
   vector<L> template_locations;
   vector<T> template_transitions;
@@ -170,6 +176,7 @@ public:
     for ( auto e : tat->template_transitions ) {
       transitions.push_back( T( e, param ) );
     }
+
     locations       = tat->template_locations;
     difference_cons = tat->template_difference_cons;
   }
@@ -358,6 +365,10 @@ private:
       }
       for ( size_t i = 0; i < ta.transitions.size(); i++ ) {
         ta.transitions[ i ].clockShift( clock_num );
+        if ( ta.transitions[ i ].hasChannel() ) {
+          ta.transitions[ i ].setChannel(
+              channels[ ta.transitions[ i ].getChannel().gloabl_id ] );
+        }
       }
       for ( size_t i = 0; i < ta.ta_tempate->template_difference_cons.size();
             i++ ) {

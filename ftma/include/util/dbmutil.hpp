@@ -207,11 +207,11 @@ string getTypeStr( TYPE_T type );
 
 TYPE_T baseType( TYPE_T type );
 
-//TYPE_T getRef( TYPE_T type );
+// TYPE_T getRef( TYPE_T type );
 
-int fromPidToChanId( int id);
-  
-int chanIdToFromPid( int id); 
+int fromPidToChanId( int id );
+
+int chanIdToFromPid( int id );
 
 bool isRefChan( TYPE_T type );
 

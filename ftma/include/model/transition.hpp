@@ -104,10 +104,8 @@ public:
   }
 
   void setChannel( const Channel &ch ) {
-    channel = ch;
-    //  if ( ch.gloabl_id > NO_CHANNEL ) {
+    channel     = ch;
     has_channel = true;
-    //}
   }
 
   const Channel &getChannel() const { return channel; }

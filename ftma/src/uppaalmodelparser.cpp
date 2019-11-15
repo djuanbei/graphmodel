@@ -138,6 +138,7 @@ int UppaalParser::parseSystem( XML_P system ) {
       }
       typename INT_TAS_t::TA_t tma( &template_map[ component->tmt_name ].tat,
                                     parameter );
+
       sys += tma;
 
     } else {
@@ -301,7 +302,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
           template_data.clear( CHAN_ACTION_T );
           template_data.clear( REF_CHAN_ACTION_T );
           //  assert( false );
-          cout << kind << ": " << ( *llit )->getValue() << endl;
+          // cout << kind << ": " << ( *llit )->getValue() << endl;
         }
       }
     }
