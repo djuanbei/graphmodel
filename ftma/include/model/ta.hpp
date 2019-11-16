@@ -360,21 +360,25 @@ private:
   void transfrom( TA_t &ta ) {
 
     if ( clock_num > 0 ) {
+        
       for ( size_t i = 0; i < ta.locations.size(); i++ ) {
         ta.locations[ i ].clockShift( clock_num );
       }
       for ( size_t i = 0; i < ta.transitions.size(); i++ ) {
         ta.transitions[ i ].clockShift( clock_num );
-        if ( ta.transitions[ i ].hasChannel() ) {
-          ta.transitions[ i ].setChannel(
-              channels[ ta.transitions[ i ].getChannel().gloabl_id ] );
-        }
+       
       }
       for ( size_t i = 0; i < ta.ta_tempate->template_difference_cons.size();
             i++ ) {
         ta.difference_cons[ i ].clockShift( clock_num );
       }
     }
+    for ( size_t i = 0; i < ta.transitions.size(); i++ ) {
+      if ( ta.transitions[ i ].hasChannel() ) {
+        ta.transitions[ i ].setChanType( channels[ ta.transitions[ i ].getChannel().gloabl_id ].type);
+      }
+    }
+    
     clock_num += ta.getClockNum();
   }
 };

@@ -109,6 +109,11 @@ public:
   }
 
   const Channel &getChannel() const { return channel; }
+    
+  
+    void setChanType(CHANNEL_TYPE type){
+        channel.type=type;
+    }
 
   bool hasChannel() const { return has_channel; }
 
@@ -203,11 +208,14 @@ public:
       assert( reset.second >= 0 ); // clock value must positive
       dbm_manager.resetImpl( source_DBM, reset.first, reset.second );
     }
+    
+    if(!actions.empty()){
 
-    C *counterValue = manager.getCounterValue( re_state );
+      C *counterValue = manager.getCounterValue( re_state );
 
-    for ( auto act : actions ) {
-      ( *act )( counterValue );
+      for ( auto act : actions ) {
+        ( *act )( counterValue );
+      }
     }
 
     //    return re_state;

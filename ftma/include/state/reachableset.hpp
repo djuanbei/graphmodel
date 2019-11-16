@@ -105,7 +105,9 @@ public:
 #endif
 
     PRINT_STATE_MACRO;
-
+/**
+ freeze state the time can not delay
+ */
     if ( manager.isFreeze( state ) ) {
       for ( int component = 0; component < component_num; component++ ) {
         if ( manager.isCommitComp( component, state ) ) {
@@ -319,7 +321,7 @@ private:
 
     // send do firstly
     /**
-     *  has some problems
+     *  TDOO: has some problems
      */
     sys.tas[ send_component_id ].transitions[ send_link ](
         send_component_id, manager,
@@ -405,9 +407,10 @@ private:
       wait_components = manager.blockComponents( channel.gloabl_id, state );
     }
     if ( !wait_components.empty() ) {
-      if ( channel.type == ONE2ONE_CH ) {
+        //TODO: check all the channel type
+      if ( channel.type == ONE2ONE_CH || channel.type==URGENT_CH ) {
         std::uniform_int_distribution<int> distribution(
-            0, wait_components.size() - 1 );
+            0, (int)wait_components.size() - 1 );
         int id                 = distribution( generator );
         int block_component_id = wait_components[ id ];
         return unBlockOne( component, block_component_id, link, state, prop,
@@ -424,7 +427,7 @@ private:
 
     } else {
       manager.copy( cache_state, state );
-      assert( channel.gloabl_id > 0 );
+      assert( channel.gloabl_id > 0 );// chan it start with 1
       if ( CHANNEL_SEND == channel.action ) {
         cache_state[ component + component_num ] =
             channel.gloabl_id; // send part

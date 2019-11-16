@@ -67,7 +67,7 @@ struct Channel {
       gloabl_id = id;
     }
   }
-
+  
   void setIsRef( bool b ) { is_ref = b; }
   void globalIpUpdate( const std::vector<int> &id_map ) {
     if ( is_ref ) {
