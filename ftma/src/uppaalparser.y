@@ -775,15 +775,24 @@ IDENTIFIER '=' TEMPLATE_YY '(' real_argument_list ')' ';'
 }
 |
 PARAMETER_INT_YY '=' const_expression{
-  //TODO:
+  int pid=current_data->getFormalParameterId( $1->symbol);
+  Argument lhs( PARAMETER_ARG, pid);
+  Argument rhs( CONST_ARG, $3);
+  CounterAction *action=new CounterAction( lhs,  ASSIGNMENT_ACTION, rhs);
+  current_data->addPointer( INT_UPDATE_T, action);
+  delete $1;
+  
 }
 |
 REF_PARAMETER_INT_YY '=' const_expression{
-  //TODO:
-  //  int pid=current_data->getFormalParameterId( $1->symbol);
-  //  CounterAction   *action=new CounterAction(ASSIGNMENT_ACTION, RHS_CONSTANT_T,  pid, $3);
-
+  
+  int pid=current_data->getFormalParameterId( $1->symbol);
+  Argument lhs( REF_PARAMETER_ARG, pid );
+  Argument rhs( CONST_ARG, $3);
+  CounterAction *action=new CounterAction( lhs,  ASSIGNMENT_ACTION, rhs);
+  current_data->addPointer( INT_UPDATE_T, action);
   delete $1;
+
 }
 ;
 

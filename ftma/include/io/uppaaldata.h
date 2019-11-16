@@ -80,7 +80,7 @@ public:
 
   void setName( const string &n ) { name = n; }
 
-  string getName( void ) { return name; }
+  string getName( void ) const { return name; }
 
   int getVarNum( void ) const;
 

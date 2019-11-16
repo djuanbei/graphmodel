@@ -23,11 +23,12 @@
 #define PRINT_STATE_MACRO                                                      \
   for ( int i = 0; i < component_num; i++ ) {                                  \
     if ( state[ i + component_num ] == NO_CHANNEL )                            \
-      cout << setw( LOC_OUT_WIDTH ) << state[ i ];                             \
+      cout << setw( LOC_OUT_WIDTH ) << sys.tas[ i ].getLocName( state[ i ] );  \
     else {                                                                     \
       int block_source;                                                        \
       sys.tas[ i ].ta_tempate->graph.findSrc( state[ i ], block_source );      \
-      cout << setw( LOC_OUT_WIDTH ) << block_source;                           \
+      cout << setw( LOC_OUT_WIDTH )                                            \
+           << sys.tas[ i ].getLocName( block_source );                         \
     }                                                                          \
   }                                                                            \
   cout << endl;                                                                \
@@ -123,7 +124,7 @@ const static string FORMULA_STR = "formula";
 
 const static string COMMENT_STR = "comment";
 
-const static int LOC_OUT_WIDTH = 3;
+const static int LOC_OUT_WIDTH = 6;
 const static int OP_OUT_WIDTH  = 3;
 
 const static int VALUE_OUT_WIDTH = 5;

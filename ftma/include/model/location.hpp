@@ -38,7 +38,7 @@ public:
 
   void setName( const string &n ) { name = n; }
 
-  string getName( void ) { return name; }
+  string getName( void ) const { return name; }
 
   const vector<CS_t> &getInvarients() const { return invariants; }
 
@@ -62,7 +62,9 @@ public:
    * @return true if this location is a commit, false otherwise.
    */
   inline bool isCommit() const { return type == COMMIT_LOC; }
-
+  /**
+   In  freeze location the time can not go.
+   */
   inline bool isFreezeLocation() const {
     return ( isUrgent() ) || ( isCommit() );
   }

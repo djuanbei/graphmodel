@@ -105,9 +105,9 @@ public:
 #endif
 
     PRINT_STATE_MACRO;
-/**
- freeze state the time can not delay
- */
+    /**
+     freeze state the time can not delay
+     */
     if ( manager.isFreeze( state ) ) {
       for ( int component = 0; component < component_num; component++ ) {
         if ( manager.isCommitComp( component, state ) ) {
@@ -335,9 +335,12 @@ private:
                                                             send_target );
     next_state[ send_component_id ] = send_target;
 
-    // bool is_send_commit =
-    //     sys.tas[ send_component_id ].locations[ send_target ].is_commit();
+    bool is_send_commit =
+        sys.tas[ send_component_id ].locations[ send_target ].isCommit();
 
+    if ( is_send_commit ) {
+      manager.setCommitState( send_component_id, next_state );
+    }
     int receive_target = 0;
 
     sys.tas[ receive_component_id ].ta_tempate->graph.findSnk( receive_link,
@@ -347,9 +350,6 @@ private:
     bool is_receive_commit =
         sys.tas[ receive_component_id ].locations[ receive_target ].isCommit();
 
-    // if ( is_send_commit ) {
-    //   manager.setCommitState( send_component_id, next_state );
-    // }
     if ( is_receive_commit ) {
       manager.setCommitState( receive_component_id, next_state );
     }
@@ -407,10 +407,10 @@ private:
       wait_components = manager.blockComponents( channel.gloabl_id, state );
     }
     if ( !wait_components.empty() ) {
-        //TODO: check all the channel type
-      if ( channel.type == ONE2ONE_CH || channel.type==URGENT_CH ) {
+      // TODO: check all the channel type
+      if ( channel.type == ONE2ONE_CH || channel.type == URGENT_CH ) {
         std::uniform_int_distribution<int> distribution(
-            0, (int)wait_components.size() - 1 );
+            0, (int) wait_components.size() - 1 );
         int id                 = distribution( generator );
         int block_component_id = wait_components[ id ];
         return unBlockOne( component, block_component_id, link, state, prop,
@@ -427,7 +427,7 @@ private:
 
     } else {
       manager.copy( cache_state, state );
-      assert( channel.gloabl_id > 0 );// chan it start with 1
+      assert( channel.gloabl_id > 0 ); // chan it start with 1
       if ( CHANNEL_SEND == channel.action ) {
         cache_state[ component + component_num ] =
             channel.gloabl_id; // send part

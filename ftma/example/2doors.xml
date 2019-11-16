@@ -94,6 +94,7 @@ activated=false</label>
 		<parameter>bool &amp;activated, urgent chan &amp;pushed</parameter>
 		<declaration>clock w;</declaration>
 		<location id="id6" x="192" y="160">
+			<name x="182" y="126">A</name>
 		</location>
 		<location id="id7" x="96" y="96">
 			<name x="72" y="64">idle</name>
