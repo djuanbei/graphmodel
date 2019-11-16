@@ -491,7 +491,8 @@ private:
     /**
      Whether there is some component in freeze location
      */
-    if ( 0 == state[ manager.getFreezeLocation() ] ) {
+    if ( !manager.isFreeze( state ) ) {
+
       sys.tas[ component ].locations[ target ]( manager.getClockManager(),
                                                 manager.getDBM( state ) );
     }
