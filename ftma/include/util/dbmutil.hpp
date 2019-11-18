@@ -18,6 +18,8 @@
 
 #define STRING( s ) #s
 
+
+
 #ifdef PRINT_STATE
 
 #define PRINT_STATE_MACRO                                                      \
@@ -124,7 +126,7 @@ const static string FORMULA_STR = "formula";
 
 const static string COMMENT_STR = "comment";
 
-const static int LOC_OUT_WIDTH = 6;
+const static int LOC_OUT_WIDTH = 7;
 const static int OP_OUT_WIDTH  = 3;
 
 const static int VALUE_OUT_WIDTH = 5;

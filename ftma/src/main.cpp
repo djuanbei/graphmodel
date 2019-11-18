@@ -538,8 +538,8 @@ void incrementalTest() {
 }
 void fisher1() {
   // UppaalParser parser(
-  // "/Users/yun/mycode/c++/ftma/ftma/example/fischer.xml" );
-  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/2doors.xml" );
+  // "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
+  UppaalParser parser( "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   INT_TAS_t    sys = parser.getSYS();
   R_t          data( sys );
 
@@ -554,6 +554,20 @@ void fisher1() {
   reacher.computeAllReachableSet();
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
+}
+
+
+void runxml( const string& file_name ){
+
+  UppaalParser parser(file_name );
+  INT_TAS_t    sys = parser.getSYS();
+  R_t          data( sys );
+
+  Reachability<R_t> reacher( data );
+  reacher.computeAllReachableSet();
+  cout << "reach data size: " << data.size() << endl;
+  data.generatorDot( "test.gv" );
+  
 }
 
 void testOP() {
@@ -593,6 +607,10 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
+  if(argc>1 ){
+    runxml( argv[ 1]);
+    return 0;
+  }
   yy_flex_debug = 1;
   //    incrementalTest( );
   // return 0;

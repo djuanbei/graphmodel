@@ -201,7 +201,9 @@ int check_type()
 
    
   TYPE_T type=current_data->getType(sym);
+#ifdef LEX_VERBOSE
   cout<<"lex: "<<getTypeStr( type)<<" "<<sym<<endl;
+#endif
   if(type!=NO_T){
 
     if(SELF_DEF_T==type){
