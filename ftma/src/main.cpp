@@ -539,7 +539,7 @@ void incrementalTest() {
 void fisher1() {
   // UppaalParser parser(
   // "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
-  UppaalParser parser( "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/test1.xml" );
   INT_TAS_t    sys = parser.getSYS();
   R_t          data( sys );
 

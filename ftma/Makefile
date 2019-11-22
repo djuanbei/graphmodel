@@ -102,7 +102,7 @@ lib$(LIB)_release.a:	$(filter-out */$(MAINFILE).or, $(RCOBJS))
 parser: LEX YACC
 
 LEX: src/uppaalscan.l
-	lex  -o include/io/uppaalscan.h src/uppaalscan.l
+	lex -d -o include/io/uppaalscan.h src/uppaalscan.l
 
 YACC: src/uppaalparser.y
 	bison  -o  src/uppaalparser.cpp  -v src/uppaalparser.y

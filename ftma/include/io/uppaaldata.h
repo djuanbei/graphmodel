@@ -10,6 +10,7 @@
 
 #ifndef __UPPAAL_H
 #define __UPPAAL_H
+#define LEX_VERBOSE
 #include "model/ta.hpp"
 #include "util/data.hpp"
 #include <map>
