@@ -20,6 +20,8 @@ DSRCS      = $(foreach dir, $(DEPDIR), $(filter-out $(WROOT)/$(dir)/$(MAINFILE).
 CHDRS      = $(wildcard $(WROOT)/*.h)
 COBJS      = $(CSRCS:.$(SRCSUF)=.o) $(DSRCS:.$(SRCSUF)=.o)
 
+ACOBJS      = $(CSRCS:.$(SRCSUF)=.ast) $(DSRCS:.$(SRCSUF)=.ast)
+
 PCOBJS     = $(addsuffix p,  $(COBJS))
 DCOBJS     = $(addsuffix d,  $(COBJS))
 CCOBJS     = $(addsuffix c,  $(COBJS))
@@ -51,7 +53,7 @@ COPTIMIZE ?= -O2
 
 
 
-.PHONY : all s p d r c rs clean  test
+.PHONY : all s p d r c rs clean  test ast
 
 
 
@@ -62,6 +64,7 @@ d:	parser $(EXEC)_debug
 r:	$(EXEC)_release
 c:	$(EXEC)_check
 rs:	$(EXEC)_static
+ast:	$(EXEC)_ast
 
 libs:	lib$(LIB)_standard.a
 libp:	lib$(LIB)_profile.a
@@ -83,6 +86,7 @@ $(EXEC)_debug:		LFLAGS += -g
 #$(EXEC)_check:	LFLAGS += 
 #$(EXEC)_release:	LFLAGS += 
 $(EXEC)_static:		LFLAGS += --static
+$(EXEC)_ast:		CFLAGS += -emit-ast
 
 ## Dependencies
 $(EXEC):		$(COBJS)
@@ -91,6 +95,7 @@ $(EXEC)_debug:		$(DCOBJS)
 $(EXEC)_check:		$(CCOBJS)
 $(EXEC)_release:	$(RCOBJS)
 $(EXEC)_static:		$(RCOBJS)
+$(EXEC)_ast:		$(ACOBJS)
 
 lib$(LIB)_standard.a:	$(filter-out */$(MAINFILE).o,  $(COBJS))
 lib$(LIB)_profile.a:	$(filter-out */$(MAINFILE).op, $(PCOBJS))
@@ -112,6 +117,9 @@ YACC: src/uppaalparser.y
 	@echo Compiling: $(subst $(WROOT)/,,$@)
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
+%.ast: %.$(SRCSUF)
+	@echo Compiling: $(subst $(WROOT)/,,$@)
+	@$(CC) $(CFLAGS) $< -o $@ 
 
 
 ## Build rule
@@ -144,8 +152,9 @@ libs libp libd libr:
 ## Clean rule
 clean: 
 	@rm -f $(EXEC) $(EXEC)_profile $(EXEC)_debug $(EXEC)_release $(EXEC)_static \
-	  $(COBJS) $(PCOBJS) $(DCOBJS) $(RCOBJS) $(CCOBJS)  *.core depend.mk \
+	  $(COBJS) $(PCOBJS) $(DCOBJS) $(RCOBJS) $(CCOBJS)  $(ACOBJS) *.core depend.mk \
 	   lib$(LIB)_standard.a lib$(LIB)_profile.a lib$(LIB)_release.a lib$(LIB)_debug.a
+
 
 test:
 	test/runtest.sh  test
