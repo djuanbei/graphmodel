@@ -338,9 +338,7 @@ chan_identifier
   item.id=$3;
   $$->push_back(item);
 }
-
 ;
-
 
 timed_automata_list
 :AUTOMATA_YY
@@ -350,7 +348,15 @@ timed_automata_list
   delete $1;
 }
 |
+
 TEMPLATE_YY
+{
+  $$=new vector<string> ( );
+  $$->push_back($1->symbol);
+  delete $1;
+}
+|
+TEMPLATE_YY '(' ')'
 {
   $$=new vector<string> ( );
   $$->push_back($1->symbol);
@@ -368,6 +374,13 @@ TEMPLATE_YY
   $$->push_back($3->symbol);
   delete $3;
 }
+|  timed_automata_list ',' TEMPLATE_YY '(' ')'
+{
+  $$=$1;
+  $$->push_back($3->symbol);
+  delete $3;
+}
+
 ;
 
 
