@@ -42,6 +42,7 @@ using namespace graphsat;
 
 typedef ReachableSet<INT_TAS_t> R_t;
 
+bool UppaalData::IS_SYSTEM_PROCEDURE=false;
 void example1( void ) {
   // x:1 y:2 z:3
   vector<typename INT_TAS_t::T_t> es;

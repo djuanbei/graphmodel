@@ -68,7 +68,7 @@ clock y;
 	<system>// Place template instantiations here.
 
 // List one or more processes to be composed into a system.
-system Lamp,User;
+system Lamp(),User();
     </system>
 	<queries>
 	</queries>

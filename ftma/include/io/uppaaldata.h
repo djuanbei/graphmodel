@@ -22,6 +22,8 @@ using std::pair;
 using std::string;
 using std::vector;
 
+
+
 struct FormalParameterItem {
   FormalParameterItem() {}
   //  bool   is_ref;
@@ -247,7 +249,7 @@ public:
     }
     return parent->getTotalChannelNum();
   }
-
+  static bool  IS_SYSTEM_PROCEDURE;
 private:
   string         name;
   ValueData<int> int_values;

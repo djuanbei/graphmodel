@@ -115,7 +115,8 @@ activated=false</label>
 		</transition>
 	</template>
 	<system>
-      bool activated1, activated2;
+      bool activated1;
+bool activated2=false;
 urgent chan pushed1, pushed2;
 urgent chan closed1, closed2;
 Door1 = Door(activated1, pushed1, closed1, closed2);
