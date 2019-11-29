@@ -90,6 +90,8 @@ public:
                 const vector<ClockConstraint<C>> &edifference_cons,
                 const vector<int> &nodes, const vector<int> &links,
                 int channel_n ) {
+    
+    assert((int)clock_upper_bounds.size( )==2*clock_num+2 );
     state_length  = 0;
     component_num = comp_num;
 
@@ -158,7 +160,17 @@ public:
      *
      */
     re_comp.setBound( freeze_location_index, 0, component_num );
-
+    /**
+     * set the minimum and maximum for DBM matrix element 
+     * TODO: compress by the upper bound of clock constaint
+     */
+    
+    // int 
+    // for(int i=clock_start_loc; i< state_length; i++ ){
+    //   //      int row=(i-clock_start_loc)/ ( clock_num + 1 );
+    //   //      int col=(i-clock_start_loc)% ( clock_num + 1 );
+    // }
+    
     return re_comp;
   }
 

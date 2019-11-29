@@ -230,6 +230,12 @@ template <typename C> inline C getMAX_INT( const C c ) {
   return std::numeric_limits<C>::max() / 2 - 2;
 }
 
+/**
+ * >c then the MatrixValue is 2*c+1
+ * >= c then the  MatrixValue is 2*c
+ * 
+ */
+
 template <typename C>
 inline C getMatrixValue( C realRight, bool isStrct = true ) {
   C right = realRight * 2;

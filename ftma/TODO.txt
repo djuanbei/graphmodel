@@ -1,2 +1,2 @@
-
+1. compress every state element by the upper bound of clock
 
