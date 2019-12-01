@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(PROJECT_ROOT "/Users/yunyun/mycode/c++/graphmodel/ftma")
+
 # Options. Turn on with 'cmake -Dmyvarname=ON'.
 option(test "Build all tests." OFF) # Makes boolean 'test' available.
 
@@ -8,6 +10,7 @@ set(PROJECT_NAME gmodel)
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11 -fdiagnostics-absolute-paths ")
+
 
 # force static runtime libraries for msvc builds
 if(MSVC)
@@ -79,4 +82,12 @@ if (test)
   # You can also omit NAME and COMMAND. The second argument could be some other
   # test executable.
   add_test(that-other-test-I-made runUnitTests)
+endif()
+
+###########################
+# parser
+###########################
+if (parser)
+      execute_process(COMMAND 	lex  -o ${PROJECT_ROOT}/include/io/uppaalscan.h ${PROJECT_ROOT}/src/uppaalscan.l)
+      execute_process(COMMAND   bison  -o  ${PROJECT_ROOT}/src/uppaalparser.cpp  -v ${PROJECT_ROOT}/src/uppaalparser.y)
 endif()
