@@ -91,8 +91,8 @@ int UppaalParser::parseTemplate( child_type templates ) {
 int UppaalParser::parseSystem( XML_P system ) {
 
   assert( NULL != system );
-  UppaalData::IS_SYSTEM_PROCEDURE=true;
-  string content = system->getValue();
+  UppaalData::IS_SYSTEM_PROCEDURE = true;
+  string content                  = system->getValue();
   parseProblem( content, &system_data );
   setCounter();
   setChannel();
@@ -158,7 +158,7 @@ int UppaalParser::parseSystem( XML_P system ) {
       }
     }
   }
-  UppaalData::IS_SYSTEM_PROCEDURE=false;
+  UppaalData::IS_SYSTEM_PROCEDURE = false;
   return 0;
 }
 

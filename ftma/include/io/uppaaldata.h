@@ -10,7 +10,7 @@
 
 #ifndef __UPPAAL_H
 #define __UPPAAL_H
-#define LEX_VERBOSE
+//#define LEX_VERBOSE
 #include "model/ta.hpp"
 #include "util/data.hpp"
 #include <map>
@@ -21,8 +21,6 @@ using std::map;
 using std::pair;
 using std::string;
 using std::vector;
-
-
 
 struct FormalParameterItem {
   FormalParameterItem() {}
@@ -249,7 +247,8 @@ public:
     }
     return parent->getTotalChannelNum();
   }
-  static bool  IS_SYSTEM_PROCEDURE;
+  static bool IS_SYSTEM_PROCEDURE;
+
 private:
   string         name;
   ValueData<int> int_values;

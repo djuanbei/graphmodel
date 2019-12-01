@@ -56,6 +56,8 @@ public:
     if ( manager.getClockManager().isConsistent(
              manager.getDBM( cache_state ) ) ) {
 
+      manager.norm( manager.getDBM( cache_state ) );
+
       addToReachableSet( cache_state );
       addToWait( cache_state );
     }
@@ -195,6 +197,14 @@ public:
   }
 
   inline bool addToReachableSet( const C_t *const state ) {
+
+#ifdef NDEBUG
+    C_t *dummy_state = manager.newState( state );
+    manager.getClockManager().encode( manager.getDBM( dummy_state ) );
+    manager.getClockManager().decode( manager.getDBM( dummy_state ) );
+    assert( manager.getClockManager().equal( manager.getDBM( dummy_state ),
+                                             manager.getDBM( state ) ) );
+#endif
 
 #ifndef CHECK_MEMORY
     compress_state.encode( state, convert_UINT );

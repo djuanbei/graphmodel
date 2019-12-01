@@ -11,7 +11,7 @@
 //#define CHECK_MEMORY 1
 #define PRINT_STATE 1
 #define DRAW_GRAPH 1
-#define YYDEBUG 1
+//#define YYDEBUG 1
 #include <random>
 
 #include "action/counteraction.h"
@@ -42,7 +42,7 @@ using namespace graphsat;
 
 typedef ReachableSet<INT_TAS_t> R_t;
 
-bool UppaalData::IS_SYSTEM_PROCEDURE=false;
+bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 void example1( void ) {
   // x:1 y:2 z:3
   vector<typename INT_TAS_t::T_t> es;
@@ -370,6 +370,24 @@ void fisher( int n = 2 ) {
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
 }
+void testIsConsistent() {
+  int             n   = 12;
+  int             len = ( n + 1 ) * ( n + 1 );
+  DBMFactory<int> df( n );
+  for ( int i = 0; i < 5; i++ ) {
+    int *                d    = df.randomFeasiableDBM();
+    ClockConstraint<int> cons = df.getCons( d, 2, 3 );
+    cout << cons << endl;
+    ClockConstraint<int> cons1 = cons.neg();
+
+    cout << cons1 << endl;
+    cout << "============" << endl;
+    df.andImpl( d, cons1 );
+    assert( !df.isConsistent( d ) );
+
+    df.destroyDBM( d );
+  }
+}
 
 void incrementalTest() {
   int                             n = 3;
@@ -539,10 +557,11 @@ void incrementalTest() {
 }
 void fisher1() {
   UppaalParser parser(
-  "/Users/yunyun/mycode/c++/graphmodel/ftma/example/fischer.xml" );
-  //  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/test1.xml" );
-  INT_TAS_t    sys = parser.getSYS();
-  R_t          data( sys );
+      "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+  //  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/test1.xml"
+  //  );
+  INT_TAS_t sys = parser.getSYS();
+  R_t       data( sys );
 
   Reachability<R_t> reacher( data );
   //  FischerMutual     prop;
@@ -557,10 +576,9 @@ void fisher1() {
   data.generatorDot( "test.gv" );
 }
 
+void runxml( const string &file_name ) {
 
-void runxml( const string& file_name ){
-
-  UppaalParser parser(file_name );
+  UppaalParser parser( file_name );
   INT_TAS_t    sys = parser.getSYS();
   R_t          data( sys );
 
@@ -568,7 +586,6 @@ void runxml( const string& file_name ){
   reacher.computeAllReachableSet();
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
-  
 }
 
 void testOP() {
@@ -608,10 +625,14 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
-  if(argc>1 ){
-    runxml( argv[ 1]);
+
+  if ( argc > 1 ) {
+    runxml( argv[ 1 ] );
     return 0;
   }
+  testIsConsistent();
+
+  return 0;
   yy_flex_debug = 1;
   //    incrementalTest( );
   // return 0;

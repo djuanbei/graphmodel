@@ -63,20 +63,6 @@ public:
       clock_y += shift;
     }
   }
-  ClockConstraint randConst( int num, int low, int up ) const {
-    std::uniform_int_distribution<int> distribution( 0, num );
-    std::default_random_engine         generator;
-    int                                xx = distribution( generator );
-    int                                yy = distribution( generator );
-    while ( xx == yy ) {
-      yy = distribution( generator );
-    }
-
-    std::uniform_int_distribution<C> distribution1( low, up );
-
-    C vv = distribution1( generator );
-    return ClockConstraint( xx, yy, vv );
-  }
 
   ClockConstraint neg( void ) const {
     ClockConstraint re( *this );
@@ -130,8 +116,7 @@ public:
             << "x_" << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
             << getRight( cons.matrix_value );
       }
-    }
-    if ( cons.clock_x < 0 ) {
+    } else if ( cons.clock_x < 0 ) {
       if ( isStrict<C>( cons.matrix_value ) ) {
         out << "0     - "
             << "x_" << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
@@ -160,7 +145,7 @@ private:
    is_strict_ref  is true : <=
    */
   ClockConstraint( const int clock_id1, const int clock_id2, const C rhs,
-                   bool is_strict_ref = true ) {
+                   bool is_strict_ref ) {
     parameter_id = -100;
     clock_x      = clock_id1;
     clock_y      = clock_id2;
@@ -199,5 +184,23 @@ private:
 
   int parameter_id;
 };
+template <typename C> ClockConstraint<C> randConst( int num, int low, int up ) {
+  std::uniform_int_distribution<int> distribution( 0, num );
+  std::default_random_engine         generator;
+  int                                xx = distribution( generator );
+  int                                yy = distribution( generator );
+  while ( xx == yy ) {
+    yy = distribution( generator );
+  }
+
+  std::uniform_int_distribution<int> distribution1( low, up );
+
+  int vv = distribution1( generator );
+  if ( distribution1( generator ) % 2 ) {
+    return ClockConstraint<C>( xx, yy, LT, vv );
+  } else {
+    return ClockConstraint<C>( xx, yy, LE, vv );
+  }
+}
 } // namespace graphsat
 #endif

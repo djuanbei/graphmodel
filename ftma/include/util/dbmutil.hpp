@@ -18,8 +18,6 @@
 
 #define STRING( s ) #s
 
-
-
 #ifdef PRINT_STATE
 
 #define PRINT_STATE_MACRO                                                      \
@@ -231,9 +229,9 @@ template <typename C> inline C getMAX_INT( const C c ) {
 }
 
 /**
- * >c then the MatrixValue is 2*c+1
- * >= c then the  MatrixValue is 2*c
- * 
+ * <  c then the MatrixValue is 2*c+1
+ * <= c then the MatrixValue is 2*c
+ *
  */
 
 template <typename C>

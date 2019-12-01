@@ -86,16 +86,17 @@ public:
   }
 
   StateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
-                const vector<C> &                 clock_upper_bounds,
+                const vector<C> &                 oclock_upper_bounds,
                 const vector<ClockConstraint<C>> &edifference_cons,
                 const vector<int> &nodes, const vector<int> &links,
                 int channel_n ) {
-    
-    assert((int)clock_upper_bounds.size( )==2*clock_num+2 );
+
+    assert( (int) oclock_upper_bounds.size() == 2 * clock_num + 2 );
     state_length  = 0;
     component_num = comp_num;
 
     difference_constraints = edifference_cons;
+    clock_upper_bounds     = oclock_upper_bounds;
     node_nums              = nodes;
     link_nums              = links;
     channel_num            = channel_n;
@@ -159,25 +160,37 @@ public:
      * At most all the component in freeze location
      *
      */
-    re_comp.setBound( freeze_location_index, 0, component_num );
-    /**
-     * set the minimum and maximum for DBM matrix element 
-     * TODO: compress by the upper bound of clock constaint
-     */
-    
-    // int 
-    // for(int i=clock_start_loc; i< state_length; i++ ){
-    //   //      int row=(i-clock_start_loc)/ ( clock_num + 1 );
-    //   //      int col=(i-clock_start_loc)% ( clock_num + 1 );
-    // }
-    
+    re_comp.setBound( freeze_location_index, 0, component_num - 1 );
+
     return re_comp;
   }
 
   Compression<C> getBodyCompression() const {
+    int            body_len = state_length - clock_start_loc;
+    Compression<C> re_comp( body_len );
+    return re_comp;
+    /**
+     * set the minimum and maximum for DBM matrix element
+     * TODO: compress by the upper bound of clock constaint
+     */
 
-    Compression<C> re_comp( state_length - clock_start_loc );
+    int len = (int) clock_upper_bounds.size() / 2;
+    assert( body_len == len * len );
 
+    for ( int i = 0; i < body_len; i++ ) {
+      int row = ( i ) / len;
+      int col = ( i ) % len;
+      if ( row == col ) {
+        re_comp.setBound( i, LTEQ_ZERO, LTEQ_ZERO );
+      } else if ( row == 0 ) {
+        re_comp.setBound( i, clock_upper_bounds[ col + len ], LTEQ_ZERO );
+      } else if ( col == 0 ) {
+        re_comp.setBound( i, LTEQ_ZERO, clock_upper_bounds[ row ] + 1 );
+      } else {
+        re_comp.setBound( i, clock_upper_bounds[ col + len ],
+                          clock_upper_bounds[ row ] + 1 );
+      }
+    }
     return re_comp;
   }
 
@@ -319,12 +332,12 @@ private:
   int clock_start_loc;
 
   vector<ClockConstraint<C>> difference_constraints;
-
-  DBMFactory<C>     dbm_manager;
-  vector<Counter>   counters;
-  vector<Parameter> parameters;
-  vector<int>       node_nums;
-  vector<int>       link_nums;
+  vector<C>                  clock_upper_bounds;
+  DBMFactory<C>              dbm_manager;
+  vector<Counter>            counters;
+  vector<Parameter>          parameters;
+  vector<int>                node_nums;
+  vector<int>                link_nums;
 };
 } // namespace graphsat
 #endif

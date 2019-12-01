@@ -3,9 +3,9 @@
 namespace graphsat {
 
 UppaalData::UppaalData() {
-  IS_SYSTEM_PROCEDURE=false;
-  init_loc = 0;
-  name     = "";
+  IS_SYSTEM_PROCEDURE = false;
+  init_loc            = 0;
+  name                = "";
 
   parent = NULL;
 
@@ -54,7 +54,7 @@ TYPE_T UppaalData::getType( const string &name ) const {
   return NO_T;
 }
 bool UppaalData::isConstant( const string &name ) const {
-  if(IS_SYSTEM_PROCEDURE ){
+  if ( IS_SYSTEM_PROCEDURE ) {
     return false;
   }
   if ( NO_T == getType( name ) ) {

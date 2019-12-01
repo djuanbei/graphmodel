@@ -39,8 +39,9 @@ public:
     assert( up >= low );
     bounds[ id ].first  = low;
     bounds[ id ].second = up;
-    UINT bound          = up - low + 1;
-    domain[ id ]        = bound;
+
+    UINT bound   = up - low + 1;
+    domain[ id ] = bound;
     update();
   }
   int getCompressionSize() const { return compressionSize; }
@@ -50,6 +51,13 @@ public:
     int  j    = 0;
     UINT base = 1;
     for ( int i = 0; i < row_len; i++ ) {
+      T temp = data[ i ];
+      // if(temp<bounds[ i ].first  ){
+      //   temp=bounds[ i ].first  ;
+      // }
+      // if(temp>bounds[ i ].second  ){
+      //   temp=bounds[ i ].second;
+      // }
       assert( data[ i ] >= bounds[ i ].first );
       assert( data[ i ] <= bounds[ i ].second );
 
@@ -57,7 +65,7 @@ public:
         j++;
         base = 1;
       }
-      out[ j ] += ( data[ i ] - bounds[ i ].first ) * base;
+      out[ j ] += ( temp - bounds[ i ].first ) * base;
       base *= domain[ i ];
     }
   }
@@ -78,7 +86,7 @@ public:
 private:
   int row_len;
   /**
-   * bounds[ i].frist  <= value[ i] < bounds[ i].second
+   * bounds[ i].frist  <= value[ i] <= bounds[ i].second
    *
    */
 

@@ -210,7 +210,6 @@ int check_type()
         return SELF_DEF_YY;
     }
     if(current_data->isConstant(sym)){
-            cout<<"constant"<<endl;
             yylval.int_value=current_data->getConstant(sym);
             return CONSTANT;
 
