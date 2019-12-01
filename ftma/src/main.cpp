@@ -15,7 +15,7 @@
 #include <random>
 
 #include "action/counteraction.h"
-#include "constraint/clockdiffcons.hpp"
+#include "constraint/clockdiffcons.h"
 #include "model/location.hpp"
 #include "model/ta.hpp"
 #include "model/transition.hpp"
@@ -23,7 +23,7 @@
 
 #include "util/dbmutil.hpp"
 
-#include "domain/dbm.hpp"
+#include "domain/dbm.h"
 #include "domain/dbmset.hpp"
 #include "io/uppaalmodelparser.h"
 #include "state/reachableset.hpp"
@@ -243,7 +243,7 @@ void example6() {
 
   vector<int *>   vecs;
   int             n = 10;
-  DBMFactory<int> manager( n );
+  DBMFactory manager( n );
   DBMset<int>     sets( manager );
   int             num = 1000;
 
@@ -373,12 +373,12 @@ void fisher( int n = 2 ) {
 void testIsConsistent() {
   int             n   = 12;
   int             len = ( n + 1 ) * ( n + 1 );
-  DBMFactory<int> df( n );
+  DBMFactory df( n );
   for ( int i = 0; i < 5; i++ ) {
     int *                d    = df.randomFeasiableDBM();
-    ClockConstraint<int> cons = df.getCons( d, 2, 3 );
+    ClockConstraint cons = df.getCons( d, 2, 3 );
     cout << cons << endl;
-    ClockConstraint<int> cons1 = cons.neg();
+    ClockConstraint cons1 = cons.neg();
 
     cout << cons1 << endl;
     cout << "============" << endl;

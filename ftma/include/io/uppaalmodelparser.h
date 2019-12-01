@@ -14,7 +14,7 @@
 #include "model/ta.hpp"
 
 #include "action/counteraction.h"
-#include "constraint/clockdiffcons.hpp"
+#include "constraint/clockdiffcons.h"
 #include "model/location.hpp"
 
 #include "model/transition.hpp"
@@ -22,7 +22,7 @@
 
 #include "util/dbmutil.hpp"
 
-#include "domain/dbm.hpp"
+#include "domain/dbm.h"
 #include "domain/dbmset.hpp"
 
 #include "io/uppaaldata.h"

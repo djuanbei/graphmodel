@@ -15,7 +15,7 @@
 #include "action/counteraction.h"
 #include "channel.h"
 #include "counter.hpp"
-#include "domain/dbm.hpp"
+#include "domain/dbm.h"
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
 #include "location.hpp"
@@ -45,7 +45,7 @@ template <typename C, typename L, typename T> class TAT {
 private:
   typedef C C_t;
 
-  typedef ClockConstraint<C_t> CS_t;
+  typedef ClockConstraint CS_t;
 
   typedef TAT<C, L, T> TAT_t;
   typedef TA<C, L, T>  TA_t;
@@ -76,11 +76,7 @@ public:
 
   int getInitialLoc() const { return initial_loc; }
 
-  // void updateChannel( vector<Channel> & channels ){
-  //   for(auto e: template_locations ){
-  //     e.type=channels[ e.gloabl_id];
-  //   }
-  // }
+
 
 private:
   vector<L> template_locations;
@@ -93,7 +89,7 @@ private:
 
   vector<C> clock_max_value;
 
-  vector<ClockConstraint<C>> template_difference_cons;
+  vector<ClockConstraint> template_difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
@@ -164,7 +160,7 @@ template <typename C, typename L, typename T> class TA {
 private:
   typedef C C_t;
 
-  typedef ClockConstraint<C_t> CS_t;
+  typedef ClockConstraint CS_t;
 
   typedef TA<C, L, T>  TA_t;
   typedef TAT<C, L, T> TAT_t;
@@ -191,11 +187,11 @@ public:
 
   int getInitialLoc() const { return ta_tempate->initial_loc; }
 
-  bool transitionRun( int link, const DBMFactory<C> &manager, C *D ) const {
+  bool transitionRun( int link, const DBMFactory &manager, C *D ) const {
     return transitions[ link ]( manager, D );
   }
 
-  bool locationRun( int link, const DBMFactory<C> &manager, C *D ) const {
+  bool locationRun( int link, const DBMFactory &manager, C *D ) const {
     if ( !locations[ link ].isReachable( manager, D ) ) {
       return false;
     }
@@ -232,7 +228,7 @@ private:
 
   vector<L>                  locations;
   vector<T>                  transitions;
-  vector<ClockConstraint<C>> difference_cons;
+  vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
@@ -244,11 +240,11 @@ template <typename C, typename L, typename T> class TAS {
 public:
   typedef C                    C_t;
   typedef C_t *                DBM_t;
-  typedef DBMFactory<C_t>      DBMManager_t;
+  typedef DBMFactory      DBMManager_t;
   typedef DBMset<C_t>          DBMSet_t;
   typedef C_t                  State_t;
   typedef StateSet<State_t>    StateSet_t;
-  typedef ClockConstraint<C_t> CS_t;
+  typedef ClockConstraint CS_t;
 
   typedef L L_t;
 
@@ -356,7 +352,7 @@ private:
   vector<int> vec_clock_nums;
 
   vector<C>                  clock_max_value;
-  vector<ClockConstraint<C>> difference_cons;
+  vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
@@ -388,10 +384,10 @@ private:
 
 typedef int C_t1;
 
-typedef DBMFactory<C_t1> DBMManager_t1;
+typedef DBMFactory DBMManager_t1;
 typedef DBMset<C_t1>     DBMSet_t1;
 
-typedef ClockConstraint<C_t1> CS_t1;
+typedef ClockConstraint CS_t1;
 
 typedef Location<C_t1, CS_t1, DBMManager_t1> L_t1;
 

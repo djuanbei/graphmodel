@@ -203,7 +203,6 @@ protected:
   ~CounterParameterConstraint() {}
 
 private:
-  int           ref_parameter_id;
   int           global_counter_id;
   COMP_OPERATOR op;
   int           parameter_id;

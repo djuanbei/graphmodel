@@ -15,7 +15,7 @@
 
 #include "util/dbmutil.hpp"
 
-#include "domain/dbm.hpp"
+#include "domain/dbm.h"
 
 namespace graphsat {
 using namespace std;
@@ -26,7 +26,7 @@ public:
 
   class const_iterator;
 
-  DBMset( DBMFactory<C> &manager ) { dbm_manager = manager; }
+  DBMset( DBMFactory &manager ) { dbm_manager = manager; }
   ~DBMset() { deleteAll(); }
 
   iterator begin() { return iterator( this ); }
@@ -227,7 +227,7 @@ public:
   };
 
 private:
-  DBMFactory<C>      dbm_manager;
+  DBMFactory      dbm_manager;
   map<uint32_t, int> passed_data;
   vector<C *>        map_data;
   vector<DF_T>       map_data_feature;

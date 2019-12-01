@@ -40,7 +40,7 @@
 
 #endif
 
-#define LTEQ_ZERO ( (C) 1 )
+#define LTEQ_ZERO ( 1 )
 
 #define newA( __E, __n ) (__E *) malloc( ( __n ) * sizeof( __E ) )
 

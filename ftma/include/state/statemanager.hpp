@@ -87,7 +87,7 @@ public:
 
   StateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
                 const vector<C> &                 oclock_upper_bounds,
-                const vector<ClockConstraint<C>> &edifference_cons,
+                const vector<ClockConstraint> &edifference_cons,
                 const vector<int> &nodes, const vector<int> &links,
                 int channel_n ) {
 
@@ -116,7 +116,7 @@ public:
     state_length += ( clock_num + 1 ) * ( clock_num + 1 );
 
     dbm_manager =
-        DBMFactory<C>( clock_num, clock_upper_bounds, difference_constraints );
+        DBMFactory( clock_num, clock_upper_bounds, difference_constraints );
     counters = ecounters;
   }
   int getStateLen() const { return state_length; }
@@ -232,7 +232,7 @@ public:
   void destroyState( C *s ) const { delete[] s; }
 
   inline int                  getComponentNum() const { return component_num; }
-  inline const DBMFactory<C> &getClockManager() const { return dbm_manager; }
+  inline const DBMFactory &getClockManager() const { return dbm_manager; }
 
   void norm( const C *const dbm, vector<C *> &re_vec ) const {
     C *newDBM = dbm_manager.createDBM( dbm );
@@ -255,7 +255,7 @@ public:
     return state + counter_start_loc;
   }
 
-  inline void andImpl( const ClockConstraint<C> &cs, C *state ) const {
+  inline void andImpl( const ClockConstraint &cs, C *state ) const {
     return dbm_manager.andImpl( getDBM( state ), cs );
   }
   inline bool isConsistent( C *state ) const {
@@ -331,9 +331,9 @@ private:
   int counter_start_loc;
   int clock_start_loc;
 
-  vector<ClockConstraint<C>> difference_constraints;
+  vector<ClockConstraint> difference_constraints;
   vector<C>                  clock_upper_bounds;
-  DBMFactory<C>              dbm_manager;
+  DBMFactory              dbm_manager;
   vector<Counter>            counters;
   vector<Parameter>          parameters;
   vector<int>                node_nums;
