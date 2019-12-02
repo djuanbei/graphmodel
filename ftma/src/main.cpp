@@ -16,8 +16,8 @@
 
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.h"
-#include "model/location.h"
 #include "model/graphmodel.hpp"
+#include "model/location.h"
 #include "model/transition.h"
 #include "problem/reachability.hpp"
 
@@ -41,8 +41,8 @@ using std::vector;
 using namespace graphsat;
 
 typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
-typename INT_TAS_t::AgentTemplate_t tat;
-typedef ReachableSet<INT_TAS_t> R_t;
+typename INT_TAS_t::AgentTemplate_t                       tat;
+typedef ReachableSet<INT_TAS_t>                           R_t;
 
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 void example1( void ) {
@@ -84,8 +84,8 @@ void example1( void ) {
   es.push_back( e23 );
   typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 3 );
 
-  Parameter                param( 1 );
-  INT_TAS_t                sys;
+  Parameter                   param( 1 );
+  INT_TAS_t                   sys;
   typename INT_TAS_t::Agent_t tma1( &tmt1, param );
   sys += tma1;
   R_t data( sys );
@@ -138,8 +138,8 @@ void example50() {
 
   typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 2 );
 
-  Parameter                param( 1 );
-  INT_TAS_t                sys;
+  Parameter                   param( 1 );
+  INT_TAS_t                   sys;
   typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
   sys += tma1;
@@ -189,8 +189,8 @@ void example2( void ) {
 
   typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 2 );
 
-  INT_TAS_t                sys;
-  Parameter                param( 1 );
+  INT_TAS_t                   sys;
+  Parameter                   param( 1 );
   typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
   sys += tma1;
@@ -213,7 +213,7 @@ std::uniform_int_distribution<int> distribution( 0, 1000 );
 
 int *randV( int n, int s ) {
 
- int *v = new int[ n ];
+  int *v = new int[ n ];
 
   for ( int i = 0; i < n; i++ ) {
     v[ i ] = distribution( generator );
@@ -225,9 +225,9 @@ int *randV( int n, int s ) {
 void example5( void ) {
   StateSet<int> sets;
   vector<int *> vecs;
-  int                      n   = 20;
-  int                      s   = 4;
-  int                      num = 1000;
+  int           n   = 20;
+  int           s   = 4;
+  int           num = 1000;
   for ( int i = 0; i < num; i++ ) {
     int *temp = randV( n, s );
     if ( sets.add( temp ) ) {
@@ -243,11 +243,11 @@ void example5( void ) {
 
 void example6() {
 
-  vector<int *>   vecs;
-  int             n = 10;
-  DBMFactory manager( n );
-  DBMset<int>     sets( manager );
-  int             num = 1000;
+  vector<int *> vecs;
+  int           n = 10;
+  DBMFactory    manager( n );
+  DBMset<int>   sets( manager );
+  int           num = 1000;
 
   for ( int i = 0; i < num; i++ ) {
     int *dbm = manager.randomFeasiableDBM();
@@ -373,11 +373,11 @@ void fisher( int n = 2 ) {
   data.generatorDot( "test.gv" );
 }
 void testIsConsistent() {
-  int             n   = 12;
-  int             len = ( n + 1 ) * ( n + 1 );
+  int        n   = 12;
+  int        len = ( n + 1 ) * ( n + 1 );
   DBMFactory df( n );
   for ( int i = 0; i < 5; i++ ) {
-    int *                d    = df.randomFeasiableDBM();
+    int *           d    = df.randomFeasiableDBM();
     ClockConstraint cons = df.getCons( d, 2, 3 );
     cout << cons << endl;
     ClockConstraint cons1 = cons.neg();
@@ -665,7 +665,7 @@ int main( int argc, const char *argv[] ) {
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
   typename INT_TAS_t::DBMManager_t exampleDBM( 4 );
-  int *        D = exampleDBM.randomDBM();
+  int *                            D = exampleDBM.randomDBM();
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D ) << endl;
 
@@ -680,19 +680,17 @@ int main( int argc, const char *argv[] ) {
   exampleDBM.dump( cout, D ) << endl;
   std::cout << "Hello, World!\n";
 
- int *D1 = exampleDBM.createDBM();
+  int *D1 = exampleDBM.createDBM();
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D1 ) << endl;
- int *D2 =
-      exampleDBM.reset( D1, 1, (int) 10 );
+  int *D2 = exampleDBM.reset( D1, 1, (int) 10 );
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D2 ) << endl;
 
   // cout<<"constrain: "<<cons<<endl;
 
   // //C_t*  D3=exampleDBM.And( D2, cons.neg( ));
- int *D3 =
-      exampleDBM.reset( D2, 2, (int) 10 );
+  int *D3 = exampleDBM.reset( D2, 2, (int) 10 );
 
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D3 ) << endl;

@@ -118,18 +118,14 @@ public:
     return dbm_manager.isConsistent( getDBM( state ) );
   }
 
-   vector<int> blockComponents( const int        chid,
-                               const int *const state ) const ;
-  
+  vector<int> blockComponents( const int chid, const int *const state ) const;
 
-   void constructState( const int component_id, const int target,
-                              const int *const state, int *dbm, bool isCommit,
+  void constructState( const int component_id, const int target,
+                       const int *const state, int *dbm, bool isCommit,
                        int *re_state ) const;
-  
 
-   void constructState( const int component_id, const int target,
-                       bool isCommit, int *state );
-  
+  void constructState( const int component_id, const int target, bool isCommit,
+                       int *state );
 
   inline bool isCommitComp( const int        component_id,
                             const int *const state ) const {

@@ -76,9 +76,9 @@ int UppaalParser::parseTemplate( child_type templates ) {
 
     vector<typename INT_TAS_t::T_t> transitions =
         parseTransition( template_data, transition_comps );
-    template_data.tat =
-        INT_TAS_t::AgentTemplate_t( locations, transitions, template_data.getInitialLoc(),
-                          template_data.getTypeNum( CLOCK_T ) );
+    template_data.tat = INT_TAS_t::AgentTemplate_t(
+        locations, transitions, template_data.getInitialLoc(),
+        template_data.getTypeNum( CLOCK_T ) );
     template_map[ template_data.name ] = template_data;
 
     system_data.addValue( TEMPLATE_T, template_data.name );
@@ -112,7 +112,7 @@ int UppaalParser::parseSystem( XML_P system ) {
      */
     if ( formal_parameter_list.empty() ) {
       typename INT_TAS_t::Agent_t tma( &template_map[ component->tmt_name ].tat,
-                                    parameter );
+                                       parameter );
       sys += tma;
     } else if ( component->has_parameter ) {
       int para_id = 0;
@@ -138,7 +138,7 @@ int UppaalParser::parseSystem( XML_P system ) {
         para_id++;
       }
       typename INT_TAS_t::Agent_t tma( &template_map[ component->tmt_name ].tat,
-                                    parameter );
+                                       parameter );
 
       sys += tma;
 
@@ -152,8 +152,8 @@ int UppaalParser::parseSystem( XML_P system ) {
               ->type_name );
       for ( auto e : iarray ) {
         parameter.setParameterMap( 0, e );
-        typename INT_TAS_t::Agent_t tma( &template_map[ component->tmt_name ].tat,
-                                      parameter );
+        typename INT_TAS_t::Agent_t tma(
+            &template_map[ component->tmt_name ].tat, parameter );
         sys += tma;
       }
     }

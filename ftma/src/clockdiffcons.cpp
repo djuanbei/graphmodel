@@ -2,8 +2,9 @@
 
 namespace graphsat {
 
-ClockConstraint::ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
-                                  const int rhs, const int eparameter_id ) {
+ClockConstraint::ClockConstraint( const int clock_id1, const int clock_id2,
+                                  COMP_OPERATOR eop, const int rhs,
+                                  const int eparameter_id ) {
 
   if ( eparameter_id < 0 ) {
     init( clock_id1, clock_id2, eop, rhs );
@@ -25,7 +26,7 @@ void ClockConstraint::globalUpdate( const vector<int> &parameter_value ) {
   init( id1, id2, op, rhs );
 }
 
-void   ClockConstraint::clockShift( int shift){
+void ClockConstraint::clockShift( int shift ) {
   if ( clock_x > 0 ) {
     clock_x += shift;
   }
@@ -34,13 +35,13 @@ void   ClockConstraint::clockShift( int shift){
   }
 }
 
-ClockConstraint ClockConstraint::neg( ) const{
+ClockConstraint ClockConstraint::neg() const {
   ClockConstraint re( *this );
   re.neg_impl();
   return re;
 }
 
-bool ClockConstraint::isSat(const ClockConstraint &cons ) const{
+bool ClockConstraint::isSat( const ClockConstraint &cons ) const {
   if ( ( cons.clock_x == clock_x ) && ( cons.clock_y == clock_y ) ) {
     return true;
   } else if ( ( cons.clock_x == clock_y ) && ( cons.clock_y == clock_x ) ) {
@@ -73,9 +74,7 @@ bool ClockConstraint::isSat(const ClockConstraint &cons ) const{
   return true;
 }
 
-
-std::ostream &operator<<( std::ostream &         out,
-                                 const ClockConstraint &cons ) {
+std::ostream &operator<<( std::ostream &out, const ClockConstraint &cons ) {
   if ( cons.clock_x >= 0 && cons.clock_y >= 0 ) {
     if ( isStrict<int>( cons.matrix_value ) ) {
       out << "x_" << cons.clock_x << " - "
@@ -109,8 +108,8 @@ std::ostream &operator<<( std::ostream &         out,
   return out;
 }
 
-ClockConstraint::  ClockConstraint( const int clock_id1, const int clock_id2, const int rhs,
-                                    bool is_strict_ref ) {
+ClockConstraint::ClockConstraint( const int clock_id1, const int clock_id2,
+                                  const int rhs, bool is_strict_ref ) {
   parameter_id = -100;
   clock_x      = clock_id1;
   clock_y      = clock_id2;
@@ -124,8 +123,8 @@ void ClockConstraint::neg_impl( void ) {
   matrix_value = 1 - matrix_value;
 }
 
-void ClockConstraint::init( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
-                            const int rhs ) {
+void ClockConstraint::init( const int clock_id1, const int clock_id2,
+                            COMP_OPERATOR eop, const int rhs ) {
   op = eop;
   assert( op != NE );
   assert( op != EQ );
@@ -166,4 +165,4 @@ ClockConstraint randConst( int num, int low, int up ) {
     return ClockConstraint( xx, yy, LE, vv );
   }
 }
-}
+} // namespace graphsat

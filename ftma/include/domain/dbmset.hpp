@@ -227,7 +227,7 @@ public:
   };
 
 private:
-  DBMFactory      dbm_manager;
+  DBMFactory         dbm_manager;
   map<uint32_t, int> passed_data;
   vector<C *>        map_data;
   vector<DF_T>       map_data_feature;

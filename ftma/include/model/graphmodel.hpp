@@ -38,17 +38,17 @@ template <typename M, typename L, typename T> class AgentSystem;
  *
  */
 
-template < typename L, typename T> class Agent;
+template <typename L, typename T> class Agent;
 
-template < typename L, typename T> class AgentTemplate {
+template <typename L, typename T> class AgentTemplate {
 
 private:
   typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
-  typedef AgentTemplate< L, T> AgentTemplate_t;
-  typedef Agent< L, T>  Agent_t;
+  typedef AgentTemplate<L, T> AgentTemplate_t;
+  typedef Agent<L, T>         Agent_t;
 
 public:
   AgentTemplate() { initial_loc = clock_num = -1; }
@@ -76,8 +76,6 @@ public:
 
   int getInitialLoc() const { return initial_loc; }
 
-
-
 private:
   vector<L> template_locations;
   vector<T> template_transitions;
@@ -93,10 +91,9 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  
-  friend class Agent< L, T>;
-  template <typename M1, typename L1, typename  T1>
-  friend class AgentSystem;
+
+  friend class Agent<L, T>;
+  template <typename M1, typename L1, typename T1> friend class AgentSystem;
 
   void updateUpperAndDiff( const CS_t &cs ) {
 
@@ -155,15 +152,15 @@ private:
   }
 };
 
-template < typename L, typename T> class Agent {
+template <typename L, typename T> class Agent {
 
 private:
   typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
-  typedef Agent< L, T>  TA_t;
-  typedef AgentTemplate< L, T> TAT_t;
+  typedef Agent<L, T>         TA_t;
+  typedef AgentTemplate<L, T> TAT_t;
 
 public:
   Agent( const TAT_t *tat, const Parameter &param ) {
@@ -226,35 +223,31 @@ public:
 private:
   const TAT_t *ta_tempate;
 
-  vector<L>                  locations;
-  vector<T>                  transitions;
+  vector<L>               locations;
+  vector<T>               transitions;
   vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  template <typename M1, typename L1, typename T1>
-  friend class AgentSystem;
+  template <typename M1, typename L1, typename T1> friend class AgentSystem;
 };
 
 template <typename M, typename L, typename T> class AgentSystem {
 
 public:
-
-  typedef int *                DBM_t;
-  typedef DBMFactory      DBMManager_t;
-  typedef DBMset<int>          DBMSet_t;
-  typedef int                  State_t;
-  typedef StateSet<State_t>    StateSet_t;
-  typedef ClockConstraint CS_t;
+  typedef int *             DBM_t;
+  typedef DBMFactory        DBMManager_t;
+  typedef DBMset<int>       DBMSet_t;
+  typedef int               State_t;
+  typedef StateSet<State_t> StateSet_t;
+  typedef ClockConstraint   CS_t;
 
   typedef L L_t;
 
   typedef T T_t;
 
-  typedef Agent< L, T>  Agent_t;
-  typedef AgentTemplate< L, T> AgentTemplate_t;
-
-
+  typedef Agent<L, T>         Agent_t;
+  typedef AgentTemplate<L, T> AgentTemplate_t;
 
   typedef AgentSystem<M, L, T> AgentSystem_t;
 
@@ -283,9 +276,9 @@ public:
   void setChannelNum( int n ) { channels.resize( n ); }
   void setChannel( int id, Channel ch ) { channels[ id ] = ch; }
 
-  int             getComponentNum() const { return (int) tas.size(); }
-  
-   M getStateManager() const {
+  int getComponentNum() const { return (int) tas.size(); }
+
+  M getStateManager() const {
 
     vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
@@ -307,13 +300,12 @@ public:
       link_num.push_back( e.ta_tempate->graph.getLink_num() );
     }
 
-    M re( (int) tas.size(), counters, clock_num,
-                        temp_clock_upperbound, difference_cons, node_n,
-                        link_num, (int) channels.size() );
+    M re( (int) tas.size(), counters, clock_num, temp_clock_upperbound,
+          difference_cons, node_n, link_num, (int) channels.size() );
 
     return re;
   }
-  void initState( const  M &manager, State_t *state ) const {
+  void initState( const M &manager, State_t *state ) const {
     int  component_num = (int) tas.size();
     bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
@@ -344,7 +336,7 @@ private:
    * multi-components
    *
    */
-  vector<Agent_t>    tas;
+  vector<Agent_t> tas;
   vector<Channel> channels;
   vector<Counter> counters;
 
@@ -353,7 +345,7 @@ private:
   vector<int> initial_loc;
   vector<int> vec_clock_nums;
 
-  vector<int>                  clock_max_value;
+  vector<int>             clock_max_value;
   vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
@@ -386,13 +378,10 @@ private:
 
 typedef int C_t1;
 
-typedef DBMFactory DBMManager_t1;
-typedef DBMset<C_t1>     DBMSet_t1;
+typedef DBMFactory   DBMManager_t1;
+typedef DBMset<C_t1> DBMSet_t1;
 
 typedef ClockConstraint CS_t1;
-
-
-
 
 } // namespace graphsat
 

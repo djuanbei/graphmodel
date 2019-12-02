@@ -25,7 +25,7 @@ using std::vector;
 
 template <typename SYS> class ReachableSet {
 public:
-  typedef SYS                 SYS_t;
+  typedef SYS SYS_t;
   typedef int C_t;
   ReachableSet( const SYS &outta )
       : sys( outta ) {
@@ -218,9 +218,9 @@ private:
   StateSet<UINT> reach_set;
   deque<C_t *>   wait_set;
 
-  C_t *                        cache_state;
-  C_t *                        next_state;
-  const SYS &                  sys;
+  C_t *          cache_state;
+  C_t *          next_state;
+  const SYS &    sys;
   TMStateManager manager;
   template <typename R1> friend class Reachability;
   int                        component_num;
