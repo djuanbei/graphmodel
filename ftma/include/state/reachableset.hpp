@@ -221,7 +221,7 @@ private:
   C_t *                        cache_state;
   C_t *                        next_state;
   const SYS &                  sys;
-  typename SYS::StateManager_t manager;
+  StateManager manager;
   template <typename R1> friend class Reachability;
   int                        component_num;
   std::default_random_engine generator;

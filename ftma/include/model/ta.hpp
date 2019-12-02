@@ -253,7 +253,7 @@ public:
   typedef TA<C, L, T>  TA_t;
   typedef TAT<C, L, T> TAT_t;
 
-  typedef StateManager<C_t> StateManager_t;
+
 
   typedef TAS<C, L, T> TAS_t;
 
@@ -283,7 +283,7 @@ public:
   void setChannel( int id, Channel ch ) { channels[ id ] = ch; }
 
   int             getComponentNum() const { return (int) tas.size(); }
-  StateManager_t getStateManager() const {
+  StateManager getStateManager() const {
 
     vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
@@ -305,13 +305,13 @@ public:
       link_num.push_back( e.ta_tempate->graph.getLink_num() );
     }
 
-    StateManager_t re( (int) tas.size(), counters, clock_num,
+    StateManager re( (int) tas.size(), counters, clock_num,
                         temp_clock_upperbound, difference_cons, node_n,
                         link_num, (int) channels.size() );
 
     return re;
   }
-  void initState( const StateManager_t &manager, State_t *state ) const {
+  void initState( const StateManager &manager, State_t *state ) const {
     int  component_num = (int) tas.size();
     bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {

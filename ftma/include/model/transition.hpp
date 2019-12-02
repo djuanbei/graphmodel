@@ -147,7 +147,7 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  bool ready( const int component, const StateManager<int> &manager,
+  bool ready( const int component, const StateManager &manager,
               const int *const state ) const {
     if ( !guards.empty() ) {
 
@@ -184,7 +184,7 @@ public:
    *
    */
 
-  void operator()( const int component, const StateManager<int> &manager,
+  void operator()( const int component, const StateManager &manager,
                    int *re_state ) const {
     assert( ready( component, manager, re_state ) );
 
