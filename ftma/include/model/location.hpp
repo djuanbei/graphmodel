@@ -12,10 +12,13 @@
 #define __LOCATION_HPP
 
 #include <vector>
+#include <string>
+#include<iostream>
 
 namespace graphsat {
-using std::vector;
-
+  using std::vector;
+  using std::string;
+  using std::to_string;
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
 template <typename C_t, typename CS_t, typename DBMManager_t> class Location {
@@ -146,7 +149,7 @@ public:
   //     }
   //   }
   // }
-  friend ostream &operator<<( ostream &                                os,
+  friend std::ostream &operator<<( std::ostream &                                os,
                               const Location<C_t, CS_t, DBMManager_t> &loc );
 
 private:

@@ -60,6 +60,8 @@ private:
   Compression<C> head_comp;
   Compression<C> body_comp;
 };
+  
+  
 
 template <typename C> class StateManager {
 
