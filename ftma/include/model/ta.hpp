@@ -30,7 +30,7 @@ using std::vector;
 
 using namespace raptor;
 
-template <typename C, typename L, typename T> class TAS;
+template < typename L, typename T> class TAS;
 
 /**
  *
@@ -38,17 +38,17 @@ template <typename C, typename L, typename T> class TAS;
  *
  */
 
-template <typename C, typename L, typename T> class TA;
+template < typename L, typename T> class TA;
 
-template <typename C, typename L, typename T> class TAT {
+template < typename L, typename T> class TAT {
 
 private:
-  typedef C C_t;
+  typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
-  typedef TAT<C, L, T> TAT_t;
-  typedef TA<C, L, T>  TA_t;
+  typedef TAT< L, T> TAT_t;
+  typedef TA< L, T>  TA_t;
 
 public:
   TAT() { initial_loc = clock_num = -1; }
@@ -68,7 +68,7 @@ public:
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
   }
-  vector<C> getClockMaxValue() const { return clock_max_value; }
+  vector<int> getClockMaxValue() const { return clock_max_value; }
 
   int getClockNum() const { return clock_num; }
 
@@ -87,23 +87,23 @@ private:
 
   Graph_t<int> graph;
 
-  vector<C> clock_max_value;
+  vector<int> clock_max_value;
 
   vector<ClockConstraint> template_difference_cons;
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
 
-  friend class TA<C, L, T>;
+  friend class TA< L, T>;
 
-  friend class TAS<C, L, T>;
+  friend class TAS< L, T>;
 
   void updateUpperAndDiff( const CS_t &cs ) {
 
     if ( cs.clock_x > 0 && cs.clock_y > 0 ) {
       template_difference_cons.push_back( cs );
     }
-    C realRhs = getRight( cs.matrix_value );
+    int realRhs = getRight( cs.matrix_value );
     if ( cs.clock_x > 0 ) {
       if ( realRhs > clock_max_value[ cs.clock_x ] ) {
         clock_max_value[ cs.clock_x ] = realRhs;
@@ -155,15 +155,15 @@ private:
   }
 };
 
-template <typename C, typename L, typename T> class TA {
+template < typename L, typename T> class TA {
 
 private:
-  typedef C C_t;
+  typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
-  typedef TA<C, L, T>  TA_t;
-  typedef TAT<C, L, T> TAT_t;
+  typedef TA< L, T>  TA_t;
+  typedef TAT< L, T> TAT_t;
 
 public:
   TA( const TAT_t *tat, const Parameter &param ) {
@@ -181,17 +181,17 @@ public:
     ta_tempate->graph.findRhs( link, lhs, rhs );
   }
 
-  vector<C> getClockMaxValue() const { return ta_tempate->clock_max_value; }
+  vector<int> getClockMaxValue() const { return ta_tempate->clock_max_value; }
 
   int getClockNum() const { return ta_tempate->clock_num; }
 
   int getInitialLoc() const { return ta_tempate->initial_loc; }
 
-  bool transitionRun( int link, const DBMFactory &manager, C *D ) const {
+  bool transitionRun( int link, const DBMFactory &manager, int *D ) const {
     return transitions[ link ]( manager, D );
   }
 
-  bool locationRun( int link, const DBMFactory &manager, C *D ) const {
+  bool locationRun( int link, const DBMFactory &manager, int *D ) const {
     if ( !locations[ link ].isReachable( manager, D ) ) {
       return false;
     }
@@ -232,17 +232,17 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  friend class TAS<C, L, T>;
+  friend class TAS<L, T>;
 };
 
-template <typename C, typename L, typename T> class TAS {
+template < typename L, typename T> class TAS {
 
 public:
-  typedef C                    C_t;
-  typedef C_t *                DBM_t;
+
+  typedef int *                DBM_t;
   typedef DBMFactory      DBMManager_t;
-  typedef DBMset<C_t>          DBMSet_t;
-  typedef C_t                  State_t;
+  typedef DBMset<int>          DBMSet_t;
+  typedef int                  State_t;
   typedef StateSet<State_t>    StateSet_t;
   typedef ClockConstraint CS_t;
 
@@ -250,12 +250,12 @@ public:
 
   typedef T T_t;
 
-  typedef TA<C, L, T>  TA_t;
-  typedef TAT<C, L, T> TAT_t;
+  typedef TA< L, T>  TA_t;
+  typedef TAT< L, T> TAT_t;
 
 
 
-  typedef TAS<C, L, T> TAS_t;
+  typedef TAS< L, T> TAS_t;
 
   TAS() {
     clock_max_value.push_back( 0 );
@@ -286,7 +286,7 @@ public:
   
   TMStateManager getStateManager() const {
 
-    vector<C> temp_clock_upperbound( 2 * clock_num + 2, 0 );
+    vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
     for ( int i = 0; i < clock_num + 1; i++ ) {
       temp_clock_upperbound[ i ] =
@@ -352,7 +352,7 @@ private:
   vector<int> initial_loc;
   vector<int> vec_clock_nums;
 
-  vector<C>                  clock_max_value;
+  vector<int>                  clock_max_value;
   vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
@@ -392,7 +392,7 @@ typedef ClockConstraint CS_t1;
 
 
 
-typedef TAS<C_t1, Location, Transition> INT_TAS_t;
+typedef TAS< Location, Transition> INT_TAS_t;
 
 } // namespace graphsat
 

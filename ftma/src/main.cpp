@@ -209,9 +209,9 @@ void example3( void ) {}
 std::default_random_engine         generator;
 std::uniform_int_distribution<int> distribution( 0, 1000 );
 
-INT_TAS_t::C_t *randV( int n, int s ) {
+int *randV( int n, int s ) {
 
-  INT_TAS_t::C_t *v = new INT_TAS_t::C_t[ n ];
+ int *v = new int[ n ];
 
   for ( int i = 0; i < n; i++ ) {
     v[ i ] = distribution( generator );
@@ -221,13 +221,13 @@ INT_TAS_t::C_t *randV( int n, int s ) {
 }
 
 void example5( void ) {
-  StateSet<INT_TAS_t::C_t> sets;
-  vector<INT_TAS_t::C_t *> vecs;
+  StateSet<int> sets;
+  vector<int *> vecs;
   int                      n   = 20;
   int                      s   = 4;
   int                      num = 1000;
   for ( int i = 0; i < num; i++ ) {
-    INT_TAS_t::C_t *temp = randV( n, s );
+    int *temp = randV( n, s );
     if ( sets.add( temp ) ) {
       vecs.push_back( temp );
     } else {
@@ -495,7 +495,7 @@ void incrementalTest() {
   }
 
   cout << "reach data size: " << data.size() << endl;
-  vector<vector<INT_TAS_t::C_t>> project;
+  vector<vector<int>> project;
   data.project( 2, project );
 
   INT_TAS_t sys1;
@@ -522,7 +522,7 @@ void incrementalTest() {
   }
 
   cout << "reach data size: " << data1.size() << endl;
-  vector<vector<INT_TAS_t::C_t>> project1;
+  vector<vector<int>> project1;
   data1.project( 2, project1 );
   int    num = 0;
   size_t mm  = project[ 0 ].size();
@@ -663,7 +663,7 @@ int main( int argc, const char *argv[] ) {
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
   typename INT_TAS_t::DBMManager_t exampleDBM( 4 );
-  typename INT_TAS_t::C_t *        D = exampleDBM.randomDBM();
+  int *        D = exampleDBM.randomDBM();
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D ) << endl;
 
@@ -678,19 +678,19 @@ int main( int argc, const char *argv[] ) {
   exampleDBM.dump( cout, D ) << endl;
   std::cout << "Hello, World!\n";
 
-  typename INT_TAS_t::C_t *D1 = exampleDBM.createDBM();
+ int *D1 = exampleDBM.createDBM();
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D1 ) << endl;
-  typename INT_TAS_t::C_t *D2 =
-      exampleDBM.reset( D1, 1, (typename INT_TAS_t::C_t) 10 );
+ int *D2 =
+      exampleDBM.reset( D1, 1, (int) 10 );
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D2 ) << endl;
 
   // cout<<"constrain: "<<cons<<endl;
 
   // //C_t*  D3=exampleDBM.And( D2, cons.neg( ));
-  typename INT_TAS_t::C_t *D3 =
-      exampleDBM.reset( D2, 2, (typename INT_TAS_t::C_t) 10 );
+ int *D3 =
+      exampleDBM.reset( D2, 2, (int) 10 );
 
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D3 ) << endl;

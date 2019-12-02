@@ -26,7 +26,7 @@ using std::vector;
 template <typename SYS> class ReachableSet {
 public:
   typedef SYS                 SYS_t;
-  typedef typename SYS_t::C_t C_t;
+  typedef int C_t;
   ReachableSet( const SYS &outta )
       : sys( outta ) {
 
@@ -536,7 +536,7 @@ private:
     }
     if ( manager.hasDiffCons() ) {
 
-      vector<typename SYS::C_t *> next_dbms;
+      vector<int *> next_dbms;
       manager.norm( manager.getDBM( state ), next_dbms );
 
       for ( auto dbm : next_dbms ) {
