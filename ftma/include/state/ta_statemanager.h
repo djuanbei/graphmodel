@@ -20,50 +20,9 @@
 namespace graphsat {
 
 using std::vector;
-
-template <typename C> class StateConvert {
-
-public:
-  StateConvert() {
-    head_length      = 0;
-    head_comp        = 0;
-    compression_size = 0;
-  }
-  StateConvert( int hLen, int bLen, Compression<C> hCom, Compression<C> bCom ) {
-    head_length = hLen;
-
-    com_head_length = hCom.getCompressionSize();
-
-    compression_size = hCom.getCompressionSize() + bCom.getCompressionSize();
-    head_comp        = hCom;
-    body_comp        = bCom;
-  }
-
-  void encode( const C *data, UINT *out ) const {
-    head_comp.encode( data, out );
-    body_comp.encode( data + head_length, out + com_head_length );
-  }
-
-  void decode( const UINT *data, C *out ) const {
-    head_comp.decode( data, out );
-    body_comp.decode( data + com_head_length, out + head_length );
-  }
-  int getCompressionSize() const { return compression_size; }
-
-  int getCompressionHeadSize() const { return head_comp.getCompressionSize(); }
-
-private:
-  int head_length;
-  int com_head_length;
-
-  int            compression_size;
-  Compression<C> head_comp;
-  Compression<C> body_comp;
-};
-  
   
 
-class StateManager {
+class TMStateManager {
 
   /**
    * state is [loc, channel_state, freezeLocationNum, counter_state,
@@ -80,14 +39,14 @@ class StateManager {
    *
    */
 public:
-  StateManager() {
+  TMStateManager() {
 
     component_num = state_length = counter_start_loc = freeze_location_index =
         0;
     channel_num = 0;
   }
 
-  StateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
+  TMStateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
                 const vector<int> &                 oclock_upper_bounds,
                 const vector<ClockConstraint> &edifference_cons,
                 const vector<int> &nodes, const vector<int> &links,
@@ -121,6 +80,7 @@ public:
         DBMFactory( clock_num, clock_upper_bounds, difference_constraints );
     counters = ecounters;
   }
+  
   int getStateLen() const { return state_length; }
 
   int getClockStart() const { return clock_start_loc; }

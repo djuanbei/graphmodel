@@ -18,7 +18,7 @@
 #include "constraint/clockdiffcons.h"
 #include "model/location.h"
 #include "model/ta.hpp"
-#include "model/transition.hpp"
+#include "model/transition.h"
 #include "problem/reachability.hpp"
 
 #include "util/dbmutil.hpp"

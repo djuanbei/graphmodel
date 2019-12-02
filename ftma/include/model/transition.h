@@ -14,17 +14,18 @@
 
 #include "channel.h"
 #include "constraint/countercons.h"
-#include "state/statemanager.hpp"
+#include "state/ta_statemanager.h"
 
 #include "util/instancefactory.h"
+#include "constraint/clockdiffcons.h"
 
 namespace graphsat {
 using std::vector;
  class Location;
 
-template < typename CS, typename DBMManager> class Transition {
+ class Transition {
 
-  typedef Transition<CS, DBMManager> Transition_t;
+
 
 public:
   Transition() {
@@ -43,7 +44,7 @@ public:
     has_channel = false;
   }
 
-  Transition( const Transition_t &other, const Parameter &param ) {
+  Transition( const Transition &other, const Parameter &param ) {
     source = other.source;
     target = other.target;
     guards = other.guards;
@@ -76,7 +77,7 @@ public:
 
   int getTarget() const { return target; }
 
-  const vector<CS> &getGuards() const { return guards; }
+  const vector<ClockConstraint> &getGuards() const { return guards; }
 
   /**
    * add constraint to Transition
@@ -87,7 +88,7 @@ public:
    * @return Transition
    */
 
-  friend Transition_t &operator+( Transition_t &lhs, CS &cs ) {
+  friend Transition &operator+( Transition &lhs, ClockConstraint &cs ) {
     lhs.guards.push_back( cs );
     return lhs;
   }
@@ -98,7 +99,7 @@ public:
    * @param cs  constraint
    *
    */
-  Transition_t &operator+=( CS &cs ) {
+  Transition &operator+=( ClockConstraint &cs ) {
     guards.push_back( cs );
     return *this;
   }
@@ -147,11 +148,11 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  bool ready( const int component, const StateManager &manager,
+  bool ready( const int component, const TMStateManager &manager,
               const int *const state ) const {
     if ( !guards.empty() ) {
 
-      const DBMManager &dbm_manager = manager.getClockManager();
+      const DBMFactory &dbm_manager = manager.getClockManager();
       const int *         source_DBM  = manager.getDBM( state );
       assert( dbm_manager.isConsistent( source_DBM ) );
       int *copy_DBM = dbm_manager.createDBM( source_DBM );
@@ -184,11 +185,11 @@ public:
    *
    */
 
-  void operator()( const int component, const StateManager &manager,
+  void operator()( const int component, const TMStateManager &manager,
                    int *re_state ) const {
     assert( ready( component, manager, re_state ) );
 
-    const DBMManager &dbm_manager = manager.getClockManager();
+    const DBMFactory &dbm_manager = manager.getClockManager();
 
     int *source_DBM = manager.getDBM( re_state );
 
@@ -229,7 +230,7 @@ public:
 private:
   int source, target; // source location and target location of this
   // transitionedge. The index of location in tma.locations
-  vector<CS> guards; // set of constraint at this transitionedge
+  vector<ClockConstraint> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint *>
           counter_cons; // counter constraint like pid ==id or id==0
