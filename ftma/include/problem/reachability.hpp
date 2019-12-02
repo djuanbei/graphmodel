@@ -98,6 +98,10 @@ public:
   }
 
 private:
+  
+ 
+  
+  
   ReachableSet &                      data;
   const typename ReachableSet::SYS_t &sys;
 };

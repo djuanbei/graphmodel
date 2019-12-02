@@ -235,10 +235,11 @@ private:
 template <typename M, typename L, typename T> class AgentSystem {
 
 public:
-  typedef int *             DBM_t;
+  typedef typename T::State_t State_t;
+//  typedef int *             DBM_t;
   typedef DBMFactory        DBMManager_t;
-  typedef DBMset<int>       DBMSet_t;
-  typedef int               State_t;
+
+
   typedef StateSet<State_t> StateSet_t;
   typedef ClockConstraint   CS_t;
 
@@ -376,12 +377,6 @@ private:
   }
 };
 
-typedef int C_t1;
-
-typedef DBMFactory   DBMManager_t1;
-typedef DBMset<C_t1> DBMSet_t1;
-
-typedef ClockConstraint CS_t1;
 
 } // namespace graphsat
 

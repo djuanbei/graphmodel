@@ -27,6 +27,7 @@ class TMStateManager;
 class Transition {
 
 public:
+  typedef int State_t;
   Transition() {
     source = target = -1;
     has_channel     = false;
