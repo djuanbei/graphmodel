@@ -391,7 +391,7 @@ typedef DBMset<C_t1>     DBMSet_t1;
 typedef ClockConstraint CS_t1;
 
 
-typedef AgentSystem< Location, Transition> INT_TAS_t;
+
 
 } // namespace graphsat
 
