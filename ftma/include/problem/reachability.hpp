@@ -16,7 +16,7 @@
 #include <set>
 #include <vector>
 
-#include "model/ta.hpp"
+#include "model/graphmodel.hpp"
 #include "property/property.h"
 #include "util/parallel.h"
 

@@ -11,7 +11,7 @@
 #ifndef __UPPAAL_H
 #define __UPPAAL_H
 //#define LEX_VERBOSE
-#include "model/ta.hpp"
+#include "model/graphmodel.hpp"
 #include "util/data.hpp"
 #include <map>
 #include <string>
@@ -265,7 +265,7 @@ private:
   map<string, int> counter_id_map;
   map<string, int> channel_id_map;
 
-  typename INT_TAS_t::TAT_t tat;
+  typename INT_TAS_t::AgentTemplate_t tat;
   friend class UppaalParser;
 };
 

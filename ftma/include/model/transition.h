@@ -28,6 +28,7 @@ using std::vector;
 
 
 public:
+   typedef TMStateManager StateManager_t;
   Transition() {
     source = target = -1;
     has_channel     = false;

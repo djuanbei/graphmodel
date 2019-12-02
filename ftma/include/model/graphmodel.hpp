@@ -30,7 +30,7 @@ using std::vector;
 
 using namespace raptor;
 
-template < typename L, typename T> class TAS;
+template < typename L, typename T> class AgentSystem;
 
 /**
  *
@@ -38,26 +38,26 @@ template < typename L, typename T> class TAS;
  *
  */
 
-template < typename L, typename T> class TA;
+template < typename L, typename T> class Agent;
 
-template < typename L, typename T> class TAT {
+template < typename L, typename T> class AgentTemplate {
 
 private:
   typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
-  typedef TAT< L, T> TAT_t;
-  typedef TA< L, T>  TA_t;
+  typedef AgentTemplate< L, T> AgentTemplate_t;
+  typedef Agent< L, T>  Agent_t;
 
 public:
-  TAT() { initial_loc = clock_num = -1; }
-  TAT( int init, int clockNum ) {
+  AgentTemplate() { initial_loc = clock_num = -1; }
+  AgentTemplate( int init, int clockNum ) {
     initial_loc = init;
     clock_num   = clockNum;
   }
 
-  TAT( vector<L> &locs, vector<T> &es, int init, int vnum )
+  AgentTemplate( vector<L> &locs, vector<T> &es, int init, int vnum )
       : template_locations( locs )
       , template_transitions( es ) {
     initial_loc = init;
@@ -94,9 +94,9 @@ private:
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
 
-  friend class TA< L, T>;
+  friend class Agent< L, T>;
 
-  friend class TAS< L, T>;
+  friend class AgentSystem< L, T>;
 
   void updateUpperAndDiff( const CS_t &cs ) {
 
@@ -155,18 +155,18 @@ private:
   }
 };
 
-template < typename L, typename T> class TA {
+template < typename L, typename T> class Agent {
 
 private:
   typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
-  typedef TA< L, T>  TA_t;
-  typedef TAT< L, T> TAT_t;
+  typedef Agent< L, T>  TA_t;
+  typedef AgentTemplate< L, T> TAT_t;
 
 public:
-  TA( const TAT_t *tat, const Parameter &param ) {
+  Agent( const TAT_t *tat, const Parameter &param ) {
 
     ta_tempate = tat;
     for ( auto e : tat->template_transitions ) {
@@ -232,10 +232,10 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  friend class TAS<L, T>;
+  friend class AgentSystem<L, T>;
 };
 
-template < typename L, typename T> class TAS {
+template < typename L, typename T> class AgentSystem {
 
 public:
 
@@ -250,18 +250,18 @@ public:
 
   typedef T T_t;
 
-  typedef TA< L, T>  TA_t;
-  typedef TAT< L, T> TAT_t;
+  typedef Agent< L, T>  Agent_t;
+  typedef AgentTemplate< L, T> AgentTemplate_t;
 
 
 
-  typedef TAS< L, T> TAS_t;
+  typedef AgentSystem< L, T> AgentSystem_t;
 
-  TAS() {
+  AgentSystem() {
     clock_max_value.push_back( 0 );
     clock_num = 0;
   }
-  TAS_t &operator+=( TA_t &ta ) {
+  AgentSystem_t &operator+=( Agent_t &ta ) {
 
     transfrom( ta );
     tas.push_back( ta );
@@ -284,7 +284,7 @@ public:
 
   int             getComponentNum() const { return (int) tas.size(); }
   
-  TMStateManager getStateManager() const {
+  typename T::StateManager_t getStateManager() const {
 
     vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
@@ -306,13 +306,13 @@ public:
       link_num.push_back( e.ta_tempate->graph.getLink_num() );
     }
 
-    TMStateManager re( (int) tas.size(), counters, clock_num,
+   typename T::StateManager_t re( (int) tas.size(), counters, clock_num,
                         temp_clock_upperbound, difference_cons, node_n,
                         link_num, (int) channels.size() );
 
     return re;
   }
-  void initState( const TMStateManager &manager, State_t *state ) const {
+  void initState( const typename T::StateManager_t &manager, State_t *state ) const {
     int  component_num = (int) tas.size();
     bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
@@ -343,7 +343,7 @@ private:
    * multi-components
    *
    */
-  vector<TA_t>    tas;
+  vector<Agent_t>    tas;
   vector<Channel> channels;
   vector<Counter> counters;
 
@@ -357,7 +357,7 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  void transfrom( TA_t &ta ) {
+  void transfrom( Agent_t &ta ) {
 
     if ( clock_num > 0 ) {
 
@@ -391,8 +391,7 @@ typedef DBMset<C_t1>     DBMSet_t1;
 typedef ClockConstraint CS_t1;
 
 
-
-typedef TAS< Location, Transition> INT_TAS_t;
+typedef AgentSystem< Location, Transition> INT_TAS_t;
 
 } // namespace graphsat
 

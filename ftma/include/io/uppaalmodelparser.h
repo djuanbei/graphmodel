@@ -11,7 +11,7 @@
 #define __MODEL_PARSER_HPP
 
 #include "io/xmlconf.h"
-#include "model/ta.hpp"
+#include "model/graphmodel.hpp"
 
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.h"

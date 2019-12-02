@@ -17,7 +17,7 @@
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.h"
 #include "model/location.h"
-#include "model/ta.hpp"
+#include "model/graphmodel.hpp"
 #include "model/transition.h"
 #include "problem/reachability.hpp"
 
@@ -39,6 +39,7 @@ extern int yy_flex_debug;
 
 using std::vector;
 using namespace graphsat;
+
 
 typedef ReachableSet<INT_TAS_t> R_t;
 
@@ -80,11 +81,11 @@ void example1( void ) {
   es.push_back( e01 );
   es.push_back( e12 );
   es.push_back( e23 );
-  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 3 );
+  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 3 );
 
   Parameter                param( 1 );
   INT_TAS_t                sys;
-  typename INT_TAS_t::TA_t tma1( &tmt1, param );
+  typename INT_TAS_t::Agent_t tma1( &tmt1, param );
   sys += tma1;
   R_t data( sys );
 
@@ -134,11 +135,11 @@ void example50() {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
+  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 2 );
 
   Parameter                param( 1 );
   INT_TAS_t                sys;
-  typename INT_TAS_t::TA_t tma1( &tmt1, param );
+  typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
   sys += tma1;
   R_t               data( sys );
@@ -185,11 +186,11 @@ void example2( void ) {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 2 );
+  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 2 );
 
   INT_TAS_t                sys;
   Parameter                param( 1 );
-  typename INT_TAS_t::TA_t tma1( &tmt1, param );
+  typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
   sys += tma1;
   R_t               data( sys );
@@ -336,7 +337,7 @@ void fisher( int n = 2 ) {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
+  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 1 );
 
   INT_TAS_t sys;
   Counter   counter( 0, n + 1 );
@@ -350,7 +351,7 @@ void fisher( int n = 2 ) {
     param.setCounterMap( 0, 0 ); // add relation between local id and global id
 
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+    typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
     sys += tma1;
   }
@@ -467,13 +468,13 @@ void incrementalTest() {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  typename INT_TAS_t::TAT_t tmt1( ls, es, 0, 1 );
+  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 1 );
   // tma1.addOnePara();
   INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+    typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
     sys += tma1;
   }
@@ -502,7 +503,7 @@ void incrementalTest() {
   for ( int i = 1; i <= 2; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::TA_t tma1( &tmt1, param );
+    typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
     sys1 += tma1;
   }

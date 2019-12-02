@@ -9,7 +9,7 @@
   #include "util/dbmutil.hpp"
   #include "io/uppaaldata.h"
 
-  #include "model/ta.hpp"
+  #include "model/graphmodel.hpp"
 #define  LEX_RETURN( T) case T##_T: return T##_YY 
   using std::string;
   using std::map;

@@ -14,7 +14,7 @@
 
 #include "discretestate.hpp"
 #include "model/parameter.h"
-#include "model/ta.hpp"
+#include "model/graphmodel.hpp"
 #include "util/datacompression.h"
 
 namespace graphsat {
