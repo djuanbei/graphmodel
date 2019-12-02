@@ -40,7 +40,7 @@ extern int yy_flex_debug;
 using std::vector;
 using namespace graphsat;
 
-typedef AgentSystem< Location, Transition> INT_TAS_t;
+typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
 typename INT_TAS_t::AgentTemplate_t tat;
 typedef ReachableSet<INT_TAS_t> R_t;
 

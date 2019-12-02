@@ -11,20 +11,20 @@
 #ifndef __LOCATION_HPP
 #define __LOCATION_HPP
 
-#include <vector>
+#include <iostream>
 #include <string>
-#include<iostream>
+#include <vector>
 
 #include "constraint/clockdiffcons.h"
 #include "domain/dbm.h"
 
 namespace graphsat {
-  using std::vector;
-  using std::string;
-  using std::to_string;
+using std::string;
+using std::to_string;
+using std::vector;
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
- class Location {
+class Location {
 
 public:
 public:
@@ -76,7 +76,7 @@ public:
   }
 
   inline void employInvariants( const DBMFactory &dbm_manager,
-                                int *               dbm ) const {
+                                int *             dbm ) const {
     for ( auto cs : invariants ) {
       dbm_manager.andImpl( dbm, cs );
     }
@@ -112,7 +112,7 @@ public:
   }
 
   bool operator()( const DBMFactory &dbm_manager, const int *const dbm,
-                  vector<int *> &re_vec ) const ;
+                   vector<int *> &re_vec ) const;
 
   /**
    * Add one invariant to this location
@@ -121,7 +121,7 @@ public:
    *
    * @return a new location
    */
-   Location &operator+=( ClockConstraint &cs );
+  Location &operator+=( ClockConstraint &cs );
 
   void clockShift( int shift ) {
     for ( size_t i = 0; i < invariants.size(); i++ ) {
@@ -138,14 +138,13 @@ public:
   //     }
   //   }
   // }
-  friend std::ostream &operator<<( std::ostream &                                os,
-                              const Location &loc );
+  friend std::ostream &operator<<( std::ostream &os, const Location &loc );
 
 private:
-  vector<ClockConstraint>  invariants; // set of invariants  in this Location
-  int           location_id;
-  string        name;
-  Location_Type type;
+  vector<ClockConstraint> invariants; // set of invariants  in this Location
+  int                     location_id;
+  string                  name;
+  Location_Type           type;
 };
 } // namespace graphsat
 

@@ -28,7 +28,7 @@
 #include "io/uppaaldata.h"
 
 namespace graphsat {
-typedef AgentSystem< Location, Transition> INT_TAS_t;
+typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
 static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, CHAN_T};
 
 class UppaalParser {

@@ -28,24 +28,19 @@ const int GLOBAL_CLOCK_ID = 0;
 class ClockConstraint {
 
 public:
-
-
   ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
                    const int rhs, const int eparameter_id = -100 );
 
   void globalUpdate( const vector<int> &parameter_value );
 
-  void   clockShift( int shift);
-  
+  void clockShift( int shift );
+
   ClockConstraint neg( void ) const;
-  
 
   bool isSat( const ClockConstraint &cons ) const;
-  
 
   friend std::ostream &operator<<( std::ostream &         out,
                                    const ClockConstraint &cons );
-  
 
 private:
   /**
@@ -54,23 +49,23 @@ private:
    */
   ClockConstraint( const int clock_id1, const int clock_id2, const int rhs,
                    bool is_strict_ref );
-  
+
   void neg_impl( void );
-  
+
   void init( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
              const int rhs );
- public:
+
+public:
   int           clock_x;
   int           clock_y;
   COMP_OPERATOR op;
-  int             matrix_value;
- private:
-  int parameter_id;
+  int           matrix_value;
+
+private:
+  int                    parameter_id;
   friend ClockConstraint randConst( int num, int low, int up );
   friend class DBMFactory;
-  
 };
-
 
 } // namespace graphsat
 #endif

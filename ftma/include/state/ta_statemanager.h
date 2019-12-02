@@ -13,14 +13,13 @@
 #include <vector>
 
 #include "discretestate.hpp"
-#include "model/parameter.h"
 #include "model/graphmodel.hpp"
+#include "model/parameter.h"
 #include "util/datacompression.h"
 
 namespace graphsat {
 
 using std::vector;
-  
 
 class TMStateManager {
 
@@ -47,40 +46,11 @@ public:
   }
 
   TMStateManager( int comp_num, const vector<Counter> &ecounters, int clock_num,
-                const vector<int> &                 oclock_upper_bounds,
-                const vector<ClockConstraint> &edifference_cons,
-                const vector<int> &nodes, const vector<int> &links,
-                int channel_n ) {
+                  const vector<int> &            oclock_upper_bounds,
+                  const vector<ClockConstraint> &edifference_cons,
+                  const vector<int> &nodes, const vector<int> &links,
+                  int channel_n );
 
-    assert( (int) oclock_upper_bounds.size() == 2 * clock_num + 2 );
-    state_length  = 0;
-    component_num = comp_num;
-
-    difference_constraints = edifference_cons;
-    clock_upper_bounds     = oclock_upper_bounds;
-    node_nums              = nodes;
-    link_nums              = links;
-    channel_num            = channel_n;
-
-    if ( channel_num > 0 ) {
-      counter_start_loc = 2 * component_num;
-      state_length      = 2 * component_num + (int) ecounters.size();
-    } else {
-      counter_start_loc = component_num;
-      state_length      = component_num + (int) ecounters.size();
-    }
-    freeze_location_index = state_length;
-
-    state_length++;
-    clock_start_loc = state_length;
-
-    state_length += ( clock_num + 1 ) * ( clock_num + 1 );
-
-    dbm_manager =
-        DBMFactory( clock_num, clock_upper_bounds, difference_constraints );
-    counters = ecounters;
-  }
-  
   int getStateLen() const { return state_length; }
 
   int getClockStart() const { return clock_start_loc; }
@@ -91,95 +61,19 @@ public:
     return state[ freeze_location_index ] > 0;
   }
 
-  Compression<int> getHeadCompression() const {
-    Compression<int> re_comp( clock_start_loc );
-    for ( int component_id = 0; component_id < component_num; component_id++ ) {
+  Compression<int> getHeadCompression() const;
 
-      if ( channel_num > 1 ) {
-        // the value contain link id
-        // TODO:
-        int m = max( node_nums[ component_id ], link_nums[ component_id ] );
-        re_comp.setBound( component_id, -m, m );
-      } else {
-        re_comp.setBound( component_id, -node_nums[ component_id ],
-                          node_nums[ component_id ] );
-      }
-    }
-    if ( channel_num > 0 ) {
-      for ( int component_id = 0; component_id < component_num;
-            component_id++ ) {
-        re_comp.setBound( component_id + component_num, -channel_num,
-                          channel_num );
-      }
-    }
-    int k = 0;
-    for ( int i = counter_start_loc; i < freeze_location_index; i++ ) {
-      re_comp.setBound( i, counters[ k ].getLB(), counters[ k ].getUP() );
-      k++;
-    }
-
-    /**
-     * At most all the component in freeze location
-     *
-     */
-    re_comp.setBound( freeze_location_index, 0, component_num - 1 );
-
-    return re_comp;
-  }
-
-  Compression<int> getBodyCompression() const {
-    int            body_len = state_length - clock_start_loc;
-    Compression<int> re_comp( body_len );
-    return re_comp;
-    /**
-     * set the minimum and maximum for DBM matrix element
-     * TODO: compress by the upper bound of clock constaint
-     */
-
-    int len = (int) clock_upper_bounds.size() / 2;
-    assert( body_len == len * len );
-
-    for ( int i = 0; i < body_len; i++ ) {
-      int row = ( i ) / len;
-      int col = ( i ) % len;
-      if ( row == col ) {
-        re_comp.setBound( i, LTEQ_ZERO, LTEQ_ZERO );
-      } else if ( row == 0 ) {
-        re_comp.setBound( i, clock_upper_bounds[ col + len ], LTEQ_ZERO );
-      } else if ( col == 0 ) {
-        re_comp.setBound( i, LTEQ_ZERO, clock_upper_bounds[ row ] + 1 );
-      } else {
-        re_comp.setBound( i, clock_upper_bounds[ col + len ],
-                          clock_upper_bounds[ row ] + 1 );
-      }
-    }
-    return re_comp;
-  }
+  Compression<int> getBodyCompression() const;
 
   bool hasChannel() const { return channel_num > 0; }
 
-  int getLoc( int component, const int *const state ) const {
-    if ( isCommitComp( component, state ) ) { // commit location
-      return getCommitLoc( component, state );
-    }
+  int getLoc( int component, const int *const state ) const;
 
-    return state[ component ];
-  }
-
-  bool withoutChannel( int component, const int *const state ) const {
+  inline bool withoutChannel( int component, const int *const state ) const {
     return state[ component + component_num ] == NO_CHANNEL;
   }
 
-  int *newState() const {
-
-    int *re_state = new int [ state_length ];
-
-    fill( re_state, re_state + clock_start_loc, 0 );
-
-    dbm_manager.init( re_state + clock_start_loc );
-
-    return re_state;
-  }
+  int *newState() const;
 
   void copy( int *des_state, const int *const source_state ) const {
     memcpy( des_state, source_state, state_length * sizeof( int ) );
@@ -193,11 +87,11 @@ public:
 
   void destroyState( int *s ) const { delete[] s; }
 
-  inline int                  getComponentNum() const { return component_num; }
+  inline int               getComponentNum() const { return component_num; }
   inline const DBMFactory &getClockManager() const { return dbm_manager; }
 
-  void norm( const int  *const dbm, vector<int *> &re_vec ) const {
-    int  *newDBM = dbm_manager.createDBM( dbm );
+  void norm( const int *const dbm, vector<int *> &re_vec ) const {
+    int *newDBM = dbm_manager.createDBM( dbm );
     dbm_manager.norm( newDBM, re_vec );
   }
 
@@ -224,46 +118,20 @@ public:
     return dbm_manager.isConsistent( getDBM( state ) );
   }
 
-  inline vector<int> blockComponents( const int      chid,
-                                      const int *const state ) const {
-    vector<int> re_block_components;
-    for ( int i = 0; i < component_num; i++ ) {
+   vector<int> blockComponents( const int        chid,
+                               const int *const state ) const ;
+  
 
-      /**
-       * return entire componments which waits for this signal chid
-       *
-       */
-
-      if ( state[ i + component_num ] == chid ) {
-        re_block_components.push_back( i );
-      }
-    }
-    return re_block_components;
-  }
-
-  inline void constructState( const int component_id, const int target,
+   void constructState( const int component_id, const int target,
                               const int *const state, int *dbm, bool isCommit,
-                              int *re_state ) const {
+                       int *re_state ) const;
+  
 
-    memcpy( re_state, state, clock_start_loc * sizeof( int ) );
+   void constructState( const int component_id, const int target,
+                       bool isCommit, int *state );
+  
 
-    re_state[ component_id ] = target;
-    memcpy( re_state + clock_start_loc, dbm,
-            ( state_length - clock_start_loc ) * sizeof( int ) );
-    if ( isCommit ) {
-      setCommitState( component_id, re_state );
-    }
-  }
-
-  inline void constructState( const int component_id, const int target,
-                              bool isCommit, int *state ) {
-    state[ component_id ] = target;
-    if ( isCommit ) {
-      setCommitState( component_id, state );
-    }
-  }
-
-  inline bool isCommitComp( const int      component_id,
+  inline bool isCommitComp( const int        component_id,
                             const int *const state ) const {
     return state[ component_id ] < 0;
   }
@@ -278,7 +146,7 @@ public:
     state[ component_id ] = -1 - state[ component_id ];
   }
 
-  inline int getCommitLoc( const int      component_id,
+  inline int getCommitLoc( const int        component_id,
                            const int *const state ) const {
     return -( state[ component_id ] ) - 1;
   }
@@ -294,12 +162,12 @@ private:
   int clock_start_loc;
 
   vector<ClockConstraint> difference_constraints;
-  vector<int>                  clock_upper_bounds;
+  vector<int>             clock_upper_bounds;
   DBMFactory              dbm_manager;
-  vector<Counter>            counters;
-  vector<Parameter>          parameters;
-  vector<int>                node_nums;
-  vector<int>                link_nums;
+  vector<Counter>         counters;
+  vector<Parameter>       parameters;
+  vector<int>             node_nums;
+  vector<int>             link_nums;
 };
 } // namespace graphsat
 #endif

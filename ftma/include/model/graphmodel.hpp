@@ -30,7 +30,7 @@ using std::vector;
 
 using namespace raptor;
 
-template < typename L, typename T> class AgentSystem;
+template <typename M, typename L, typename T> class AgentSystem;
 
 /**
  *
@@ -93,10 +93,10 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-
+  
   friend class Agent< L, T>;
-
-  friend class AgentSystem< L, T>;
+  template <typename M1, typename L1, typename  T1>
+  friend class AgentSystem;
 
   void updateUpperAndDiff( const CS_t &cs ) {
 
@@ -232,10 +232,11 @@ private:
 
   template <typename R1> friend class Reachability;
   template <typename R2> friend class ReachableSet;
-  friend class AgentSystem<L, T>;
+  template <typename M1, typename L1, typename T1>
+  friend class AgentSystem;
 };
 
-template < typename L, typename T> class AgentSystem {
+template <typename M, typename L, typename T> class AgentSystem {
 
 public:
 
@@ -255,7 +256,7 @@ public:
 
 
 
-  typedef AgentSystem< L, T> AgentSystem_t;
+  typedef AgentSystem<M, L, T> AgentSystem_t;
 
   AgentSystem() {
     clock_max_value.push_back( 0 );
@@ -284,7 +285,7 @@ public:
 
   int             getComponentNum() const { return (int) tas.size(); }
   
-  typename T::StateManager_t getStateManager() const {
+   M getStateManager() const {
 
     vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
@@ -306,13 +307,13 @@ public:
       link_num.push_back( e.ta_tempate->graph.getLink_num() );
     }
 
-   typename T::StateManager_t re( (int) tas.size(), counters, clock_num,
+    M re( (int) tas.size(), counters, clock_num,
                         temp_clock_upperbound, difference_cons, node_n,
                         link_num, (int) channels.size() );
 
     return re;
   }
-  void initState( const typename T::StateManager_t &manager, State_t *state ) const {
+  void initState( const  M &manager, State_t *state ) const {
     int  component_num = (int) tas.size();
     bool withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {

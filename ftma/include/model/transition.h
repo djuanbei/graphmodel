@@ -16,19 +16,17 @@
 #include "constraint/countercons.h"
 #include "state/ta_statemanager.h"
 
-#include "util/instancefactory.h"
 #include "constraint/clockdiffcons.h"
+#include "util/instancefactory.h"
 
 namespace graphsat {
+
 using std::vector;
- class Location;
-
- class Transition {
-
-
+class Location;
+class TMStateManager;
+class Transition {
 
 public:
-   typedef TMStateManager StateManager_t;
   Transition() {
     source = target = -1;
     has_channel     = false;
@@ -38,15 +36,13 @@ public:
     target      = t;
     has_channel = false;
   }
-  Transition( const Location &lhs,
-              const Location &rhs ) {
+  Transition( const Location &lhs, const Location &rhs ) {
     source      = lhs.getId();
     target      = rhs.getId();
     has_channel = false;
   }
 
-   Transition( const Transition &other, const Parameter &param );
-   
+  Transition( const Transition &other, const Parameter &param );
 
   void setSource( int s ) { source = s; }
 
@@ -128,8 +124,8 @@ public:
    * otherwise.
    */
   bool ready( const int component, const TMStateManager &manager,
-             const int *const state ) const ;
-   
+              const int *const state ) const;
+
   /**
    *
    *@brief  create new state
@@ -137,10 +133,9 @@ public:
    */
 
   void operator()( const int component, const TMStateManager &manager,
-                  int *re_state ) const ;
-   
-   void clockShift( int shift );
-   
+                   int *re_state ) const;
+
+  void clockShift( int shift );
 
 private:
   int source, target; // source location and target location of this

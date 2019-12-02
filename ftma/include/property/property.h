@@ -17,7 +17,7 @@ using std::vector;
 class Property {
 public:
   virtual bool operator()( const TMStateManager &manager,
-                           const int *const         state ) const {
+                           const int *const      state ) const {
     return false;
   }
 };
@@ -26,7 +26,7 @@ class LocReachProperty : public Property {
 public:
   LocReachProperty( vector<int> &ls ) { loc = ls; }
   bool operator()( const TMStateManager &manager,
-                   const int *const         state ) const {
+                   const int *const      state ) const {
 
     return ( 0 == memcmp( state, &loc[ 0 ],
                           manager.getComponentNum() * sizeof( int ) ) );
@@ -40,7 +40,7 @@ class FischerMutual : public Property {
 
 public:
   bool operator()( const TMStateManager &manager,
-                   const int *const         state ) const {
+                   const int *const      state ) const {
     int component_num = manager.getComponentNum();
     int cs_num        = 0;
     for ( int i = 0; i < component_num; i++ ) {
