@@ -22,6 +22,11 @@ using std::deque;
 using std::fill;
 using std::ofstream;
 using std::vector;
+  
+#ifdef ONLINE_CHECK
+#define isReach(P, S)  false
+#endif
+  
 
 template <typename SYS> class ReachableSet {
 public:
@@ -80,16 +85,25 @@ public:
   const SYS &getSYS( void ) const { return sys; }
   /**
    * BFS
-   * @return next state by order bfs
+   * @return next state by order given order
    */
   C_t *next() {
     C_t *state = wait_set.front();
     wait_set.pop_front();
     return state;
   }
+  /**
+    where there is no wait state
+   */
   bool   waitEmpty() const { return wait_set.empty(); }
+  /**
+   The number of state in the wait set
+   */
   size_t waitSize() const { return wait_set.size(); }
 
+  /**
+   Search in the reachable set to check whether the prop satisfy.
+   */
   Check_State search( const Property *prop ) {
 
     for ( auto state : reach_set ) {
@@ -100,7 +114,10 @@ public:
     }
     return UNKOWN;
   }
-
+  
+/**
+ One discrete step
+ */
   bool oneDiscreteStep( const Property *prop, C_t *state ) {
 #ifdef DRAW_GRAPH
     current_parent++;
@@ -243,9 +260,11 @@ private:
    *
    * @return ture if prop is true under state, false otherwise.
    */
+#ifndef ONLINE_CHECK
   bool isReach( const Property *prop, const C_t *const state ) const {
     return ( *prop )( manager, state );
   }
+#endif
 
   /**
    *

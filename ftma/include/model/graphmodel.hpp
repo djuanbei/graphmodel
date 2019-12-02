@@ -14,7 +14,7 @@
 
 #include "action/counteraction.h"
 #include "channel.h"
-#include "counter.hpp"
+#include "counter.h"
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"

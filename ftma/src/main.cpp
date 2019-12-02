@@ -8,9 +8,11 @@
  *
  *
  */
+#define ONLINE_CHECK 
 //#define CHECK_MEMORY 1
 #define PRINT_STATE 1
 #define DRAW_GRAPH 1
+
 //#define YYDEBUG 1
 #include <random>
 

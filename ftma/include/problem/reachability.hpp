@@ -49,6 +49,8 @@ public:
    * @return ture if there is a reachable state which makes prop ture,
    * false otherwise.
    */
+
+
   bool satisfy( const Property *prop ) { return run( prop ); }
 
   /**
