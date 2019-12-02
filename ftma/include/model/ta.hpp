@@ -391,7 +391,7 @@ typedef ClockConstraint CS_t1;
 
 
 
-typedef Transition<C_t1, CS_t1, DBMManager_t1> T_t1;
+typedef Transition< CS_t1, DBMManager_t1> T_t1;
 
 typedef TAS<C_t1, Location, T_t1> INT_TAS_t;
 

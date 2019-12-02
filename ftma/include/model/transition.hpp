@@ -22,9 +22,9 @@ namespace graphsat {
 using std::vector;
  class Location;
 
-template <typename C, typename CS, typename DBMManager> class Transition {
+template < typename CS, typename DBMManager> class Transition {
 
-  typedef Transition<C, CS, DBMManager> Transition_t;
+  typedef Transition<CS, DBMManager> Transition_t;
 
 public:
   Transition() {
@@ -147,14 +147,14 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  bool ready( const int component, const StateManager<C> &manager,
-              const C *const state ) const {
+  bool ready( const int component, const StateManager<int> &manager,
+              const int *const state ) const {
     if ( !guards.empty() ) {
 
       const DBMManager &dbm_manager = manager.getClockManager();
-      const C *         source_DBM  = manager.getDBM( state );
+      const int *         source_DBM  = manager.getDBM( state );
       assert( dbm_manager.isConsistent( source_DBM ) );
-      C *copy_DBM = dbm_manager.createDBM( source_DBM );
+      int *copy_DBM = dbm_manager.createDBM( source_DBM );
 
       for ( auto cs : guards ) {
         dbm_manager.andImpl( copy_DBM, cs );
@@ -168,7 +168,7 @@ public:
     }
 
     if ( !counter_cons.empty() ) {
-      const C *counter_value = manager.getCounterValue( state );
+      const int *counter_value = manager.getCounterValue( state );
 
       for ( auto cs : counter_cons ) {
         if ( !( *cs )( counter_value ) ) {
@@ -184,13 +184,13 @@ public:
    *
    */
 
-  void operator()( const int component, const StateManager<C> &manager,
-                   C *re_state ) const {
+  void operator()( const int component, const StateManager<int> &manager,
+                   int *re_state ) const {
     assert( ready( component, manager, re_state ) );
 
     const DBMManager &dbm_manager = manager.getClockManager();
 
-    C *source_DBM = manager.getDBM( re_state );
+    int *source_DBM = manager.getDBM( re_state );
 
     /**
      * the state which statisfied the guards can jump this transition
@@ -208,7 +208,7 @@ public:
 
     if ( !actions.empty() ) {
 
-      C *counterValue = manager.getCounterValue( re_state );
+      int *counterValue = manager.getCounterValue( re_state );
 
       for ( auto act : actions ) {
         ( *act )( counterValue );
