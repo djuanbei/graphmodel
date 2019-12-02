@@ -21,7 +21,7 @@ namespace graphsat {
   using std::to_string;
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
-template <typename C_t, typename CS_t, typename DBMManager_t> class Location {
+template < typename CS_t, typename DBMManager_t> class Location {
 
 public:
 public:
@@ -73,7 +73,7 @@ public:
   }
 
   inline void employInvariants( const DBMManager_t &dbm_manager,
-                                C_t *               dbm ) const {
+                                int *               dbm ) const {
     for ( auto cs : invariants ) {
       dbm_manager.andImpl( dbm, cs );
     }
@@ -88,7 +88,7 @@ public:
    * @return  true if dbm  satisfies invariant, false otherwise.
    */
 
-  inline bool isReachable( const DBMManager_t &dbm_manager, C_t *dbm ) const {
+  inline bool isReachable( const DBMManager_t &dbm_manager, int *dbm ) const {
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -99,7 +99,7 @@ public:
     return dbm_manager.isConsistent( dbm );
   }
 
-  inline void operator()( const DBMManager_t &dbm_manager, C_t *dbm ) const {
+  inline void operator()( const DBMManager_t &dbm_manager, int *dbm ) const {
     assert( isReachable( dbm_manager, dbm ) );
     assert( !isFreezeLocation() );
 
@@ -108,9 +108,9 @@ public:
     assert( dbm_manager.isConsistent( dbm ) );
   }
 
-  bool operator()( const DBMManager_t &dbm_manager, const C_t *const dbm,
-                   vector<C_t *> &re_vec ) const {
-    C_t *newDBM = dbm_manager.createDBM( dbm );
+  bool operator()( const DBMManager_t &dbm_manager, const int *const dbm,
+                   vector<int *> &re_vec ) const {
+    int *newDBM = dbm_manager.createDBM( dbm );
     bool re     = ( *this )( dbm_manager, newDBM );
     if ( !re ) {
       dbm_manager.destroyDBM( newDBM );
@@ -129,7 +129,7 @@ public:
    *
    * @return a new location
    */
-  Location<C_t, CS_t, DBMManager_t> &operator+=( CS_t &cs ) {
+  Location< CS_t, DBMManager_t> &operator+=( CS_t &cs ) {
     invariants.push_back( cs );
     return *this;
   }
@@ -150,7 +150,7 @@ public:
   //   }
   // }
   friend std::ostream &operator<<( std::ostream &                                os,
-                              const Location<C_t, CS_t, DBMManager_t> &loc );
+                              const Location< CS_t, DBMManager_t> &loc );
 
 private:
   vector<CS_t>  invariants; // set of invariants  in this Location

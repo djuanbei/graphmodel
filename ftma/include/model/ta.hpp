@@ -18,7 +18,7 @@
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
-#include "location.hpp"
+#include "location.h"
 #include "parameter.h"
 #include "state/discretestate.hpp"
 #include "state/statemanager.hpp"
@@ -389,7 +389,7 @@ typedef DBMset<C_t1>     DBMSet_t1;
 
 typedef ClockConstraint CS_t1;
 
-typedef Location<C_t1, CS_t1, DBMManager_t1> L_t1;
+typedef Location< CS_t1, DBMManager_t1> L_t1;
 
 typedef Transition<C_t1, CS_t1, DBMManager_t1> T_t1;
 

@@ -20,7 +20,7 @@
 
 namespace graphsat {
 using std::vector;
-template <typename C, typename CS, typename DBMManager> class Location;
+template < typename CS, typename DBMManager> class Location;
 
 template <typename C, typename CS, typename DBMManager> class Transition {
 
@@ -36,8 +36,8 @@ public:
     target      = t;
     has_channel = false;
   }
-  Transition( const Location<C, CS, DBMManager> &lhs,
-              const Location<C, CS, DBMManager> &rhs ) {
+  Transition( const Location< CS, DBMManager> &lhs,
+              const Location< CS, DBMManager> &rhs ) {
     source      = lhs.getId();
     target      = rhs.getId();
     has_channel = false;

@@ -16,7 +16,7 @@
 
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.h"
-#include "model/location.hpp"
+#include "model/location.h"
 #include "model/ta.hpp"
 #include "model/transition.hpp"
 #include "problem/reachability.hpp"

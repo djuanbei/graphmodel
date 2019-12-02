@@ -42,7 +42,7 @@ source_group("include" FILES ${CURRENT_HEADERS})
 ################################
 # Normal Libraries & Executables
 ################################
-add_library(gmodel_lib src/datacompression.cpp src/dbmutil.cpp src/fashHash.cpp  src/instancefactory.cpp src/uppaaldata.cpp src/xmlconf.cpp src/uppaalmodelparser.cpp src/uppaalparser.cpp src/xmlconf.cpp src/dbm.cpp src/clockdiffcons.cpp  ${CURRENT_HEADERS})
+add_library(gmodel_lib src/datacompression.cpp src/dbmutil.cpp src/fashHash.cpp  src/instancefactory.cpp src/uppaaldata.cpp src/xmlconf.cpp src/uppaalmodelparser.cpp src/uppaalparser.cpp src/xmlconf.cpp src/dbm.cpp src/clockdiffcons.cpp src/location.cpp ${CURRENT_HEADERS})
 add_executable(gmodel src/main.cpp)
 # Key idea: SEPARATE OUT your main() function into its own file so it can be its
 # own executable. Separating out main() means you can add this library to be
