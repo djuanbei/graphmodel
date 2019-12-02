@@ -16,6 +16,7 @@
 #include<iostream>
 
 #include "constraint/clockdiffcons.h"
+#include "domain/dbm.h"
 
 namespace graphsat {
   using std::vector;
@@ -23,7 +24,7 @@ namespace graphsat {
   using std::to_string;
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
-template <  typename DBMManager_t> class Location {
+ class Location {
 
 public:
 public:
@@ -74,7 +75,7 @@ public:
     return ( isUrgent() ) || ( isCommit() );
   }
 
-  inline void employInvariants( const DBMManager_t &dbm_manager,
+  inline void employInvariants( const DBMFactory &dbm_manager,
                                 int *               dbm ) const {
     for ( auto cs : invariants ) {
       dbm_manager.andImpl( dbm, cs );
@@ -90,7 +91,7 @@ public:
    * @return  true if dbm  satisfies invariant, false otherwise.
    */
 
-  inline bool isReachable( const DBMManager_t &dbm_manager, int *dbm ) const {
+  inline bool isReachable( const DBMFactory &dbm_manager, int *dbm ) const {
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -101,7 +102,7 @@ public:
     return dbm_manager.isConsistent( dbm );
   }
 
-  inline void operator()( const DBMManager_t &dbm_manager, int *dbm ) const {
+  inline void operator()( const DBMFactory &dbm_manager, int *dbm ) const {
     assert( isReachable( dbm_manager, dbm ) );
     assert( !isFreezeLocation() );
 
@@ -110,10 +111,10 @@ public:
     assert( dbm_manager.isConsistent( dbm ) );
   }
 
-  bool operator()( const DBMManager_t &dbm_manager, const int *const dbm,
+  bool operator()( const DBMFactory &dbm_manager, const int *const dbm,
                    vector<int *> &re_vec ) const {
     int *newDBM = dbm_manager.createDBM( dbm );
-    bool re     = ( *this )( dbm_manager, newDBM );
+    bool re     = isReachable( dbm_manager, newDBM );
     if ( !re ) {
       dbm_manager.destroyDBM( newDBM );
       return false;
@@ -131,7 +132,7 @@ public:
    *
    * @return a new location
    */
-  Location< DBMManager_t> &operator+=( ClockConstraint &cs ) {
+  Location &operator+=( ClockConstraint &cs ) {
     invariants.push_back( cs );
     return *this;
   }
@@ -152,7 +153,7 @@ public:
   //   }
   // }
   friend std::ostream &operator<<( std::ostream &                                os,
-                              const Location<  DBMManager_t> &loc );
+                              const Location &loc );
 
 private:
   vector<ClockConstraint>  invariants; // set of invariants  in this Location
