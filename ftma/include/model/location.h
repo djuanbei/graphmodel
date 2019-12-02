@@ -15,13 +15,15 @@
 #include <string>
 #include<iostream>
 
+#include "constraint/clockdiffcons.h"
+
 namespace graphsat {
   using std::vector;
   using std::string;
   using std::to_string;
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
-template < typename CS_t, typename DBMManager_t> class Location {
+template <  typename DBMManager_t> class Location {
 
 public:
 public:
@@ -43,7 +45,7 @@ public:
 
   string getName( void ) const { return name; }
 
-  const vector<CS_t> &getInvarients() const { return invariants; }
+  const vector<ClockConstraint> &getInvarients() const { return invariants; }
 
   /**
    * @brief  the commit freeze time. Semantically, urgent locations are
@@ -129,7 +131,7 @@ public:
    *
    * @return a new location
    */
-  Location< CS_t, DBMManager_t> &operator+=( CS_t &cs ) {
+  Location< DBMManager_t> &operator+=( ClockConstraint &cs ) {
     invariants.push_back( cs );
     return *this;
   }
@@ -150,10 +152,10 @@ public:
   //   }
   // }
   friend std::ostream &operator<<( std::ostream &                                os,
-                              const Location< CS_t, DBMManager_t> &loc );
+                              const Location<  DBMManager_t> &loc );
 
 private:
-  vector<CS_t>  invariants; // set of invariants  in this Location
+  vector<ClockConstraint>  invariants; // set of invariants  in this Location
   int           location_id;
   string        name;
   Location_Type type;
