@@ -43,7 +43,6 @@ template <typename L, typename T> class Agent;
 template <typename L, typename T> class AgentTemplate {
 
 private:
-  typedef int C_t;
 
   typedef ClockConstraint CS_t;
 
@@ -155,9 +154,7 @@ private:
 template <typename L, typename T> class Agent {
 
 private:
-  typedef int C_t;
 
-  typedef ClockConstraint CS_t;
 
   typedef Agent<L, T>         TA_t;
   typedef AgentTemplate<L, T> TAT_t;
@@ -236,7 +233,7 @@ template <typename M, typename L, typename T> class AgentSystem {
 
 public:
   typedef typename T::State_t State_t;
-//  typedef int *             DBM_t;
+
   typedef DBMFactory        DBMManager_t;
 
 

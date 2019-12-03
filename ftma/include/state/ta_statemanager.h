@@ -60,6 +60,15 @@ public:
   bool isFreeze( const int *const state ) const {
     return state[ freeze_location_index ] > 0;
   }
+  
+  void unBlock(int * state, const int comp_id) const{
+     state[ comp_id + component_num ] = NO_CHANNEL;
+  }
+  
+  bool isBlock(const int * const state, const int comp_id) const{
+    return hasChannel() &&
+    state[ comp_id + component_num ] != NO_CHANNEL;
+  }
 
   Compression<int> getHeadCompression() const;
 

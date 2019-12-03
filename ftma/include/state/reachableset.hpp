@@ -137,8 +137,7 @@ public:
 
     for ( int component = 0; component < component_num; component++ ) {
 
-      if ( manager.hasChannel() &&
-           state[ component + component_num ] != NO_CHANNEL ) {
+      if ( manager.isBlock(state, component)) {
         /**
          * Waiting for synchronize signal
          *
@@ -220,7 +219,8 @@ public:
     manager.getClockManager().encode( manager.getDBM( dummy_state ) );
     manager.getClockManager().decode( manager.getDBM( dummy_state ) );
     assert( manager.getClockManager().equal( manager.getDBM( dummy_state ),
-                                             manager.getDBM( state ) ) );
+                                            manager.getDBM( state ) ) );
+    delete[] dummy_state;
 #endif
 
 #ifndef CHECK_MEMORY
@@ -328,7 +328,8 @@ private:
                    bool is_send ) {
 
     manager.copy( next_state, state );
-    next_state[ block_component_id + component_num ] = NO_CHANNEL;
+    manager.unBlock(next_state, block_component_id);
+    
 
     const int block_link   = next_state[ block_component_id ];
     int       block_source = 0;
