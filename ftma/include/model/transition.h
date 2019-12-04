@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "channel.h"
+#include "model/location.h"
 #include "constraint/countercons.h"
 #include "state/ta_statemanager.h"
 
@@ -27,7 +28,8 @@ class TMStateManager;
 class Transition {
 
 public:
-  typedef int State_t;
+  typedef int            State_t;
+  typedef TMStateManager StateManager_t;
   Transition() {
     source = target = -1;
     has_channel     = false;

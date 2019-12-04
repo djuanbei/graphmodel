@@ -1,5 +1,6 @@
 
 #include "state/ta_statemanager.h"
+#include<cassert>
 
 namespace graphsat {
 TMStateManager::TMStateManager( int comp_num, const vector<Counter> &ecounters,

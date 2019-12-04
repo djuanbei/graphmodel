@@ -13,6 +13,8 @@
 //#define LEX_VERBOSE
 #include "model/graphmodel.hpp"
 #include "util/data.hpp"
+#include "model/transition.h"
+#include "model/location.h"
 #include <map>
 #include <string>
 #include <vector>

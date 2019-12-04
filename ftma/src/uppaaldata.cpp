@@ -1,4 +1,5 @@
 #include "io/uppaaldata.h"
+#include<cassert>
 
 namespace graphsat {
 

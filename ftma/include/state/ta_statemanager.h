@@ -38,6 +38,7 @@ class TMStateManager {
    *
    */
 public:
+  typedef int State_t;
   TMStateManager() {
 
     component_num = state_length = counter_start_loc = freeze_location_index =
@@ -60,14 +61,13 @@ public:
   bool isFreeze( const int *const state ) const {
     return state[ freeze_location_index ] > 0;
   }
-  
-  void unBlock(int * state, const int comp_id) const{
-     state[ comp_id + component_num ] = NO_CHANNEL;
+
+  void unBlock( int *state, const int comp_id ) const {
+    state[ comp_id + component_num ] = NO_CHANNEL;
   }
-  
-  bool isBlock(const int * const state, const int comp_id) const{
-    return hasChannel() &&
-    state[ comp_id + component_num ] != NO_CHANNEL;
+
+  bool isBlock( const int *const state, const int comp_id ) const {
+    return hasChannel() && state[ comp_id + component_num ] != NO_CHANNEL;
   }
 
   Compression<int> getHeadCompression() const;
@@ -104,7 +104,7 @@ public:
     dbm_manager.norm( newDBM, re_vec );
   }
 
-  void norm( int *dbm ) { dbm_manager.norm( dbm ); }
+  void norm( int *dbm ) const { dbm_manager.norm( dbm ); }
 
   inline int *getDBM( int *state ) const { return state + clock_start_loc; }
 

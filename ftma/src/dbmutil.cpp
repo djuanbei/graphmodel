@@ -1,5 +1,5 @@
 #include "util/dbmutil.hpp"
-
+#include <cassert>
 namespace graphsat {
 extern string trim( std::string s );
 

@@ -13,6 +13,8 @@
 
 #include "util/data.hpp"
 #include "util/dbmutil.hpp"
+#include <cassert>
+
 #include <vector>
 
 namespace graphsat {

@@ -29,6 +29,8 @@
 
 #include "constraint/clockdiffcons.h"
 #include "util/dbmutil.hpp"
+#include<cassert>
+
 
 namespace graphsat {
 using namespace std;

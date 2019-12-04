@@ -8,7 +8,7 @@
  *
  *
  */
-#define ONLINE_CHECK 
+#define ONLINE_CHECK
 //#define CHECK_MEMORY 1
 #define PRINT_STATE 1
 #define DRAW_GRAPH 1
@@ -37,6 +37,8 @@
 #include <cstdint>
 #include <iostream>
 #include <limits>
+#include<cassert>
+
 extern int yy_flex_debug;
 
 using std::vector;
@@ -44,7 +46,9 @@ using namespace graphsat;
 
 typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
 typename INT_TAS_t::AgentTemplate_t                       tat;
-typedef ReachableSet<INT_TAS_t>                           R_t;
+typedef ReachableSet<INT_TAS_t::StateManager_t>           R_t;
+
+typedef Reachability<INT_TAS_t> RS_t;
 
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 void example1( void ) {
@@ -90,17 +94,19 @@ void example1( void ) {
   INT_TAS_t                   sys;
   typename INT_TAS_t::Agent_t tma1( &tmt1, param );
   sys += tma1;
-  R_t data( sys );
+  INT_TAS_t::StateManager_t manager = sys.getStateManager();
 
-  Reachability<R_t> reacher( data );
-  vector<int>       loc;
+  R_t data( manager );
+  sys.addInitState( data, manager );
+
+  RS_t        reacher( sys );
+  vector<int> loc;
   loc.push_back( 3 );
   LocReachProperty prop( loc );
 
-  reacher.satisfy( &prop );
+  reacher.satisfy( data, &prop );
   // vector< dbmset<C_t, DBM > > reachSet;
-
-  // reacher.computeAllReachableSet();
+  reacher.computeAllReachableSet( data );
 }
 
 void example50() {
@@ -145,14 +151,18 @@ void example50() {
   typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
   sys += tma1;
-  R_t               data( sys );
-  Reachability<R_t> reacher( data );
-  vector<int>       loc;
+  INT_TAS_t::StateManager_t manager = sys.getStateManager();
+
+  R_t data( manager );
+  sys.addInitState( data, manager );
+
+  Reachability<INT_TAS_t> reacher( sys );
+  vector<int>             loc;
 
   loc.push_back( 1 );
   LocReachProperty prop( loc );
 
-  reacher.satisfy( &prop );
+  reacher.satisfy( data, &prop );
 }
 
 void example2( void ) {
@@ -196,11 +206,13 @@ void example2( void ) {
   typename INT_TAS_t::Agent_t tma1( &tmt1, param );
 
   sys += tma1;
-  R_t               data( sys );
-  Reachability<R_t> reacher( data );
-  Property          prop;
+  typename INT_TAS_t::StateManager_t manager = sys.getStateManager();
+  R_t                                data( manager );
+  sys.addInitState( data, manager );
+  Reachability<INT_TAS_t> reacher( sys );
+  Property                prop;
 
-  if ( reacher.satisfy( &prop ) ) {
+  if ( reacher.satisfy( data, &prop ) ) {
 
     cout << "right" << endl;
   } else {
@@ -360,12 +372,14 @@ void fisher( int n = 2 ) {
   }
   //  INT_TAS_t   sys = n * tma1;
 
-  R_t data( sys );
+  INT_TAS_t::StateManager_t manager = sys.getStateManager();
+  R_t                       data( manager );
+  sys.addInitState( data, manager );
 
-  Reachability<R_t> reacher( data );
-  FischerMutual     prop;
+  Reachability<INT_TAS_t> reacher( sys );
+  FischerMutual           prop;
 
-  if ( reacher.satisfy( &prop ) ) {
+  if ( reacher.satisfy( data, &prop ) ) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -487,12 +501,14 @@ void incrementalTest() {
   sys.setCounter( 0, counter );
   //  sys += counter;
 
-  R_t data( sys );
+  INT_TAS_t::StateManager_t manager = sys.getStateManager();
+  R_t                       data( manager );
+  sys.addInitState( data, manager );
 
-  Reachability<R_t> reacher( data );
-  FischerMutual     prop;
+  Reachability<INT_TAS_t> reacher( sys );
+  FischerMutual           prop;
 
-  if ( reacher.satisfy( &prop ) ) {
+  if ( reacher.satisfy( data, &prop ) ) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -514,12 +530,14 @@ void incrementalTest() {
   sys1.setCounter( 0, counter );
   //  sys1 += counter;
 
-  R_t data1( sys1 );
+  INT_TAS_t::StateManager_t manager1 = sys1.getStateManager();
+  R_t                       data1( manager1 );
+  sys.addInitState( data1, manager1 );
 
-  Reachability<R_t> reacher1( data1 );
-  FischerMutual     prop1;
+  Reachability<INT_TAS_t> reacher1( sys1 );
+  FischerMutual           prop1;
 
-  if ( reacher1.satisfy( &prop1 ) ) {
+  if ( reacher1.satisfy( data1, &prop1 ) ) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -564,10 +582,12 @@ void fisher1() {
       "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   //  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/test1.xml"
   //  );
-  INT_TAS_t sys = parser.getSYS();
-  R_t       data( sys );
+  INT_TAS_t                 sys     = parser.getSYS();
+  INT_TAS_t::StateManager_t manager = sys.getStateManager();
+  R_t                       data( manager );
+  sys.addInitState( data, manager );
 
-  Reachability<R_t> reacher( data );
+  Reachability<INT_TAS_t> reacher( sys );
   //  FischerMutual     prop;
   //  if ( reacher.satisfy( &prop ) ) {
   //   cout << "There is something wrong" << endl;
@@ -575,19 +595,23 @@ void fisher1() {
 
   //   cout << "fisher mutual exclusion property check right" << endl;
   // }
-  reacher.computeAllReachableSet();
-  cout << "reach data size: " << data.size() << endl;
+  reacher.computeAllReachableSet( data );
+  //  cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
 }
 
 void runxml( const string &file_name ) {
 
-  UppaalParser parser( file_name );
-  INT_TAS_t    sys = parser.getSYS();
-  R_t          data( sys );
+  UppaalParser              parser( file_name );
+  INT_TAS_t                 sys     = parser.getSYS();
+  INT_TAS_t::StateManager_t manager = sys.getStateManager();
+  R_t                       data( manager );
 
-  Reachability<R_t> reacher( data );
-  reacher.computeAllReachableSet();
+  sys.addInitState( data, manager );
+
+  Reachability<INT_TAS_t> reacher( sys );
+
+  reacher.computeAllReachableSet( data );
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot( "test.gv" );
 }
@@ -629,11 +653,14 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
-
+  runxml( "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+  return 0;
   if ( argc > 1 ) {
     runxml( argv[ 1 ] );
     return 0;
   }
+  fisher( 2 );
+  return 0;
   testIsConsistent();
 
   return 0;
@@ -666,8 +693,8 @@ int main( int argc, const char *argv[] ) {
 
   cout << "negation constraint: " << cons.neg() << endl;
   // insert code here...
-  typename INT_TAS_t::DBMManager_t exampleDBM( 4 );
-  int *                            D = exampleDBM.randomDBM();
+  DBMFactory exampleDBM( 4 );
+  int *      D = exampleDBM.randomDBM();
   cout << "matrix dump :\n";
   exampleDBM.dump( cout, D ) << endl;
 

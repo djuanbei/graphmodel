@@ -1,4 +1,6 @@
 #include "domain/dbm.h"
+#include <cassert>
+
 namespace graphsat {
 DBMFactory::DBMFactory( const int n )
     : clock_num( n + 1 ) {

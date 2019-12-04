@@ -15,14 +15,14 @@
 #include "action/counteraction.h"
 #include "channel.h"
 #include "counter.h"
-#include "domain/dbm.h"
+
 #include "domain/dbmset.hpp"
 #include "graph/graph.hpp"
-#include "location.h"
+
 #include "parameter.h"
 #include "state/discretestate.hpp"
-#include "state/ta_statemanager.h"
-#include "transition.h"
+
+
 
 namespace graphsat {
 
@@ -43,7 +43,6 @@ template <typename L, typename T> class Agent;
 template <typename L, typename T> class AgentTemplate {
 
 private:
-
   typedef ClockConstraint CS_t;
 
   typedef AgentTemplate<L, T> AgentTemplate_t;
@@ -67,6 +66,7 @@ public:
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
   }
+  
   vector<int> getClockMaxValue() const { return clock_max_value; }
 
   int getClockNum() const { return clock_num; }
@@ -89,7 +89,7 @@ private:
   vector<ClockConstraint> template_difference_cons;
 
   template <typename R1> friend class Reachability;
-  template <typename R2> friend class ReachableSet;
+ 
 
   friend class Agent<L, T>;
   template <typename M1, typename L1, typename T1> friend class AgentSystem;
@@ -131,12 +131,12 @@ private:
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     template_difference_cons.clear();
-    clock_max_value.resize( clock_num + 1 );
+    clock_max_value.resize( clock_num + 1 );//clock is start with 1
 
     fill( clock_max_value.begin(), clock_max_value.end(), 0 );
 
-    for ( auto l : template_locations ) {
-      const vector<CS_t> &invariants = l.getInvarients();
+    for ( auto loc : template_locations ) {
+      const vector<CS_t> &invariants = loc.getInvarients();
       for ( auto cs : invariants ) {
         updateUpperAndDiff( cs );
       }
@@ -154,8 +154,6 @@ private:
 template <typename L, typename T> class Agent {
 
 private:
-
-
   typedef Agent<L, T>         TA_t;
   typedef AgentTemplate<L, T> TAT_t;
 
@@ -225,7 +223,7 @@ private:
   vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
-  template <typename R2> friend class ReachableSet;
+
   template <typename M1, typename L1, typename T1> friend class AgentSystem;
 };
 
@@ -234,11 +232,9 @@ template <typename M, typename L, typename T> class AgentSystem {
 public:
   typedef typename T::State_t State_t;
 
-  typedef DBMFactory        DBMManager_t;
-
-
-  typedef StateSet<State_t> StateSet_t;
-  typedef ClockConstraint   CS_t;
+  typedef typename T::StateManager_t StateManager_t;
+  typedef StateSet<State_t>          StateSet_t;
+  typedef ClockConstraint            CS_t;
 
   typedef L L_t;
 
@@ -303,9 +299,11 @@ public:
 
     return re;
   }
-  void initState( const M &manager, State_t *state ) const {
-    int  component_num = (int) tas.size();
-    bool withoutCommit = true;
+  
+  template <typename D> void addInitState( D &data, const M &manager ) const {
+    State_t *state         = manager.newState();
+    int      component_num = (int) tas.size();
+    bool     withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
       state[ component ] = initial_loc[ component ];
       if ( tas[ component ].isCommit( state[ component ] ) ) {
@@ -327,6 +325,11 @@ public:
           .employInvariants( manager.getClockManager(),
                              manager.getDBM( state ) );
     }
+    if ( manager.getClockManager().isConsistent( manager.getDBM( state ) ) ) {
+      manager.norm( manager.getDBM( state ) );
+      data.add( state );
+    }
+    manager.destroyState( state );
   }
 
 private:
@@ -347,7 +350,7 @@ private:
   vector<ClockConstraint> difference_cons;
 
   template <typename R1> friend class Reachability;
-  template <typename R2> friend class ReachableSet;
+
   void transfrom( Agent_t &ta ) {
 
     if ( clock_num > 0 ) {
@@ -373,7 +376,6 @@ private:
     clock_num += ta.getClockNum();
   }
 };
-
 
 } // namespace graphsat
 

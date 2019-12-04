@@ -1,5 +1,7 @@
 
 #include "util/instancefactory.h"
+#include <cassert>
+
 namespace graphsat {
 
 CounterConstraint *copy( CounterConstraint *other ) {

@@ -1,5 +1,6 @@
 
 #include "model/transition.h"
+#include <cassert>
 
 namespace graphsat {
 Transition::Transition( const Transition &other, const Parameter &param ) {
