@@ -89,9 +89,12 @@ public:
 
     for ( auto state : reach_set ) {
       compress_state.decode( state, convert_C_t );
-      if ( isReach( prop, convert_C_t ) ) {
+      if(( *prop )( manager, convert_C_t )){
         return TRUE;
       }
+//      if ( isReach( prop, convert_C_t ) ) {
+//        return TRUE;
+//      }
     }
     return UNKOWN;
   }

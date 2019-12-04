@@ -8,7 +8,7 @@
  *
  *
  */
-#define ONLINE_CHECK
+//#define ONLINE_CHECK
 //#define CHECK_MEMORY 1
 #define PRINT_STATE 1
 #define DRAW_GRAPH 1
@@ -33,6 +33,11 @@
 #include "state/discretestate.hpp"
 
 #include "util/datacompression.h"
+
+#include "benchmark/fisher.h"
+
+#include <problem/pmcp.hpp>
+
 
 #include <cstdint>
 #include <iostream>
@@ -406,7 +411,18 @@ void testIsConsistent() {
     df.destroyDBM( d );
   }
 }
-
+void incrementalTest1() {
+  FisherGenerator F;
+  IncrementalCheck<INT_TAS_t, FisherGenerator> check;
+  FischerMutual           prop;
+  
+  if(check.check(F, &prop)){
+    cout<<"ok"<<endl;
+  }else{
+     cout<<"fail"<<endl;
+  }
+  
+}
 void incrementalTest() {
   int                             n = 3;
   vector<typename INT_TAS_t::T_t> es;
@@ -486,7 +502,7 @@ void incrementalTest() {
   es.push_back( wait_cs );
   es.push_back( cs_A );
   typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 1 );
-  // tma1.addOnePara();
+
   INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
     Parameter param( 1 );
@@ -495,7 +511,7 @@ void incrementalTest() {
 
     sys += tma1;
   }
-  //  INT_TAS_t   sys = n * tma1;
+  
   Counter counter( 0, 100 );
   sys.setCounterNum( 1 );
   sys.setCounter( 0, counter );
@@ -576,6 +592,7 @@ void incrementalTest() {
       cout << "Can not hold" << endl;
     }
   }
+  cout<<"ok"<<endl;
 }
 void fisher1() {
   UppaalParser parser(
@@ -653,6 +670,9 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
+  incrementalTest1();
+  return 0;
+  
   runxml( "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
   return 0;
   if ( argc > 1 ) {

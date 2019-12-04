@@ -490,7 +490,7 @@ private:
    * @return ture if prop is true under state, false otherwise.
    */
 #ifndef ONLINE_CHECK
-  bool isReach( const Property *prop, const State_t *const state ) const {
+ inline bool isReach( const Property *prop, const State_t *const state ) const {
     return ( *prop )( manager, state );
   }
 #endif
