@@ -172,20 +172,19 @@ private:
 
   inline bool addToReachableSet( const State_t *const state ) {
 
-#ifdef NDEBUG
-    C_t *dummy_state = manager.newState( state );
-    manager.getClockManager().encode( manager.getDBM( dummy_state ) );
-    manager.getClockManager().decode( manager.getDBM( dummy_state ) );
-    assert( manager.getClockManager().equal( manager.getDBM( dummy_state ),
-                                             manager.getDBM( state ) ) );
-    delete[] dummy_state;
-#endif
+//#ifdef NDEBUG
+//    C_t *dummy_state = manager.newState( state );
+//    manager.getClockManager().encode( manager.getDBM( dummy_state ) );
+//    manager.getClockManager().decode( manager.getDBM( dummy_state ) );
+//    assert( manager.getClockManager().equal( manager.getDBM( dummy_state ),
+//                                             manager.getDBM( state ) ) );
+//    delete[] dummy_state;
+//#endif
 
-#ifndef CHECK_MEMORY
+
     compress_state.encode( state, convert_UINT );
-
     return reach_set.add( convert_UINT ) > -1;
-#endif
+
     return true;
   }
 

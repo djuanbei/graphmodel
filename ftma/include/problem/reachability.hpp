@@ -97,16 +97,7 @@ public:
     while ( !data.waitEmpty() ) {
 
       typename SYS::State_t *state = data.next();
-#ifdef CHECK_MEMORY
 
-      if ( data.waitSize() > 100 ) {
-        int num = data.waitSize() - 100;
-        for ( int i = 0; i < num; i++ ) {
-          typename ReachableSet::C_t *temp_state = data.next();
-          delete[] temp_state;
-        }
-      }
-#endif
 
       if ( oneDiscreteStep( data, prop, state ) ) {
         delete[] state;

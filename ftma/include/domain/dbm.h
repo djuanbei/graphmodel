@@ -53,7 +53,7 @@ public:
   DBMFactory( void ) {
     clock_num   = 0;
     matrix_size = 0;
-    MAX_INT     = getMAX_INT( (int) 0 );
+    MAX_INT     = getMAX_INT<int>( );
 
     distribution = std::uniform_int_distribution<int>( -100, 100 );
   }

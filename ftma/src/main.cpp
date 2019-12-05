@@ -9,12 +9,15 @@
  *
  */
 //#define ONLINE_CHECK
-//#define CHECK_MEMORY 1
+
 #define PRINT_STATE 1
 #define DRAW_GRAPH 1
 
 //#define YYDEBUG 1
 #include <random>
+
+#include <glog/logging.h>
+
 
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.h"
@@ -395,7 +398,7 @@ void fisher( int n = 2 ) {
 }
 void testIsConsistent() {
   int        n   = 12;
-  int        len = ( n + 1 ) * ( n + 1 );
+ // int        len = ( n + 1 ) * ( n + 1 );
   DBMFactory df( n );
   for ( int i = 0; i < 5; i++ ) {
     int *           d    = df.randomFeasiableDBM();
@@ -670,6 +673,8 @@ void testcompression() {
 }
 
 int main( int argc, const char *argv[] ) {
+   google::InitGoogleLogging("testlog");
+   LOG(ERROR) << "Found " << 2 << " cookies";
   incrementalTest1();
   return 0;
   

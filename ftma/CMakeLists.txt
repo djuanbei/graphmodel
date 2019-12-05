@@ -10,7 +10,7 @@ set(PROJECT_NAME gmodel)
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11 -fdiagnostics-absolute-paths -Wno-deprecated-register")
-
+link_directories(/usr/local/lib/)
 
 # force static runtime libraries for msvc builds
 if(MSVC)
@@ -31,7 +31,8 @@ endif()
 # include_directories(${COMMON_INCLUDES}) in other CMakeLists.txt files.
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 include_directories(${COMMON_INCLUDES}
-    ~/mycode/c++/raptor/include 
+    ~/mycode/c++/raptor/include
+    /usr/local/include
 )
 
 file(GLOB_RECURSE CURRENT_HEADERS   ${PROJECT_ROOT}/include/*.h  ${PROJECT_ROOT}/include/*.hpp)
@@ -48,7 +49,7 @@ add_executable(gmodel src/main.cpp)
 # own executable. Separating out main() means you can add this library to be
 # used elsewhere.
 
-target_link_libraries(gmodel gmodel_lib)
+target_link_libraries(gmodel gmodel_lib glog)
 
 ################################
 # Testing

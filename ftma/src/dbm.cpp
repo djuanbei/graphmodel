@@ -5,7 +5,7 @@ namespace graphsat {
 DBMFactory::DBMFactory( const int n )
     : clock_num( n + 1 ) {
   matrix_size = clock_num * clock_num;
-  MAX_INT     = getMAX_INT( (int) 0 );
+  MAX_INT     = getMAX_INT<int>( );
 
   distribution = std::uniform_int_distribution<int>( -100, 100 );
 
@@ -23,7 +23,7 @@ DBMFactory::DBMFactory( int n, const vector<int> &oclockUppuerBound,
     : clock_num( n + 1 ) {
   matrix_size = clock_num * clock_num;
 
-  MAX_INT = getMAX_INT( (int) 0 );
+  MAX_INT = getMAX_INT<int>();
 
   distribution       = std::uniform_int_distribution<int>( -100, 100 );
   clock_upper_bounds = oclockUppuerBound;

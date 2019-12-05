@@ -224,7 +224,7 @@ bool isRefType( const TYPE_T type );
  *  Both have compare < and <=
  *
  */
-template <typename C> inline C getMAX_INT( const C c ) {
+template <typename C> inline C getMAX_INT(  ) {
   return std::numeric_limits<C>::max() / 2 - 2;
 }
 
