@@ -15,13 +15,14 @@
 #include "discretestate.hpp"
 #include "model/graphmodel.hpp"
 #include "model/parameter.h"
+#include "state/componentstate.h"
 #include "util/datacompression.h"
 
 namespace graphsat {
 
 using std::vector;
 
-class TMStateManager {
+class TMStateManager : public ComponentInfo {
 
   /**
    * state is [loc, channel_state, freezeLocationNum, counter_state,
@@ -96,7 +97,7 @@ public:
 
   void destroyState( int *s ) const { delete[] s; }
 
-  inline int               getComponentNum() const { return component_num; }
+  int                      getComponentNum() const { return component_num; }
   inline const DBMFactory &getClockManager() const { return dbm_manager; }
 
   void norm( const int *const dbm, vector<int *> &re_vec ) const {

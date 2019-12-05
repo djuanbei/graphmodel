@@ -13,12 +13,16 @@
 #define __REACHABILITY_HPP
 
 #include <map>
+#include <random>
 #include <set>
 #include <vector>
 
 //#include "model/graphmodel.hpp"
+#include "model/channel.h"
 #include "property/property.h"
 #include "util/parallel.h"
+
+#include "util/macrodef.h"
 
 namespace graphsat {
 
@@ -44,16 +48,14 @@ public:
   }
 
   ~Reachability() {
-    if(cache_state!=NULL){
-      manager.destroyState(cache_state);
-      cache_state=NULL;
+    if ( cache_state != NULL ) {
+      manager.destroyState( cache_state );
+      cache_state = NULL;
     }
-    if(next_state!=NULL){
-      manager.destroyState(next_state);
-      next_state=NULL;
+    if ( next_state != NULL ) {
+      manager.destroyState( next_state );
+      next_state = NULL;
     }
-    
-    
   }
   template <typename D> void computeAllReachableSet( D &data ) {
     Property prop;
@@ -98,7 +100,6 @@ public:
 
       typename SYS::State_t *state = data.next();
 
-
       if ( oneDiscreteStep( data, prop, state ) ) {
         delete[] state;
         return true;
@@ -117,7 +118,7 @@ private:
   bool oneDiscreteStep( D &data, const Property *prop, State_t *state ) {
 #ifdef DRAW_GRAPH
     data.incCurrentParent();
-   
+
 #endif
 
     PRINT_STATE_MACRO;
@@ -455,7 +456,6 @@ private:
             break;
           }
         }
-       
       }
       for ( auto dbm : next_dbms ) {
         manager.getClockManager().destroyDBM( dbm );
@@ -481,19 +481,18 @@ private:
    * @return ture if prop is true under state, false otherwise.
    */
 #ifndef ONLINE_CHECK
- inline bool isReach( const Property *prop, const State_t *const state ) const {
-    return ( *prop )( manager, state );
+  inline bool isReach( const Property *     prop,
+                       const State_t *const state ) const {
+    return ( *prop )( &manager, state );
   }
 #endif
 
   typename SYS::StateManager_t manager;
-  int                        component_num;
-  const SYS &                sys;
-  State_t *                  cache_state;
-  State_t *                  next_state;
-  std::default_random_engine generator;
-
-
+  int                          component_num;
+  const SYS &                  sys;
+  State_t *                    cache_state;
+  State_t *                    next_state;
+  std::default_random_engine   generator;
 };
 } // namespace graphsat
 

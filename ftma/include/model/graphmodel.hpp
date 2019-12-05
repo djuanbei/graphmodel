@@ -22,8 +22,6 @@
 #include "parameter.h"
 #include "state/discretestate.hpp"
 
-
-
 namespace graphsat {
 
 using std::vector;
@@ -66,7 +64,7 @@ public:
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
   }
-  
+
   vector<int> getClockMaxValue() const { return clock_max_value; }
 
   int getClockNum() const { return clock_num; }
@@ -89,7 +87,6 @@ private:
   vector<ClockConstraint> template_difference_cons;
 
   template <typename R1> friend class Reachability;
- 
 
   friend class Agent<L, T>;
   template <typename M1, typename L1, typename T1> friend class AgentSystem;
@@ -131,7 +128,7 @@ private:
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     template_difference_cons.clear();
-    clock_max_value.resize( clock_num + 1 );//clock is start with 1
+    clock_max_value.resize( clock_num + 1 ); // clock is start with 1
 
     fill( clock_max_value.begin(), clock_max_value.end(), 0 );
 
@@ -299,7 +296,7 @@ public:
 
     return re;
   }
-  
+
   template <typename D> void addInitState( D &data, const M &manager ) const {
     State_t *state         = manager.newState();
     int      component_num = (int) tas.size();

@@ -16,6 +16,12 @@
 #include <random>
 #include <vector>
 
+#include "util/typedef.h"
+
+#include "state/discretestate.hpp"
+
+#include "util/datacompression.h"
+
 namespace graphsat {
 using std::copy;
 using std::deque;
@@ -52,11 +58,11 @@ public:
   ~ReachableSet() {
     reach_set.clear();
     manager.destroyState( cache_state );
-    cache_state=NULL;
+    cache_state = NULL;
     manager.destroyState( convert_C_t );
-    convert_C_t=NULL;
+    convert_C_t = NULL;
     delete[] convert_UINT;
-    convert_UINT=NULL;
+    convert_UINT = NULL;
     while ( !wait_set.empty() ) {
       State_t *temp_state = wait_set.front();
       wait_set.pop_front();
@@ -89,12 +95,12 @@ public:
 
     for ( auto state : reach_set ) {
       compress_state.decode( state, convert_C_t );
-      if(( *prop )( manager, convert_C_t )){
+      if ( ( *prop )( &manager, convert_C_t ) ) {
         return TRUE;
       }
-//      if ( isReach( prop, convert_C_t ) ) {
-//        return TRUE;
-//      }
+      //      if ( isReach( prop, convert_C_t ) ) {
+      //        return TRUE;
+      //      }
     }
     return UNKOWN;
   }
@@ -131,9 +137,11 @@ public:
       re.push_back( dummy );
     }
   }
-  
-  void incCurrentParent(){
+
+  void incCurrentParent() {
+#ifdef DRAW_GRAPH
     current_parent++;
+#endif
   }
 
   void generatorDot( const string &filename ) {
@@ -172,15 +180,15 @@ private:
 
   inline bool addToReachableSet( const State_t *const state ) {
 
-//#ifdef NDEBUG
-//    C_t *dummy_state = manager.newState( state );
-//    manager.getClockManager().encode( manager.getDBM( dummy_state ) );
-//    manager.getClockManager().decode( manager.getDBM( dummy_state ) );
-//    assert( manager.getClockManager().equal( manager.getDBM( dummy_state ),
-//                                             manager.getDBM( state ) ) );
-//    delete[] dummy_state;
-//#endif
-
+    //#ifdef NDEBUG
+    //    C_t *dummy_state = manager.newState( state );
+    //    manager.getClockManager().encode( manager.getDBM( dummy_state ) );
+    //    manager.getClockManager().decode( manager.getDBM( dummy_state ) );
+    //    assert( manager.getClockManager().equal( manager.getDBM( dummy_state
+    //    ),
+    //                                             manager.getDBM( state ) ) );
+    //    delete[] dummy_state;
+    //#endif
 
     compress_state.encode( state, convert_UINT );
     return reach_set.add( convert_UINT ) > -1;

@@ -1,5 +1,5 @@
 #include "io/uppaaldata.h"
-#include<cassert>
+#include <cassert>
 
 namespace graphsat {
 
@@ -159,4 +159,5 @@ void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
   }
 }
+
 } // namespace graphsat

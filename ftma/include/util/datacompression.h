@@ -14,8 +14,10 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+
+#include "util/typedef.h"
 namespace graphsat {
-typedef unsigned int UINT;
+
 using std::make_pair;
 using std::numeric_limits;
 using std::pair;

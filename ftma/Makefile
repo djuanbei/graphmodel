@@ -49,7 +49,7 @@ CFLAGS+= -fdiagnostics-absolute-paths #the error path is absolute path
 COPTIMIZE ?= -O2 
 
 
-# LFLAGS    +=-llapack     -lm
+ LFLAGS    +=-lglog
 
 
 

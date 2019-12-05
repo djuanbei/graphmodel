@@ -16,144 +16,14 @@
 #include <string>
 #include <vector>
 
-#define STRING( s ) #s
+#include "typedef.h"
 
-#ifdef PRINT_STATE
-
-#define PRINT_STATE_MACRO                                                      \
-  for ( int i = 0; i < component_num; i++ ) {                                  \
-    if ( state[ i + component_num ] == NO_CHANNEL )                            \
-      cout << setw( LOC_OUT_WIDTH ) << sys.tas[ i ].getLocName( state[ i ] );  \
-    else {                                                                     \
-      int block_source;                                                        \
-      sys.tas[ i ].ta_tempate->graph.findSrc( state[ i ], block_source );      \
-      cout << setw( LOC_OUT_WIDTH )                                            \
-           << sys.tas[ i ].getLocName( block_source );                         \
-    }                                                                          \
-  }                                                                            \
-  cout << endl;                                                                \
-  manager.getClockManager().dump( cout, manager.getDBM( state ) ) << endl;
-
-#else
-
-#define PRINT_STATE_MACRO
-
-#endif
-
-#define LTEQ_ZERO ( 1 )
-
-#define newA( __E, __n ) (__E *) malloc( ( __n ) * sizeof( __E ) )
-
-#define TYPE_TYPE( T )                                                         \
-  T, REF_##T, CONST_##T, CONST_REF_##T, PARAMETER_##T, REF_PARAMETER_##T,      \
-      ARRAY_##T
-
-#define TYPE_STR( T )                                                          \
-  case T:                                                                      \
-    return STRING( T );                                                        \
-  case REF_##T:                                                                \
-    return STRING( REF_##T );                                                  \
-  case CONST_##T:                                                              \
-    return STRING( CONST_##T );                                                \
-  case CONST_REF_##T:                                                          \
-    return STRING( CONST_REF_##T );                                            \
-  case ARRAY_##T:                                                              \
-    return STRING( ARRAY_##T );                                                \
-  case PARAMETER_##T:                                                          \
-    return STRING( PARAMETER_##T );                                            \
-  case REF_PARAMETER_##T:                                                      \
-    return STRING( REF_PARAMETER_##T );
-
-const static int TYPE_FAMILY_LEN = 7;
-
-#define ENUM_ITEM_STR( T )                                                     \
-  case T:                                                                      \
-    return STRING( T );
+#include "macrodef.h"
 
 namespace graphsat {
 using std::map;
 using std::string;
 using std::vector;
-const static int zero_clock_index = 0;
-
-const static string NTA_STR = "nta";
-
-const static string DECLARATION_STR = "declaration";
-
-const static string TEMPLATE_STR = "template";
-
-const static string NAME_STR = "name";
-
-const static string PARAMETER_STR = "parameter";
-
-const static string LOCATION_STR = "location";
-
-const static string INIT_STR = "init";
-
-const static string TRANSITION_STR = "transition";
-
-const static string SOURCE_STR = "source";
-
-const static string TARGET_STR = "target";
-
-const static string ID_STR = "id";
-
-const static string REF_STR = "ref";
-
-const static string LABEL_STR = "label";
-
-const static string KIND_STR = "kind";
-
-const static string NAIL_STR = "nail";
-
-const static string INVARIANT_STR = "invariant";
-
-const static string GUARD_STR = "guard";
-
-const static string ASSIGNMENT_STR = "assignment";
-
-const static string SYNCHRONISATION_STR = "synchronisation";
-
-const static string SYSTEM_STR = "system";
-
-const static string QUERIES_STR = "queries";
-
-const static string QUERY_STR = "query";
-
-const static string FORMULA_STR = "formula";
-
-const static string COMMENT_STR = "comment";
-
-const static int LOC_OUT_WIDTH = 7;
-const static int OP_OUT_WIDTH  = 3;
-
-const static int VALUE_OUT_WIDTH = 5;
-
-typedef long double DF_T;
-
-enum Check_State { TRUE, FALSE, UNKOWN };
-
-enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
-
-enum ARGUMENT_TYPE {
-  CONST_ARG,
-  COUNTER_ARG,
-  PARAMETER_ARG,
-  REF_PARAMETER_ARG,
-  EMPTY_ARG
-};
-
-struct Argument {
-  ARGUMENT_TYPE type;
-  int           value;
-  Argument()
-      : type( CONST_ARG )
-      , value( 0 ) {}
-  Argument( ARGUMENT_TYPE t, int v ) {
-    type  = t;
-    value = v;
-  }
-};
 
 template <typename T>
 bool executeOp( const T &lhs, COMP_OPERATOR op, const T &rhs ) {
@@ -224,7 +94,7 @@ bool isRefType( const TYPE_T type );
  *  Both have compare < and <=
  *
  */
-template <typename C> inline C getMAX_INT(  ) {
+template <typename C> inline C getMAX_INT() {
   return std::numeric_limits<C>::max() / 2 - 2;
 }
 

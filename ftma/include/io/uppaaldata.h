@@ -12,9 +12,9 @@
 #define __UPPAAL_H
 //#define LEX_VERBOSE
 #include "model/graphmodel.hpp"
-#include "util/data.hpp"
-#include "model/transition.h"
 #include "model/location.h"
+#include "model/transition.h"
+#include "util/data.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -273,6 +273,9 @@ private:
 };
 
 void parseProblem( const string &str, UppaalData * );
+
+void runxml( const string &file_name );
+
 } // namespace graphsat
 
 #endif

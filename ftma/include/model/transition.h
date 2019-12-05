@@ -13,8 +13,8 @@
 #include <vector>
 
 #include "channel.h"
-#include "model/location.h"
 #include "constraint/countercons.h"
+#include "model/location.h"
 #include "state/ta_statemanager.h"
 
 #include "constraint/clockdiffcons.h"

@@ -1,5 +1,5 @@
 #include "constraint/clockdiffcons.h"
-#include<cassert>
+#include <cassert>
 
 namespace graphsat {
 
