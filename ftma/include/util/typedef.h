@@ -96,6 +96,8 @@ struct Argument {
     value = v;
   }
 };
+
+typedef int (* IndexFun_t) (void * );
 } // namespace graphsat
 
 #endif

@@ -82,6 +82,13 @@ class ArrayChannel: public Channel{
     
 };
 
+class IndexChannel:public ArrayChannel{
+
+ protected:
+  IndexFun_t index_fun;
+  
+};
+
 
 
 
