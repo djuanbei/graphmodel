@@ -19,11 +19,11 @@ template <typename M, typename L, typename T> class AgentSystem;
 template <typename L, typename T> class Agent {
 
 private:
-  typedef Agent<L, T>         TA_t;
-  typedef AgentTemplate<L, T> TAT_t;
+  typedef Agent<L, T>         Agent_t;
+  typedef AgentTemplate<L, T> AgentTemplate_t;
 
 public:
-  Agent(const shared_ptr< TAT_t> &tat, const Parameter &param ) {
+  Agent(const shared_ptr< AgentTemplate_t> &tat, const Parameter &param ) {
 
     ta_tempate = tat;
     for ( auto e : tat->template_transitions ) {
@@ -32,6 +32,9 @@ public:
 
     locations       = tat->template_locations;
     difference_cons = tat->template_difference_cons;
+    shared_ptr<Agent_t> dummy( this);
+    id=tat->agents.size( );
+    tat->agents.push_back(dummy );
   }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
@@ -88,7 +91,7 @@ public:
 
 private:
   
-  shared_ptr<TAT_t> ta_tempate;
+  shared_ptr<AgentTemplate_t> ta_tempate;
   int id;//the interbal of instance of ta_tempate
   
   vector<L>               locations;

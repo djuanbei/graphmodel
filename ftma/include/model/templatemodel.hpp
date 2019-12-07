@@ -78,6 +78,10 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
     }
     return NOT_FOUND;
   }
+  void reset( ){
+    agents.clear( );
+  }
+
 
  private:
   AgentTemplate() { initial_loc =-1; }
@@ -159,6 +163,7 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
   vector<ClockConstraint> template_difference_cons;
   
   vector<string> parameters;
+  vector<shared_ptr<Agent<L,T> >> agents;
 
   template <typename R1> friend class Reachability;
 
