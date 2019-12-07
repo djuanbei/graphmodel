@@ -27,7 +27,7 @@ typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
 
 struct FormalParameterItem {
   FormalParameterItem() {}
-  //  bool   is_ref;
+
   TYPE_T type;
   int    id;
   string name;
@@ -268,7 +268,7 @@ private:
   map<string, int> counter_id_map;
   map<string, int> channel_id_map;
 
-  typename INT_TAS_t::AgentTemplate_t tat;
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tat;
   friend class UppaalParser;
 };
 

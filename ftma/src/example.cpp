@@ -39,7 +39,7 @@ using std::vector;
 using namespace graphsat;
 
 typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
-typename INT_TAS_t::AgentTemplate_t                       tat;
+//typename INT_TAS_t::AgentTemplate_t                       tat;
 typedef ReachableSet<INT_TAS_t::StateManager_t>           R_t;
 
 typedef Reachability<INT_TAS_t> RS_t;
@@ -50,6 +50,7 @@ std::default_random_engine         generator;
 std::uniform_int_distribution<int> distribution( 0, 1000 );
 
 void example1( void ) {
+  INT_TAS_t                   sys;
   // x:1 y:2 z:3
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -74,9 +75,9 @@ void example1( void ) {
   typename INT_TAS_t::CS_t cs2( 1, 3, LT, 1 ); // x-z < 1
   typename INT_TAS_t::CS_t cs3( 3, 2, LT, 1 ); // z-y < 1
   e23 += cs2;
-  // e23.cons.push_back( cs2 );
+
   e23 += cs3;
-  //    e23.cons.push_back( cs3 );
+
 
   ls.push_back( S0 );
   ls.push_back( S1 );
@@ -86,18 +87,19 @@ void example1( void ) {
   es.push_back( e01 );
   es.push_back( e12 );
   es.push_back( e23 );
-  typename INT_TAS_t::AgentTemplate_t tmt1;
-  tmt1.addClock( "x");
-  tmt1.addClock( "y");
-  tmt1.addClock( "z");
-
-  tmt1.initial(ls, es, 0 );
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1=sys.createTemplate( );
   
-  //( ls, es, 0, 3 );
+  tmt1->addClock( "x");
+  tmt1->addClock( "y");
+  tmt1->addClock( "z");
+
+  tmt1->initial(ls, es, 0 );
+  
+
 
   Parameter                   param( 1 );
-  INT_TAS_t                   sys;
-  typename INT_TAS_t::Agent_t tma1( &tmt1, param );
+
+  typename INT_TAS_t::Agent_t tma1( tmt1, param );
   sys += tma1;
   INT_TAS_t::StateManager_t manager = sys.getStateManager();
 
@@ -110,11 +112,13 @@ void example1( void ) {
   LocReachProperty prop( loc );
 
   reacher.satisfy( data, &prop );
-  // vector< dbmset<C_t, DBM > > reachSet;
+  
   reacher.computeAllReachableSet( data );
 }
 
+
 void example50() {
+  INT_TAS_t                   sys;
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   typename INT_TAS_t::L_t         L0( 0 );
@@ -148,16 +152,16 @@ void example50() {
 
   es.push_back( E00b );
   es.push_back( E01 );
-  typename INT_TAS_t::AgentTemplate_t tmt1;
-  tmt1.addClock( "x");
-  tmt1.addClock( "y");
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1=sys.createTemplate( );
+  tmt1->addClock( "x");
+  tmt1->addClock( "y");
   
 
-  tmt1.initial( ls, es, 0 );
+  tmt1->initial( ls, es, 0 );
 
   Parameter                   param( 1 );
-  INT_TAS_t                   sys;
-  typename INT_TAS_t::Agent_t tma1( &tmt1, param );
+
+  typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
   sys += tma1;
   INT_TAS_t::StateManager_t manager = sys.getStateManager();
@@ -175,9 +179,10 @@ void example50() {
 }
 
 void example2( void ) {
-  typename INT_TAS_t::AgentTemplate_t tmt1;
-  int x=tmt1.addClock( "x");
-  int y=tmt1.addClock( "y");
+  INT_TAS_t                   sys;
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1=sys.createTemplate( );
+  int x=tmt1->addClock( "x");
+  int y=tmt1->addClock( "y");
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   typename INT_TAS_t::L_t         L0( 0 );
@@ -212,11 +217,11 @@ void example2( void ) {
   es.push_back( E01 );
 
 
-  tmt1.initial( ls, es, 0 );
+  tmt1->initial( ls, es, 0 );
 
-  INT_TAS_t                   sys;
+
   Parameter                   param( 1 );
-  typename INT_TAS_t::Agent_t tma1( &tmt1, param );
+  typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
   sys += tma1;
   typename INT_TAS_t::StateManager_t manager = sys.getStateManager();
@@ -285,8 +290,10 @@ void example6() {
 }
 
 void fisher( int n ) {
-  typename INT_TAS_t::AgentTemplate_t tmt1;
-  ADD_CLOCK( tmt1, x);
+  INT_TAS_t sys;
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1=sys.createTemplate( );
+  int x=tmt1->addClock( "x");
+  //  ADD_CLOCK( tmt1, x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   int                             k = 2;
@@ -363,10 +370,10 @@ void fisher( int n ) {
   es.push_back( wait_cs );
   es.push_back( cs_A );
   
-  //  typename INT_TAS_t::AgentTemplate_t
-  tmt1.initial( ls, es, 0 );
 
-  INT_TAS_t sys;
+  tmt1->initial( ls, es, 0 );
+
+  //INT_TAS_t sys;
   Counter   counter( 0, n + 1 );
   sys.setCounterNum( 1 );
   sys.setCounter( 0, counter );
@@ -378,7 +385,7 @@ void fisher( int n ) {
     param.setCounterMap( 0, 0 ); // add relation between local id and global id
 
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::Agent_t tma1( &tmt1, param );
+    typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
     sys += tma1;
   }
@@ -434,9 +441,9 @@ void incrementalTest1() {
 }
 
 void incrementalTest() {
-  
-  typename INT_TAS_t::AgentTemplate_t tmt1;
-  ADD_CLOCK( tmt1, x);
+  INT_TAS_t sys;
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1=sys.createTemplate( );
+  ADD_CLOCK( (*tmt1), x);
   int                             n = 3;
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -514,14 +521,14 @@ void incrementalTest() {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  //  typename INT_TAS_t::AgentTemplate_t
-  tmt1.initial( ls, es, 0 );
 
-  INT_TAS_t sys;
+  tmt1->initial( ls, es, 0 );
+
+
   for ( int i = 1; i <= n; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::Agent_t tma1( &tmt1, param );
+    typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
     sys += tma1;
   }
@@ -552,7 +559,7 @@ void incrementalTest() {
   for ( int i = 1; i <= 2; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::Agent_t tma1( &tmt1, param );
+    typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
     sys1 += tma1;
   }

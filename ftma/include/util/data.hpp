@@ -16,6 +16,11 @@
 #include <string>
 #include <vector>
 
+
+#include "macrodef.h"
+
+#include "typedef.h"
+
 namespace graphsat {
 using std::map;
 using std::pair;
@@ -23,31 +28,8 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-#define SINGLETON( T )                                                         \
-private:                                                                       \
-  T() {}                                                                       \
-  T( const T &other ) { assert( false ); }                                     \
-  T &operator=( const T &other ) {                                             \
-    assert( false );                                                           \
-    return *this;                                                              \
-  }                                                                            \
-                                                                               \
-public:                                                                        \
-  static T &getInstance() {                                                    \
-    static T instance;                                                         \
-    return instance;                                                           \
-  }
 
-#define deleteType( Var, TYPE )                                                \
-  {                                                                            \
-    vector<void *> temp = Var.getValue( CLASS_TYPE, #TYPE );                   \
-    for ( auto ee : temp ) {                                                   \
-      delete (TYPE *) ee;                                                      \
-    }                                                                          \
-    Var.clear( CLASS_TYPE, #TYPE );                                            \
-  }
 
-const static int NOT_FOUND = -1;
 
 inline static string arrayToVar( const string &name, int id ) {
   stringstream ss;

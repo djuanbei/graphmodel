@@ -4,7 +4,9 @@
 namespace graphsat {
 FisherGenerator::FisherGenerator()
     : k( 2 ) {
-  ADD_CLOCK( tmt, x);
+  tmt=sys.createTemplate( );
+  
+  ADD_CLOCK( (*tmt), x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
 
@@ -80,15 +82,15 @@ FisherGenerator::FisherGenerator()
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  tmt.initial( ls, es, 0 );
+  tmt->initial( ls, es, 0 );
 }
-INT_TAS_t FisherGenerator::generate( int n ) const {
+INT_TAS_t FisherGenerator::generate( int n )  const{
   INT_TAS_t re( sys);
   
   for ( int i = 1; i <= n; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::Agent_t tma( &tmt, param );
+    typename INT_TAS_t::Agent_t tma( tmt, param );
 
     re += tma;
   }

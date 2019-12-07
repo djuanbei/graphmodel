@@ -23,13 +23,22 @@ class TrainGate{
   INT_TAS_t generate( int n ) const;
 
  private:
-  typename INT_TAS_t::AgentTemplate_t train_tmt;
-  typename INT_TAS_t::AgentTemplate_t gate_tmt;
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> train_tmt;
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> gate_tmt;
   INT_TAS_t sys;
   
   int n;//number of trains
   
 };
+
+void enqueue(typename INT_TAS_t::Agent_t  & agent,  int *state, const  int element);
+
+void dequeue(typename INT_TAS_t::Agent_t  & agent,  int *state );
+
+int front(typename INT_TAS_t::Agent_t  & agent,  int *state  );
+
+int tail( typename INT_TAS_t::Agent_t  & agent,  int *state);
+
 
 }
 

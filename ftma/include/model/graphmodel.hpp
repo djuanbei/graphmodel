@@ -54,13 +54,21 @@ public:
   typedef Agent<L, T>         Agent_t;
   typedef AgentTemplate<L, T> AgentTemplate_t;
 
-  typedef AgentSystem<M, L, T> AgentSystem_t;
 
   AgentSystem() {
     clock_max_value.push_back( 0 );
     clock_num = 0;
   }
-  AgentSystem_t &operator+=( Agent_t &ta ) {
+
+  shared_ptr<AgentTemplate_t> createTemplate( ){
+    shared_ptr<AgentTemplate_t> re(new AgentTemplate_t( ));
+    re->id=templates.size( );
+    templates.push_back(re );
+    return re;
+  }
+  //  AgentSystem_t& create
+  
+  AgentSystem &operator+=( Agent_t &ta ) {
 
     transfrom( ta );
     tas.push_back( ta );
@@ -148,7 +156,7 @@ private:
    * multi-components
    *
    */
-  vector<AgentTemplate_t> templates;
+  vector<shared_ptr<AgentTemplate_t>>  templates;
   
   vector<Agent_t> tas;
   vector<Channel> channels;

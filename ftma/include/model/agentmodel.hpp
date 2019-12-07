@@ -23,7 +23,7 @@ private:
   typedef AgentTemplate<L, T> TAT_t;
 
 public:
-  Agent( const TAT_t *tat, const Parameter &param ) {
+  Agent(const shared_ptr< TAT_t> &tat, const Parameter &param ) {
 
     ta_tempate = tat;
     for ( auto e : tat->template_transitions ) {
@@ -71,6 +71,12 @@ public:
   string getLocName( int node_id ) const {
     return locations[ node_id ].getName();
   }
+
+  int * getValue( int * state, const string & key ) const{
+    return NULL;
+  }
+  
+  
   // void toDot(ostream &out ) const{
   //   out<<"digraph G { "<<endl;
 
@@ -81,8 +87,10 @@ public:
   // }
 
 private:
-  const TAT_t *ta_tempate;
-
+  
+  shared_ptr<TAT_t> ta_tempate;
+  int id;//the interbal of instance of ta_tempate
+  
   vector<L>               locations;
   vector<T>               transitions;
   vector<ClockConstraint> difference_cons;

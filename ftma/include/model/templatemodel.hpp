@@ -34,11 +34,7 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
   typedef Agent<L, T>         Agent_t;
 
  public:
-  AgentTemplate() { initial_loc =-1; }
-  AgentTemplate( int init ) {
-    initial_loc = init;
 
-  }
 
   // AgentTemplate( vector<L> &locs, vector<T> &es, int init )
   //     : template_locations( locs )
@@ -83,30 +79,16 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
     return NOT_FOUND;
   }
 
-
  private:
+  AgentTemplate() { initial_loc =-1; }
+
+  AgentTemplate( const AgentTemplate &other ) { assert( false ); }
   
-
-    
-  vector<L> template_locations;
-  vector<T> template_transitions;
-  int       initial_loc;
-
-  //  int clock_num;
-
-  Graph_t<int> graph;
-
-  vector<int> clock_max_value;
-
-  vector<ClockConstraint> template_difference_cons;
+  AgentTemplate &operator=( const AgentTemplate &other ) {                                             
+    assert( false );                                                           
+    return *this;                                                              
+  }
   
-  vector<string> parameters;
-
-  template <typename R1> friend class Reachability;
-
-  friend class Agent<L, T>;
-  template <typename M1, typename L1, typename T1> friend class AgentSystem;
-
   void updateUpperAndDiff( const CS_t &cs ) {
 
     if ( cs.clock_x > 0 && cs.clock_y > 0 ) {
@@ -162,6 +144,26 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
       }
     }
   }
+
+  int id;
+  int number_children;
+  
+  vector<L> template_locations;
+  vector<T> template_transitions;
+  int       initial_loc;
+
+  Graph_t<int> graph;
+
+  vector<int> clock_max_value;
+
+  vector<ClockConstraint> template_difference_cons;
+  
+  vector<string> parameters;
+
+  template <typename R1> friend class Reachability;
+
+  friend class Agent<L, T>;
+  template <typename M1, typename L1, typename T1> friend class AgentSystem;
 };
 }
 

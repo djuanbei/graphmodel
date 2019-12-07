@@ -46,4 +46,9 @@ Channel::Channel( int id, bool ref )
 int ArrayChannel::getGlobalId(const int* state ) const{
   return array_base+Channel::getGlobalId( state);
 }
+
+int IndexChannel::getGlobalId(const int* state ) const{
+  return array_base+index_fun(state );
+}
+
 }

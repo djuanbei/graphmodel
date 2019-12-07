@@ -2,6 +2,8 @@
 
 namespace graphsat{
 TrainGate::TrainGate( ):n(6 ){
+  train_tmt=sys.createTemplate( );
+  gate_tmt=sys.createTemplate( );
   
   sys.addConstant("N",n );
   TypeDefArray id_t("id_t", 0, sys[ "N"]-1 );
@@ -29,7 +31,7 @@ TrainGate::TrainGate( ):n(6 ){
   
   
   
-  ADD_CLOCK(train_tmt, x);
+  ADD_CLOCK(( * train_tmt), x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
 
@@ -59,7 +61,7 @@ TrainGate::TrainGate( ):n(6 ){
 
   typename INT_TAS_t::T_t Safe_Appr( Safe, Appr );
 
-  int id=train_tmt.addPara( "id")+1;
+  int id=train_tmt->addPara( "id")+1;
 
   Safe_Appr.setChannel( new ArrayChannel( "appr", id, true  ));
   Safe_Appr.addReset(resetX);
@@ -101,16 +103,16 @@ TrainGate::TrainGate( ):n(6 ){
   es.push_back( Stop_Start);
   es.push_back( Cross_Safe);
   es.push_back( Appr_Cross);
-  train_tmt.initial( ls, es, 0);
+  train_tmt->initial( ls, es, 0);
 
 
   // gate
   BaseDecl list( "list");
   list.num=sys[ "N"]+1;
-  gate_tmt.addInt( list);
+  gate_tmt->addInt( list);
   
   BaseDecl len( "len");
-  gate_tmt.addInt(len);
+  gate_tmt->addInt(len);
   
 
   vector<typename INT_TAS_t::T_t> ges;
@@ -128,7 +130,7 @@ TrainGate::TrainGate( ):n(6 ){
   Argument rhs1( CONST_ARG, 0 );
   void *   ccs1 = createConstraint( first1, second1, LT, rhs1 ); // len >0
   Free_Occ1.addCounterCons(ccs1 );
-  
+    
     
 
   typename INT_TAS_t::T_t Free_Occ2( Free, Occ );
@@ -141,8 +143,40 @@ TrainGate::TrainGate( ):n(6 ){
   
   
   typename INT_TAS_t::T_t Occ_Free(  Occ, Free );
-  gate_tmt.initial( gls, ges, 0);
+  gate_tmt->initial( gls, ges, 0);
 
   
 }
+
+void enqueue(typename INT_TAS_t::Agent_t  & agent,  int *state, const  int element){
+  
+  int * list=agent.getValue(state, "list");
+  int *len=agent.getValue(state, "len");
+  list[(*len)++ ]=element;
+}
+
+void dequeue(typename INT_TAS_t::Agent_t  & agent,  int *state ){
+  int *len=agent.getValue(state, "len" );
+  int * list=agent.getValue(state, "list" );
+  int i=0;
+  *len-=1;
+  while( i<*len){
+    list[ i]=list[ i-1];
+  }
+  list[ i]=0;
+}
+
+
+int front(typename INT_TAS_t::Agent_t  & agent,  int *state  ){
+  int * list=agent.getValue(state, "list" );
+  return list[ 0];
+}
+
+int tail( typename INT_TAS_t::Agent_t  & agent,  int *state){
+  int * list=agent.getValue(state, "list" );
+  int * len=agent.getValue(state, "len" );
+  return list[ *len-1];
+}
+
+
 }

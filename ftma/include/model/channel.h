@@ -82,7 +82,10 @@ class ArrayChannel: public Channel{
     
 };
 
+
 class IndexChannel:public ArrayChannel{
+ public:
+  virtual  int getGlobalId(const int* state ) const;
 
  protected:
   IndexFun_t index_fun;

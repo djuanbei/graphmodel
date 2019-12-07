@@ -97,7 +97,9 @@ struct Argument {
   }
 };
 
-typedef int (* IndexFun_t) (void * );
+typedef int (* IndexFun_t) (const int * );
+
+const static int NOT_FOUND = -1;
 } // namespace graphsat
 
 #endif
