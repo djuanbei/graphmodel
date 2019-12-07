@@ -163,7 +163,7 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
   vector<ClockConstraint> template_difference_cons;
   
   vector<string> parameters;
-  vector<shared_ptr<Agent<L,T> >> agents;
+  vector<Agent<L,T> *> agents;
 
   template <typename R1> friend class Reachability;
 

@@ -32,9 +32,8 @@ public:
 
     locations       = tat->template_locations;
     difference_cons = tat->template_difference_cons;
-    shared_ptr<Agent_t> dummy( this);
     id=tat->agents.size( );
-    tat->agents.push_back(dummy );
+    tat->agents.push_back(this );
   }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
@@ -76,6 +75,7 @@ public:
   }
 
   int * getValue( int * state, const string & key ) const{
+    
     return NULL;
   }
   

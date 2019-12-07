@@ -86,7 +86,7 @@ FisherGenerator::FisherGenerator()
 }
 INT_TAS_t FisherGenerator::generate( int n )  const{
   INT_TAS_t re( sys);
-  
+  tmt->reset( );
   for ( int i = 1; i <= n; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
