@@ -4,14 +4,14 @@
 namespace graphsat {
 FisherGenerator::FisherGenerator()
     : k( 2 ) {
+  ADD_CLOCK( tmt, x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
-  int                             k = 2;
 
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( 1, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, 0, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -27,14 +27,14 @@ FisherGenerator::FisherGenerator()
 
   A_req.addCounterCons( ccs1 );
 
-  pair<int, int> reset1( 1, 0 ); // x-->0
+  pair<int, int> reset1( x, 0 ); // x-->0
   A_req.addReset( reset1 );
 
   typename INT_TAS_t::T_t  req_wait( 1, 2 );
-  typename INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x, 0, LE, k ); // x <= k
   req_wait += cs2;
 
-  pair<int, int> reset2( 1, 0 ); // x-->0
+  pair<int, int> reset2( x, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
   Argument       lhs( COUNTER_ARG, 0 );
@@ -46,7 +46,7 @@ FisherGenerator::FisherGenerator()
 
   typename INT_TAS_t::T_t wait_req( 2, 1 );
 
-  pair<int, int> reset3( 1, 0 ); // x-->0
+  pair<int, int> reset3( x, 0 ); // x-->0
   wait_req.addReset( reset3 );
   wait_req.addCounterCons( ccs1 ); // id==0
 
@@ -58,7 +58,7 @@ FisherGenerator::FisherGenerator()
 
   void *ccs2 = createConstraint( first4, second4, EQ, rhs4 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x, 0, GT, k ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( 3, 0 );
@@ -80,21 +80,22 @@ FisherGenerator::FisherGenerator()
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  tmt = typename INT_TAS_t::AgentTemplate_t( ls, es, 0, 1 );
+  tmt.initial( ls, es, 0 );
 }
 INT_TAS_t FisherGenerator::generate( int n ) const {
-  INT_TAS_t sys;
+  INT_TAS_t re( sys);
+  
   for ( int i = 1; i <= n; i++ ) {
     Parameter param( 1 );
     param.setParameterMap( 0, i );
     typename INT_TAS_t::Agent_t tma( &tmt, param );
 
-    sys += tma;
+    re += tma;
   }
 
   Counter counter( 0, 100 );
-  sys.setCounterNum( 1 );
-  sys.setCounter( 0, counter );
-  return sys;
+  re.setCounterNum( 1 );
+  re.setCounter( 0, counter );
+  return re;
 }
 } // namespace graphsat

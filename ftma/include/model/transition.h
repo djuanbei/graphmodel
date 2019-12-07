@@ -11,6 +11,7 @@
 #define EDGE_HPP
 
 #include <vector>
+#include<memory>
 
 #include "channel.h"
 #include "constraint/countercons.h"
@@ -82,14 +83,14 @@ public:
     return *this;
   }
 
-  void setChannel( const Channel &ch ) {
-    channel     = ch;
+  void setChannel( Channel *ch ) {
+    channel.reset( ch);
     has_channel = true;
   }
 
-  const Channel &getChannel() const { return channel; }
+  const shared_ptr<Channel>  &getChannel() const { return channel; }
 
-  void setChanType( CHANNEL_TYPE type ) { channel.type = type; }
+  void setChanType( CHANNEL_TYPE type ) { channel->setType(type ); }
 
   bool hasChannel() const { return has_channel; }
 
@@ -147,7 +148,7 @@ private:
 
   vector<CounterConstraint *>
           counter_cons; // counter constraint like pid ==id or id==0
-  Channel channel;      // Only one synchronisation channels
+  shared_ptr<Channel> channel;      // Only one synchronisation channels
   bool    has_channel;
 
   vector<const CounterAction *>

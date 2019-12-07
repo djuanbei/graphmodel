@@ -20,61 +20,70 @@ enum CHANNEL_ACTION { CHANNEL_SEND, CHANNEL_RECEIVE };
 
 const int NO_CHANNEL = 0;
 
-struct Channel {
-  int            local_id;
-  int            gloabl_id; // start from 1
-  CHANNEL_TYPE   type;
-  CHANNEL_ACTION action;
-  bool           is_ref;
+class Channel {
+ public:
 
-  Channel()
-      : local_id( -1 )
-      , gloabl_id( -1 )
-      , type( ONE2ONE_CH )
-      , action( CHANNEL_RECEIVE )
-      , is_ref( false ) {}
-  Channel( int id )
-      : local_id( -1 )
-      , gloabl_id( -1 )
-      , type( ONE2ONE_CH )
-      , action( CHANNEL_RECEIVE )
-      , is_ref( false ) {
-    if ( id > 0 ) {
-      action    = CHANNEL_SEND;
-      gloabl_id = id;
-    } else {
-      action    = CHANNEL_RECEIVE;
-      gloabl_id = -id;
-    }
-  }
-  Channel( int id, bool ref )
-      : local_id( -1 )
-      , gloabl_id( -1 )
-      , type( ONE2ONE_CH )
-      , action( CHANNEL_RECEIVE )
-      , is_ref( false ) {
-    is_ref = ref;
-    if ( id > 0 ) {
-      action = CHANNEL_SEND;
-    } else {
-      action = CHANNEL_RECEIVE;
-      id *= -1;
-    }
-    if ( ref ) {
-      assert( id > 0 );
-      local_id = chanIdToFromPid( id );
-    } else {
-      gloabl_id = id;
-    }
-  }
+  Channel();
 
+  Channel( int id );
+
+  Channel( int id, bool ref );
+
+  void setType(const CHANNEL_TYPE t ){
+    type=t;
+    
+  }
   void setIsRef( bool b ) { is_ref = b; }
   void globalIpUpdate( const std::vector<int> &id_map ) {
     if ( is_ref ) {
       gloabl_id = id_map[ local_id ];
     }
   }
+  virtual  int getGlobalId(const int* state ) const{
+    return gloabl_id;
+  }
+  int getType( ) const{
+    return type;
+  }
+  bool isSend( ) const{
+    return CHANNEL_SEND == action ;
+  }
+  bool isRecive( ) const{
+    return CHANNEL_RECEIVE==action;
+  }
+  int            gloabl_id; // start from 1
+  CHANNEL_TYPE   type;
+ protected:
+  int            local_id;
+  CHANNEL_ACTION action;
+  bool           is_ref;
+
 };
+
+class ArrayChannel: public Channel{
+ public:
+
+  ArrayChannel(const string & n,  int id):Channel( id){
+    array_name=n;
+    array_base=0;
+  }
+  ArrayChannel(const string & n,  int id, bool ref):Channel( id, ref){
+    array_name=n;
+    array_base=0;
+  }
+  virtual  int getGlobalId(const int* state ) const;
+  void setBase(int b ){
+    array_base=b;
+  }
+  
+ protected:
+  string array_name;
+  int array_base;
+    
+};
+
+
+
 
 } // namespace graphsat
 

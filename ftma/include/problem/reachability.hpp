@@ -180,7 +180,7 @@ private:
       }
 
       if ( sys.tas[ component ].transitions[ link ].hasChannel() ) {
-        const Channel &channel =
+        const shared_ptr<Channel> &channel =
             sys.tas[ component ].transitions[ link ].getChannel();
         // channel.id start from 1
 
@@ -311,26 +311,26 @@ private:
    */
   template <typename D>
   bool doSynchronize( D &data, int component, const Property *prop,
-                      State_t *state, int link, const Channel &channel ) {
+                      State_t *state, int link, const shared_ptr<Channel> &channel ) {
 
     vector<int> wait_components;
     bool        is_send = true;
-    if ( CHANNEL_SEND == channel.action ) {
-      wait_components = manager.blockComponents( -channel.gloabl_id, state );
-    } else if ( CHANNEL_RECEIVE == channel.action ) {
+    if (  channel->isSend( ) ) {
+      wait_components = manager.blockComponents( -channel->getGlobalId(state ), state );
+    } else if (channel->isRecive( ) ) {
       is_send         = false;
-      wait_components = manager.blockComponents( channel.gloabl_id, state );
+      wait_components = manager.blockComponents( channel->getGlobalId(state ), state );
     }
     if ( !wait_components.empty() ) {
       // TODO: check all the channel type
-      if ( channel.type == ONE2ONE_CH || channel.type == URGENT_CH ) {
+      if ( channel->getType( ) == ONE2ONE_CH || channel->getType( ) == URGENT_CH ) {
         std::uniform_int_distribution<int> distribution(
             0, (int) wait_components.size() - 1 );
         int id                 = distribution( generator );
         int block_component_id = wait_components[ id ];
         return unBlockOne( data, component, block_component_id, link, state,
                            prop, is_send );
-      } else if ( channel.type == BROADCAST_CH ) {
+      } else if ( channel->getType( ) == BROADCAST_CH ) {
         for ( auto id : wait_components ) {
           int block_component_id = wait_components[ id ];
           if ( unBlockOne( data, component, block_component_id, link, state,
@@ -342,13 +342,13 @@ private:
 
     } else {
       manager.copy( cache_state, state );
-      assert( channel.gloabl_id > 0 ); // chan it start with 1
-      if ( CHANNEL_SEND == channel.action ) {
+      assert( channel->getGlobalId( state) > 0 ); // chan it start with 1
+      if ( channel->isSend( )  ) {
         cache_state[ component + component_num ] =
-            channel.gloabl_id; // send part
-      } else if ( CHANNEL_RECEIVE == channel.action ) {
+            channel->getGlobalId(state ); // send part
+      } else if (channel->isRecive( ) ) {
         cache_state[ component + component_num ] =
-            -channel.gloabl_id; // receive part
+            -channel->getGlobalId(state ); // receive part
       }
 
       cache_state[ component ] = link; // block link

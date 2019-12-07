@@ -17,7 +17,7 @@ Transition::Transition( const Transition &other, const Parameter &param ) {
   has_channel = other.has_channel;
   if ( has_channel ) {
     channel = other.channel;
-    channel.globalIpUpdate( param.getChanMap() );
+    channel->globalIpUpdate( param.getChanMap() );
   }
 
   for ( auto a : other.actions ) {

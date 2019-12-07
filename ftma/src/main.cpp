@@ -22,18 +22,9 @@
 #include "io/uppaalmodelparser.h"
 
 
-//#include "state/discretestate.hpp"
 
-//#include "util/datacompression.h"
-
-//#include "benchmark/fisher.h"
-
-//#include <problem/pmcp.hpp>
-
-// #include <cassert>
-// #include <cstdint>
 #include <iostream>
-//#include <limits>
+
 
 extern int yy_flex_debug;
 

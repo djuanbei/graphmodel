@@ -76,9 +76,14 @@ int UppaalParser::parseTemplate( child_type templates ) {
 
     vector<typename INT_TAS_t::T_t> transitions =
         parseTransition( template_data, transition_comps );
-    template_data.tat = INT_TAS_t::AgentTemplate_t(
-        locations, transitions, template_data.getInitialLoc(),
-        template_data.getTypeNum( CLOCK_T ) );
+    vector<pair<string, vector<int>>> clocks=template_data.getValues(CLOCK_T );
+    for( auto  ee  : clocks){
+      template_data.tat.addClock(ee.first );
+    }
+    
+    template_data.tat.initial(
+        locations, transitions, template_data.getInitialLoc());
+    
     template_map[ template_data.name ] = template_data;
 
     system_data.addValue( TEMPLATE_T, template_data.name );
@@ -290,13 +295,13 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
 
           for ( auto e : normol_chan_actions1 ) {
 
-            transition.setChannel( Channel( e ) );
+            transition.setChannel(new Channel( e ) );
           }
           vector<int> ref_chan_actions =
               template_data.getValue( REF_CHAN_ACTION_T );
 
           for ( auto e : ref_chan_actions ) {
-            transition.setChannel( Channel( e, true ) );
+            transition.setChannel(new Channel( e, true ) );
           }
           assert( normol_chan_actions1.size() + ref_chan_actions.size() < 2 );
 

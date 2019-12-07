@@ -26,6 +26,7 @@ public:
 private:
   size_t                              k = 0;
   typename INT_TAS_t::AgentTemplate_t tmt;
+  INT_TAS_t sys;
 };
 
 } // namespace graphsat

@@ -170,7 +170,7 @@ public:
     return int_values.getValue( type, name, id );
   }
 
-  vector<pair<string, vector<int>>> getValue( const TYPE_T type ) const {
+  vector<pair<string, vector<int>>> getValues( const TYPE_T type ) const {
     return int_values.getValue( type );
   }
 

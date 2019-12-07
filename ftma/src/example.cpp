@@ -86,7 +86,14 @@ void example1( void ) {
   es.push_back( e01 );
   es.push_back( e12 );
   es.push_back( e23 );
-  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 3 );
+  typename INT_TAS_t::AgentTemplate_t tmt1;
+  tmt1.addClock( "x");
+  tmt1.addClock( "y");
+  tmt1.addClock( "z");
+
+  tmt1.initial(ls, es, 0 );
+  
+  //( ls, es, 0, 3 );
 
   Parameter                   param( 1 );
   INT_TAS_t                   sys;
@@ -141,8 +148,12 @@ void example50() {
 
   es.push_back( E00b );
   es.push_back( E01 );
+  typename INT_TAS_t::AgentTemplate_t tmt1;
+  tmt1.addClock( "x");
+  tmt1.addClock( "y");
+  
 
-  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 2 );
+  tmt1.initial( ls, es, 0 );
 
   Parameter                   param( 1 );
   INT_TAS_t                   sys;
@@ -164,27 +175,30 @@ void example50() {
 }
 
 void example2( void ) {
+  typename INT_TAS_t::AgentTemplate_t tmt1;
+  int x=tmt1.addClock( "x");
+  int y=tmt1.addClock( "y");
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   typename INT_TAS_t::L_t         L0( 0 );
   typename INT_TAS_t::L_t         L1( 1 );
 
   typename INT_TAS_t::T_t E00a( 0, 0 );
-  pair<int, int>          reset1( 2, 0 );
+  pair<int, int>          reset1( y, 0 );
   E00a.addReset( reset1 );                     // y-->0
-  typename INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
+  typename INT_TAS_t::CS_t cs1( y, 0, LE, 2 ); // y<=2
   E00a += cs1;
 
   typename INT_TAS_t::T_t E00b( 0, 0 );
-  pair<int, int>          reset2( 1, 0 );
+  pair<int, int>          reset2( x, 0 );
   E00b.addReset( reset2 );                     // x-->0
-  typename INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
+  typename INT_TAS_t::CS_t cs2( x, 0, LE, 2 ); // x<=2
   E00b += cs2;
 
   typename INT_TAS_t::T_t E01( 0, 1 );
 
-  typename INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
-  typename INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
+  typename INT_TAS_t::CS_t cs3( y, 0, LE, 2 ); // y<=2
+  typename INT_TAS_t::CS_t cs4( x, 0, GE, 4 ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -197,7 +211,8 @@ void example2( void ) {
   es.push_back( E00b );
   es.push_back( E01 );
 
-  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 2 );
+
+  tmt1.initial( ls, es, 0 );
 
   INT_TAS_t                   sys;
   Parameter                   param( 1 );
@@ -270,6 +285,8 @@ void example6() {
 }
 
 void fisher( int n ) {
+  typename INT_TAS_t::AgentTemplate_t tmt1;
+  ADD_CLOCK( tmt1, x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   int                             k = 2;
@@ -277,7 +294,7 @@ void fisher( int n ) {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( 1, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, 0, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -293,15 +310,15 @@ void fisher( int n ) {
 
   A_req.addCounterCons( ccs1 );
 
-  pair<int, int> reset1( 1, 0 ); // x-->0
+  pair<int, int> reset1( x, 0 ); // x-->0
 
   A_req.addReset( reset1 );
 
   typename INT_TAS_t::T_t  req_wait( req, wait );
-  typename INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x, 0, LE, k ); // x <= k
   req_wait += cs2;
 
-  pair<int, int> reset2( 1, 0 ); // x-->0
+  pair<int, int> reset2( x, 0 ); // x-->0
   req_wait.addReset( reset2 );
   Argument       lhs( COUNTER_ARG, 0 );
   Argument       rhs0( PARAMETER_ARG, 0 );
@@ -312,7 +329,7 @@ void fisher( int n ) {
 
   typename INT_TAS_t::T_t wait_req( wait, req );
 
-  pair<int, int> reset3( 1, 0 ); // x-->0
+  pair<int, int> reset3( x, 0 ); // x-->0
   wait_req.addReset( reset3 );
   wait_req.addCounterCons( ccs1 ); // id==0
 
@@ -323,7 +340,7 @@ void fisher( int n ) {
   Argument rhs01( CONST_ARG, 0 );
   void *   ccs2 = createConstraint( first1, second1, EQ, rhs01 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x, 0, GT, k ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( cs, A );
@@ -345,7 +362,9 @@ void fisher( int n ) {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 1 );
+  
+  //  typename INT_TAS_t::AgentTemplate_t
+  tmt1.initial( ls, es, 0 );
 
   INT_TAS_t sys;
   Counter   counter( 0, n + 1 );
@@ -415,6 +434,9 @@ void incrementalTest1() {
 }
 
 void incrementalTest() {
+  
+  typename INT_TAS_t::AgentTemplate_t tmt1;
+  ADD_CLOCK( tmt1, x);
   int                             n = 3;
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -423,7 +445,7 @@ void incrementalTest() {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( 1, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, 0, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -439,14 +461,14 @@ void incrementalTest() {
 
   A_req.addCounterCons( ccs1 );
 
-  pair<int, int> reset1( 1, 0 ); // x-->0
+  pair<int, int> reset1( x, 0 ); // x-->0
   A_req.addReset( reset1 );
 
   typename INT_TAS_t::T_t  req_wait( 1, 2 );
-  typename INT_TAS_t::CS_t cs2( 1, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x, 0, LE, k ); // x <= k
   req_wait += cs2;
 
-  pair<int, int> reset2( 1, 0 ); // x-->0
+  pair<int, int> reset2( x, 0 ); // x-->0
   req_wait.addReset( reset2 );
 
   Argument       lhs( COUNTER_ARG, 0 );
@@ -458,7 +480,7 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t wait_req( 2, 1 );
 
-  pair<int, int> reset3( 1, 0 ); // x-->0
+  pair<int, int> reset3( x, 0 ); // x-->0
   wait_req.addReset( reset3 );
   wait_req.addCounterCons( ccs1 ); // id==0
 
@@ -470,7 +492,7 @@ void incrementalTest() {
 
   void *ccs2 = createConstraint( first4, second4, EQ, rhs4 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( 1, 0, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x, 0, GT, k ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( 3, 0 );
@@ -492,7 +514,8 @@ void incrementalTest() {
   es.push_back( wait_req );
   es.push_back( wait_cs );
   es.push_back( cs_A );
-  typename INT_TAS_t::AgentTemplate_t tmt1( ls, es, 0, 1 );
+  //  typename INT_TAS_t::AgentTemplate_t
+  tmt1.initial( ls, es, 0 );
 
   INT_TAS_t sys;
   for ( int i = 1; i <= n; i++ ) {
