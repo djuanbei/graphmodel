@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 
-
 #include "macrodef.h"
 
 #include "typedef.h"
@@ -27,9 +26,6 @@ using std::pair;
 using std::string;
 using std::stringstream;
 using std::vector;
-
-
-
 
 inline static string arrayToVar( const string &name, int id ) {
   stringstream ss;

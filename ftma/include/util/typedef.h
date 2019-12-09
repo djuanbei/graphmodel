@@ -10,7 +10,10 @@
 
 #ifndef TYEP_DEF_H
 #define TYEP_DEF_H
+#include <cstdint>
 #include <string>
+
+#include "macrodef.h"
 
 namespace graphsat {
 using std::string;
@@ -82,12 +85,14 @@ enum ARGUMENT_TYPE {
   COUNTER_ARG,
   PARAMETER_ARG,
   REF_PARAMETER_ARG,
+  FUN_POINTER_ARG,
   EMPTY_ARG
 };
 
 struct Argument {
   ARGUMENT_TYPE type;
-  int           value;
+  int_fast64_t  value;
+  string name;
   Argument()
       : type( CONST_ARG )
       , value( 0 ) {}
@@ -97,7 +102,39 @@ struct Argument {
   }
 };
 
-typedef int (* IndexFun_t) (const int * );
+enum Action_e {
+  CALL_ACTION,       // invoke function
+  ASSIGNMENT_ACTION, //=
+  SELF_INC_ACTION,   //+=
+  SELF_DEC_ACTION    //-=
+};
+
+enum TYPE_T {
+  TYPE_TYPE( INT_T ),
+  TYPE_TYPE( CLOCK_T ),
+
+  TYPE_TYPE( CHAN_T ),
+  TYPE_TYPE( URGENT_CHAN_T ),
+  TYPE_TYPE( BROADCAST_CHAN_T ),
+
+  SYSTEM_T,
+  TEMPLATE_T,
+  AUTOMATA_T,
+  LOCATION_T,
+  FORMAL_PARAMETER_T,
+
+  CLOCK_CS_T,
+  INT_CS_T,
+  INT_UPDATE_T,
+  RESET_T,
+  SELF_DEF_T,
+  CHAN_ACTION_T,
+  REF_CHAN_ACTION_T,
+  NO_T
+
+};
+
+typedef int ( *IndexFun_t )( int * );
 
 const static int NOT_FOUND = -1;
 } // namespace graphsat

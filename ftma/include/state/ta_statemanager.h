@@ -135,7 +135,7 @@ public:
                        int *re_state ) const;
 
   void constructState( const int component_id, const int target, bool isCommit,
-                       int *state );
+                       int *state ) const;
 
   inline bool isCommitComp( const int        component_id,
                             const int *const state ) const {
@@ -157,6 +157,8 @@ public:
     return -( state[ component_id ] ) - 1;
   }
   bool hasDiffCons() const { return !difference_constraints.empty(); }
+
+  int getCounterStart() const { return counter_start_loc; }
 
 private:
   int channel_num;

@@ -38,12 +38,16 @@ include_directories(${COMMON_INCLUDES}
 file(GLOB_RECURSE CURRENT_HEADERS   ${PROJECT_ROOT}/include/*.h  ${PROJECT_ROOT}/include/*.hpp)
 source_group("include" FILES ${CURRENT_HEADERS}) 
 
+file(GLOB_RECURSE PARSER_SRC   ${PROJECT_ROOT}/src/*.l  ${PROJECT_ROOT}/src/*.y)
 
+source_group("parser" FILES ${PARSER_SRC})
 
 ################################
 # Normal Libraries & Executables
 ################################
-add_library(gmodel_lib src/datacompression.cpp src/dbmutil.cpp src/fashHash.cpp  src/instancefactory.cpp src/uppaaldata.cpp src/xmlconf.cpp src/uppaalmodelparser.cpp src/uppaalparser.cpp src/xmlconf.cpp src/dbm.cpp src/clockdiffcons.cpp src/location.cpp src/transition.cpp src/ta_statemanager.cpp src/fisher.cpp src/logset.cpp src/example.cpp  src/pmcp.cpp ${CURRENT_HEADERS})
+file(GLOB_RECURSE LIB_SRCS   ${PROJECT_ROOT}/src/*.cpp)
+list(REMOVE_ITEM LIB_SRCS "src/main.cpp")
+add_library(gmodel_lib ${LIB_SRCS} ${CURRENT_HEADERS} ${PARSER_SRC})
 add_executable(gmodel src/main.cpp)
 # Key idea: SEPARATE OUT your main() function into its own file so it can be its
 # own executable. Separating out main() means you can add this library to be

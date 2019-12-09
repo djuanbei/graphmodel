@@ -14,7 +14,7 @@
 #include "util/data.hpp"
 #include "util/dbmutil.hpp"
 #include <cassert>
-
+#include <cstdint>
 #include <vector>
 
 namespace graphsat {
@@ -22,12 +22,6 @@ using std::ostream;
 using std::pair;
 using std::setw;
 using std::vector;
-
-enum Action_e {
-  ASSIGNMENT_ACTION, //=
-  SELF_INC_ACTION,   //+=
-  SELF_DEC_ACTION    //-=
-};
 
 #define TYPE_CASE( op )                                                        \
   switch ( rhs.type ) {                                                        \
@@ -42,6 +36,9 @@ enum Action_e {
     return;                                                                    \
   case REF_PARAMETER_ARG:                                                      \
     counter_value[ lhs_value ] op counter_value[ rhs_value ];                  \
+    return;                                                                    \
+  case FUN_POINTER_ARG:                                                        \
+    counter_value[ lhs_value ] op( (IndexFun_t) rhs_value )( counter_value );  \
     return;                                                                    \
   case EMPTY_ARG:                                                              \
     assert( false );                                                           \
@@ -65,6 +62,10 @@ enum Action_e {
     out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
         << setw( VALUE_OUT_WIDTH ) << "counter_" << act.rhs_value;             \
     return out;                                                                \
+  case FUN_POINTER_ARG:                                                        \
+    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
+        << setw( VALUE_OUT_WIDTH ) << "function *" << act.rhs_value;           \
+    return out;                                                                \
   case EMPTY_ARG:                                                              \
     assert( false );                                                           \
   }
@@ -80,6 +81,9 @@ public:
   void operator()( int *counter_value ) const {
 
     switch ( action ) {
+    case CALL_ACTION:
+      ( (IndexFun_t) lhs_value )( counter_value );
+      return;
     case ASSIGNMENT_ACTION: {
       TYPE_CASE( = );
     }
@@ -109,6 +113,8 @@ public:
     case REF_PARAMETER_ARG:
       lhs_value = counter_map[ lhs.value ];
       break;
+    case FUN_POINTER_ARG:
+      break;
     case EMPTY_ARG:
       assert( false );
     }
@@ -123,12 +129,17 @@ public:
     case REF_PARAMETER_ARG:
       rhs_value = counter_map[ rhs.value ];
       break;
+    case FUN_POINTER_ARG:
+      break;
     case EMPTY_ARG:
       assert( false );
     }
   }
   friend ostream &operator<<( ostream &out, const CounterAction &act ) {
     switch ( act.action ) {
+    case CALL_ACTION:
+      out << "call function point" << act.lhs_value;
+      return out;
     case ASSIGNMENT_ACTION: {
       TYPE_CASE_OUT( "=" );
     }
@@ -142,11 +153,11 @@ public:
   }
 
 private:
-  Action_e action;
-  Argument lhs;
-  Argument rhs;
-  int      lhs_value;
-  int      rhs_value;
+  Action_e     action;
+  Argument     lhs;
+  Argument     rhs;
+  int_fast64_t lhs_value;
+  int_fast64_t rhs_value;
 };
 
 } // namespace graphsat

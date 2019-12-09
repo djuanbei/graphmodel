@@ -32,24 +32,25 @@ using std::vector;
 template <typename M> class ReachableSet {
 public:
   typedef typename M::State_t State_t;
-  ReachableSet( const M &outta )
+  ReachableSet( const shared_ptr<M> outta )
       : manager( outta ) {
 
 #ifdef DRAW_GRAPH
     current_parent = -1;
 #endif
 
-    component_num = manager.getComponentNum();
+    component_num = manager->getComponentNum();
 
-    cache_state = manager.newState();
+    cache_state = manager->newState();
 
-    convert_C_t = manager.newState();
+    convert_C_t = manager->newState();
 
-    int body_length = manager.getStateLen() - manager.getClockStart();
+    int body_length = manager->getStateLen() - manager->getClockStart();
 
     compress_state = StateConvert<State_t>(
-        manager.getClockStart(), body_length, manager.getHeadCompression(),
-        manager.getBodyCompression() );
+        manager->getClockStart(), body_length, manager->getHeadCompression(),
+        manager->getBodyCompression() );
+
     convert_UINT = new UINT[ compress_state.getCompressionSize() ]();
     reach_set.setParam( compress_state.getCompressionSize(),
                         compress_state.getCompressionHeadSize() );
@@ -57,16 +58,16 @@ public:
 
   ~ReachableSet() {
     reach_set.clear();
-    manager.destroyState( cache_state );
+    manager->destroyState( cache_state );
     cache_state = NULL;
-    manager.destroyState( convert_C_t );
+    manager->destroyState( convert_C_t );
     convert_C_t = NULL;
     delete[] convert_UINT;
     convert_UINT = NULL;
     while ( !wait_set.empty() ) {
       State_t *temp_state = wait_set.front();
       wait_set.pop_front();
-      manager.destroyState( temp_state );
+      manager->destroyState( temp_state );
     }
   }
 
@@ -95,7 +96,7 @@ public:
 
     for ( auto state : reach_set ) {
       compress_state.decode( state, convert_C_t );
-      if ( ( *prop )( &manager, convert_C_t ) ) {
+      if ( ( *prop )( manager.get(), convert_C_t ) ) {
         return TRUE;
       }
       //      if ( isReach( prop, convert_C_t ) ) {
@@ -117,7 +118,7 @@ public:
 
   void project( int m, vector<vector<State_t>> &re ) {
     re.clear();
-    int clock_start_loc = manager.getClockStart();
+    int clock_start_loc = manager->getClockStart();
 
     for ( auto state : reach_set ) {
 
@@ -168,7 +169,7 @@ public:
 
 private:
   void addToWait( const State_t *const state ) {
-    State_t *newState = manager.newState( state );
+    State_t *newState = manager->newState( state );
     wait_set.push_back( newState );
 #ifdef DRAW_GRAPH
     compress_state.encode( state, convert_UINT );
@@ -197,9 +198,9 @@ private:
   }
 
 private:
-  M                manager;
-  StateSet<UINT>   reach_set;
-  deque<State_t *> wait_set;
+  shared_ptr<const M> manager;
+  StateSet<UINT>      reach_set;
+  deque<State_t *>    wait_set;
 
   State_t *cache_state;
 

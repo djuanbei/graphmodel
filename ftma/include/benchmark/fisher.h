@@ -15,7 +15,7 @@
 #include "model/transition.h"
 
 namespace graphsat {
-typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
+typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 class FisherGenerator {
 public:
@@ -24,9 +24,9 @@ public:
   INT_TAS_t generate( int n ) const;
 
 private:
-  size_t                              k = 0;
+  size_t                                          k = 0;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt;
-  INT_TAS_t sys;
+  INT_TAS_t                                       sys;
 };
 
 } // namespace graphsat

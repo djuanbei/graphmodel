@@ -10,6 +10,7 @@
 #ifndef MACRO_DEF_H
 #define MACRO_DEF_H
 
+#include <dlfcn.h>
 #include <iomanip>
 #include <iostream>
 
@@ -24,16 +25,16 @@ using namespace std;
   for ( int i = 0; i < component_num; i++ ) {                                  \
     if ( state[ i + component_num ] == NO_CHANNEL )                            \
       std::cout << setw( LOC_OUT_WIDTH )                                       \
-                << sys.tas[ i ].getLocName( state[ i ] );                      \
+                << sys.agents[ i ].getLocName( state[ i ] );                   \
     else {                                                                     \
       int block_source;                                                        \
-      sys.tas[ i ].ta_tempate->graph.findSrc( state[ i ], block_source );      \
+      sys.agents[ i ].ta_tempate->graph.findSrc( state[ i ], block_source );   \
       cout << setw( LOC_OUT_WIDTH )                                            \
-           << sys.tas[ i ].getLocName( block_source );                         \
+           << sys.agents[ i ].getLocName( block_source );                      \
     }                                                                          \
   }                                                                            \
   cout << endl;                                                                \
-  manager.getClockManager().dump( cout, manager.getDBM( state ) ) << endl;
+  manager->getClockManager().dump( cout, manager->getDBM( state ) ) << endl;
 
 #else
 
@@ -71,10 +72,9 @@ const static int TYPE_FAMILY_LEN = 7;
   case T:                                                                      \
     return STRING( T );
 
+#define ADD_CLOCK( T, x ) int x = T.addClock( STRING( x ) );
 
-#define ADD_CLOCK( T, x) int x= T.addClock( STRING( x));
-
-#define ADD_INT( T, x) int x= T.addInt( STRING( x));
+#define ADD_INT( T, x ) int x = T.addInt( STRING( x ) );
 
 #define SINGLETON( T )                                                         \
 private:                                                                       \
@@ -99,5 +99,10 @@ public:                                                                        \
     }                                                                          \
     Var.clear( CLASS_TYPE, #TYPE );                                            \
   }
+
+#define EXPORT __attribute__( ( visibility( "default" ) ) )
+
+#define PASSFAIL "Passed" : "Failed"
+#define UNTST "Untested"
 
 #endif

@@ -23,7 +23,7 @@ using std::map;
 using std::pair;
 using std::string;
 using std::vector;
-typedef AgentSystem<TMStateManager, Location, Transition> INT_TAS_t;
+typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 struct FormalParameterItem {
   FormalParameterItem() {}

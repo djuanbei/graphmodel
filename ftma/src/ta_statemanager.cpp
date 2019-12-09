@@ -52,18 +52,21 @@ int *TMStateManager::newState() const {
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp( clock_start_loc );
-  for ( int component_id = 0; component_id < component_num; component_id++ ) {
-
-    if ( channel_num > 1 ) {
+  if ( channel_num > 1 ) {
+    for ( int component_id = 0; component_id < component_num; component_id++ ) {
+      
       // the value contain link id
       // TODO:
       int m = max( node_nums[ component_id ], link_nums[ component_id ] );
       re_comp.setBound( component_id, -m, m );
-    } else {
+    }
+  } else {
+    for ( int component_id = 0; component_id < component_num; component_id++ ) {
       re_comp.setBound( component_id, -node_nums[ component_id ],
-                        node_nums[ component_id ] );
+                       node_nums[ component_id ] );
     }
   }
+  
   if ( channel_num > 0 ) {
     for ( int component_id = 0; component_id < component_num; component_id++ ) {
       re_comp.setBound( component_id + component_num, -channel_num,
@@ -80,7 +83,7 @@ Compression<int> TMStateManager::getHeadCompression() const {
    * At most all the component in freeze location
    *
    */
-  re_comp.setBound( freeze_location_index, 0, component_num - 1 );
+  re_comp.setBound( freeze_location_index, 0, component_num -1);
 
   return re_comp;
 }
@@ -153,7 +156,7 @@ void TMStateManager::constructState( const int component_id, const int target,
   }
 }
 void TMStateManager::constructState( const int component_id, const int target,
-                                     bool isCommit, int *state ) {
+                                     bool isCommit, int *state ) const{
   state[ component_id ] = target;
   if ( isCommit ) {
     setCommitState( component_id, state );

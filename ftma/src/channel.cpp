@@ -1,8 +1,8 @@
 #include "model/channel.h"
 
-namespace graphsat{
+namespace graphsat {
 
-Channel::  Channel()
+Channel::Channel()
     : local_id( -1 )
     , gloabl_id( -1 )
     , type( ONE2ONE_CH )
@@ -43,12 +43,12 @@ Channel::Channel( int id, bool ref )
     gloabl_id = id;
   }
 }
-int ArrayChannel::getGlobalId(const int* state ) const{
-  return array_base+Channel::getGlobalId( state);
+int ArrayChannel::getGlobalId( int *state ) const {
+  return array_base + Channel::getGlobalId( state );
 }
 
-int IndexChannel::getGlobalId(const int* state ) const{
-  return array_base+index_fun(state );
+int IndexChannel::getGlobalId(  int *state ) const {
+  return array_base + index_fun( state );
 }
 
-}
+} // namespace graphsat

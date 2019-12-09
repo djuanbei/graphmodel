@@ -9,10 +9,10 @@ typedef ReachableSet<INT_TAS_t::StateManager_t> R_t;
 void runxml( const std::string &file_name ) {
   UppaalParser              parser( file_name );
   INT_TAS_t                 sys     = parser.getSYS();
-  INT_TAS_t::StateManager_t manager = sys.getStateManager();
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t                       data( manager );
 
-  sys.addInitState( data, manager );
+  sys.addInitState( data);
 
   Reachability<INT_TAS_t> reacher( sys );
 

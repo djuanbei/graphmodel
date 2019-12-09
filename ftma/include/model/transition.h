@@ -10,8 +10,8 @@
 #ifndef EDGE_HPP
 #define EDGE_HPP
 
+#include <memory>
 #include <vector>
-#include<memory>
 
 #include "channel.h"
 #include "constraint/countercons.h"
@@ -26,11 +26,13 @@ namespace graphsat {
 using std::vector;
 class Location;
 class TMStateManager;
+
 class Transition {
 
 public:
   typedef int            State_t;
   typedef TMStateManager StateManager_t;
+
   Transition() {
     source = target = -1;
     has_channel     = false;
@@ -84,13 +86,13 @@ public:
   }
 
   void setChannel( Channel *ch ) {
-    channel.reset( ch);
+    channel.reset( ch );
     has_channel = true;
   }
 
-  const shared_ptr<Channel>  &getChannel() const { return channel; }
+  const shared_ptr<Channel> &getChannel() const { return channel; }
 
-  void setChanType( CHANNEL_TYPE type ) { channel->setType(type ); }
+  void setChanType( CHANNEL_TYPE type ) { channel->setType( type ); }
 
   bool hasChannel() const { return has_channel; }
 
@@ -127,8 +129,9 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  bool ready( const int component, const TMStateManager &manager,
-              const int *const state ) const;
+  bool ready( const int                               component,
+              const shared_ptr<const TMStateManager> &manager,
+              const int *const                        state ) const;
 
   /**
    *
@@ -136,8 +139,9 @@ public:
    *
    */
 
-  void operator()( const int component, const TMStateManager &manager,
-                   int *re_state ) const;
+  void operator()( const int                               component,
+                   const shared_ptr<const TMStateManager> &manager,
+                   int *                                   re_state ) const;
 
   void clockShift( int shift );
 
@@ -147,9 +151,9 @@ private:
   vector<ClockConstraint> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint *>
-          counter_cons; // counter constraint like pid ==id or id==0
+                      counter_cons; // counter constraint like pid ==id or id==0
   shared_ptr<Channel> channel;      // Only one synchronisation channels
-  bool    has_channel;
+  bool                has_channel;
 
   vector<const CounterAction *>
                          actions; // set of actions at this transitionedge

@@ -28,11 +28,11 @@ public:
       , end( 5 )
       , project_dim( 2 ) {}
   bool check( const G &g, const Property *prop ) {
-    SYS                          dummy   = g.generate( start );
-    typename SYS::StateManager_t manager = dummy.getStateManager();
+    SYS                                      dummy   = g.generate( start );
+    shared_ptr<typename SYS::StateManager_t> manager = dummy.getStateManager();
     ReachableSet<typename SYS::StateManager_t> pre_data( manager );
 
-    dummy.addInitState( pre_data, manager );
+    dummy.addInitState( pre_data );
     Reachability<SYS> reacher( dummy );
     if ( reacher.satisfy( pre_data, prop ) ) {
       return false;
@@ -42,11 +42,12 @@ public:
     //  sort(pre_project.begin(), pre_project.end(), element_cmp);
 
     for ( int i = 3; i < 5; i++ ) {
-      SYS                                        dummy = g.generate( i );
-      typename SYS::StateManager_t manager=dummy.getStateManager();
+      SYS                                      dummy = g.generate( i );
+      shared_ptr<typename SYS::StateManager_t> manager =
+          dummy.getStateManager();
       ReachableSet<typename SYS::StateManager_t> data( manager );
-    
-      dummy.addInitState( data, manager );
+
+      dummy.addInitState( data );
       Reachability<SYS> reacher( dummy );
       if ( reacher.satisfy( data, prop ) ) {
         return false;

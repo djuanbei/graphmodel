@@ -16,14 +16,10 @@
 #include "channel.h"
 #include "counter.h"
 
-
-
 #include "domain/dbmset.hpp"
-
 
 #include "parameter.h"
 #include "state/discretestate.hpp"
-
 
 #include "agentmodel.hpp"
 
@@ -31,14 +27,11 @@
 
 #include "vardecl.h"
 
-
 namespace graphsat {
 
 using std::vector;
 
-
-
-template <typename M, typename L, typename T> class AgentSystem:public VarDecl {
+template <typename L, typename T> class AgentSystem : public VarDecl {
 
 public:
   typedef typename T::State_t State_t;
@@ -54,45 +47,57 @@ public:
   typedef Agent<L, T>         Agent_t;
   typedef AgentTemplate<L, T> AgentTemplate_t;
 
-
   AgentSystem() {
     clock_max_value.push_back( 0 );
     clock_num = 0;
   }
 
-  shared_ptr<AgentTemplate_t> createTemplate( ){
-    shared_ptr<AgentTemplate_t> re(new AgentTemplate_t( ));
-    re->id=templates.size( );
-    templates.push_back(re );
+  shared_ptr<AgentTemplate_t> createTemplate() {
+    shared_ptr<AgentTemplate_t> re( new AgentTemplate_t( this ) );
+    re->id = templates.size();
+    templates.push_back( re );
     return re;
   }
-  //  AgentSystem_t& create
-  
-  AgentSystem &operator+=( Agent_t &ta ) {
 
-    transfrom( ta );
-    tas.push_back( ta );
-    initial_loc.push_back( ta.getInitialLoc() );
-    vec_clock_nums.push_back( ta.getClockNum() );
+  AgentSystem &operator+=( Agent_t &agent ) {
 
-    for ( size_t i = 1; i < ta.getClockMaxValue().size(); i++ ) {
-      clock_max_value.push_back( ta.getClockMaxValue()[ i ] );
+    transfrom( agent );
+    agents.push_back( agent );
+    initial_loc.push_back( agent.getInitialLoc() );
+    vec_clock_nums.push_back( agent.getClockNum() );
+
+    for ( size_t i = 1; i < agent.getClockMaxValue().size(); i++ ) {
+      clock_max_value.push_back( agent.getClockMaxValue()[ i ] );
     }
 
-    difference_cons.insert( difference_cons.end(), ta.difference_cons.begin(),
-                            ta.difference_cons.end() );
-
+    difference_cons.insert( difference_cons.end(),
+                            agent.difference_cons.begin(),
+                            agent.difference_cons.end() );
+    update();
     return *this;
   }
-  void setCounterNum( int n ) { counters.resize( n ); }
-  void setCounter( int id, Counter c ) { counters[ id ] = c; }
-  void setChannelNum( int n ) { channels.resize( n ); }
-  void setChannel( int id, Channel ch ) { channels[ id ] = ch; }
+  void setCounterNum( int n ) {
+    assert( agents.empty() );
+    counters.resize( n );
+  }
+  void setCounter( int id, Counter c ) {
+    assert( agents.empty() );
+    counters[ id ] = c;
+  }
+  void setChannelNum( int n ) {
+    assert( agents.empty() );
+    channels.resize( n );
+  }
+  void setChannel( int id, Channel ch ) {
+    assert( agents.empty() );
+    channels[ id ] = ch;
+  }
 
-  int getComponentNum() const { return (int) tas.size(); }
+  int getComponentNum() const { return (int) agents.size(); }
 
-  M getStateManager() const {
+  shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
 
+  void update() {
     vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
     for ( int i = 0; i < clock_num + 1; i++ ) {
@@ -105,50 +110,62 @@ public:
           getMatrixValue( -clock_max_value[ i ], true );
     }
     vector<int> node_n;
-    for ( size_t i = 0; i < tas.size(); i++ ) {
-      node_n.push_back( tas[ i ].ta_tempate->graph.getVertex_num() );
+    for ( size_t i = 0; i < agents.size(); i++ ) {
+      node_n.push_back( agents[ i ].ta_tempate->graph.getVertex_num() );
     }
     vector<int> link_num;
-    for ( auto e : tas ) {
+    for ( auto e : agents ) {
       link_num.push_back( e.ta_tempate->graph.getLink_num() );
     }
 
-    M re( (int) tas.size(), counters, clock_num, temp_clock_upperbound,
-          difference_cons, node_n, link_num, (int) channels.size() );
+    stateManager.reset( new StateManager_t(
+        (int) agents.size(), counters, clock_num, temp_clock_upperbound,
+        difference_cons, node_n, link_num, (int) channels.size() ) );
 
-    return re;
+    // return re;
   }
 
-  template <typename D> void addInitState( D &data, const M &manager ) const {
-    State_t *state         = manager.newState();
-    int      component_num = (int) tas.size();
+  template <typename D> void addInitState( D &data ) const {
+    State_t *state         = stateManager->newState();
+    int      component_num = (int) agents.size();
     bool     withoutCommit = true;
     for ( int component = 0; component < component_num; component++ ) {
       state[ component ] = initial_loc[ component ];
-      if ( tas[ component ].isCommit( state[ component ] ) ) {
-        manager.setCommitState( component, state );
+      if ( agents[ component ].isCommit( state[ component ] ) ) {
+        stateManager->setCommitState( component, state );
         withoutCommit = false;
       }
     }
     if ( withoutCommit ) {
       for ( int component = 0; component < component_num; component++ ) {
-        tas[ component ].locationRun( initial_loc[ component ],
-                                      manager.getClockManager(),
-                                      manager.getDBM( state ) );
+        agents[ component ].locationRun( initial_loc[ component ],
+                                         stateManager->getClockManager(),
+                                         stateManager->getDBM( state ) );
       }
     }
 
     for ( int component = 0; component < component_num; component++ ) {
-      tas[ component ]
-          .locations[ manager.getLoc( component, state ) ]
-          .employInvariants( manager.getClockManager(),
-                             manager.getDBM( state ) );
+      agents[ component ]
+          .locations[ stateManager->getLoc( component, state ) ]
+          .employInvariants( stateManager->getClockManager(),
+                             stateManager->getDBM( state ) );
     }
-    if ( manager.getClockManager().isConsistent( manager.getDBM( state ) ) ) {
-      manager.norm( manager.getDBM( state ) );
+    if ( stateManager->getClockManager().isConsistent(
+             stateManager->getDBM( state ) ) ) {
+      stateManager->norm( stateManager->getDBM( state ) );
       data.add( state );
     }
-    manager.destroyState( state );
+    stateManager->destroyState( state );
+  }
+
+  int getCounterStartLoc( const int id ) const {
+    int re = stateManager->getCounterStart();
+    for ( auto &agent : agents ) {
+      if ( agent.getTemplate()->id < id ) {
+        re += agent.getTemplate()->getCounterNumber();
+      }
+    }
+    return re;
   }
 
 private:
@@ -156,15 +173,11 @@ private:
    * multi-components
    *
    */
-  vector<shared_ptr<AgentTemplate_t>>  templates;
-  
-  vector<Agent_t> tas;
+  vector<shared_ptr<AgentTemplate_t>> templates;
+
+  vector<Agent_t> agents;
   vector<Channel> channels;
   vector<Counter> counters;
-
-
-
-
 
   int clock_num;
 
@@ -174,31 +187,33 @@ private:
   vector<int>             clock_max_value;
   vector<ClockConstraint> difference_cons;
 
+  shared_ptr<StateManager_t> stateManager;
+
   template <typename R1> friend class Reachability;
 
-  void transfrom( Agent_t &ta ) {
+  void transfrom( Agent_t &agent ) {
 
     if ( clock_num > 0 ) {
 
-      for ( size_t i = 0; i < ta.locations.size(); i++ ) {
-        ta.locations[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < agent.locations.size(); i++ ) {
+        agent.locations[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < ta.transitions.size(); i++ ) {
-        ta.transitions[ i ].clockShift( clock_num );
+      for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
+        agent.transitions[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < ta.ta_tempate->template_difference_cons.size();
+      for ( size_t i = 0; i < agent.ta_tempate->template_difference_cons.size();
             i++ ) {
-        ta.difference_cons[ i ].clockShift( clock_num );
+        agent.difference_cons[ i ].clockShift( clock_num );
       }
     }
-    for ( size_t i = 0; i < ta.transitions.size(); i++ ) {
-      if ( ta.transitions[ i ].hasChannel() ) {
-        ta.transitions[ i ].setChanType(
-            channels[ ta.transitions[ i ].getChannel()-> gloabl_id ].type );
+    for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
+      if ( agent.transitions[ i ].hasChannel() ) {
+        agent.transitions[ i ].setChanType(
+            channels[ agent.transitions[ i ].getChannel()->gloabl_id ].type );
       }
     }
 
-    clock_num += ta.getClockNum();
+    clock_num += agent.getClockNum();
   }
 };
 

@@ -18,13 +18,9 @@
 #include "example.h"
 #include "log/logset.h"
 
-
 #include "io/uppaalmodelparser.h"
 
-
-
 #include <iostream>
-
 
 extern int yy_flex_debug;
 

@@ -2,19 +2,20 @@
  * @file   templatemodel.hpp
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Fri Dec  6 19:58:40 2019
- * 
+ *
  * @brief  template model
- * 
- * 
+ *
+ *
  */
 
 #ifndef TEMPLATE_MODEL_H
 #define TEMPLATE_MODEL_H
 
 #include "graph/graph.hpp"
+#include "graphmodel.hpp"
 #include "vardecl.h"
 
-namespace graphsat{
+namespace graphsat {
 using namespace raptor;
 
 /**
@@ -25,32 +26,22 @@ using namespace raptor;
 
 template <typename L, typename T> class Agent;
 
-template <typename L, typename T> class AgentTemplate:public VarDecl {
+template <typename L, typename T> class AgentSystem;
 
- private:
+template <typename L, typename T> class AgentTemplate : public VarDecl {
+
+private:
   typedef ClockConstraint CS_t;
 
-  typedef AgentTemplate<L, T> AgentTemplate_t;
-  typedef Agent<L, T>         Agent_t;
+  typedef Agent<L, T> Agent_t;
 
- public:
-
-
-  // AgentTemplate( vector<L> &locs, vector<T> &es, int init )
-  //     : template_locations( locs )
-  //     , template_transitions( es ) {
-  //   initial_loc = init;
-  //   initial();
-  // }
-
-  void initial(vector<L> &locs, vector<T> &es, int init ){
-    template_locations=locs;
-    template_transitions=es;
-    initial_loc = init;
+public:
+  void initial( vector<L> &locs, vector<T> &es, int init ) {
+    template_locations   = locs;
+    template_transitions = es;
+    initial_loc          = init;
     initial();
   }
-
-
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
     graph.findRhs( link, lhs, rhs );
@@ -58,41 +49,42 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
 
   vector<int> getClockMaxValue() const { return clock_max_value; }
 
-  int getClockNum() const { return clock_id_map.size( ); }
+  int getClockNum() const { return data.getTypeNum( CLOCK_T ); }
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
 
   int getInitialLoc() const { return initial_loc; }
 
-  int addPara(const string& p ){
-    int re=parameters.size( );
-    parameters.push_back(p );
+  int addPara( const string &p ) {
+    int re = parameters.size();
+    parameters.push_back( p );
     return re;
-    
   }
-  int getParaId( const string & p) const{
-    for( size_t i=0; i<parameters.size( ); i++ ){
-      if( p==parameters[ i]){
+  int getParaId( const string &p ) const {
+    for ( size_t i = 0; i < parameters.size(); i++ ) {
+      if ( p == parameters[ i ] ) {
         return i;
       }
     }
     return NOT_FOUND;
   }
-  void reset( ){
-    agents.clear( );
+  void reset() { agents.clear(); }
+
+private:
+  AgentTemplate( const AgentSystem<L, T> *s )
+      : sys( s ) {
+    initial_loc = -1;
+  }
+  AgentTemplate( const AgentTemplate &other )
+      : sys( NULL ) {
+    assert( false );
   }
 
-
- private:
-  AgentTemplate() { initial_loc =-1; }
-
-  AgentTemplate( const AgentTemplate &other ) { assert( false ); }
-  
-  AgentTemplate &operator=( const AgentTemplate &other ) {                                             
-    assert( false );                                                           
-    return *this;                                                              
+  AgentTemplate &operator=( const AgentTemplate &other ) {
+    assert( false );
+    return *this;
   }
-  
+
   void updateUpperAndDiff( const CS_t &cs ) {
 
     if ( cs.clock_x > 0 && cs.clock_y > 0 ) {
@@ -112,6 +104,8 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
     }
   }
 
+  int getCounterStartLoc() const { return sys->getCounterStartLoc( id ); }
+
   void initial() {
 
     vector<int> srcs;
@@ -130,7 +124,7 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
     assert( initial_loc >= 0 && initial_loc < vertex_num );
 
     template_difference_cons.clear();
-    clock_max_value.resize( clock_id_map.size( ) + 1 ); // clock is start with 1
+    clock_max_value.resize( getClockNumber() + 1 ); // clock is start with 1
 
     fill( clock_max_value.begin(), clock_max_value.end(), 0 );
 
@@ -148,10 +142,10 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
       }
     }
   }
+  const AgentSystem<L, T> *sys;
+  int                      id;
+  int                      number_children;
 
-  int id;
-  int number_children;
-  
   vector<L> template_locations;
   vector<T> template_transitions;
   int       initial_loc;
@@ -161,15 +155,15 @@ template <typename L, typename T> class AgentTemplate:public VarDecl {
   vector<int> clock_max_value;
 
   vector<ClockConstraint> template_difference_cons;
-  
-  vector<string> parameters;
-  vector<Agent<L,T> *> agents;
+
+  vector<string>        parameters;
+  vector<Agent<L, T> *> agents;
 
   template <typename R1> friend class Reachability;
 
   friend class Agent<L, T>;
-  template <typename M1, typename L1, typename T1> friend class AgentSystem;
+  template <typename L1, typename T1> friend class AgentSystem;
 };
-}
+} // namespace graphsat
 
 #endif
