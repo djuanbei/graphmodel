@@ -40,6 +40,9 @@ using std::vector;
   case FUN_POINTER_ARG:                                                        \
     counter_value[ lhs_value ] op( (IndexFun_t) rhs_value )( counter_value );  \
     return;                                                                    \
+  case SELECT_VAR_ARG:                                                         \
+    counter_value[ lhs_value ] op rhs_value;                                   \
+    return;                                                                    \
   case EMPTY_ARG:                                                              \
     assert( false );                                                           \
   }
@@ -66,6 +69,9 @@ using std::vector;
     out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
         << setw( VALUE_OUT_WIDTH ) << "function *" << act.rhs_value;           \
     return out;                                                                \
+  case SELECT_VAR_ARG:                                                         \
+    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
+        << setw( VALUE_OUT_WIDTH ) << "function *" << act.rhs.name;            \
   case EMPTY_ARG:                                                              \
     assert( false );                                                           \
   }
@@ -115,6 +121,8 @@ public:
       break;
     case FUN_POINTER_ARG:
       break;
+    case SELECT_VAR_ARG:
+      break;
     case EMPTY_ARG:
       assert( false );
     }
@@ -130,6 +138,8 @@ public:
       rhs_value = counter_map[ rhs.value ];
       break;
     case FUN_POINTER_ARG:
+      break;
+    case SELECT_VAR_ARG:
       break;
     case EMPTY_ARG:
       assert( false );

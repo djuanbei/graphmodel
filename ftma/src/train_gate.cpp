@@ -7,26 +7,21 @@ TrainGate::TrainGate()
   train_tmt = sys.createTemplate();
   gate_tmt  = sys.createTemplate();
 
-  sys.addConstant( "N", n );
-  TypeDefArray id_t( "id_t", 0, sys[ "N" ] - 1 );
-  sys.addType( "id_t", id_t );
+  sys.addConstant( "N", n ); // const N=n;
+  //  TypeDefArray id_t( "id_t", 0, sys[ "N" ] - 1 ); // typedef int[ 0,N-1] id_t;
+  sys.addType( "id_t", 0,  sys[ "N" ] - 1  ); // typedef int[ 0,N-1] id_t;
 
-  ChanDecl appr( "appr" );
-  appr.num = sys[ "N" ];
-  sys.addChan( appr );
 
-  ChanDecl stop( "stop" );
-  stop.num = sys[ "N" ];
-  sys.addChan( stop );
+  sys.addChan( "appr", sys[ "N" ], ONE2ONE_CH ); // chan appr[ N]
 
-  ChanDecl leave( "leave" );
-  leave.num = sys[ "N" ];
-  sys.addChan( leave );
 
-  ChanDecl go( "go" );
-  go.num  = sys[ "N" ];
-  go.type = URGENT_CH;
-  sys.addChan( go );
+  sys.addChan( "stop", sys[ "N" ], ONE2ONE_CH ); // chan stop[ N]
+
+
+  sys.addChan( "leave", sys[ "N" ], ONE2ONE_CH ); // chan leave[ N]
+
+
+  sys.addChan( "go", sys[ "N"],  URGENT_CH); // urgent chan go[ N]
 
   ADD_CLOCK( ( *train_tmt ), x );
   vector<typename INT_TAS_t::T_t> es;
@@ -93,13 +88,12 @@ TrainGate::TrainGate()
   es.push_back( Appr_Cross );
   train_tmt->initial( ls, es, 0 );
 
-  // gate
-  BaseDecl list( "list" );
-  list.num = sys[ "N" ] + 1;
-  gate_tmt->addInt( list );
+  // gate template
 
-  BaseDecl len( "len" );
-  gate_tmt->addInt( len );
+  gate_tmt->addInt("list", sys[ "N" ] + 1 );
+
+
+  int len_id=gate_tmt->addInt( "len", 1 );
 
   vector<typename INT_TAS_t::T_t> ges;
   vector<typename INT_TAS_t::L_t> gls;
@@ -110,13 +104,13 @@ TrainGate::TrainGate()
 
   typename INT_TAS_t::T_t Free_Occ1( Free, Occ );
 
-  Argument first1( COUNTER_ARG, 0 );
+  Argument first1( COUNTER_ARG, len_id );
   Argument second1( EMPTY_ARG, 0 );
   Argument rhs1( CONST_ARG, 0 );
   void *   ccs1 = createConstraint( first1, second1, LT, rhs1 ); // len >0
   Free_Occ1.addCounterCons( ccs1 );
 
-  IndexChannel *ch1= new IndexChannel("go", 1, false );
+  IndexChannel *ch1= new IndexChannel("go", CHANNEL_SEND );
   ch1->setFunName( "front");
   Free_Occ1.setChannel( ch1 );
   
@@ -125,24 +119,86 @@ TrainGate::TrainGate()
   SelectTransition Free_Occ2( Free, Occ );
   Free_Occ2.setSelectVar( "e");
   Free_Occ2.setSelectCollect( "id_t");
-  SelectChannel *ch2=new SelectChannel( "appr", -1, false);
+
+
+  Argument first3( COUNTER_ARG, len_id);
+  Argument second3( EMPTY_ARG, 0 );
+  Argument rhs3( CONST_ARG, 0 );
+  void *   ccs3 = createConstraint( first3, second3, EQ, rhs3 ); // len==0
+  Free_Occ2.addCounterCons( ccs3);
+
+  SelectChannel *ch2=new SelectChannel( "appr", CHANNEL_RECEIVE);
   ch2->setSelectVar( "e");
   Free_Occ2.setChannel( ch2 );
   
+    
+  
   
   Argument       lhs2( FUN_POINTER_ARG, 0 );
-  lhs2.name="enqueue";
+  lhs2.name="enqueue(e)";
+  Argument       rhs2( EMPTY_ARG, 0 );
+  CounterAction *caction2 =
+      new CounterAction( lhs2, CALL_ACTION, rhs2 ); // enqueue( e)
+  Free_Occ2.addCounterAction(caction2 );
   
-  Argument       rhs2( CONST_ARG, 0 );
+  
+  
   
 
-  typename INT_TAS_t::T_t Occ_OK( Occ, Ok );
+  SelectTransition Occ_OK( Occ, Ok );
+  Occ_OK.setSelectVar( "e");
+  Occ_OK.setSelectCollect( "id_t");
+  
+  SelectChannel *ch3=new SelectChannel( "appr", CHANNEL_RECEIVE);
+  ch3->setSelectVar( "e");
+  Occ_OK.setChannel( ch3);
+
+  Argument       lhs4( FUN_POINTER_ARG, 0 );
+  lhs4.name="enqueue( e)";
+  Argument       rhs4( EMPTY_ARG, 0 );
+  CounterAction *caction4 =
+      new CounterAction( lhs4, CALL_ACTION, rhs4 ); // enqueue( e)
+  Occ_OK.addCounterAction(caction4);
+  
 
   typename INT_TAS_t::T_t Ok_Occ( Ok, Occ );
 
-  typename INT_TAS_t::T_t Occ_Free( Occ, Free );
+  IndexChannel * ch4=new IndexChannel( "stop", CHANNEL_SEND);
+  ch4->setFunName( "tail");
+  Ok_Occ.setChannel( ch4);
+  
+  
+
+  SelectTransition Occ_Free( Occ, Free );
+  Occ_Free.setSelectVar( "e");
+  Occ_Free.setSelectCollect( "id_t");
+  
+  Argument first5( SELECT_VAR_ARG, "e");
+  Argument second5( EMPTY_ARG, 0 );
+  Argument rhs5( FUN_POINTER_ARG, "front" );
+  void *   ccs5 = createConstraint( first5, second5, EQ, rhs5 ); // e== front( )
+  Occ_Free.addCounterCons( ccs5);
+  
+  SelectChannel *ch5=new SelectChannel( "leave", CHANNEL_RECEIVE);
+  ch5->setSelectVar( "e");
+  Occ_Free.setChannel( ch5);
+
+
+  Argument  lhs6( FUN_POINTER_ARG, "dequeue" );
+  Argument       rhs6( EMPTY_ARG, 0 );
+  CounterAction *caction6 =
+      new CounterAction( lhs6, CALL_ACTION, rhs6 ); // dequeue
+  Occ_Free.addCounterAction(caction6 );
   gate_tmt->initial( gls, ges, 0 );
 }
+
+INT_TAS_t TrainGate::generate( int n) const{
+  INT_TAS_t re(sys);
+  
+  
+  return re;
+}
+
 
 // void enqueue( typename INT_TAS_t::Agent_t &agent, int *state,
 //               const int element ) {

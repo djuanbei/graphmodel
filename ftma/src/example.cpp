@@ -94,7 +94,8 @@ void example1( void ) {
 
   tmt1->initial( ls, es, 0 );
 
-  Parameter param( 1 );
+  Parameter param=tmt1->getParameter( );
+  
 
   typename INT_TAS_t::Agent_t tma1( tmt1, param );
   sys += tma1;
@@ -154,7 +155,7 @@ void example50() {
 
   tmt1->initial( ls, es, 0 );
 
-  Parameter param( 1 );
+  Parameter param=tmt1->getParameter();
 
   typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
@@ -214,7 +215,7 @@ void example2( void ) {
 
   tmt1->initial( ls, es, 0 );
 
-  Parameter                   param( 1 );
+  Parameter                   param=tmt1->getParameter( );
   typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
   sys += tma1;
@@ -285,7 +286,13 @@ void example6() {
 
 void fisher( int n ) {
   INT_TAS_t                                       sys;
+  sys.addType( "id_t", 0, n );
+  sys.addInt("id",1,0,n  );
+  
+  
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  tmt1->addPara( "pid");
+  
   int                                             x    = tmt1->addClock( "x" );
   //  ADD_CLOCK( tmt1, x);
   vector<typename INT_TAS_t::T_t> es;
@@ -366,15 +373,11 @@ void fisher( int n ) {
 
   tmt1->initial( ls, es, 0 );
 
-  // INT_TAS_t sys;
-  Counter counter( 0, n + 1 );
-  sys.setCounterNum( 1 );
-  sys.setCounter( 0, counter );
-  //  sys += counter;
+
 
   for ( int i = 1; i <= n; i++ ) {
 
-    Parameter param( 1 );
+    Parameter param=tmt1->getParameter( );
     param.setCounterMap( 0, 0 ); // add relation between local id and global id
 
     param.setParameterMap( 0, i );
@@ -435,9 +438,15 @@ void incrementalTest1() {
 
 void incrementalTest() {
   INT_TAS_t                                       sys;
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
-  ADD_CLOCK( ( *tmt1 ), x );
   int                             n = 3;
+  sys.addType( "id_t", 0, n );
+  sys.addInt("id",1,0,n  );
+  
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  tmt1->addPara( "pid");
+  
+  ADD_CLOCK( ( *tmt1 ), x );
+
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   int                             k = 2;
@@ -518,16 +527,16 @@ void incrementalTest() {
   tmt1->initial( ls, es, 0 );
 
   for ( int i = 1; i <= n; i++ ) {
-    Parameter param( 1 );
+    Parameter param=tmt1->getParameter(  );
     param.setParameterMap( 0, i );
     typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
     sys += tma1;
   }
 
-  Counter counter( 0, 100 );
-  sys.setCounterNum( 1 );
-  sys.setCounter( 0, counter );
+  // Counter counter( 0, 100 );
+  // sys.setCounterNum( 1 );
+  // sys.setCounter( 0, counter );
   //  sys += counter;
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
@@ -549,14 +558,14 @@ void incrementalTest() {
 
   INT_TAS_t sys1;
   for ( int i = 1; i <= 2; i++ ) {
-    Parameter param( 1 );
+    Parameter param=tmt1->getParameter(  );
     param.setParameterMap( 0, i );
     typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
     sys1 += tma1;
   }
-  sys1.setCounterNum( 1 );
-  sys1.setCounter( 0, counter );
+  // sys1.setCounterNum( 1 );
+  // sys1.setCounter( 0, counter );
   //  sys1 += counter;
 
   shared_ptr<INT_TAS_t::StateManager_t> manager1 = sys1.getStateManager();

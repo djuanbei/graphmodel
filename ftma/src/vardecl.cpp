@@ -9,12 +9,15 @@ int VarDecl::addClock( const string &n ) {
   return re;
 }
 
-int VarDecl::addInt( const string &n ) {
-  assert( !contain( n ) );
+int VarDecl::addInt( const string &n, int num ) {
+  BaseDecl b( n );
+  b.num=num;
+  return addInt( b );
+}
 
-  int re = data.getTypeNum( INT_T );
-  data.addValue( INT_T, n, new BaseDecl( n ) );
-  return re;
+int VarDecl::addInt( const string &name, int num, int  low, int high ){
+  BaseDecl b( name, num, low, high);
+  return addInt( b );
 }
 
 int VarDecl::addInt( const BaseDecl &ch ) {
@@ -37,11 +40,42 @@ int VarDecl::addChan( const ChanDecl &ch ) {
   data.addValue( CHAN_T, ch.name, new ChanDecl( ch ) );
   return re;
 }
+int VarDecl::addChan( const string &name, int num, CHANNEL_TYPE type ) {
+  ChanDecl dummy( name);
+  dummy.type=type;
+  dummy.num=num;
+  return addChan( dummy);
+}
 
 int VarDecl::addType( const string &n, const TypeDefArray &type ) {
   assert( !contain( n ) );
   int re          = self_types.size();
-  self_types[ n ] = type;
+  self_types.push_back(type );
+  return re;
+}
+int VarDecl::addType( const string &n, const int low, const int high){
+  assert( !contain( n ) );
+  int re          = self_types.size();
+  TypeDefArray t( n, 0, high ); // typedef int[ 0,N-1] id_t;
+  self_types.push_back( t);
+  return re;
+}
+
+vector<BaseDecl> VarDecl::getInts( ) const{
+  vector<pair<string, vector<void*>>> temp=data.getValue( INT_T);
+  vector<BaseDecl> re;
+  for(auto &e: temp ){
+    BaseDecl dummy= *((BaseDecl*)e.second[ 0]);
+    if(1==dummy.num  ){
+      re.push_back( dummy);
+    }else{
+      for( int i=0; i<dummy.num; i++ ){
+        BaseDecl t=dummy;
+        t.name+=to_string( i);
+        re.push_back(t );
+      }
+    }
+  }
   return re;
 }
 
@@ -69,7 +103,7 @@ bool VarDecl::contain( const string &n ) const {
     }
   }
   for ( auto &e : self_types ) {
-    if ( e.first == n ) {
+    if ( e.getName( ) == n ) {
       return true;
     }
   }

@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "util/strutil.h"
+
 namespace graphsat {
 
 using namespace std;
@@ -38,7 +40,7 @@ int convert( const string, string & );
  *
  */
 
-string trim( std::string s );
+// string trim( std::string s );
 
 class XmlConfig {
 

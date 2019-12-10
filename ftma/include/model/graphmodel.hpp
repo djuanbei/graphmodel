@@ -76,10 +76,12 @@ public:
     update();
     return *this;
   }
+  // TODO: del
   void setCounterNum( int n ) {
     assert( agents.empty() );
     counters.resize( n );
   }
+  // TODO: del
   void setCounter( int id, Counter c ) {
     assert( agents.empty() );
     counters[ id ] = c;
@@ -97,7 +99,16 @@ public:
 
   shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
 
+  struct AgentCMP {
+    bool operator()( const Agent_t &lhs, const Agent_t &rhs ) const {
+      return ( lhs.agent_tempate->id < rhs.agent_tempate->id );
+    }
+  };
+
   void update() {
+    AgentCMP cmp;
+    sort( agents.begin(), agents.end(), cmp );
+
     vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
     for ( int i = 0; i < clock_num + 1; i++ ) {
@@ -111,18 +122,30 @@ public:
     }
     vector<int> node_n;
     for ( size_t i = 0; i < agents.size(); i++ ) {
-      node_n.push_back( agents[ i ].ta_tempate->graph.getVertex_num() );
+      node_n.push_back( agents[ i ].agent_tempate->graph.getVertex_num() );
     }
     vector<int> link_num;
-    for ( auto e : agents ) {
-      link_num.push_back( e.ta_tempate->graph.getLink_num() );
+    for ( auto &e : agents ) {
+      link_num.push_back( e.agent_tempate->graph.getLink_num() );
+    }
+    vector<Counter>  counters;
+    vector<BaseDecl> sysCounts = getInts();
+    for ( auto &e : sysCounts ) {
+      Counter counter( e.low, e.high );
+      counters.push_back( counter );
+    }
+
+    for ( auto &e : agents ) {
+      vector<BaseDecl> counts = e.agent_tempate->getInts();
+      for ( auto &ee : counts ) {
+        Counter counter( ee.low, ee.high );
+        counters.push_back( counter );
+      }
     }
 
     stateManager.reset( new StateManager_t(
         (int) agents.size(), counters, clock_num, temp_clock_upperbound,
         difference_cons, node_n, link_num, (int) channels.size() ) );
-
-    // return re;
   }
 
   template <typename D> void addInitState( D &data ) const {
@@ -169,28 +192,6 @@ public:
   }
 
 private:
-  /**
-   * multi-components
-   *
-   */
-  vector<shared_ptr<AgentTemplate_t>> templates;
-
-  vector<Agent_t> agents;
-  vector<Channel> channels;
-  vector<Counter> counters;
-
-  int clock_num;
-
-  vector<int> initial_loc;
-  vector<int> vec_clock_nums;
-
-  vector<int>             clock_max_value;
-  vector<ClockConstraint> difference_cons;
-
-  shared_ptr<StateManager_t> stateManager;
-
-  template <typename R1> friend class Reachability;
-
   void transfrom( Agent_t &agent ) {
 
     if ( clock_num > 0 ) {
@@ -201,8 +202,8 @@ private:
       for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
         agent.transitions[ i ].clockShift( clock_num );
       }
-      for ( size_t i = 0; i < agent.ta_tempate->template_difference_cons.size();
-            i++ ) {
+      for ( size_t i = 0;
+            i < agent.agent_tempate->template_difference_cons.size(); i++ ) {
         agent.difference_cons[ i ].clockShift( clock_num );
       }
     }
@@ -215,6 +216,28 @@ private:
 
     clock_num += agent.getClockNum();
   }
+
+  /**
+   * multi-components
+   *
+   */
+  vector<shared_ptr<AgentTemplate_t>> templates;
+
+  vector<Agent_t> agents;
+  vector<Channel> channels;
+  vector<Counter> counters; // TODO: del
+
+  int clock_num;
+
+  vector<int> initial_loc;
+  vector<int> vec_clock_nums;
+
+  vector<int>             clock_max_value;
+  vector<ClockConstraint> difference_cons;
+
+  shared_ptr<StateManager_t> stateManager;
+
+  template <typename R1> friend class Reachability;
 };
 
 } // namespace graphsat

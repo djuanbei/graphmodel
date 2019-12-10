@@ -60,6 +60,11 @@ public:
     parameters.push_back( p );
     return re;
   }
+  Parameter getParameter() const {
+    Parameter re( parameters.size() );
+    return re;
+  }
+
   int getParaId( const string &p ) const {
     for ( size_t i = 0; i < parameters.size(); i++ ) {
       if ( p == parameters[ i ] ) {

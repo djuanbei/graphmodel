@@ -326,13 +326,14 @@ void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
 
 int UppaalParser::setCounter() {
   int counter_num = system_data.getTotalCounterNum();
-
+  
   sys.setCounterNum( counter_num );
   for ( auto e : system_data.counter_id_map ) {
     Counter counter( 0, MAX_COUNTER_VALUE );
     int     v = system_data.getValue( INT_T, e.first );
     counter.setValue( v );
     sys.setCounter( e.second, counter );
+
   }
 
   for ( auto temp : template_map ) {

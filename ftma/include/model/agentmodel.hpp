@@ -22,28 +22,31 @@ private:
   typedef AgentTemplate<L, T> AgentTemplate_t;
 
 public:
-  Agent( const shared_ptr<AgentTemplate_t> &tat, const Parameter &param ) {
+  Agent( const shared_ptr<AgentTemplate_t> &template_arg,
+         const Parameter &                  param ) {
 
-    ta_tempate = tat;
-    for ( auto e : tat->template_transitions ) {
+    agent_tempate = template_arg;
+    for ( auto e : template_arg->template_transitions ) {
       transitions.push_back( T( e, param ) );
     }
 
-    locations       = tat->template_locations;
-    difference_cons = tat->template_difference_cons;
-    id              = tat->agents.size();
-    tat->agents.push_back( this );
+    locations       = template_arg->template_locations;
+    difference_cons = template_arg->template_difference_cons;
+    id              = template_arg->agents.size();
+    template_arg->agents.push_back( this );
   }
 
   void findRhs( const int link, const int lhs, int &rhs ) const {
-    ta_tempate->graph.findRhs( link, lhs, rhs );
+    agent_tempate->graph.findRhs( link, lhs, rhs );
   }
 
-  vector<int> getClockMaxValue() const { return ta_tempate->clock_max_value; }
+  vector<int> getClockMaxValue() const {
+    return agent_tempate->clock_max_value;
+  }
 
-  int getClockNum() const { return ta_tempate->getClockNum(); }
+  int getClockNum() const { return agent_tempate->getClockNum(); }
 
-  int getInitialLoc() const { return ta_tempate->initial_loc; }
+  int getInitialLoc() const { return agent_tempate->initial_loc; }
 
   bool transitionRun( int link, const DBMFactory &manager, int *D ) const {
     return transitions[ link ]( manager, D );
@@ -74,13 +77,15 @@ public:
   }
 
   int *getValue( int *state, const string &key ) const {
-    int start_loc = ta_tempate->getCounterStartLoc();
-    start_loc += ta_tempate->getCounterNumber() * ( id - 1 );
-    start_loc += ta_tempate->getStart( key );
+    int start_loc = agent_tempate->getCounterStartLoc();
+    start_loc += agent_tempate->getCounterNumber() * ( id - 1 );
+    start_loc += agent_tempate->getStart( key );
 
     return state + start_loc;
   }
-  const shared_ptr<AgentTemplate_t> getTemplate() const { return ta_tempate; }
+  const shared_ptr<AgentTemplate_t> getTemplate() const {
+    return agent_tempate;
+  }
 
   // void toDot(ostream &out ) const{
   //   out<<"digraph G { "<<endl;
@@ -92,7 +97,7 @@ public:
   // }
 
 private:
-  shared_ptr<AgentTemplate_t> ta_tempate;
+  shared_ptr<AgentTemplate_t> agent_tempate;
   int                         id; // the interbal of instance of ta_tempate
 
   vector<L>               locations;

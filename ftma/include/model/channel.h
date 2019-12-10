@@ -14,12 +14,6 @@
 #include <map>
 namespace graphsat {
 
-enum CHANNEL_TYPE { ONE2ONE_CH, BROADCAST_CH, URGENT_CH };
-
-enum CHANNEL_ACTION { CHANNEL_SEND, CHANNEL_RECEIVE };
-
-const int NO_CHANNEL = 0;
-
 class Channel {
 public:
   Channel();
@@ -28,6 +22,12 @@ public:
 
   Channel( int id, bool ref );
 
+  Channel( const CHANNEL_ACTION a ) {
+    gloabl_id = 0;
+    is_ref    = false;
+    action    = a;
+  }
+
   void setType( const CHANNEL_TYPE t ) { type = t; }
   void setIsRef( bool b ) { is_ref = b; }
   void globalIpUpdate( const std::vector<int> &id_map ) {
@@ -35,6 +35,7 @@ public:
       gloabl_id = id_map[ local_id ];
     }
   }
+
   virtual int  getGlobalId( const int *state ) const { return gloabl_id; }
   int          getType() const { return type; }
   bool         isSend() const { return CHANNEL_SEND == action; }
@@ -60,6 +61,11 @@ public:
     array_name = n;
     array_base = 0;
   }
+  ArrayChannel( const string &n, const CHANNEL_ACTION a )
+      : Channel( a ) {
+    array_name = n;
+    array_base = 0;
+  }
   virtual int getGlobalId( int *state ) const;
   void        setBase( int b ) { array_base = b; }
 
@@ -72,6 +78,8 @@ class IndexChannel : public ArrayChannel {
 public:
   IndexChannel( const string &n, int id, bool ref )
       : ArrayChannel( n, id, ref ) {}
+  IndexChannel( const string &n, const CHANNEL_ACTION a )
+      : ArrayChannel( n, a ) {}
   virtual int getGlobalId( int *state ) const;
   void        setIndexFun( IndexFun_t fun ) { index_fun = fun; }
   void        setFunName( const string &n ) { fun_name = n; }
@@ -87,6 +95,8 @@ public:
       : ArrayChannel( n, id, ref ) {
     shift = 0;
   }
+  SelectChannel( const string &n, const CHANNEL_ACTION a )
+      : ArrayChannel( n, a ) {}
 
   void setSelectVar( const string &n ) { select_var = n; }
 

@@ -86,19 +86,24 @@ enum ARGUMENT_TYPE {
   PARAMETER_ARG,
   REF_PARAMETER_ARG,
   FUN_POINTER_ARG,
+  SELECT_VAR_ARG,
   EMPTY_ARG
 };
 
 struct Argument {
   ARGUMENT_TYPE type;
   int_fast64_t  value;
-  string name;
+  string        name;
   Argument()
       : type( CONST_ARG )
       , value( 0 ) {}
   Argument( ARGUMENT_TYPE t, int v ) {
     type  = t;
     value = v;
+  }
+  Argument( ARGUMENT_TYPE t, const string &n ) {
+    type = t;
+    name = n;
   }
 };
 
@@ -137,6 +142,19 @@ enum TYPE_T {
 typedef int ( *IndexFun_t )( int * );
 
 const static int NOT_FOUND = -1;
+
+enum CHANNEL_TYPE { ONE2ONE_CH, BROADCAST_CH, URGENT_CH };
+
+enum CHANNEL_ACTION { CHANNEL_SEND, CHANNEL_RECEIVE };
+
+const int NO_CHANNEL = 0;
+
+const int DEFAULT_COUNTER_LOWER = 0;
+
+const int DEFAULT_COUNTER_UPPER = 100;
+
+const static int NO_DEF = -1;
+
 } // namespace graphsat
 
 #endif
