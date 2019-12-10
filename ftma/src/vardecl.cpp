@@ -80,7 +80,7 @@ vector<BaseDecl> VarDecl::getInts( ) const{
 }
 
 int VarDecl::operator[]( const string &k ) const {
-  assert( !contain( k ) );
+  assert(contain( k ) );
   return const_values.at( k );
 }
 

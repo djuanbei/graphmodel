@@ -2,10 +2,13 @@
 #include "model/selecttransition.h"
 
 namespace graphsat {
-TrainGate::TrainGate()
-    : n( 6 ) {
-  train_tmt = sys.createTemplate();
-  gate_tmt  = sys.createTemplate();
+
+INT_TAS_t TrainGate::generate( int n) const{
+
+  INT_TAS_t                                       sys;
+
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> train_tmt = sys.createTemplate();
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> gate_tmt  = sys.createTemplate();
 
   sys.addConstant( "N", n ); // const N=n;
   //  TypeDefArray id_t( "id_t", 0, sys[ "N" ] - 1 ); // typedef int[ 0,N-1] id_t;
@@ -131,18 +134,12 @@ TrainGate::TrainGate()
   ch2->setSelectVar( "e");
   Free_Occ2.setChannel( ch2 );
   
-    
-  
-  
   Argument       lhs2( FUN_POINTER_ARG, 0 );
   lhs2.name="enqueue(e)";
   Argument       rhs2( EMPTY_ARG, 0 );
   CounterAction *caction2 =
       new CounterAction( lhs2, CALL_ACTION, rhs2 ); // enqueue( e)
   Free_Occ2.addCounterAction(caction2 );
-  
-  
-  
   
 
   SelectTransition Occ_OK( Occ, Ok );
@@ -190,13 +187,19 @@ TrainGate::TrainGate()
       new CounterAction( lhs6, CALL_ACTION, rhs6 ); // dequeue
   Occ_Free.addCounterAction(caction6 );
   gate_tmt->initial( gls, ges, 0 );
-}
 
-INT_TAS_t TrainGate::generate( int n) const{
-  INT_TAS_t re(sys);
+  Parameter param=gate_tmt->getParameter( );
+  typename INT_TAS_t::Agent_t tma( gate_tmt, param );
+  sys+=tma;
+
+  for( int i=0; i< n; i++){
+    Parameter param=train_tmt->getParameter( );
+    param.setParameterMap(0, i );
+    typename INT_TAS_t::Agent_t tma(train_tmt, param );
+    sys+=tma;
+  }
   
-  
-  return re;
+  return sys;
 }
 
 

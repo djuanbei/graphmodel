@@ -18,16 +18,9 @@
 namespace graphsat {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 class TrainGate {
-  TrainGate();
-
+public:
+  TrainGate() {}
   INT_TAS_t generate( int n ) const;
-
-private:
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> train_tmt;
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> gate_tmt;
-  INT_TAS_t                                       sys;
-
-  int n; // number of trains
 };
 
 void enqueue( typename INT_TAS_t::Agent_t &agent, int *state,
