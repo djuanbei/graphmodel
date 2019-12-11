@@ -74,45 +74,45 @@ int main( int argc, const char *argv[] ) {
 
   return 0;
 
-  example1();
-  example2();
-  return 0;
-  typename INT_TAS_t::CS_t cons( 1, 2, LE, 2 ); // x-y <= 2
+  // example1();
+  // example2();
+  // return 0;
+  // typename INT_TAS_t::CS_t cons( 1, 2, LE, 2 ); // x-y <= 2
 
-  cout << "constrain: " << cons << endl;
+  // cout << "constrain: " << cons << endl;
 
-  cout << "negation constraint: " << cons.neg() << endl;
-  // insert code here...
-  DBMFactory exampleDBM( 4 );
-  int *      D = exampleDBM.randomDBM();
-  cout << "matrix dump :\n";
-  exampleDBM.dump( cout, D ) << endl;
+  // cout << "negation constraint: " << cons.neg() << endl;
+  // // insert code here...
+  // DBMFactory exampleDBM( 4 );
+  // int *      D = exampleDBM.randomDBM();
+  // cout << "matrix dump :\n";
+  // exampleDBM.dump( cout, D ) << endl;
 
-  cout << "========================" << endl;
-  exampleDBM.canonicalForm( D );
-  cout << "matrix dump :\n";
-  exampleDBM.dump( cout, D ) << endl;
+  // cout << "========================" << endl;
+  // exampleDBM.canonicalForm( D );
+  // cout << "matrix dump :\n";
+  // exampleDBM.dump( cout, D ) << endl;
 
-  cout << "========================" << endl;
-  exampleDBM.canonicalForm( D );
-  cout << "matrix dump :\n";
-  exampleDBM.dump( cout, D ) << endl;
-  std::cout << "Hello, World!\n";
+  // cout << "========================" << endl;
+  // exampleDBM.canonicalForm( D );
+  // cout << "matrix dump :\n";
+  // exampleDBM.dump( cout, D ) << endl;
+  // std::cout << "Hello, World!\n";
 
-  int *D1 = exampleDBM.createDBM();
-  cout << "matrix dump :\n";
-  exampleDBM.dump( cout, D1 ) << endl;
-  int *D2 = exampleDBM.reset( D1, 1, (int) 10 );
-  cout << "matrix dump :\n";
-  exampleDBM.dump( cout, D2 ) << endl;
+  // int *D1 = exampleDBM.createDBM();
+  // cout << "matrix dump :\n";
+  // exampleDBM.dump( cout, D1 ) << endl;
+  // int *D2 = exampleDBM.reset( D1, 1, (int) 10 );
+  // cout << "matrix dump :\n";
+  // exampleDBM.dump( cout, D2 ) << endl;
 
-  // cout<<"constrain: "<<cons<<endl;
+  // // cout<<"constrain: "<<cons<<endl;
 
-  // //C_t*  D3=exampleDBM.And( D2, cons.neg( ));
-  int *D3 = exampleDBM.reset( D2, 2, (int) 10 );
+  // // //C_t*  D3=exampleDBM.And( D2, cons.neg( ));
+  // int *D3 = exampleDBM.reset( D2, 2, (int) 10 );
 
-  cout << "matrix dump :\n";
-  exampleDBM.dump( cout, D3 ) << endl;
+  // cout << "matrix dump :\n";
+  // exampleDBM.dump( cout, D3 ) << endl;
   /*
    vector<L_t> locs;
 

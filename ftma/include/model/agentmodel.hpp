@@ -15,7 +15,7 @@ namespace graphsat {
 
 template <typename L, typename T> class AgentSystem;
 
-template <typename L, typename T> class Agent {
+template <typename L, typename T> class Agent:public VariableMap {
 
 private:
   typedef Agent<L, T>         Agent_t;
@@ -26,7 +26,7 @@ public:
          const Parameter &                  param ):parameter( param) {
     agent_tempate = template_arg;
     for ( auto e : template_arg->template_transitions ) {
-      transitions.push_back( T( e, param ) );
+      transitions.push_back( T(this, e, param ) );
     }
 
     locations       = template_arg->template_locations;
@@ -75,16 +75,18 @@ public:
     return locations[ node_id ].getName();
   }
   
-  int getStart( const string &key ) const{
-    int start_loc = agent_tempate->getCounterStartLoc();
-    start_loc += agent_tempate->getCounterNumber() * ( id - 1 );
-    start_loc += agent_tempate->getStart( key );
+  int getStart(const TYPE_T type, const string &key ) const{
+    int start_loc = agent_tempate->getStart( type);
+    start_loc += agent_tempate->getTypeNumber( type) * ( id - 1 );
+    start_loc += agent_tempate->getKeyStart( key );
     return start_loc;
   }
+  
 
-  int *getValue( int *state, const string &key ) const {
-    return state + getStart( key);
+  int *getValue(const TYPE_T type, int *state, const string &key ) const {
+    return state + getStart(type, key);
   }
+  
   const shared_ptr<AgentTemplate_t> getTemplate() const {
     return agent_tempate;
   }

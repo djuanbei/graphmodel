@@ -57,10 +57,10 @@ int *DBMFactory::randomFeasiableDBM() {
       if ( x > 0 ) freeImpl( dbm, x );
     }
     for ( int i = 0; i < matrix_size; i++ ) {
-      if ( dbm[ i ] > MAX_INT / 4 ) {
-        dbm[ i ] = MAX_INT / 4;
-      } else if ( dbm[ i ] < -( MAX_INT / 4 ) ) {
-        dbm[ i ] = -( MAX_INT / 4 );
+      if ( dbm[ i ] > MAX_INT / 10 ) {
+        dbm[ i ] = MAX_INT / 10;
+      } else if ( dbm[ i ] < -( MAX_INT / 10 ) ) {
+        dbm[ i ] = -( MAX_INT / 10 );
       }
     }
     canonicalForm( dbm );
@@ -306,9 +306,10 @@ ClockConstraint DBMFactory::getCons( const int *const dbm, const int i,
   assert( i <= clock_num );
   assert( j <= clock_num );
   if ( isStrict( dbm[ LOC( i, j ) ] ) ) {
-    return ClockConstraint( i, j, LT, getRight( dbm[ LOC( i, j ) ] ) );
+
+    return ClockConstraint( Clock(i), Clock(j), LT, getRight( dbm[ LOC( i, j ) ] ) );
   } else {
-    return ClockConstraint( i, j, LE, getRight( dbm[ LOC( i, j ) ] ) );
+    return ClockConstraint( Clock(i), Clock(j), LE, getRight( dbm[ LOC( i, j ) ] ) );
   }
 }
 

@@ -240,8 +240,9 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
 
     int source_id = template_data.getId( LOCATION_T, source_ref );
     int target_id = template_data.getId( LOCATION_T, target_ref );
-
-    INT_TAS_t::T_t transition( source_id, target_id );
+    INT_TAS_t::L_t src(source_id );
+    INT_TAS_t::L_t snk(target_id );
+    INT_TAS_t::T_t transition(src,  snk );
 
     child_type labels = ( *tit )->getChild( LABEL_STR );
     if ( NULL != labels ) {
@@ -282,7 +283,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
           vector<void *> resets =
               template_data.getPoints( RESET_T, getTypeStr( RESET_T ) );
           for ( auto reset : resets ) {
-            transition.addReset( *( (pair<int, int> *) reset ) );
+            transition.addReset( Clock(( (pair<int, int> *) reset )->first), ( (pair<int, int> *) reset )->second );
             delete (pair<int, int> *) reset;
           }
           template_data.clear( RESET_T );

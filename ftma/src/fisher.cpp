@@ -14,14 +14,14 @@ FisherGenerator::FisherGenerator()
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( x, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
 
   typename INT_TAS_t::L_t cs( 3 );
 
-  typename INT_TAS_t::T_t A_req( 0, 1 );
+  typename INT_TAS_t::T_t A_req( A, req );
 
   Argument first3( COUNTER_ARG, 0 );
   Argument second3( EMPTY_ARG, 0 );
@@ -30,15 +30,15 @@ FisherGenerator::FisherGenerator()
 
   A_req.addCounterCons( ccs1 );
 
-  pair<int, int> reset1( x, 0 ); // x-->0
-  A_req.addReset( reset1 );
 
-  typename INT_TAS_t::T_t  req_wait( 1, 2 );
-  typename INT_TAS_t::CS_t cs2( x, 0, LE, k ); // x <= k
+  A_req.addReset( x, 0 );// x-->0
+
+  typename INT_TAS_t::T_t  req_wait( req, wait );
+  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, k ); // x <= k
   req_wait += cs2;
 
-  pair<int, int> reset2( x, 0 ); // x-->0
-  req_wait.addReset( reset2 );
+
+  req_wait.addReset( x, 0 ); // x-->0
 
   Argument       lhs( COUNTER_ARG, 0 );
   Argument       rhs( PARAMETER_ARG, 0 );
@@ -47,13 +47,12 @@ FisherGenerator::FisherGenerator()
 
   req_wait.addCounterAction( caction );
 
-  typename INT_TAS_t::T_t wait_req( 2, 1 );
+  typename INT_TAS_t::T_t wait_req( wait, req );
 
-  pair<int, int> reset3( x, 0 ); // x-->0
-  wait_req.addReset( reset3 );
+  wait_req.addReset( x, 0 ); // x-->0
   wait_req.addCounterCons( ccs1 ); // id==0
 
-  typename INT_TAS_t::T_t wait_cs( 2, 3 );
+  typename INT_TAS_t::T_t wait_cs( wait, cs );
 
   Argument first4( COUNTER_ARG, 0 );
   Argument second4( PARAMETER_ARG, 0 );
@@ -61,10 +60,10 @@ FisherGenerator::FisherGenerator()
 
   void *ccs2 = createConstraint( first4, second4, EQ, rhs4 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( x, 0, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, GT, k ); // x> k
   wait_cs += cs3;
 
-  typename INT_TAS_t::T_t cs_A( 3, 0 );
+  typename INT_TAS_t::T_t cs_A( cs, A );
 
   Argument       lhs2( COUNTER_ARG, 0 );
   Argument       rhs2( CONST_ARG, 0 );
@@ -99,7 +98,7 @@ INT_TAS_t FisherGenerator::generate( int n ) const {
 
     re += tma;
   }
-
+  re.build();
  
   return re;
 }

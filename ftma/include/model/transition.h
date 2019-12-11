@@ -14,6 +14,8 @@
 #include <vector>
 
 #include "channel.h"
+#include "clock.h"
+
 #include "constraint/countercons.h"
 #include "model/location.h"
 #include "state/ta_statemanager.h"
@@ -37,18 +39,18 @@ public:
     source = target = -1;
     has_channel     = false;
   }
-  Transition( int s, int t ) {
-    source      = s;
-    target      = t;
-    has_channel = false;
-  }
-  Transition( const Location &lhs, const Location &rhs ) {
-    source      = lhs.getId();
-    target      = rhs.getId();
-    has_channel = false;
+  // Transition( int s, int t ) {
+  //   source      = s;
+  //   target      = t;
+  //   has_channel = false;
+  // }
+  Transition( const Location &lhs, const Location &rhs ):source( lhs.getId( )), target( rhs.getId( )), has_channel( false) {
+    // source      = lhs.getId();
+    // target      = rhs.getId();
+    // has_channel = false;
   }
 
-  Transition( const Transition &other, const Parameter &param );
+  Transition(const VariableMap* varMap, const Transition &other, const Parameter &param );
 
   void setSource( int s ) { source = s; }
 
@@ -113,8 +115,12 @@ public:
    * @param reset The reset
    *
    */
-  void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
-
+  //void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
+  void addReset( const Clock &clock, int v){
+    pair<int,int> dummy(clock.id, v );
+    resets.push_back(dummy );
+  }
+  
   void addCounterCons( void *guards ) {
     counter_cons.push_back( (CounterConstraint *) guards );
   }

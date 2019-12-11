@@ -2,11 +2,11 @@
 
 namespace graphsat {
 
-int VarDecl::addClock( const string &n ) {
+Clock VarDecl::addClock( const string &n ) {
   assert( !contain( n ) );
   int re = data.getTypeNum( CLOCK_T ) + 1;
   data.addValue( CLOCK_T, n, new BaseDecl( n ) );
-  return re;
+  return Clock(re);
 }
 
 int VarDecl::addInt( const string &n, int num ) {
@@ -110,10 +110,10 @@ bool VarDecl::contain( const string &n ) const {
 
   return false;
 }
-int VarDecl::getCounterNumber() const { return getTypeNum( INT_T ); }
-int VarDecl::getClockNumber() const { return getTypeNum( CLOCK_T ); }
+int VarDecl::getCounterNumber() const { return getTypeNumber( INT_T ); }
+int VarDecl::getClockNumber() const { return getTypeNumber( CLOCK_T ); }
 
-int VarDecl::getTypeNum( const int type ) const {
+int VarDecl::getTypeNumber( const int type ) const {
   int                                  re     = 0;
   vector<pair<string, vector<void *>>> clocks = data.getValue( type );
   for ( auto &e : clocks ) {
@@ -122,7 +122,7 @@ int VarDecl::getTypeNum( const int type ) const {
   return re;
 }
 
-int VarDecl::getStart( const string &key ) const {
+int VarDecl::getKeyStart( const string &key ) const {
   int                                  re       = 0;
   vector<pair<string, vector<void *>>> counters = data.getValue( INT_T );
   for ( vector<pair<string, vector<void *>>>::const_iterator it =

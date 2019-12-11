@@ -30,9 +30,9 @@ class nCounterConstraint{
   nCounterConstraint(const Argument &out_first, const  Argument & out_second, COMP_OPERATOR oop, const Argument  & out_rhs  ): first( out_first), second( out_second),  op( oop), rhs( out_rhs){
   }
   bool operator( )( const int* counter_value) const{
-    int one=getValue(first, first_value, counter_value );
-    int two=getValue( second, second_value, counter_value);
-    int three=getValue( rhs, rhs_value, counter_value);
+    int one=getValue( first_value, counter_value );
+    int two=getValue( second_value, counter_value);
+    int three=getValue( rhs_value, counter_value);
     return executeOp( one-two, op, three );
   }
 
@@ -41,9 +41,10 @@ class nCounterConstraint{
   Argument second;
   COMP_OPERATOR op;
   Argument  rhs;
-  int_fast64_t  first_value;
-  int_fast64_t  second_value;
-  int_fast64_t rhs_value;
+  
+  RealArgument first_value;
+  RealArgument  second_value;
+  RealArgument rhs_value;
   
 };
 class InstanceFactory;

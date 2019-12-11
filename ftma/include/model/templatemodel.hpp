@@ -109,7 +109,11 @@ private:
     }
   }
 
-  int getCounterStartLoc() const { return sys->getCounterStartLoc( id ); }
+  int getStart(const TYPE_T type ) const{
+    return sys->getStartLoc( type, id);
+  }
+
+  //int getCounterStartLoc() const { return sys->getCounterStartLoc( id ); }
 
   void initial() {
 

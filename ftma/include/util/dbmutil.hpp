@@ -46,12 +46,15 @@ bool executeOp( const T &lhs, COMP_OPERATOR op, const T &rhs ) {
   }
 }
 
-int getValue(const Argument & arg, const int_fast64_t  value, const int * counter_value  );
+int getValue(const RealArgument & arg,  const int * counter_value  );
+int getValue(const shared_ptr<RealArgument> & arg,  const int * counter_value  );
 
 int_fast64_t getMapValue( const Argument & arg, const vector<int> &id_map,
                           const vector<int> &parameter_value );
 
-int_fast64_t getMapValue( const RealArgument & arg, const vector<int> &id_map);
+
+
+//int_fast64_t getMapValue( const RealArgument & arg, const vector<int> &id_map);
 
 
 string getOpStr( COMP_OPERATOR op );

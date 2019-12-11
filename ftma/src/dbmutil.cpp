@@ -3,23 +3,57 @@
 namespace graphsat {
 extern string trim( std::string s );
 
-int getValue(const Argument & arg, const int_fast64_t  value, const int * counter_value  ){
+int getValue(const RealArgument & arg,  const int * counter_value  ){
   switch(arg.type ){
     case CONST_ARG:
-      return value;
+      return arg.value;
     case  COUNTER_ARG:
-      return counter_value[ value ];
+      break;
     case PARAMETER_ARG:
-      return value;
+      return arg.value;
     case REF_PARAMETER_ARG:
-      return counter_value[ value ];
+      break;
+
     case FUN_POINTER_ARG:
-      return (( ConstraintFun_t)value)( counter_value);
+      return (( ConstraintFun_t)arg.value)( counter_value);
     case SELECT_VAR_ARG:
-      return value;
+      return arg.value;
     case EMPTY_ARG:
       return 0;
   }
+  if( NULL!= arg.index){
+    int shift=getValue(arg.index, counter_value );
+    return counter_value[ arg.value+shift ];
+  }
+
+  return counter_value[ arg.value ];
+}
+
+int getValue(const shared_ptr<RealArgument> & arg,  const int * counter_value  ){
+
+    switch(arg->type ){
+    case CONST_ARG:
+      return arg->value;
+    case  COUNTER_ARG:
+      break;
+    case PARAMETER_ARG:
+      return arg->value;
+    case REF_PARAMETER_ARG:
+      break;
+
+    case FUN_POINTER_ARG:
+      return (( ConstraintFun_t)arg->value)( counter_value);
+    case SELECT_VAR_ARG:
+      return arg->value;
+    case EMPTY_ARG:
+      return 0;
+  }
+  if( NULL!= arg->index){
+    int shift=getValue(arg->index, counter_value );
+    return counter_value[ arg->value+shift ];
+  }
+
+  return counter_value[ arg->value ];
 }
 
 

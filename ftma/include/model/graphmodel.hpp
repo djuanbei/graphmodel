@@ -73,7 +73,7 @@ public:
     difference_cons.insert( difference_cons.end(),
                             agent.difference_cons.begin(),
                             agent.difference_cons.end() );
-    update();
+    //update();
     return *this;
   }
   // TODO: del
@@ -97,7 +97,9 @@ public:
 
   int getComponentNum() const { return (int) agents.size(); }
 
-  shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
+  shared_ptr<StateManager_t> getStateManager()  const {
+    return stateManager;
+  }
 
   struct AgentCMP {
     bool operator()( const Agent_t &lhs, const Agent_t &rhs ) const {
@@ -105,7 +107,9 @@ public:
     }
   };
 
-  void update() {
+  
+
+  void build() {
     AgentCMP cmp;
     sort( agents.begin(), agents.end(), cmp );
 
@@ -181,15 +185,27 @@ public:
     stateManager->destroyState( state );
   }
 
-  int getCounterStartLoc( const int id ) const {
-    int re = stateManager->getCounterStart();
+  int getStartLoc(const TYPE_T type, const int template_id ) const {
+    int re = stateManager->getStart( type);
+    
     for ( auto &agent : agents ) {
-      if ( agent.getTemplate()->id < id ) {
-        re += agent.getTemplate()->getCounterNumber();
+      if ( agent.getTemplate()->id <template_id ) {
+        re += agent.getTemplate()->getTypeNumber( type);
       }
     }
     return re;
+    
   }
+
+  // int getCounterStartLoc( const int id ) const {
+  //   int re = stateManager->getStart( INT_T);
+  //   for ( auto &agent : agents ) {
+  //     if ( agent.getTemplate()->id < id ) {
+  //       re += agent.getTemplate()->getCounterNumber();
+  //     }
+  //   }
+  //   return re;
+  // }
 
 private:
   void transfrom( Agent_t &agent ) {

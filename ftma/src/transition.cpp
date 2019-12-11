@@ -3,7 +3,7 @@
 #include <cassert>
 
 namespace graphsat {
-Transition::Transition( const Transition &other, const Parameter &param ) {
+Transition::Transition(const VariableMap* varMap, const Transition &other, const Parameter &param ) {
   source = other.source;
   target = other.target;
   guards = other.guards;

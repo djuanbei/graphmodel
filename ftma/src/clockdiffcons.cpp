@@ -3,16 +3,23 @@
 
 namespace graphsat {
 
-ClockConstraint::ClockConstraint( const int clock_id1, const int clock_id2,
+ClockConstraint::ClockConstraint( const Clock& clock_id1,
+                                  COMP_OPERATOR eop, const int rhs
+                                  ) {
+  init( clock_id1.id, 0, eop, rhs );
+    
+}
+  
+ClockConstraint::ClockConstraint( const Clock& clock_id1, const Clock& clock_id2,
                                   COMP_OPERATOR eop, const int rhs,
                                   const int eparameter_id ) {
 
   if ( eparameter_id < 0 ) {
-    init( clock_id1, clock_id2, eop, rhs );
+    init( clock_id1.id, clock_id2.id, eop, rhs );
     return;
   }
-  clock_x      = clock_id1;
-  clock_y      = clock_id2;
+  clock_x      = clock_id1.id;
+  clock_y      = clock_id2.id;
   op           = eop;
   parameter_id = eparameter_id;
 }
@@ -148,7 +155,7 @@ void ClockConstraint::init( const int clock_id1, const int clock_id2,
   }
 }
 
-ClockConstraint randConst( int num, int low, int up ) {
+ClockConstraint randConst(const int num, const int low, const int up ) {
   std::uniform_int_distribution<int> distribution( 0, num );
   std::default_random_engine         generator;
   int                                xx = distribution( generator );
@@ -161,9 +168,10 @@ ClockConstraint randConst( int num, int low, int up ) {
 
   int vv = distribution1( generator );
   if ( distribution1( generator ) % 2 ) {
-    return ClockConstraint( xx, yy, LT, vv );
+    return ClockConstraint(Clock(xx), Clock(yy), LT, vv );
   } else {
-    return ClockConstraint( xx, yy, LE, vv );
+    return ClockConstraint(Clock( xx), Clock(yy), LE, vv );
   }
 }
+
 } // namespace graphsat

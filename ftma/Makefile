@@ -6,7 +6,7 @@
 ##        "make"    for the standard version (optimized, but with debug information and assertions active)
 
 PWD        = $(shell pwd)
-EXEC       = ftma
+EXEC       = gmodel
 
 WROOT      = $(PWD)/src
 LIB        = gmodel

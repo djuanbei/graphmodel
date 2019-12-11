@@ -15,6 +15,7 @@
 
 #include "arraytype.h"
 #include "channel.h"
+#include "clock.h"
 #include "util/data.hpp"
 
 namespace graphsat {
@@ -54,7 +55,7 @@ struct ChanDecl : public BaseDecl {
 
 class VarDecl {
 public:
-  virtual int addClock( const std::string &n );
+  virtual Clock addClock( const std::string &n );
 
   virtual int addInt( const BaseDecl &ch );
 
@@ -90,7 +91,7 @@ public:
   int getCounterNumber() const;
   int getClockNumber() const;
 
-  int getStart( const string &key ) const;
+  int getKeyStart( const string &key ) const;
 
 protected:
   PointerData data;
@@ -99,7 +100,7 @@ protected:
   vector<TypeDefArray> self_types;
   // map<string, TypeDefArray> self_types;
 
-  int getTypeNum( const int type ) const;
+  int getTypeNumber( const int type ) const;
 };
 } // namespace graphsat
 

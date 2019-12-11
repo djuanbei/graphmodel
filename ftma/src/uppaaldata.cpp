@@ -145,16 +145,16 @@ void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
                                      COMP_OPERATOR op, int rhs,
                                      int parameter_id ) {
   if ( EQ == op ) {
-    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, GE, rhs,
+    void *cs = new INT_TAS_t::CS_t( Clock(clock1_id), Clock(clock2_id), GE, rhs,
                                     parameter_id ); // x-y<= c
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
 
-    cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, LE, rhs,
+    cs = new INT_TAS_t::CS_t( Clock(clock1_id), Clock(clock2_id), LE, rhs,
                               parameter_id ); // x-y>= c
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
 
   } else {
-    void *cs = new INT_TAS_t::CS_t( clock1_id, clock2_id, op, rhs,
+    void *cs = new INT_TAS_t::CS_t( Clock(clock1_id), Clock(clock2_id), op, rhs,
                                     parameter_id ); // x op c
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
   }

@@ -49,158 +49,158 @@ namespace graphsat {
 std::default_random_engine         generator;
 std::uniform_int_distribution<int> distribution( 0, 1000 );
 
-void example1( void ) {
-  INT_TAS_t sys;
-  // x:1 y:2 z:3
-  vector<typename INT_TAS_t::T_t> es;
-  vector<typename INT_TAS_t::L_t> ls;
-  typename INT_TAS_t::L_t         S0( 0 );
-  typename INT_TAS_t::L_t         S1( 1 );
-  typename INT_TAS_t::L_t         S2( 2 );
-  typename INT_TAS_t::L_t         S3( 3 );
+// void example1( void ) {
+//   INT_TAS_t sys;
+//   // x:1 y:2 z:3
+//   vector<typename INT_TAS_t::T_t> es;
+//   vector<typename INT_TAS_t::L_t> ls;
+//   typename INT_TAS_t::L_t         S0( 0 );
+//   typename INT_TAS_t::L_t         S1( 1 );
+//   typename INT_TAS_t::L_t         S2( 2 );
+//   typename INT_TAS_t::L_t         S3( 3 );
 
-  typename INT_TAS_t::T_t e01( 0, 1 );
-  pair<int, int>          rest1( 3, 0 );
-  e01.addReset( rest1 );
-  // e01.reset.push_back( 3 ); // z -->0
-  typename INT_TAS_t::T_t e12( 1, 2 );
+//   typename INT_TAS_t::T_t e01( S0, S1 );
+//   pair<int, int>          rest1( 3, 0 );
+//   e01.addReset( rest1 );
+//   // e01.reset.push_back( 3 ); // z -->0
+//   typename INT_TAS_t::T_t e12( S1, S2 );
 
-  typename INT_TAS_t::CS_t cs1( 0, 2, LT, -2 ); // 0-y < -2
-  e12 += cs1;
-  pair<int, int> rest2( 2, 0 );
-  e12.addReset( rest2 ); // y --> 0
+//   typename INT_TAS_t::CS_t cs1( 0, 2, LT, -2 ); // 0-y < -2
+//   e12 += cs1;
+//   pair<int, int> rest2( 2, 0 );
+//   e12.addReset( rest2 ); // y --> 0
 
-  typename INT_TAS_t::T_t e23( 2, 3 );
+//   typename INT_TAS_t::T_t e23( S2, S3 );
 
-  typename INT_TAS_t::CS_t cs2( 1, 3, LT, 1 ); // x-z < 1
-  typename INT_TAS_t::CS_t cs3( 3, 2, LT, 1 ); // z-y < 1
-  e23 += cs2;
+//   typename INT_TAS_t::CS_t cs2( 1, 3, LT, 1 ); // x-z < 1
+//   typename INT_TAS_t::CS_t cs3( 3, 2, LT, 1 ); // z-y < 1
+//   e23 += cs2;
 
-  e23 += cs3;
+//   e23 += cs3;
 
-  ls.push_back( S0 );
-  ls.push_back( S1 );
-  ls.push_back( S2 );
-  ls.push_back( S3 );
+//   ls.push_back( S0 );
+//   ls.push_back( S1 );
+//   ls.push_back( S2 );
+//   ls.push_back( S3 );
 
-  es.push_back( e01 );
-  es.push_back( e12 );
-  es.push_back( e23 );
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+//   es.push_back( e01 );
+//   es.push_back( e12 );
+//   es.push_back( e23 );
+//   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
 
-  tmt1->addClock( "x" );
-  tmt1->addClock( "y" );
-  tmt1->addClock( "z" );
+//   tmt1->addClock( "x" );
+//   tmt1->addClock( "y" );
+//   tmt1->addClock( "z" );
 
-  tmt1->initial( ls, es, 0 );
+//   tmt1->initial( ls, es, 0 );
 
-  Parameter param=tmt1->getParameter( );
+//   Parameter param=tmt1->getParameter( );
   
 
-  typename INT_TAS_t::Agent_t tma1( tmt1, param );
-  sys += tma1;
-  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
+//   typename INT_TAS_t::Agent_t tma1( tmt1, param );
+//   sys += tma1;
+//   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
 
-  R_t data( manager );
-  sys.addInitState( data );
+//   R_t data( manager );
+//   sys.addInitState( data );
 
-  RS_t        reacher( sys );
-  vector<int> loc;
-  loc.push_back( 3 );
-  LocReachProperty prop( loc );
+//   RS_t        reacher( sys );
+//   vector<int> loc;
+//   loc.push_back( 3 );
+//   LocReachProperty prop( loc );
 
-  reacher.satisfy( data, &prop );
+//   reacher.satisfy( data, &prop );
 
-  reacher.computeAllReachableSet( data );
-}
+//   reacher.computeAllReachableSet( data );
+// }
 
-void example50() {
-  INT_TAS_t                       sys;
-  vector<typename INT_TAS_t::T_t> es;
-  vector<typename INT_TAS_t::L_t> ls;
-  typename INT_TAS_t::L_t         L0( 0 );
-  typename INT_TAS_t::L_t         L1( 1 );
+// void example50() {
+//   INT_TAS_t                       sys;
+//   vector<typename INT_TAS_t::T_t> es;
+//   vector<typename INT_TAS_t::L_t> ls;
+//   typename INT_TAS_t::L_t         L0( 0 );
+//   typename INT_TAS_t::L_t         L1( 1 );
 
-  typename INT_TAS_t::T_t E00a( 0, 0 );
-  pair<int, int>          reset1( 2, 0 );
-  E00a.addReset( reset1 );                     // y-->0
-  typename INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
-  E00a += cs1;
+//   typename INT_TAS_t::T_t E00a( L0, L0 );
+//   pair<int, int>          reset1( 2, 0 );
+//   E00a.addReset( reset1 );                     // y-->0
+//   typename INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
+//   E00a += cs1;
 
-  typename INT_TAS_t::T_t E00b( 0, 0 );
-  pair<int, int>          reset2( 1, 0 );
-  E00b.addReset( reset2 );                     // x-->0
-  typename INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
-  E00b += cs2;
+//   typename INT_TAS_t::T_t E00b( L0, L0 );
+//   pair<int, int>          reset2( 1, 0 );
+//   E00b.addReset( reset2 );                     // x-->0
+//   typename INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
+//   E00b += cs2;
 
-  typename INT_TAS_t::T_t E01( 0, 1 );
+//   typename INT_TAS_t::T_t E01( L0, L1 );
 
-  typename INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
-  // typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
-  typename INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
+//   typename INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
+//   // typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
+//   typename INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
 
-  E01 += cs3;
-  E01 += cs4;
+//   E01 += cs3;
+//   E01 += cs4;
 
-  ls.push_back( L0 );
-  ls.push_back( L1 );
+//   ls.push_back( L0 );
+//   ls.push_back( L1 );
 
-  es.push_back( E00a );
+//   es.push_back( E00a );
 
-  es.push_back( E00b );
-  es.push_back( E01 );
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
-  tmt1->addClock( "x" );
-  tmt1->addClock( "y" );
+//   es.push_back( E00b );
+//   es.push_back( E01 );
+//   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+//   tmt1->addClock( "x" );
+//   tmt1->addClock( "y" );
 
-  tmt1->initial( ls, es, 0 );
+//   tmt1->initial( ls, es, 0 );
 
-  Parameter param=tmt1->getParameter();
+//   Parameter param=tmt1->getParameter();
 
-  typename INT_TAS_t::Agent_t tma1( tmt1, param );
+//   typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
-  sys += tma1;
+//   sys += tma1;
  
-  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
+//   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
 
-  R_t data( manager );
-  sys.addInitState( data );
+//   R_t data( manager );
+//   sys.addInitState( data );
 
-  Reachability<INT_TAS_t> reacher( sys );
-  vector<int>             loc;
+//   Reachability<INT_TAS_t> reacher( sys );
+//   vector<int>             loc;
 
-  loc.push_back( 1 );
-  LocReachProperty prop( loc );
+//   loc.push_back( 1 );
+//   LocReachProperty prop( loc );
 
-  reacher.satisfy( data, &prop );
-}
+//   reacher.satisfy( data, &prop );
+// }
 
 void example2( void ) {
   INT_TAS_t                                       sys;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
-  int                                             x    = tmt1->addClock( "x" );
-  int                                             y    = tmt1->addClock( "y" );
+  Clock                                             x    = tmt1->addClock( "x" );
+  Clock                                             y    = tmt1->addClock( "y" );
   vector<typename INT_TAS_t::T_t>                 es;
   vector<typename INT_TAS_t::L_t>                 ls;
   typename INT_TAS_t::L_t                         L0( 0 );
   typename INT_TAS_t::L_t                         L1( 1 );
 
-  typename INT_TAS_t::T_t E00a( 0, 0 );
-  pair<int, int>          reset1( y, 0 );
-  E00a.addReset( reset1 );                     // y-->0
-  typename INT_TAS_t::CS_t cs1( y, 0, LE, 2 ); // y<=2
+  typename INT_TAS_t::T_t E00a( L0, L0 );
+  Clock ZERO;
+  E00a.addReset( y,0 );                     // y-->0
+  typename INT_TAS_t::CS_t cs1( y, Clock::ZERO, LE, 2 ); // y<=2
   E00a += cs1;
 
-  typename INT_TAS_t::T_t E00b( 0, 0 );
-  pair<int, int>          reset2( x, 0 );
-  E00b.addReset( reset2 );                     // x-->0
-  typename INT_TAS_t::CS_t cs2( x, 0, LE, 2 ); // x<=2
+  typename INT_TAS_t::T_t E00b( L0, L0 );
+  //pair<int, int>          reset2( x, 0 );
+  E00b.addReset( x,0 );                     // x-->0
+  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, 2 ); // x<=2
   E00b += cs2;
 
-  typename INT_TAS_t::T_t E01( 0, 1 );
+  typename INT_TAS_t::T_t E01( L0, L1 );
 
-  typename INT_TAS_t::CS_t cs3( y, 0, LE, 2 ); // y<=2
-  typename INT_TAS_t::CS_t cs4( x, 0, GE, 4 ); // x>=4
+  typename INT_TAS_t::CS_t cs3( y, Clock::ZERO, LE, 2 ); // y<=2
+  typename INT_TAS_t::CS_t cs4( x, Clock::ZERO, GE, 4 ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -219,6 +219,7 @@ void example2( void ) {
   typename INT_TAS_t::Agent_t tma1( tmt1, param );
 
   sys += tma1;
+  sys.build( );
   shared_ptr<typename INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t                                data( manager );
   sys.addInitState( data);
@@ -293,7 +294,7 @@ void fisher( int n ) {
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
   tmt1->addPara( "pid");
   
-  int                                             x    = tmt1->addClock( "x" );
+  Clock                                             x    = tmt1->addClock( "x" );
   //  ADD_CLOCK( tmt1, x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -302,7 +303,7 @@ void fisher( int n ) {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( x, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -318,16 +319,15 @@ void fisher( int n ) {
 
   A_req.addCounterCons( ccs1 );
 
-  pair<int, int> reset1( x, 0 ); // x-->0
 
-  A_req.addReset( reset1 );
+  A_req.addReset( x, 0 ); // x-->0
 
   typename INT_TAS_t::T_t  req_wait( req, wait );
-  typename INT_TAS_t::CS_t cs2( x, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, k ); // x <= k
   req_wait += cs2;
 
-  pair<int, int> reset2( x, 0 ); // x-->0
-  req_wait.addReset( reset2 );
+
+  req_wait.addReset( x, 0 ); // x-->0
   Argument       lhs( COUNTER_ARG, 0 );
   Argument       rhs0( PARAMETER_ARG, 0 );
   CounterAction *action =
@@ -337,8 +337,8 @@ void fisher( int n ) {
 
   typename INT_TAS_t::T_t wait_req( wait, req );
 
-  pair<int, int> reset3( x, 0 ); // x-->0
-  wait_req.addReset( reset3 );
+
+  wait_req.addReset( x, 0 ); // x-->0
   wait_req.addCounterCons( ccs1 ); // id==0
 
   typename INT_TAS_t::T_t wait_cs( wait, cs );
@@ -348,7 +348,7 @@ void fisher( int n ) {
   Argument rhs01( CONST_ARG, 0 );
   void *   ccs2 = createConstraint( first1, second1, EQ, rhs01 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( x, 0, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, GT, k ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( cs, A );
@@ -454,14 +454,14 @@ void incrementalTest() {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( x, 0, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, k ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
 
   typename INT_TAS_t::L_t cs( 3 );
 
-  typename INT_TAS_t::T_t A_req( 0, 1 );
+  typename INT_TAS_t::T_t A_req( A, req );
 
   Argument first3( COUNTER_ARG, 0 );
   Argument second3( EMPTY_ARG, 0 );
@@ -470,15 +470,13 @@ void incrementalTest() {
 
   A_req.addCounterCons( ccs1 );
 
-  pair<int, int> reset1( x, 0 ); // x-->0
-  A_req.addReset( reset1 );
+  A_req.addReset( x, 0 );// x-->0
 
-  typename INT_TAS_t::T_t  req_wait( 1, 2 );
-  typename INT_TAS_t::CS_t cs2( x, 0, LE, k ); // x <= k
+  typename INT_TAS_t::T_t  req_wait( req, wait );
+  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, k ); // x <= k
   req_wait += cs2;
 
-  pair<int, int> reset2( x, 0 ); // x-->0
-  req_wait.addReset( reset2 );
+  req_wait.addReset( x, 0 );// x-->0
 
   Argument       lhs( COUNTER_ARG, 0 );
   Argument       rhs( PARAMETER_ARG, 0 );
@@ -487,13 +485,13 @@ void incrementalTest() {
 
   req_wait.addCounterAction( caction );
 
-  typename INT_TAS_t::T_t wait_req( 2, 1 );
+  typename INT_TAS_t::T_t wait_req( wait, req );
 
-  pair<int, int> reset3( x, 0 ); // x-->0
-  wait_req.addReset( reset3 );
+
+  wait_req.addReset( x,0 );// x-->0
   wait_req.addCounterCons( ccs1 ); // id==0
 
-  typename INT_TAS_t::T_t wait_cs( 2, 3 );
+  typename INT_TAS_t::T_t wait_cs( wait, cs );
 
   Argument first4( COUNTER_ARG, 0 );
   Argument second4( PARAMETER_ARG, 0 );
@@ -501,10 +499,10 @@ void incrementalTest() {
 
   void *ccs2 = createConstraint( first4, second4, EQ, rhs4 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( x, 0, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, GT, k ); // x> k
   wait_cs += cs3;
 
-  typename INT_TAS_t::T_t cs_A( 3, 0 );
+  typename INT_TAS_t::T_t cs_A( cs, A );
 
   Argument       lhs2( COUNTER_ARG, 0 );
   Argument       rhs2( CONST_ARG, 0 );

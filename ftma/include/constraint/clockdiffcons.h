@@ -10,10 +10,15 @@
  */
 #ifndef LIN_SIMP_CONS_HPP
 #define LIN_SIMP_CONS_HPP
-#include "util/dbmutil.hpp"
+
+
 #include <iomanip>
 #include <iostream>
 #include <random>
+
+
+#include "util/dbmutil.hpp"
+#include "model/clock.h"
 
 namespace graphsat {
 
@@ -28,8 +33,13 @@ const int GLOBAL_CLOCK_ID = 0;
 class ClockConstraint {
 
 public:
-  ClockConstraint( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
+
+  ClockConstraint( const Clock& clock_id1,COMP_OPERATOR eop, const int rhs);
+  
+  ClockConstraint( const Clock& clock_id1, const Clock& clock_id2, COMP_OPERATOR eop,
                    const int rhs, const int eparameter_id = -100 );
+  
+
 
   void globalUpdate( const vector<int> &parameter_value );
 
@@ -63,9 +73,10 @@ public:
 
 private:
   int                    parameter_id;
-  friend ClockConstraint randConst( int num, int low, int up );
+  friend ClockConstraint randConst(const int num, const int low, const int up );
   friend class DBMFactory;
 };
+ClockConstraint randConst(const int num, const int low, const int up );
 
 } // namespace graphsat
 #endif
