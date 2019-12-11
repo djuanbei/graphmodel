@@ -9,7 +9,7 @@
  */
 #ifndef LOG_SETING_H
 #define LOG_SETING_H
-#include <glog/logging.h>
+//#include <glog/logging.h>
 
 namespace graphsat {
 void logSet();

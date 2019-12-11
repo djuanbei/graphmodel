@@ -10,7 +10,7 @@ set(PROJECT_NAME gmodel)
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_FLAGS "-g -Wall -std=c++11 -fdiagnostics-absolute-paths -Wno-deprecated-register")
-link_directories(/usr/local/lib/)
+#link_directories(/usr/local/lib/)
 
 # force static runtime libraries for msvc builds
 if(MSVC)
@@ -32,7 +32,7 @@ endif()
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 include_directories(${COMMON_INCLUDES}
     ~/mycode/c++/raptor/include
-    /usr/local/include
+    #    /usr/local/include
 )
 
 file(GLOB_RECURSE CURRENT_HEADERS   ${PROJECT_ROOT}/include/*.h  ${PROJECT_ROOT}/include/*.hpp)
@@ -53,7 +53,7 @@ add_executable(gmodel src/main.cpp)
 # own executable. Separating out main() means you can add this library to be
 # used elsewhere.
 
-target_link_libraries(gmodel gmodel_lib glog)
+target_link_libraries(gmodel gmodel_lib)
 
 ################################
 # Testing
@@ -76,13 +76,15 @@ if (test)
   ##############
   # Unit Tests
   ##############
-  add_executable(runUnitTests test_project1.cpp test_project2.cpp)
+  file(GLOB_RECURSE TEST_SRCS   ${PROJECT_ROOT}/test/*.cpp)
+  source_group("test" FILES ${TEST_SRCS})
+  add_executable(runUnitTests ${TEST_SRCS})
 
   # Standard linking to gtest stuff.
   target_link_libraries(runUnitTests gtest gtest_main)
   
   # Extra linking for the project.
-  target_link_libraries(runUnitTests project1_lib)
+  target_link_libraries(runUnitTests gmodel_lib)
 
   # This is so you can do 'make test' to see all your tests run, instead of
   # manually running the executable runUnitTests to see those specific tests.
