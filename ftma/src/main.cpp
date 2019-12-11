@@ -33,9 +33,9 @@ int main( int argc, const char *argv[] ) {
 
   google::InitGoogleLogging( argv[ 0 ] );
   logSet();
-  TrainGate tg;
-  tg.generate( 2);
-  return 0;
+  // TrainGate tg;
+  // tg.generate( 2);
+  // return 0;
   // set_log_dir_2("./log");
   // google::InitGoogleLogging("testlog");
   LOG( ERROR ) << "Found " << 2 << " cookies";

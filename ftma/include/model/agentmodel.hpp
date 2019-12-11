@@ -23,8 +23,7 @@ private:
 
 public:
   Agent( const shared_ptr<AgentTemplate_t> &template_arg,
-         const Parameter &                  param ) {
-
+         const Parameter &                  param ):parameter( param) {
     agent_tempate = template_arg;
     for ( auto e : template_arg->template_transitions ) {
       transitions.push_back( T( e, param ) );
@@ -75,16 +74,54 @@ public:
   string getLocName( int node_id ) const {
     return locations[ node_id ].getName();
   }
-
-  int *getValue( int *state, const string &key ) const {
+  
+  int getStart( const string &key ) const{
     int start_loc = agent_tempate->getCounterStartLoc();
     start_loc += agent_tempate->getCounterNumber() * ( id - 1 );
     start_loc += agent_tempate->getStart( key );
+    return start_loc;
+  }
 
-    return state + start_loc;
+  int *getValue( int *state, const string &key ) const {
+    return state + getStart( key);
   }
   const shared_ptr<AgentTemplate_t> getTemplate() const {
     return agent_tempate;
+  }
+  
+  RealArgument to_real(const Argument & arg ) const{
+    
+    RealArgument re;
+    re.type=arg.type;
+    re.name=arg.name;
+    switch(re.type ){
+      case CONST_ARG:
+        re.value=arg.value;
+        break;
+      case COUNTER_ARG:
+        re.value=getStart( arg.name);
+        break;
+      case PARAMETER_ARG:
+        re.value=parameter.getParameter(arg.value );
+        break;
+      case REF_PARAMETER_ARG:
+        re.value=parameter.getCounter( arg.value);
+        break;
+      case FUN_POINTER_ARG:
+        re.value=loadFun(re.name );
+        break;
+      case SELECT_VAR_ARG:
+        re.value=parameter.getSelect( );
+        break;
+      case EMPTY_ARG:
+        break;
+    }
+    if( arg.index!=NULL){
+      re.index.reset( new RealArgument( to_real(*arg.index  ) ) );
+    }
+
+    return re;
+    
   }
 
   // void toDot(ostream &out ) const{
@@ -97,7 +134,14 @@ public:
   // }
 
 private:
+
+  int_fast64_t loadFun( const string &name) const{
+    //TODO:
+    return 0;
+  }
+  
   shared_ptr<AgentTemplate_t> agent_tempate;
+  Parameter  parameter;
   int                         id; // the interbal of instance of ta_tempate
 
   vector<L>               locations;

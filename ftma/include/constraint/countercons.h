@@ -24,6 +24,28 @@ using std::ostream;
 using std::setw;
 using std::to_string;
 
+// first - second op rhs
+class nCounterConstraint{
+ public:
+  nCounterConstraint(const Argument &out_first, const  Argument & out_second, COMP_OPERATOR oop, const Argument  & out_rhs  ): first( out_first), second( out_second),  op( oop), rhs( out_rhs){
+  }
+  bool operator( )( const int* counter_value) const{
+    int one=getValue(first, first_value, counter_value );
+    int two=getValue( second, second_value, counter_value);
+    int three=getValue( rhs, rhs_value, counter_value);
+    return executeOp( one-two, op, three );
+  }
+
+ private:
+  Argument first;
+  Argument second;
+  COMP_OPERATOR op;
+  Argument  rhs;
+  int_fast64_t  first_value;
+  int_fast64_t  second_value;
+  int_fast64_t rhs_value;
+  
+};
 class InstanceFactory;
 
 class CounterConstraint {
@@ -279,7 +301,7 @@ private:
 };
 
 /**
- * Form of counterA - counterB op constant value
+ * Form of counterA - counterB op constant_value
  */
 
 class TwoCounterConstraint : public CounterConstraint {

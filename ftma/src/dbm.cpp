@@ -247,7 +247,7 @@ void DBMFactory::norm( int *dbm, const vector<int> &maximums ) const {
           modify       = true;
           dbm[ index ] = MAX_INT;
         } else if ( dbm[ index ] < maximums[ j + clock_num ] ) {
-          // modify       = true;
+          modify       = true;
           dbm[ index ] = maximums[ j + clock_num ];
         }
       }

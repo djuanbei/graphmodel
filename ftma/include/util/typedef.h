@@ -90,22 +90,44 @@ enum ARGUMENT_TYPE {
   EMPTY_ARG
 };
 
+struct RealArgument {
+  ARGUMENT_TYPE type;
+  int_fast64_t  value;
+  string        name;
+  shared_ptr<RealArgument> index;
+  RealArgument()
+      : type( EMPTY_ARG )
+      , value( 0 ) {
+  }
+  RealArgument( ARGUMENT_TYPE t, int v ):type( t), value( v) {
+  }
+  RealArgument( ARGUMENT_TYPE t, const string &n ):type( t), value( 0), name( n) {
+  }
+    
+};
+
+
 struct Argument {
   ARGUMENT_TYPE type;
   int_fast64_t  value;
   string        name;
+  shared_ptr<Argument> index;
   Argument()
-      : type( CONST_ARG )
-      , value( 0 ) {}
-  Argument( ARGUMENT_TYPE t, int v ) {
-    type  = t;
-    value = v;
+      : type( EMPTY_ARG )
+      , value( 0 ) {
   }
-  Argument( ARGUMENT_TYPE t, const string &n ) {
-    type = t;
-    name = n;
+  Argument( ARGUMENT_TYPE t, int v ):type( t), value( v) {
   }
+  Argument( ARGUMENT_TYPE t, const string &n ):type( t), value( 0), name( n) {
+  }
+  
+
+ 
 };
+  
+  
+
+
 
 enum Action_e {
   CALL_ACTION,       // invoke function
@@ -140,6 +162,7 @@ enum TYPE_T {
 };
 
 typedef int ( *IndexFun_t )( int * );
+typedef int ( *ConstraintFun_t )( const int * );
 
 const static int NOT_FOUND = -1;
 
@@ -154,6 +177,8 @@ const int DEFAULT_COUNTER_LOWER = 0;
 const int DEFAULT_COUNTER_UPPER = 100;
 
 const static int NO_DEF = -1;
+
+
 
 } // namespace graphsat
 

@@ -23,7 +23,7 @@ using std::pair;
 using std::setw;
 using std::vector;
 
-#define TYPE_CASE( op )                                                        \
+#define ACTION_TYPE_CASE( op )                                                 \
   switch ( rhs.type ) {                                                        \
   case CONST_ARG:                                                              \
     counter_value[ lhs_value ] op rhs_value;                                   \
@@ -47,7 +47,7 @@ using std::vector;
     assert( false );                                                           \
   }
 
-#define TYPE_CASE_OUT( op_str )                                                \
+#define ACTION_TYPE_CASE_OUT( op_str )                                         \
   switch ( act.rhs.type ) {                                                    \
   case CONST_ARG:                                                              \
     out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
@@ -78,12 +78,8 @@ using std::vector;
 
 class CounterAction {
 public:
-  CounterAction( Argument out_lhs, Action_e ee, Argument out_rhs ) {
-
-    action = ee;
-    lhs    = out_lhs;
-    rhs    = out_rhs;
-  }
+  CounterAction(const Argument& out_lhs, const  Action_e & ee, const Argument & out_rhs ):lhs( out_lhs), action(ee), rhs( out_rhs)   {  }
+  
   void operator()( int *counter_value ) const {
 
     switch ( action ) {
@@ -91,13 +87,13 @@ public:
       ( (IndexFun_t) lhs_value )( counter_value );
       return;
     case ASSIGNMENT_ACTION: {
-      TYPE_CASE( = );
+      ACTION_TYPE_CASE( = );
     }
     case SELF_INC_ACTION: {
-      TYPE_CASE( += );
+      ACTION_TYPE_CASE( += );
     }
     case SELF_DEC_ACTION: {
-      TYPE_CASE( -= );
+      ACTION_TYPE_CASE( -= );
     }
     }
   }
@@ -151,20 +147,20 @@ public:
       out << "call function point" << act.lhs_value;
       return out;
     case ASSIGNMENT_ACTION: {
-      TYPE_CASE_OUT( "=" );
+      ACTION_TYPE_CASE_OUT( "=" );
     }
     case SELF_INC_ACTION: {
-      TYPE_CASE_OUT( "+=" );
+      ACTION_TYPE_CASE_OUT( "+=" );
     }
     case SELF_DEC_ACTION: {
-      TYPE_CASE_OUT( "-=" );
+      ACTION_TYPE_CASE_OUT( "-=" );
     }
     }
   }
 
 private:
-  Action_e     action;
   Argument     lhs;
+  Action_e     action;
   Argument     rhs;
   int_fast64_t lhs_value;
   int_fast64_t rhs_value;

@@ -3,6 +3,47 @@
 namespace graphsat {
 extern string trim( std::string s );
 
+int getValue(const Argument & arg, const int_fast64_t  value, const int * counter_value  ){
+  switch(arg.type ){
+    case CONST_ARG:
+      return value;
+    case  COUNTER_ARG:
+      return counter_value[ value ];
+    case PARAMETER_ARG:
+      return value;
+    case REF_PARAMETER_ARG:
+      return counter_value[ value ];
+    case FUN_POINTER_ARG:
+      return (( ConstraintFun_t)value)( counter_value);
+    case SELECT_VAR_ARG:
+      return value;
+    case EMPTY_ARG:
+      return 0;
+  }
+}
+
+
+int_fast64_t getMapValue( const Argument & arg, const vector<int> &id_map,
+                          const vector<int> &parameter_value ){
+  switch(arg.type ){
+    case CONST_ARG:
+      return arg.value;
+    case COUNTER_ARG:
+      return arg.value;
+    case PARAMETER_ARG:
+      return parameter_value[arg.value ];
+    case REF_PARAMETER_ARG:
+      return parameter_value[arg.value ];
+    case FUN_POINTER_ARG:
+      return arg.value;
+    case SELECT_VAR_ARG:
+      return parameter_value.back( );
+    case EMPTY_ARG:
+      return 0;
+  }
+  
+}
+
 string getOpStr( COMP_OPERATOR op ) {
   switch ( op ) {
     ENUM_ITEM_STR( EQ );
