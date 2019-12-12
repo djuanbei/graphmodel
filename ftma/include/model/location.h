@@ -28,23 +28,23 @@ class Location {
 
 public:
 public:
-  explicit Location( int loc_id ) {
+  explicit Location(int loc_id) {
     location_id = loc_id;
-    type        = NORMOAL_LOC;
-    name        =LOC_NAME_PRE+to_string( loc_id );
+    type = NORMOAL_LOC;
+    name = LOC_NAME_PRE + to_string(loc_id);
   }
 
-  explicit Location( int loc_id, Location_Type etype ) {
+  explicit Location(int loc_id, Location_Type etype) {
     location_id = loc_id;
-    type        = etype;
-    name        = LOC_NAME_PRE+to_string( loc_id );
+    type = etype;
+    name = LOC_NAME_PRE + to_string(loc_id);
   }
 
   int getId() const { return location_id; }
 
-  void setName( const string &n ) { name = n; }
+  void setName(const string &n) { name = n; }
 
-  string getName( void ) const { return name; }
+  string getName(void) const { return name; }
 
   const vector<ClockConstraint> &getInvarients() const { return invariants; }
 
@@ -71,14 +71,11 @@ public:
   /**
    In  freeze location the time can not go.
    */
-  inline bool isFreezeLocation() const {
-    return ( isUrgent() ) || ( isCommit() );
-  }
+  inline bool isFreezeLocation() const { return (isUrgent()) || (isCommit()); }
 
-  inline void employInvariants( const DBMFactory &dbm_manager,
-                                int *             dbm ) const {
-    for ( auto cs : invariants ) {
-      dbm_manager.andImpl( dbm, cs );
+  inline void employInvariants(const DBMFactory &dbm_manager, int *dbm) const {
+    for (auto cs : invariants) {
+      dbm_manager.andImpl(dbm, cs);
     }
   }
 
@@ -91,28 +88,28 @@ public:
    * @return  true if dbm  satisfies invariant, false otherwise.
    */
 
-  inline bool isReachable( const DBMFactory &dbm_manager, int *dbm ) const {
+  inline bool isReachable(const DBMFactory &dbm_manager, int *dbm) const {
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
      *
      */
-    employInvariants( dbm_manager, dbm );
+    employInvariants(dbm_manager, dbm);
 
-    return dbm_manager.isConsistent( dbm );
+    return dbm_manager.isConsistent(dbm);
   }
 
-  inline void operator()( const DBMFactory &dbm_manager, int *dbm ) const {
-    assert( isReachable( dbm_manager, dbm ) );
-    assert( !isFreezeLocation() );
+  inline void operator()(const DBMFactory &dbm_manager, int *dbm) const {
+    assert(isReachable(dbm_manager, dbm));
+    assert(!isFreezeLocation());
 
-    dbm_manager.upImpl( dbm );
+    dbm_manager.upImpl(dbm);
 
-    assert( dbm_manager.isConsistent( dbm ) );
+    assert(dbm_manager.isConsistent(dbm));
   }
 
-  bool operator()( const DBMFactory &dbm_manager, const int *const dbm,
-                   vector<int *> &re_vec ) const;
+  bool operator()(const DBMFactory &dbm_manager, const int *const dbm,
+                  vector<int *> &re_vec) const;
 
   /**
    * Add one invariant to this location
@@ -121,15 +118,13 @@ public:
    *
    * @return a new location
    */
-  Location &operator+=( ClockConstraint &cs );
+  Location &operator+=(ClockConstraint &cs);
 
-  void clockShift(const int shift ) {
-    for ( size_t i = 0; i < invariants.size(); i++ ) {
-      invariants[ i ].clockShift( shift );
+  void clockShift(const int shift) {
+    for (size_t i = 0; i < invariants.size(); i++) {
+      invariants[i].clockShift(shift);
     }
   }
-  
-
 
   // string to_string( ) const{
   //   string re_str="name: "+name;
@@ -140,13 +135,13 @@ public:
   //     }
   //   }
   // }
-  friend std::ostream &operator<<( std::ostream &os, const Location &loc );
+  friend std::ostream &operator<<(std::ostream &os, const Location &loc);
 
 private:
   vector<ClockConstraint> invariants; // set of invariants  in this Location
-  int                     location_id;
-  string                  name;
-  Location_Type           type;
+  int location_id;
+  string name;
+  Location_Type type;
 };
 } // namespace graphsat
 

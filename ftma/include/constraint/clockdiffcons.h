@@ -11,14 +11,12 @@
 #ifndef LIN_SIMP_CONS_H
 #define LIN_SIMP_CONS_H
 
-
 #include <iomanip>
 #include <iostream>
 #include <random>
 
-
-#include "util/dbmutil.hpp"
 #include "model/clock.h"
+#include "util/dbmutil.hpp"
 
 namespace graphsat {
 
@@ -33,50 +31,53 @@ const int GLOBAL_CLOCK_ID = 0;
 class ClockConstraint {
 
 public:
-
-  ClockConstraint( const Clock& clock_id1,COMP_OPERATOR eop, const int rhs);
   
-  ClockConstraint( const Clock& clock_id1, const Clock& clock_id2, COMP_OPERATOR eop,
-                   const int rhs, const int eparameter_id = -100 );
-  
+  ClockConstraint(const Clock &clock_id1, COMP_OPERATOR eop, const int rhs);
 
+  ClockConstraint(const Clock &clock_id1, const Clock &clock_id2,
+                  COMP_OPERATOR eop, const int rhs,
+                  const int eparameter_id = -100);
 
-  void globalUpdate( const vector<int> &parameter_value );
+  void globalUpdate(const vector<int> &parameter_value);
 
-  void clockShift( int shift );
+  void clockShift(int shift);
 
-  ClockConstraint neg( void ) const;
+  ClockConstraint neg(void) const;
 
-  bool isSat( const ClockConstraint &cons ) const;
+  bool isSat(const ClockConstraint &cons) const;
 
-  friend std::ostream &operator<<( std::ostream &         out,
-                                   const ClockConstraint &cons );
+  friend std::ostream &operator<<(std::ostream &out,
+                                  const ClockConstraint &cons);
 
 private:
   /**
    is_strict_ref  is true : <
    is_strict_ref  is true : <=
    */
-  ClockConstraint( const int clock_id1, const int clock_id2, const int rhs,
-                   bool is_strict_ref );
+  ClockConstraint(const int clock_id1, const int clock_id2, const int rhs,
+                  bool is_strict_ref);
 
-  void neg_impl( void );
+  void neg_impl(void);
 
-  void init( const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
-             const int rhs );
+  void init(const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
+            const int rhs);
 
 public:
-  int           clock_x;
-  int           clock_y;
+  Argument clock_x_arg;
+  Argument clock_y_arg;
+  Argument rhs_arg;
+  
+  int clock_x;
+  int clock_y;
   COMP_OPERATOR op;
-  int           matrix_value;
+  int matrix_value;
 
 private:
-  int                    parameter_id;
-  friend ClockConstraint randConst(const int num, const int low, const int up );
+  int parameter_id;
+  friend ClockConstraint randConst(const int num, const int low, const int up);
   friend class DBMFactory;
 };
-ClockConstraint randConst(const int num, const int low, const int up );
+ClockConstraint randConst(const int num, const int low, const int up);
 
 } // namespace graphsat
 #endif

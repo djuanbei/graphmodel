@@ -34,39 +34,39 @@ static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, CHAN_T};
 class UppaalParser {
 
 public:
-  UppaalParser( const string &xmlfile );
+  UppaalParser(const string &xmlfile);
 
   const INT_TAS_t &getSYS() const { return sys; }
 
   const Property &getProp() const { return prop; }
 
 private:
-  UppaalData              system_data;
+  UppaalData system_data;
   map<string, UppaalData> template_map;
 
   INT_TAS_t sys;
-  Property  prop;
+  Property prop;
 
-  int parseDeclaration( XML_P system );
+  int parseDeclaration(XML_P system);
 
-  int parseTemplate( child_type templates );
+  int parseTemplate(child_type templates);
 
-  int parseSystem( XML_P system );
+  int parseSystem(XML_P system);
 
-  int parseQuery( child_type queries );
+  int parseQuery(child_type queries);
 
-  int parseTemplateParamter( UppaalData &tempData, XML_P parameter );
+  int parseTemplateParamter(UppaalData &tempData, XML_P parameter);
 
   int setCounter();
   int setChannel();
 
-  vector<typename INT_TAS_t::L_t> parseLocation( UppaalData &tempData,
-                                                 child_type  locations );
+  vector<typename INT_TAS_t::L_t> parseLocation(UppaalData &tempData,
+                                                child_type locations);
 
-  vector<typename INT_TAS_t::T_t> parseTransition( UppaalData &tempData,
-                                                   child_type  transitions );
+  vector<typename INT_TAS_t::T_t> parseTransition(UppaalData &tempData,
+                                                  child_type transitions);
 
-  void parseLabel( UppaalData &data, string guards );
+  void parseLabel(UppaalData &data, string guards);
 
   /**
    * @param current_data  current template
@@ -74,8 +74,8 @@ private:
    * @param save_name  the name in code level
    * @return  the type of name
    */
-  TYPE_T getType( UppaalData *current_data, const string &xml_name,
-                  string &code_name );
+  TYPE_T getType(UppaalData *current_data, const string &xml_name,
+                 string &code_name);
 };
 
 } // namespace graphsat

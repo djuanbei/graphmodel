@@ -16,7 +16,7 @@ using std::vector;
 
 class Property {
 public:
-  virtual bool operator()( const void *manager, const int *const state ) const {
+  virtual bool operator()(const void *manager, const int *const state) const {
     return false;
   }
 };

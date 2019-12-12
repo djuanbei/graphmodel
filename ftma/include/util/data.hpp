@@ -27,7 +27,7 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-inline static string arrayToVar( const string &name, int id ) {
+inline static string arrayToVar(const string &name, int id) {
   stringstream ss;
   ss << id;
   return name + "#" + ss.str();
@@ -36,48 +36,48 @@ inline static string arrayToVar( const string &name, int id ) {
 template <typename T> class ValueData {
 public:
   void clear() { values.clear(); }
-  void clear( const int type ) { values[ type ].clear(); }
-  void clear( const int type, const string &name ) {
-    for ( size_t i = 0; i < values[ type ].size(); i++ ) {
-      if ( values[ type ][ i ].first == name ) {
-        values[ type ][ i ].second.clear();
+  void clear(const int type) { values[type].clear(); }
+  void clear(const int type, const string &name) {
+    for (size_t i = 0; i < values[type].size(); i++) {
+      if (values[type][i].first == name) {
+        values[type][i].second.clear();
       }
     }
   }
-  void addValue( const int type, const string &name, T v = 0 ) {
+  void addValue(const int type, const string &name, T v = 0) {
 
-    for ( size_t i = 0; i < values[ type ].size(); i++ ) {
-      if ( values[ type ][ i ].first == name ) {
-        values[ type ][ i ].second.push_back( v );
+    for (size_t i = 0; i < values[type].size(); i++) {
+      if (values[type][i].first == name) {
+        values[type][i].second.push_back(v);
         return;
       }
     }
 
     vector<T> vec_v;
-    vec_v.push_back( v );
-    values[ type ].push_back( make_pair( name, vec_v ) );
+    vec_v.push_back(v);
+    values[type].push_back(make_pair(name, vec_v));
   }
 
-  void setValue( const int type, const string &name, T v ) {
+  void setValue(const int type, const string &name, T v) {
 
-    for ( size_t i = 0; i < values[ type ].size(); i++ ) {
-      if ( values[ type ][ i ].first == name ) {
-        if ( values[ type ][ i ].second.empty() ) {
-          values[ type ][ i ].second.push_back( v );
+    for (size_t i = 0; i < values[type].size(); i++) {
+      if (values[type][i].first == name) {
+        if (values[type][i].second.empty()) {
+          values[type][i].second.push_back(v);
         } else {
-          values[ type ][ i ].second[ 0 ] = v;
+          values[type][i].second[0] = v;
         }
         return;
       }
     }
-    addValue( type, name, v );
+    addValue(type, name, v);
   }
 
-  int getTypeNum( const int type ) const {
-    if ( values.find( type ) == values.end() ) {
+  int getTypeNum(const int type) const {
+    if (values.find(type) == values.end()) {
       return 0;
     }
-    return (int) values.at( type ).size();
+    return (int)values.at(type).size();
   }
 
   /**
@@ -88,74 +88,74 @@ public:
    *
    * @return  @NOT_FOUND if name is not in values
    */
-  int getId( const int type, const string &name ) const {
-    if ( values.find( type ) == values.end() ) {
+  int getId(const int type, const string &name) const {
+    if (values.find(type) == values.end()) {
       return NOT_FOUND;
     }
 
-    for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
-      if ( values.at( type )[ i ].first == name ) {
-        return (int) i;
+    for (size_t i = 0; i < values.at(type).size(); i++) {
+      if (values.at(type)[i].first == name) {
+        return (int)i;
       }
     }
     return NOT_FOUND;
   }
 
-  const pair<string, vector<T>> &getValue( const int type, int id ) const {
-    return values.at( type )[ id ];
+  const pair<string, vector<T>> &getValue(const int type, int id) const {
+    return values.at(type)[id];
   }
 
-  vector<T> getValue( const int type, const string &name ) const {
-    if ( values.find( type ) == values.end() ) {
+  vector<T> getValue(const int type, const string &name) const {
+    if (values.find(type) == values.end()) {
       vector<T> dummy;
       return dummy;
     }
 
-    for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
-      if ( values.at( type )[ i ].first == name ) {
-        return values.at( type )[ i ].second;
+    for (size_t i = 0; i < values.at(type).size(); i++) {
+      if (values.at(type)[i].first == name) {
+        return values.at(type)[i].second;
       }
     }
     vector<T> dummy;
     return dummy;
   }
 
-  vector<pair<string, vector<T>>> getValue( const int type ) const {
+  vector<pair<string, vector<T>>> getValue(const int type) const {
 
-    if ( values.find( type ) != values.end() ) {
-      return values.at( type );
+    if (values.find(type) != values.end()) {
+      return values.at(type);
     }
 
     return vector<pair<string, vector<T>>>();
   }
 
-  bool hasValue( const int type, const string &name ) const {
-    if ( values.find( type ) == values.end() ) {
+  bool hasValue(const int type, const string &name) const {
+    if (values.find(type) == values.end()) {
       return false;
     }
-    for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
-      if ( values.at( type )[ i ].first == name ) {
-        return !( values.at( type )[ i ].second.empty() );
+    for (size_t i = 0; i < values.at(type).size(); i++) {
+      if (values.at(type)[i].first == name) {
+        return !(values.at(type)[i].second.empty());
       }
     }
     return false;
   }
 
-  bool hasValue( const int type ) const {
-    return values.find( type ) != values.end();
+  bool hasValue(const int type) const {
+    return values.find(type) != values.end();
   }
 
-  T getValue( const int type, const string &name, int id ) const {
-    if ( values.find( type ) == values.end() ) {
-      return (T) NOT_FOUND;
+  T getValue(const int type, const string &name, int id) const {
+    if (values.find(type) == values.end()) {
+      return (T)NOT_FOUND;
     }
-    for ( size_t i = 0; i < values.at( type ).size(); i++ ) {
-      if ( values.at( type )[ i ].first == name ) {
-        return values.at( type )[ i ].second[ id ];
+    for (size_t i = 0; i < values.at(type).size(); i++) {
+      if (values.at(type)[i].first == name) {
+        return values.at(type)[i].second[id];
       }
     }
-    assert( false );
-    return (T) NOT_FOUND;
+    assert(false);
+    return (T)NOT_FOUND;
   }
 
 private:

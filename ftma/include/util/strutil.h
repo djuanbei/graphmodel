@@ -15,13 +15,13 @@
 namespace graphsat {
 using std::string;
 
-string getFunArg( const string &fun );
+string getFunArg(const string &fun);
 
 /**
  * delete start spaces and  last spaces
  *
  */
-std::string trim( std::string s );
+std::string trim(std::string s);
 
 } // namespace graphsat
 

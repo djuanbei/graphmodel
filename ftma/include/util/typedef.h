@@ -12,7 +12,7 @@
 #define TYEP_DEF_H
 #include <cstdint>
 #include <string>
-
+#include <cstdarg>
 #include "macrodef.h"
 
 namespace graphsat {
@@ -70,7 +70,7 @@ const static string FORMULA_STR = "formula";
 const static string COMMENT_STR = "comment";
 
 const static int LOC_OUT_WIDTH = 7;
-const static int OP_OUT_WIDTH  = 3;
+const static int OP_OUT_WIDTH = 3;
 
 const static int VALUE_OUT_WIDTH = 5;
 
@@ -81,58 +81,36 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
 enum ARGUMENT_TYPE {
-  CONST_ARG,
-  COUNTER_ARG,
-  PARAMETER_ARG,
-  REF_PARAMETER_ARG,
-  FUN_POINTER_ARG,
-  SELECT_VAR_ARG,
-  EMPTY_ARG
+  CONST_ARG,         // constant value
+  TEMPLATE_VAR_ARG,  // template variable id
+  SYSTEM_VAR_ARG,    // system variable id
+  PARAMETER_ARG,     // template argument id (pass value)
+  REF_PARAMETER_ARG, // temmplate argument if (pass reference)
+  FUN_POINTER_ARG,   // function
+  SELECT_VAR_ARG,    // select variable
+  EMPTY_ARG          // otherwise
 };
 
 struct RealArgument {
   ARGUMENT_TYPE type;
-  int_fast64_t  value;
-  string        name;
+  int_fast64_t value;
+  string name;
   shared_ptr<RealArgument> index;
-  RealArgument()
-      : type( EMPTY_ARG )
-      , value( 0 ) {
-  }
-  RealArgument( ARGUMENT_TYPE t, int v ):type( t), value( v) {
-  }
-  RealArgument( ARGUMENT_TYPE t, const string &n ):type( t), value( 0), name( n) {
-  }
-    
+  RealArgument() : type(EMPTY_ARG), value(0) {}
+  RealArgument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
+  RealArgument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
 };
-
 
 struct Argument {
   ARGUMENT_TYPE type;
-  int_fast64_t  value;
-  string        name;
+  int_fast64_t value;
+  string name;
   shared_ptr<Argument> index;
-  Argument()
-      : type( EMPTY_ARG )
-      , value( 0 ) {
-  }
-  Argument( ARGUMENT_TYPE t, int v ):type( t), value( v) {
-  }
-  Argument( ARGUMENT_TYPE t, const string &n ):type( t), value( 0), name( n) {
-  }
-  void setIndex(const shared_ptr<Argument>&  out_index ){
-    index=out_index;
-  }
-  
-
- 
+  Argument() : type(EMPTY_ARG), value(0) {}
+  Argument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
+  Argument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
+  void setIndex(const shared_ptr<Argument> &out_index) { index = out_index; }
 };
-  
-  
-  
-
-
-
 
 enum Action_e {
   CALL_ACTION,       // invoke function
@@ -142,12 +120,12 @@ enum Action_e {
 };
 
 enum TYPE_T {
-  TYPE_TYPE( INT_T ),
-  TYPE_TYPE( CLOCK_T ),
+  TYPE_TYPE(INT_T),
+  TYPE_TYPE(CLOCK_T),
 
-  TYPE_TYPE( CHAN_T ),
-  TYPE_TYPE( URGENT_CHAN_T ),
-  TYPE_TYPE( BROADCAST_CHAN_T ),
+  TYPE_TYPE(CHAN_T),
+  TYPE_TYPE(URGENT_CHAN_T),
+  TYPE_TYPE(BROADCAST_CHAN_T),
 
   SYSTEM_T,
   TEMPLATE_T,
@@ -166,19 +144,15 @@ enum TYPE_T {
 
 };
 
-
-class VariableMap{
- public:
-    
-  virtual int getStart(const TYPE_T type, const string &key ) const=0;
-  virtual int *getValue(const TYPE_T type, int *state, const string &key ) const=0;
-    
+class VariableMap {
+public:
+  virtual int getStart(const TYPE_T type, const string &key) const = 0;
+  virtual int *getValue(const TYPE_T type, int *state,
+                        const string &key) const = 0;
 };
 
-
-
-typedef int ( *IndexFun_t )( int * );
-typedef int ( *ConstraintFun_t )( const int * );
+typedef int (*IndexFun_t)(int *, ...);
+typedef int (*ConstraintFun_t)(const int *, ...);
 
 const static int NOT_FOUND = -1;
 
@@ -194,12 +168,10 @@ const int DEFAULT_COUNTER_UPPER = 100;
 
 const static int NO_DEF = -1;
 
-const static string LOC_NAME_PRE="Loc_";
-const static string TRANSITION_NAME_PRE="Tran_";
+const static string LOC_NAME_PRE = "Loc_";
+const static string TRANSITION_NAME_PRE = "Tran_";
 
-const static string CLOCK_NAME_PRE="c_";
-
-
+const static string CLOCK_NAME_PRE = "c_";
 
 } // namespace graphsat
 

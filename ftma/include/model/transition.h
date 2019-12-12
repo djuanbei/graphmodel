@@ -32,31 +32,33 @@ class TMStateManager;
 class Transition {
 
 public:
-  typedef int            State_t;
+  typedef int State_t;
   typedef TMStateManager StateManager_t;
 
   Transition() {
     source = target = -1;
-    has_channel     = false;
+    has_channel = false;
   }
   // Transition( int s, int t ) {
   //   source      = s;
   //   target      = t;
   //   has_channel = false;
   // }
-  Transition( const Location &lhs, const Location &rhs ):source( lhs.getId( )), target( rhs.getId( )), has_channel( false) {
+  Transition(const Location &lhs, const Location &rhs)
+      : source(lhs.getId()), target(rhs.getId()), has_channel(false) {
     // source      = lhs.getId();
     // target      = rhs.getId();
     // has_channel = false;
   }
 
-  Transition(const VariableMap* varMap, const Transition &other, const Parameter &param );
+  Transition(const VariableMap *varMap, const Transition &other,
+             const Parameter &param);
 
-  void setSource( int s ) { source = s; }
+  void setSource(int s) { source = s; }
 
   int getSource() const { return source; }
 
-  void setTarget( int t ) { target = t; }
+  void setTarget(int t) { target = t; }
 
   int getTarget() const { return target; }
 
@@ -71,8 +73,8 @@ public:
    * @return Transition
    */
 
-  friend Transition &operator+( Transition &lhs, ClockConstraint &cs ) {
-    lhs.guards.push_back( cs );
+  friend Transition &operator+(Transition &lhs, ClockConstraint &cs) {
+    lhs.guards.push_back(cs);
     return lhs;
   }
 
@@ -82,19 +84,19 @@ public:
    * @param cs  constraint
    *
    */
-  Transition &operator+=( ClockConstraint &cs ) {
-    guards.push_back( cs );
+  Transition &operator+=(ClockConstraint &cs) {
+    guards.push_back(cs);
     return *this;
   }
 
-  void setChannel( Channel *ch ) {
-    channel.reset( ch );
+  void setChannel(Channel *ch) {
+    channel.reset(ch);
     has_channel = true;
   }
 
   const shared_ptr<Channel> &getChannel() const { return channel; }
 
-  void setChanType( CHANNEL_TYPE type ) { channel->setType( type ); }
+  void setChanType(CHANNEL_TYPE type) { channel->setType(type); }
 
   bool hasChannel() const { return has_channel; }
 
@@ -105,8 +107,8 @@ public:
    * @param action Add one counter action
    *
    */
-  void addCounterAction( const void *action ) {
-    actions.push_back( (CounterAction *) action );
+  void addCounterAction(const void *action) {
+    actions.push_back((CounterAction *)action);
   }
 
   /**
@@ -115,14 +117,14 @@ public:
    * @param reset The reset
    *
    */
-  //void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
-  void addReset( const Clock &clock, int v){
-    pair<int,int> dummy(clock.id, v );
-    resets.push_back(dummy );
+  // void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
+  void addReset(const Clock &clock, int v) {
+    pair<int, int> dummy(clock.id, v);
+    resets.push_back(dummy);
   }
-  
-  void addCounterCons( void *guards ) {
-    counter_cons.push_back( (CounterConstraint *) guards );
+
+  void addCounterCons(void *guards) {
+    counter_cons.push_back((CounterConstraint *)guards);
   }
 
   /**
@@ -135,9 +137,9 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  bool ready( const int                               component,
-              const shared_ptr<const TMStateManager> &manager,
-              const int *const                        state ) const;
+  bool ready(const int component,
+             const shared_ptr<const TMStateManager> &manager,
+             const int *const state) const;
 
   /**
    *
@@ -145,13 +147,13 @@ public:
    *
    */
 
-  void operator()( const int                               component,
-                   const shared_ptr<const TMStateManager> &manager,
-                   int *                                   re_state ) const;
+  void operator()(const int component,
+                  const shared_ptr<const TMStateManager> &manager,
+                  int *re_state) const;
 
-  void clockShift(const int shift );
+  void clockShift(const int shift);
 
-  void chanShift( const int shift );
+  void chanShift(const int shift);
 
 private:
   int source, target; // source location and target location of this
@@ -159,13 +161,13 @@ private:
   vector<ClockConstraint> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint *>
-                      counter_cons; // counter constraint like pid ==id or id==0
-  shared_ptr<Channel> channel;      // Only one synchronisation channels
-  bool                has_channel;
+      counter_cons;            // counter constraint like pid ==id or id==0
+  shared_ptr<Channel> channel; // Only one synchronisation channels
+  bool has_channel;
 
   vector<const CounterAction *>
-                         actions; // set of actions at this transitionedge
-  vector<pair<int, int>> resets;  // set of reset clock variables
+      actions;                   // set of actions at this transitionedge
+  vector<pair<int, int>> resets; // set of reset clock variables
 };
 } // namespace graphsat
 

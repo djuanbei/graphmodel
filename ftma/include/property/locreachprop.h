@@ -16,12 +16,12 @@ namespace graphsat {
 
 class LocReachProperty : public Property {
 public:
-  LocReachProperty( vector<int> &ls ) { loc = ls; }
-  virtual bool operator()( const void *manager, const int *const state ) const {
+  LocReachProperty(vector<int> &ls) { loc = ls; }
+  virtual bool operator()(const void *manager, const int *const state) const {
 
-    return ( 0 == memcmp( state, &loc[ 0 ],
-                          ( (ComponentInfo *) manager )->getComponentNum() *
-                              sizeof( int ) ) );
+    return (0 == memcmp(state, &loc[0],
+                        ((ComponentInfo *)manager)->getComponentNum() *
+                            sizeof(int)));
   }
 
 private:

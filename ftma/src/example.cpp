@@ -311,7 +311,7 @@ void fisher( int n ) {
   typename INT_TAS_t::L_t cs( 3 );
 
   typename INT_TAS_t::T_t A_req( A, req );
-  Argument                first( COUNTER_ARG, 0 );
+  Argument                first( TEMPLATE_VAR_ARG, 0 );
   Argument                second( EMPTY_ARG, 0 );
   Argument                rhs( CONST_ARG, 0 );
 
@@ -328,7 +328,7 @@ void fisher( int n ) {
 
 
   req_wait.addReset( x, 0 ); // x-->0
-  Argument       lhs( COUNTER_ARG, 0 );
+  Argument       lhs( TEMPLATE_VAR_ARG, 0 );
   Argument       rhs0( PARAMETER_ARG, 0 );
   CounterAction *action =
       new CounterAction( lhs, ASSIGNMENT_ACTION, rhs0 ); // id=pid
@@ -343,7 +343,7 @@ void fisher( int n ) {
 
   typename INT_TAS_t::T_t wait_cs( wait, cs );
 
-  Argument first1( COUNTER_ARG, 0 );
+  Argument first1( TEMPLATE_VAR_ARG, 0 );
   Argument second1( PARAMETER_ARG, 0 );
   Argument rhs01( CONST_ARG, 0 );
   void *   ccs2 = createConstraint( first1, second1, EQ, rhs01 ); // id==pid
@@ -353,7 +353,7 @@ void fisher( int n ) {
 
   typename INT_TAS_t::T_t cs_A( cs, A );
 
-  Argument       lhs1( COUNTER_ARG, 0 );
+  Argument       lhs1( TEMPLATE_VAR_ARG, 0 );
   Argument       rhs1( CONST_ARG, 0 );
   CounterAction *caction1 = new CounterAction( lhs1, ASSIGNMENT_ACTION, rhs1 );
 
@@ -463,7 +463,7 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t A_req( A, req );
 
-  Argument first3( COUNTER_ARG, 0 );
+  Argument first3( TEMPLATE_VAR_ARG, 0 );
   Argument second3( EMPTY_ARG, 0 );
   Argument rhs3( CONST_ARG, 0 );
   void *   ccs1 = createConstraint( first3, second3, EQ, rhs3 ); // id==0
@@ -478,7 +478,7 @@ void incrementalTest() {
 
   req_wait.addReset( x, 0 );// x-->0
 
-  Argument       lhs( COUNTER_ARG, 0 );
+  Argument       lhs( TEMPLATE_VAR_ARG, 0 );
   Argument       rhs( PARAMETER_ARG, 0 );
   CounterAction *caction =
       new CounterAction( lhs, ASSIGNMENT_ACTION, rhs ); // id=pid
@@ -493,7 +493,7 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t wait_cs( wait, cs );
 
-  Argument first4( COUNTER_ARG, 0 );
+  Argument first4( TEMPLATE_VAR_ARG, 0 );
   Argument second4( PARAMETER_ARG, 0 );
   Argument rhs4( CONST_ARG, 0 );
 
@@ -504,7 +504,7 @@ void incrementalTest() {
 
   typename INT_TAS_t::T_t cs_A( cs, A );
 
-  Argument       lhs2( COUNTER_ARG, 0 );
+  Argument       lhs2( TEMPLATE_VAR_ARG, 0 );
   Argument       rhs2( CONST_ARG, 0 );
   CounterAction *caction1 =
       new CounterAction( lhs2, ASSIGNMENT_ACTION, rhs2 ); // id=0;

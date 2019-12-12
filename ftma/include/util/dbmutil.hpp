@@ -26,9 +26,9 @@ using std::string;
 using std::vector;
 
 template <typename T>
-bool executeOp( const T &lhs, COMP_OPERATOR op, const T &rhs ) {
+bool executeOp(const T &lhs, COMP_OPERATOR op, const T &rhs) {
 
-  switch ( op ) {
+  switch (op) {
   case EQ:
     return lhs == rhs;
   case LE:
@@ -46,36 +46,34 @@ bool executeOp( const T &lhs, COMP_OPERATOR op, const T &rhs ) {
   }
 }
 
-int getValue(const RealArgument & arg,  const int * counter_value  );
-int getValue(const shared_ptr<RealArgument> & arg,  const int * counter_value  );
+int getValue(const RealArgument &arg, const int *counter_value);
+int getValue(const shared_ptr<RealArgument> &arg, const int *counter_value);
 
-int_fast64_t getMapValue( const Argument & arg, const vector<int> &id_map,
-                          const vector<int> &parameter_value );
+int_fast64_t getMapValue(const Argument &arg, const vector<int> &id_map,
+                         const vector<int> &parameter_value);
 
+// int_fast64_t getMapValue( const RealArgument & arg, const vector<int>
+// &id_map);
 
+string getOpStr(COMP_OPERATOR op);
 
-//int_fast64_t getMapValue( const RealArgument & arg, const vector<int> &id_map);
+COMP_OPERATOR negation(COMP_OPERATOR op);
 
+string getTypeStr(TYPE_T type);
 
-string getOpStr( COMP_OPERATOR op );
-
-COMP_OPERATOR negation( COMP_OPERATOR op );
-
-string getTypeStr( TYPE_T type );
-
-TYPE_T baseType( TYPE_T type );
+TYPE_T baseType(TYPE_T type);
 
 // TYPE_T getRef( TYPE_T type );
 
-int fromPidToChanId( int id );
+int fromPidToChanId(int id);
 
-int chanIdToFromPid( int id );
+int chanIdToFromPid(int id);
 
-bool isRefChan( TYPE_T type );
+bool isRefChan(TYPE_T type);
 
-TYPE_T get_formal_paramter_type( TYPE_T type );
+TYPE_T get_formal_paramter_type(TYPE_T type);
 
-bool isRefType( const TYPE_T type );
+bool isRefType(const TYPE_T type);
 
 /**
  *  Both have compare < and <=
@@ -92,71 +90,69 @@ template <typename C> inline C getMAX_INT() {
  */
 
 template <typename C>
-inline C getMatrixValue( C realRight, bool isStrct = true ) {
+inline C getMatrixValue(C realRight, bool isStrct = true) {
   C right = realRight * 2;
-  if ( !isStrct ) {
+  if (!isStrct) {
     right = right | 1;
   }
   return right;
 }
 
-template <typename C> inline bool isStrict( const C c ) {
-  return ( c & 1 ) == 0;
-}
+template <typename C> inline bool isStrict(const C c) { return (c & 1) == 0; }
 
-template <typename C> std::string getComp( const C x ) {
-  if ( x & 1 ) {
+template <typename C> std::string getComp(const C x) {
+  if (x & 1) {
     return "<=";
   } else {
     return "< ";
   }
 }
 
-template <typename C> inline C getRight( const C c ) { return c >> 1; }
+template <typename C> inline C getRight(const C c) { return c >> 1; }
 
-template <typename C> inline C negMatrixValue( C matrix_value ) {
-  bool strict = isStrict( matrix_value );
+template <typename C> inline C negMatrixValue(C matrix_value) {
+  bool strict = isStrict(matrix_value);
 
-  return getMatrixValue( -getRight( matrix_value ), strict );
+  return getMatrixValue(-getRight(matrix_value), strict);
 }
 
-template <class T> inline bool CAS( T *ptr, T oldv, T newv ) {
-  if ( sizeof( T ) == 1 ) {
-    return __sync_bool_compare_and_swap( (bool *) ptr, *( (bool *) &oldv ),
-                                         *( (bool *) &newv ) );
-  } else if ( sizeof( T ) == 4 ) {
-    return __sync_bool_compare_and_swap( (int *) ptr, *( (int *) &oldv ),
-                                         *( (int *) &newv ) );
-  } else if ( sizeof( T ) == 8 ) {
-    return __sync_bool_compare_and_swap( (long *) ptr, *( (long *) &oldv ),
-                                         *( (long *) &newv ) );
+template <class T> inline bool CAS(T *ptr, T oldv, T newv) {
+  if (sizeof(T) == 1) {
+    return __sync_bool_compare_and_swap((bool *)ptr, *((bool *)&oldv),
+                                        *((bool *)&newv));
+  } else if (sizeof(T) == 4) {
+    return __sync_bool_compare_and_swap((int *)ptr, *((int *)&oldv),
+                                        *((int *)&newv));
+  } else if (sizeof(T) == 8) {
+    return __sync_bool_compare_and_swap((long *)ptr, *((long *)&oldv),
+                                        *((long *)&newv));
   } else {
-    std::cout << "CAS bad length : " << sizeof( T ) << std::endl;
+    std::cout << "CAS bad length : " << sizeof(T) << std::endl;
     abort();
   }
 }
 
-template <class T> inline bool writeMin( T *a, T b ) {
-  T    c;
+template <class T> inline bool writeMin(T *a, T b) {
+  T c;
   bool r = 0;
   do
     c = *a;
-  while ( c > b && !( r = CAS( a, c, b ) ) );
+  while (c > b && !(r = CAS(a, c, b)));
   return r;
 }
 
-template <class T> inline void writeAdd( T *a, T b ) {
+template <class T> inline void writeAdd(T *a, T b) {
   volatile T newV, oldV;
   do {
     oldV = *a;
     newV = oldV + b;
-  } while ( !CAS( a, oldV, newV ) );
+  } while (!CAS(a, oldV, newV));
 }
 
-vector<string> splitStr( const string &stringToBeSplitted,
-                         const string &delimeter );
+vector<string> splitStr(const string &stringToBeSplitted,
+                        const string &delimeter);
 
-string deleteChar( const string &value, const size_t start, const char ch );
+string deleteChar(const string &value, const size_t start, const char ch);
 
 } // namespace graphsat
 

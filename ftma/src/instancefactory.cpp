@@ -15,7 +15,7 @@ CounterAction *copy( const CounterAction *other ) {
 void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
                         Argument rhs ) {
 
-  if ( first.type == COUNTER_ARG && second.type == COUNTER_ARG &&
+  if ( first.type == TEMPLATE_VAR_ARG && second.type == TEMPLATE_VAR_ARG &&
        rhs.type == CONST_ARG ) {
     return InstanceFactory::getInstance().createTwoCounterConstraint(
         first.value, second.value, op, rhs.value, 0 );
@@ -27,24 +27,24 @@ void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
         first.value, second.value, op, rhs.value );
   }
 
-  if ( first.type == COUNTER_ARG && second.type == PARAMETER_ARG &&
+  if ( first.type == TEMPLATE_VAR_ARG && second.type == PARAMETER_ARG &&
        rhs.type == CONST_ARG ) {
     return InstanceFactory::getInstance().createCounterParameterConstraint(
         first.value, second.value, op, rhs.value );
   }
-  if ( first.type == PARAMETER_ARG && second.type == COUNTER_ARG &&
+  if ( first.type == PARAMETER_ARG && second.type == TEMPLATE_VAR_ARG &&
        rhs.type == CONST_ARG ) {
     COMP_OPERATOR nop = negation( op );
     return InstanceFactory::getInstance().createCounterParameterConstraint(
         second.value, first.value, nop, rhs.value * -1 );
   }
-  if ( first.type == COUNTER_ARG && second.type == EMPTY_ARG &&
+  if ( first.type == TEMPLATE_VAR_ARG && second.type == EMPTY_ARG &&
        rhs.type == CONST_ARG ) {
     return InstanceFactory::getInstance().createOneCounterConstraint(
         first.value, op, rhs.value );
   }
 
-  if ( second.type == COUNTER_ARG && first.type == EMPTY_ARG &&
+  if ( second.type == TEMPLATE_VAR_ARG && first.type == EMPTY_ARG &&
        rhs.type == CONST_ARG ) {
     COMP_OPERATOR nop = negation( op );
     return InstanceFactory::getInstance().createOneCounterConstraint(

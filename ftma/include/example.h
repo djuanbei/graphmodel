@@ -13,16 +13,16 @@
 
 namespace graphsat {
 
-void example1( void );
+void example1(void);
 void example50();
 
-void example2( void );
+void example2(void);
 
-void example5( void );
+void example5(void);
 
 void example6();
 
-void fisher( int n = 2 );
+void fisher(int n = 2);
 
 void testIsConsistent();
 

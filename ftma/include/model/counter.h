@@ -18,14 +18,14 @@ private:
   int lb, up; // lb<= value<= up
 public:
   Counter() { value = lb = up = 0; }
-  Counter( int l, int u ) {
+  Counter(int l, int u) {
     value = l;
-    lb    = l;
-    up    = u;
+    lb = l;
+    up = u;
   }
-  void setValue( int v ) { value = v; }
-  int  getLB() const { return lb; }
-  int  getUP() const { return up; }
+  void setValue(int v) { value = v; }
+  int getLB() const { return lb; }
+  int getUP() const { return up; }
 };
 } // namespace graphsat
 

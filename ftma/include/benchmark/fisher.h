@@ -21,12 +21,12 @@ class FisherGenerator {
 public:
   FisherGenerator();
 
-  INT_TAS_t generate( int n ) const;
+  INT_TAS_t generate(int n) const;
 
 private:
-  size_t                                          k = 0;
+  size_t k = 0;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt;
-  INT_TAS_t                                       sys;
+  INT_TAS_t sys;
 };
 
 } // namespace graphsat

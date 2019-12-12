@@ -20,17 +20,16 @@ typedef AgentSystem<Location, Transition> INT_TAS_t;
 class TrainGate {
 public:
   TrainGate() {}
-  INT_TAS_t generate( int n ) const;
+  INT_TAS_t generate(int n) const;
 };
 
-void enqueue( typename INT_TAS_t::Agent_t &agent, int *state,
-              const int element );
+void enqueue(typename INT_TAS_t::Agent_t &agent, int *state, const int element);
 
-void dequeue( typename INT_TAS_t::Agent_t &agent, int *state );
+void dequeue(typename INT_TAS_t::Agent_t &agent, int *state);
 
-int front( typename INT_TAS_t::Agent_t &agent, int *state );
+int front(typename INT_TAS_t::Agent_t &agent, int *state);
 
-int tail( typename INT_TAS_t::Agent_t &agent, int *state );
+int tail(typename INT_TAS_t::Agent_t &agent, int *state);
 
 } // namespace graphsat
 

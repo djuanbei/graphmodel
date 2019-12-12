@@ -18,91 +18,88 @@
 
 namespace graphsat {
 using namespace std;
-bool element_cmp( const vector<int> &lhs, const vector<int> &rhs );
+bool element_cmp(const vector<int> &lhs, const vector<int> &rhs);
 
 template <typename SYS, typename G> class IncrementalCheck {
 
 public:
-  IncrementalCheck()
-      : start( 2 )
-      , end( 5 )
-      , project_dim( 2 ) {}
-  bool check( const G &g, const Property *prop ) {
-    SYS                                      dummy   = g.generate( start );
+  IncrementalCheck() : start(2), end(5), project_dim(2) {}
+  bool check(const G &g, const Property *prop) {
+    SYS dummy = g.generate(start);
     shared_ptr<typename SYS::StateManager_t> manager = dummy.getStateManager();
-    ReachableSet<typename SYS::StateManager_t> pre_data( manager );
+    ReachableSet<typename SYS::StateManager_t> pre_data(manager);
 
-    dummy.addInitState( pre_data );
-    Reachability<SYS> reacher( dummy );
-    if ( reacher.satisfy( pre_data, prop ) ) {
+    dummy.addInitState(pre_data);
+    Reachability<SYS> reacher(dummy);
+    if (reacher.satisfy(pre_data, prop)) {
       return false;
     }
     vector<vector<int>> pre_project;
-    pre_data.project( project_dim, pre_project );
+    pre_data.project(project_dim, pre_project);
     //  sort(pre_project.begin(), pre_project.end(), element_cmp);
 
-    for ( int i = 3; i < 5; i++ ) {
-      SYS                                      dummy = g.generate( i );
+    for (int i = 3; i < 5; i++) {
+      SYS dummy = g.generate(i);
       shared_ptr<typename SYS::StateManager_t> manager =
           dummy.getStateManager();
-      ReachableSet<typename SYS::StateManager_t> data( manager );
+      ReachableSet<typename SYS::StateManager_t> data(manager);
 
-      dummy.addInitState( data );
-      Reachability<SYS> reacher( dummy );
-      if ( reacher.satisfy( data, prop ) ) {
+      dummy.addInitState(data);
+      Reachability<SYS> reacher(dummy);
+      if (reacher.satisfy(data, prop)) {
         return false;
       }
       vector<vector<int>> project;
-      data.project( project_dim, project );
+      data.project(project_dim, project);
       //  sort(project.begin(), project.end(), element_cmp);
 
-      if ( equal( project, pre_project ) ) {
+      if (equal(project, pre_project)) {
         return true;
       }
-      pre_project.swap( project );
+      pre_project.swap(project);
     }
     return false;
   }
 
 private:
-  int    start;
-  int    end;
+  int start;
+  int end;
   size_t project_dim;
 
-  bool equal( const vector<vector<int>> &lhs,
-              const vector<vector<int>> &rhs ) const {
-    if ( lhs.empty() ) {
+  bool equal(const vector<vector<int>> &lhs,
+             const vector<vector<int>> &rhs) const {
+    if (lhs.empty()) {
       return rhs.empty();
     }
-    if ( rhs.empty() ) {
+    if (rhs.empty()) {
       return false;
     }
-    assert( lhs[ 0 ].size() == rhs[ 0 ].size() );
+    assert(lhs[0].size() == rhs[0].size());
 
-    size_t n = lhs[ 0 ].size();
+    size_t n = lhs[0].size();
 
-    for ( size_t i = 0; i < lhs.size(); i++ ) {
+    for (size_t i = 0; i < lhs.size(); i++) {
       size_t j = 0;
-      for ( ; j < rhs.size(); j++ ) {
+      for (; j < rhs.size(); j++) {
         size_t k = 0;
-        for ( ; k < project_dim; k++ ) {
-          if ( lhs[ i ][ k ] != rhs[ j ][ k ] ) {
+        for (; k < project_dim; k++) {
+          if (lhs[i][k] != rhs[j][k]) {
             break;
           }
         }
 
-        if ( k == project_dim ) {
-          for ( ; k < n; k++ ) {
-            if ( lhs[ i ][ k ] > rhs[ j ][ k ] ) {
+        if (k == project_dim) {
+          for (; k < n; k++) {
+            if (lhs[i][k] > rhs[j][k]) {
               break;
             }
           }
         }
-        if ( k == n ) {
+        if (k == n) {
           break;
         }
       }
-      if ( j == rhs.size() ) {
+      if (j == rhs.size()) {
         return false;
       }
     }

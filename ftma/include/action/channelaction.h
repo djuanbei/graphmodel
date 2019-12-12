@@ -14,15 +14,13 @@ namespace graphsat {
 enum ChannelActionT { SEND_T, RECEIVE_T };
 class ChannelAction {
 public
-  ChannelAction( ChannelActionT t, bool isP, int elocal_channel_id ) {
-    type = t;
-  }
+  ChannelAction(ChannelActionT t, bool isP, int elocal_channel_id) { type = t; }
 
 private:
   ChannelActionT type;
-  bool           isParameter;
-  int            local_channel_id;
-  int            gloabl_channel_id;
+  bool isParameter;
+  int local_channel_id;
+  int gloabl_channel_id;
 };
 
 }; // namespace graphsat

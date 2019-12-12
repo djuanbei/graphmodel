@@ -23,145 +23,147 @@ using std::pair;
 using std::setw;
 using std::vector;
 
-#define ACTION_TYPE_CASE( op )                                                 \
-  switch ( rhs.type ) {                                                        \
+#define ACTION_TYPE_CASE(op)                                                   \
+  switch (rhs.type) {                                                          \
   case CONST_ARG:                                                              \
-    counter_value[ lhs_value ] op rhs_value;                                   \
+    counter_value[lhs_value] op rhs_value;                                     \
     return;                                                                    \
-  case COUNTER_ARG:                                                            \
-    counter_value[ lhs_value ] op counter_value[ rhs_value ];                  \
+  case TEMPLATE_VAR_ARG:                                                       \
+    counter_value[lhs_value] op counter_value[rhs_value];                      \
     return;                                                                    \
   case PARAMETER_ARG:                                                          \
-    counter_value[ lhs_value ] op rhs_value;                                   \
+    counter_value[lhs_value] op rhs_value;                                     \
     return;                                                                    \
   case REF_PARAMETER_ARG:                                                      \
-    counter_value[ lhs_value ] op counter_value[ rhs_value ];                  \
+    counter_value[lhs_value] op counter_value[rhs_value];                      \
     return;                                                                    \
   case FUN_POINTER_ARG:                                                        \
-    counter_value[ lhs_value ] op( (IndexFun_t) rhs_value )( counter_value );  \
+    counter_value[lhs_value] op((IndexFun_t)rhs_value)(counter_value);         \
     return;                                                                    \
   case SELECT_VAR_ARG:                                                         \
-    counter_value[ lhs_value ] op rhs_value;                                   \
+    counter_value[lhs_value] op rhs_value;                                     \
     return;                                                                    \
   case EMPTY_ARG:                                                              \
-    assert( false );                                                           \
+    assert(false);                                                             \
   }
 
-#define ACTION_TYPE_CASE_OUT( op_str )                                         \
-  switch ( act.rhs.type ) {                                                    \
+#define ACTION_TYPE_CASE_OUT(op_str)                                           \
+  switch (act.rhs.type) {                                                      \
   case CONST_ARG:                                                              \
-    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
-        << setw( VALUE_OUT_WIDTH ) << act.rhs_value;                           \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
+        << setw(VALUE_OUT_WIDTH) << act.rhs_value;                             \
     return out;                                                                \
-  case COUNTER_ARG:                                                            \
-    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
+  case TEMPLATE_VAR_ARG:                                                       \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << "counter_" << act.rhs_value;                                        \
     return out;                                                                \
   case PARAMETER_ARG:                                                          \
-    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
-        << setw( VALUE_OUT_WIDTH ) << act.rhs_value;                           \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
+        << setw(VALUE_OUT_WIDTH) << act.rhs_value;                             \
     return out;                                                                \
   case REF_PARAMETER_ARG:                                                      \
-    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
-        << setw( VALUE_OUT_WIDTH ) << "counter_" << act.rhs_value;             \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
+        << setw(VALUE_OUT_WIDTH) << "counter_" << act.rhs_value;               \
     return out;                                                                \
   case FUN_POINTER_ARG:                                                        \
-    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
-        << setw( VALUE_OUT_WIDTH ) << "function *" << act.rhs_value;           \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
+        << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;             \
     return out;                                                                \
   case SELECT_VAR_ARG:                                                         \
-    out << "counter_" << act.lhs_value << setw( OP_OUT_WIDTH ) << op_str       \
-        << setw( VALUE_OUT_WIDTH ) << "function *" << act.rhs.name;            \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
+        << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs.name;              \
   case EMPTY_ARG:                                                              \
-    assert( false );                                                           \
+    assert(false);                                                             \
   }
 
 class CounterAction {
 public:
-  CounterAction(const Argument& out_lhs, const  Action_e & ee, const Argument & out_rhs ):lhs( out_lhs), action(ee), rhs( out_rhs)   {  }
-  
-  void operator()( int *counter_value ) const {
+  CounterAction(const Argument &out_lhs, const Action_e &ee,
+                const Argument &out_rhs)
+      : lhs(out_lhs), action(ee), rhs(out_rhs) {}
 
-    switch ( action ) {
+  void operator()(int *counter_value) const {
+
+    switch (action) {
     case CALL_ACTION:
-      ( (IndexFun_t) lhs_value )( counter_value );
+      ((IndexFun_t)lhs_value)(counter_value);
       return;
     case ASSIGNMENT_ACTION: {
-      ACTION_TYPE_CASE( = );
+      ACTION_TYPE_CASE(=);
     }
     case SELF_INC_ACTION: {
-      ACTION_TYPE_CASE( += );
+      ACTION_TYPE_CASE(+=);
     }
     case SELF_DEC_ACTION: {
-      ACTION_TYPE_CASE( -= );
+      ACTION_TYPE_CASE(-=);
     }
     }
   }
-  CounterAction *copy() const { return new CounterAction( lhs, action, rhs ); }
-  void           globalUpdate( const vector<int> &counter_map,
-                               const vector<int> &parameter_value ) {
+  CounterAction *copy() const { return new CounterAction(lhs, action, rhs); }
+  void globalUpdate(const vector<int> &counter_map,
+                    const vector<int> &parameter_value) {
     lhs_value = lhs.value;
     rhs_value = rhs.value;
 
-    switch ( lhs.type ) {
+    switch (lhs.type) {
     case CONST_ARG:
-      assert( false );
+      assert(false);
       break;
-    case COUNTER_ARG:
+    case TEMPLATE_VAR_ARG:
       break;
     case PARAMETER_ARG:
-      assert( false );
+      assert(false);
       break;
     case REF_PARAMETER_ARG:
-      lhs_value = counter_map[ lhs.value ];
+      lhs_value = counter_map[lhs.value];
       break;
     case FUN_POINTER_ARG:
       break;
     case SELECT_VAR_ARG:
       break;
     case EMPTY_ARG:
-      assert( false );
+      assert(false);
     }
-    switch ( rhs.type ) {
+    switch (rhs.type) {
     case CONST_ARG:
       break;
-    case COUNTER_ARG:
+    case TEMPLATE_VAR_ARG:
       break;
     case PARAMETER_ARG:
-      rhs_value = parameter_value[ rhs.value ];
+      rhs_value = parameter_value[rhs.value];
       break;
     case REF_PARAMETER_ARG:
-      rhs_value = counter_map[ rhs.value ];
+      rhs_value = counter_map[rhs.value];
       break;
     case FUN_POINTER_ARG:
       break;
     case SELECT_VAR_ARG:
       break;
     case EMPTY_ARG:
-      assert( false );
+      assert(false);
     }
   }
-  friend ostream &operator<<( ostream &out, const CounterAction &act ) {
-    switch ( act.action ) {
+  friend ostream &operator<<(ostream &out, const CounterAction &act) {
+    switch (act.action) {
     case CALL_ACTION:
       out << "call function point" << act.lhs_value;
       return out;
     case ASSIGNMENT_ACTION: {
-      ACTION_TYPE_CASE_OUT( "=" );
+      ACTION_TYPE_CASE_OUT("=");
     }
     case SELF_INC_ACTION: {
-      ACTION_TYPE_CASE_OUT( "+=" );
+      ACTION_TYPE_CASE_OUT("+=");
     }
     case SELF_DEC_ACTION: {
-      ACTION_TYPE_CASE_OUT( "-=" );
+      ACTION_TYPE_CASE_OUT("-=");
     }
     }
   }
 
 private:
-  Argument     lhs;
-  Action_e     action;
-  Argument     rhs;
+  Argument lhs;
+  Action_e action;
+  Argument rhs;
   int_fast64_t lhs_value;
   int_fast64_t rhs_value;
 };
