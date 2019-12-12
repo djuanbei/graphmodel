@@ -20,7 +20,7 @@ UppaalParser::UppaalParser( const string &xmlfile ) {
 }
 
 int UppaalParser::parseDeclaration( XML_P declaration ) {
-  if ( NULL == declaration ) {
+  if ( nullptr == declaration ) {
     return 0;
   }
 
@@ -34,7 +34,7 @@ int UppaalParser::parseDeclaration( XML_P declaration ) {
 
 int UppaalParser::parseTemplate( child_type templates ) {
 
-  if ( NULL == templates ) {
+  if ( nullptr == templates ) {
     return 0;
   }
   int allVarNum = system_data.getVarNum();
@@ -50,14 +50,14 @@ int UppaalParser::parseTemplate( child_type templates ) {
 
     XML_P declaration = ( *it )->getOneChild( DECLARATION_STR );
 
-    if ( NULL != declaration ) {
+    if ( nullptr != declaration ) {
       string dec_content = declaration->getValue();
       parseProblem( dec_content, &template_data );
     }
 
     XML_P parameter = ( *it )->getOneChild( PARAMETER_STR );
 
-    if ( NULL != parameter ) {
+    if ( nullptr != parameter ) {
       parseTemplateParamter( template_data, parameter );
     }
 
@@ -68,7 +68,7 @@ int UppaalParser::parseTemplate( child_type templates ) {
 
     XML_P init_conf = ( *it )->getOneChild( INIT_STR );
 
-    if ( NULL != init_conf ) {
+    if ( nullptr != init_conf ) {
       string loc = init_conf->getAttrValue( REF_STR );
       template_data.setInitialLoc( template_data.getId( LOCATION_T, loc ) );
     }
@@ -97,7 +97,7 @@ int UppaalParser::parseTemplate( child_type templates ) {
 
 int UppaalParser::parseSystem( XML_P system ) {
 
-  assert( NULL != system );
+  assert( nullptr != system );
   UppaalData::IS_SYSTEM_PROCEDURE = true;
   string content                  = system->getValue();
   parseProblem( content, &system_data );
@@ -185,14 +185,14 @@ vector<INT_TAS_t::L_t> UppaalParser::parseLocation( UppaalData &template_data,
     int location_id = template_data.getId( LOCATION_T, id_str );
 
     INT_TAS_t::L_t location( location_id );
-    if ( NULL != ( *lit )->getOneChild(
+    if ( nullptr != ( *lit )->getOneChild(
                      NAME_STR ) ) { // Not evvery location require name property
       string location_name = ( *lit )->getOneChild( NAME_STR )->getValue();
       location.setName( location_name );
     }
 
     child_type labels = ( *lit )->getChild( LABEL_STR );
-    if ( NULL != labels ) {
+    if ( nullptr != labels ) {
       for ( child_iterator llit = labels->begin(); llit != labels->end();
             llit++ ) {
         string kind = "";
@@ -245,7 +245,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition( UppaalData &template_data,
     INT_TAS_t::T_t transition(src,  snk );
 
     child_type labels = ( *tit )->getChild( LABEL_STR );
-    if ( NULL != labels ) {
+    if ( nullptr != labels ) {
 
       for ( child_iterator llit = labels->begin(); llit != labels->end();
             llit++ ) {
@@ -326,43 +326,50 @@ void UppaalParser::parseLabel( UppaalData &template_data, string guards ) {
 }
 
 int UppaalParser::setCounter() {
-  int counter_num = system_data.getTotalCounterNum();
+//  int counter_num = system_data.getTotalCounterNum();
   
-  sys.setCounterNum( counter_num );
+  //sys.setCounterNum( counter_num );
   for ( auto e : system_data.counter_id_map ) {
-    Counter counter( 0, MAX_COUNTER_VALUE );
-    int     v = system_data.getValue( INT_T, e.first );
-    counter.setValue( v );
-    sys.setCounter( e.second, counter );
+    // Counter counter( 0, MAX_COUNTER_VALUE );
+    // int     v = system_data.getValue( INT_T, e.first );
+    // counter.setValue( v );
+    
+    // sys.setCounter( e.second, counter );
+    sys.addInt( e.first);
 
   }
 
   for ( auto temp : template_map ) {
     for ( auto e : temp.second.counter_id_map ) {
-      Counter counter( 0, MAX_COUNTER_VALUE );
-      int     v = temp.second.getValue( INT_T, e.first );
-      counter.setValue( v );
-      sys.setCounter( e.second, counter );
+      // Counter counter( 0, MAX_COUNTER_VALUE );
+      // int     v = temp.second.getValue( INT_T, e.first );
+      // counter.setValue( v );
+      temp.second.tat->addInt( e.first);
+      
+          //    sys.setCounter( e.second, counter );
     }
   }
   return 0;
 }
 int UppaalParser::setChannel() {
-  int channel_num = system_data.getTotalChannelNum();
-  sys.setChannelNum( channel_num );
+  // int channel_num = system_data.getTotalChannelNum();
+  // sys.setChannelNumber( channel_num );
   for ( auto e : system_data.channel_id_map ) {
     int     v = system_data.getValue( CHAN_T, e.first );
-    Channel ch;
-    ch.type = (CHANNEL_TYPE) v;
-    sys.setChannel( e.second, ch );
+    // Channel ch;
+    // ch.type = (CHANNEL_TYPE) v;
+    sys.addChan(e.first, 1, (CHANNEL_TYPE) v );
+    //sys.setChannel( e.second, ch );
   }
 
   for ( auto temp : template_map ) {
     for ( auto e : temp.second.channel_id_map ) {
       int     v = temp.second.getValue( CHAN_T, e.first );
-      Channel ch;
-      ch.type = (CHANNEL_TYPE) v;
-      sys.setChannel( e.second, ch );
+      // Channel ch;
+      // ch.type = (CHANNEL_TYPE) v;
+      // sys.setChannel( e.second, ch );
+      temp.second.tat->addChan( e.first, 1, (CHANNEL_TYPE) v);
+      
     }
   }
   return 0;

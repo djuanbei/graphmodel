@@ -55,8 +55,9 @@ void *createConstraint( Argument first, Argument second, COMP_OPERATOR op,
     return InstanceFactory::getInstance().createOneRefCounterConstraint(
         first.value, op, rhs.value );
   }
+  return nullptr;
 
-  assert( false );
+  //  assert( false );
 }
 
 } // namespace graphsat

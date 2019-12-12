@@ -109,6 +109,10 @@ bool VarDecl::contain( const string &n ) const {
   }
 
   return false;
+  
+}
+int VarDecl::getChanNumber( ) const{
+  return getTypeNumber( CHAN_T);
 }
 int VarDecl::getCounterNumber() const { return getTypeNumber( INT_T ); }
 int VarDecl::getClockNumber() const { return getTypeNumber( CLOCK_T ); }

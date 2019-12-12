@@ -120,6 +120,9 @@ struct Argument {
   }
   Argument( ARGUMENT_TYPE t, const string &n ):type( t), value( 0), name( n) {
   }
+  void setIndex(const shared_ptr<Argument>&  out_index ){
+    index=out_index;
+  }
   
 
  
@@ -190,6 +193,11 @@ const int DEFAULT_COUNTER_LOWER = 0;
 const int DEFAULT_COUNTER_UPPER = 100;
 
 const static int NO_DEF = -1;
+
+const static string LOC_NAME_PRE="Loc_";
+const static string TRANSITION_NAME_PRE="Tran_";
+
+const static string CLOCK_NAME_PRE="c_";
 
 
 

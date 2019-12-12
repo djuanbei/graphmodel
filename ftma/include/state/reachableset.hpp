@@ -59,11 +59,11 @@ public:
   ~ReachableSet() {
     reach_set.clear();
     manager->destroyState( cache_state );
-    cache_state = NULL;
+    cache_state = nullptr;
     manager->destroyState( convert_C_t );
-    convert_C_t = NULL;
+    convert_C_t = nullptr;
     delete[] convert_UINT;
-    convert_UINT = NULL;
+    convert_UINT = nullptr;
     while ( !wait_set.empty() ) {
       State_t *temp_state = wait_set.front();
       wait_set.pop_front();

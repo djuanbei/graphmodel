@@ -49,7 +49,9 @@ public:
 
   vector<int> getClockMaxValue() const { return clock_max_value; }
 
-  int getClockNum() const { return data.getTypeNum( CLOCK_T ); }
+  int getClockNumber() const { return data.getTypeNum( CLOCK_T ); }
+  
+  int getChannelNumber() const {return data.getTypeNum( CHAN_T );}
 
   void setInitialLoc( int loc ) { initial_loc = loc; }
 
@@ -81,7 +83,7 @@ private:
     initial_loc = -1;
   }
   AgentTemplate( const AgentTemplate &other )
-      : sys( NULL ) {
+      : sys( nullptr ) {
     assert( false );
   }
 

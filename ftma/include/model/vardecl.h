@@ -89,7 +89,12 @@ public:
   int operator[]( const string &k ) const;
 
   int getCounterNumber() const;
+
+  int getChanNumber( ) const;
+  
+  
   int getClockNumber() const;
+  
 
   int getKeyStart( const string &key ) const;
 
@@ -98,8 +103,7 @@ protected:
 
   map<string, int>     const_values;
   vector<TypeDefArray> self_types;
-  // map<string, TypeDefArray> self_types;
-
+  
   int getTypeNumber( const int type ) const;
 };
 } // namespace graphsat

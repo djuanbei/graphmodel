@@ -43,7 +43,11 @@ public:
     return agent_tempate->clock_max_value;
   }
 
-  int getClockNum() const { return agent_tempate->getClockNum(); }
+  int getClockNumber() const { return agent_tempate->getClockNumber(); }
+  
+  int getChannelNumber() const{
+    return agent_tempate->getChannelNumber();
+  }
 
   int getInitialLoc() const { return agent_tempate->initial_loc; }
 
@@ -77,7 +81,7 @@ public:
   
   int getStart(const TYPE_T type, const string &key ) const{
     int start_loc = agent_tempate->getStart( type);
-    start_loc += agent_tempate->getTypeNumber( type) * ( id - 1 );
+    start_loc += agent_tempate->getTypeNumber( type) * ( id );
     start_loc += agent_tempate->getKeyStart( key );
     return start_loc;
   }
@@ -101,7 +105,7 @@ public:
         re.value=arg.value;
         break;
       case COUNTER_ARG:
-        re.value=getStart( arg.name);
+        re.value=getStart(INT_T, arg.name);
         break;
       case PARAMETER_ARG:
         re.value=parameter.getParameter(arg.value );
@@ -118,7 +122,7 @@ public:
       case EMPTY_ARG:
         break;
     }
-    if( arg.index!=NULL){
+    if( arg.index!=nullptr){
       re.index.reset( new RealArgument( to_real(*arg.index  ) ) );
     }
 

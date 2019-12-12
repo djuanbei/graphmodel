@@ -225,27 +225,27 @@ public:
   void addClockConstraint( int clock1_id, int clock2_id, COMP_OPERATOR op,
                            int rhs, int parameter_id = -10 );
   int  getNextCounterId() {
-    if ( NULL == parent ) {
+    if ( nullptr == parent ) {
       return next_counter_id++;
     }
     return parent->getNextCounterId();
   }
 
   int getNextChannelId() {
-    if ( NULL == parent ) {
+    if ( nullptr == parent ) {
       return next_channel_id++;
     }
     return parent->getNextChannelId();
   }
   int getTotalCounterNum() const {
-    if ( NULL == parent ) {
+    if ( nullptr == parent ) {
       return next_counter_id;
     }
     return parent->getTotalCounterNum();
   }
 
   int getTotalChannelNum() const {
-    if ( NULL == parent ) {
+    if ( nullptr == parent ) {
       return next_channel_id;
     }
     return parent->getTotalChannelNum();

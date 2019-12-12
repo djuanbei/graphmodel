@@ -85,31 +85,31 @@ bool ClockConstraint::isSat( const ClockConstraint &cons ) const {
 std::ostream &operator<<( std::ostream &out, const ClockConstraint &cons ) {
   if ( cons.clock_x >= 0 && cons.clock_y >= 0 ) {
     if ( isStrict<int>( cons.matrix_value ) ) {
-      out << "x_" << cons.clock_x << " - "
-          << "x_" << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
+      out << CLOCK_NAME_PRE << cons.clock_x << " - "
+          << CLOCK_NAME_PRE << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
           << getRight( cons.matrix_value );
     } else {
-      out << "x_" << cons.clock_x << " - "
-          << "x_" << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
+      out << CLOCK_NAME_PRE << cons.clock_x << " - "
+          << CLOCK_NAME_PRE << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
           << getRight( cons.matrix_value );
     }
   } else if ( cons.clock_x < 0 ) {
     if ( isStrict<int>( cons.matrix_value ) ) {
       out << "0     - "
-          << "x_" << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
+          << CLOCK_NAME_PRE << cons.clock_y << setw( 2 ) << "<" << setw( 5 )
           << getRight( cons.matrix_value );
     } else {
       out << "0     - "
           << " - "
-          << "x_" << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
+          << CLOCK_NAME_PRE << cons.clock_y << setw( 2 ) << "<=" << setw( 5 )
           << getRight( cons.matrix_value );
     }
   } else {
     if ( isStrict<int>( cons.matrix_value ) ) {
-      out << "x_" << cons.clock_x << "          <  "
+      out << CLOCK_NAME_PRE << cons.clock_x << "          <  "
           << getRight( cons.matrix_value );
     } else {
-      out << "x_" << cons.clock_x << "          <= " << setw( 5 )
+      out << CLOCK_NAME_PRE << cons.clock_x << "          <= " << setw( 5 )
           << getRight( cons.matrix_value );
     }
   }

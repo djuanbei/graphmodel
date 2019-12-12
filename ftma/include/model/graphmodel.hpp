@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef __TIMED_AUTOMATA_
-#define __TIMED_AUTOMATA_
+#ifndef __GRAPH_MODEL_
+#define __GRAPH_MODEL_
 #include <vector>
 
 #include "action/counteraction.h"
@@ -49,7 +49,7 @@ public:
 
   AgentSystem() {
     clock_max_value.push_back( 0 );
-    clock_num = 0;
+    counter_num=clock_num=chan_num= 0;
   }
 
   shared_ptr<AgentTemplate_t> createTemplate() {
@@ -61,41 +61,30 @@ public:
 
   AgentSystem &operator+=( Agent_t &agent ) {
 
-    transfrom( agent );
     agents.push_back( agent );
-    initial_loc.push_back( agent.getInitialLoc() );
-    vec_clock_nums.push_back( agent.getClockNum() );
 
-    for ( size_t i = 1; i < agent.getClockMaxValue().size(); i++ ) {
-      clock_max_value.push_back( agent.getClockMaxValue()[ i ] );
-    }
-
-    difference_cons.insert( difference_cons.end(),
-                            agent.difference_cons.begin(),
-                            agent.difference_cons.end() );
-    //update();
     return *this;
   }
-  // TODO: del
-  void setCounterNum( int n ) {
-    assert( agents.empty() );
-    counters.resize( n );
-  }
-  // TODO: del
-  void setCounter( int id, Counter c ) {
-    assert( agents.empty() );
-    counters[ id ] = c;
-  }
-  void setChannelNum( int n ) {
-    assert( agents.empty() );
-    channels.resize( n );
-  }
-  void setChannel( int id, Channel ch ) {
-    assert( agents.empty() );
-    channels[ id ] = ch;
-  }
+//  // TODO: del
+//  void setCounterNum( int n ) {
+//    assert( agents.empty() );
+//    counters.resize( n );
+//  }
+//  // TODO: del
+//  void setCounter( int id, Counter c ) {
+//    assert( agents.empty() );
+//    counters[ id ] = c;
+//  }
+//  void setChannelNumber( int n ) {
+//    assert( agents.empty() );
+//    channels.resize( n );
+//  }
+//  void setChannel( int id, Channel ch ) {
+//    assert( agents.empty() );
+//    channels[ id ] = ch;
+//  }
 
-  int getComponentNum() const { return (int) agents.size(); }
+  int getComponentNumber() const { return (int) agents.size(); }
 
   shared_ptr<StateManager_t> getStateManager()  const {
     return stateManager;
@@ -103,16 +92,30 @@ public:
 
   struct AgentCMP {
     bool operator()( const Agent_t &lhs, const Agent_t &rhs ) const {
-      return ( lhs.agent_tempate->id < rhs.agent_tempate->id );
+      if( lhs.agent_tempate->id <rhs.agent_tempate->id ){
+        return true;
+      }
+      if( lhs.agent_tempate->id >rhs.agent_tempate->id ){
+        return false;
+      }
+      return ( lhs.id < rhs.id );
+      
     }
   };
-
+  
   
 
   void build() {
     AgentCMP cmp;
     sort( agents.begin(), agents.end(), cmp );
-
+    counter_num=getTypeNumber( INT_T);
+    clock_num=getTypeNumber( CLOCK_T);
+    chan_num=getTypeNumber( CHAN_T);
+    difference_cons.clear();
+   
+    for(auto & e: agents){
+      transfrom(e);
+    }
     vector<int> temp_clock_upperbound( 2 * clock_num + 2, 0 );
 
     for ( int i = 0; i < clock_num + 1; i++ ) {
@@ -149,7 +152,7 @@ public:
 
     stateManager.reset( new StateManager_t(
         (int) agents.size(), counters, clock_num, temp_clock_upperbound,
-        difference_cons, node_n, link_num, (int) channels.size() ) );
+        difference_cons, node_n, link_num, chan_num ) );
   }
 
   template <typename D> void addInitState( D &data ) const {
@@ -223,14 +226,34 @@ private:
         agent.difference_cons[ i ].clockShift( clock_num );
       }
     }
-    for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
-      if ( agent.transitions[ i ].hasChannel() ) {
-        agent.transitions[ i ].setChanType(
-            channels[ agent.transitions[ i ].getChannel()->gloabl_id ].type );
+    
+    if(chan_num>0){
+      for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
+        agent.transitions[ i ].chanShift( chan_num );
       }
     }
+    
+//    for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
+//      if ( agent.transitions[ i ].hasChannel() ) {
+//        
+//        agent.transitions[ i ].setChanType(
+//            channels[ agent.transitions[ i ].getChannel()->gloabl_id ].type );
+//      }
+//    }
 
-    clock_num += agent.getClockNum();
+    clock_num += agent.getClockNumber();
+    chan_num+= agent.getChannelNumber();
+    
+    initial_loc.push_back( agent.getInitialLoc() );
+    vec_clock_nums.push_back( agent.getClockNumber() );
+    
+    for ( size_t i = 1; i < agent.getClockMaxValue().size(); i++ ) {
+      clock_max_value.push_back( agent.getClockMaxValue()[ i ] );
+    }
+    
+    difference_cons.insert( difference_cons.end(),
+                           agent.difference_cons.begin(),
+                           agent.difference_cons.end() );
   }
 
   /**
@@ -240,10 +263,12 @@ private:
   vector<shared_ptr<AgentTemplate_t>> templates;
 
   vector<Agent_t> agents;
-  vector<Channel> channels;
-  vector<Counter> counters; // TODO: del
+ // vector<Channel> channels;
+ // vector<Counter> counters; // TODO: del
 
   int clock_num;
+  int counter_num;
+  int chan_num;
 
   vector<int> initial_loc;
   vector<int> vec_clock_nums;

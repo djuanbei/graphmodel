@@ -40,7 +40,7 @@ template <typename SYS> class Reachability {
 public:
   Reachability( const SYS &s )
       : sys( s ) {
-    component_num = sys.getComponentNum();
+    component_num = sys.getComponentNumber();
     manager       = sys.getStateManager();
 
     cache_state = manager->newState();
@@ -48,13 +48,13 @@ public:
   }
 
   ~Reachability() {
-    if ( cache_state != NULL ) {
+    if ( cache_state != nullptr ) {
       manager->destroyState( cache_state );
-      cache_state = NULL;
+      cache_state = nullptr;
     }
-    if ( next_state != NULL ) {
+    if ( next_state != nullptr ) {
       manager->destroyState( next_state );
-      next_state = NULL;
+      next_state = nullptr;
     }
   }
   template <typename D> void computeAllReachableSet( D &data ) {

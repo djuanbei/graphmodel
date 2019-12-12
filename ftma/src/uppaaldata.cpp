@@ -8,7 +8,7 @@ UppaalData::UppaalData() {
   init_loc            = 0;
   name                = "";
 
-  parent = NULL;
+  parent = nullptr;
 
   next_counter_id = 0;
   next_channel_id = 1; // the channel starts with 1
@@ -48,7 +48,7 @@ TYPE_T UppaalData::getType( const string &name ) const {
     }
   }
 
-  if ( NULL != parent ) {
+  if ( nullptr != parent ) {
     return parent->getType( name );
   }
 
@@ -74,7 +74,7 @@ bool UppaalData::isConstant( const string &name ) const {
       return true;
     }
   }
-  if ( NULL != parent ) {
+  if ( nullptr != parent ) {
     return parent->isConstant( name );
   }
   return false;
@@ -94,7 +94,7 @@ int UppaalData::getConstant( const string &name ) const {
       return value;
     }
   }
-  if ( NULL != parent ) {
+  if ( nullptr != parent ) {
     return parent->isConstant( name );
   }
   return UN_DEFINE;
@@ -118,7 +118,7 @@ int UppaalData::getGlobalCounterId( const string &name ) {
     return re;
   }
 
-  if ( NULL != parent ) {
+  if ( nullptr != parent ) {
     return parent->getGlobalCounterId( name );
   }
   return NOT_FOUND;
@@ -135,7 +135,7 @@ int UppaalData::getGlobalChannelId( const string &name ) {
     return re;
   }
 
-  if ( NULL != parent ) {
+  if ( nullptr != parent ) {
     return parent->getGlobalChannelId( name );
   }
   return NOT_FOUND;

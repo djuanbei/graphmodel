@@ -94,12 +94,17 @@ void Transition::operator()( const int component, const shared_ptr<const TMState
   //    return re_state;
 }
 
-void Transition::clockShift( int shift ) {
+void Transition::clockShift(const int shift ) {
   for ( size_t i = 0; i < guards.size(); i++ ) {
     guards[ i ].clockShift( shift );
   }
   for ( size_t i = 0; i < resets.size(); i++ ) {
     resets[ i ].first += shift;
+  }
+}
+void Transition::chanShift( const int shift){
+  if(has_channel ){
+    channel->shift( shift);
   }
 }
 

@@ -149,7 +149,9 @@ public:
                    const shared_ptr<const TMStateManager> &manager,
                    int *                                   re_state ) const;
 
-  void clockShift( int shift );
+  void clockShift(const int shift );
+
+  void chanShift( const int shift );
 
 private:
   int source, target; // source location and target location of this

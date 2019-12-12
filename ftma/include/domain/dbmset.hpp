@@ -172,7 +172,7 @@ public:
         return data->mapD[ index ];
       }
       if ( index >= dSize + data->recoveryD.size() ) {
-        return NULL;
+        return nullptr;
       }
 
       return data->recoveryD[ index - dSize ];
@@ -219,7 +219,7 @@ public:
         return data->mapD[ index ];
       }
       if ( index >= dSize + data->recoveryD.size() ) {
-        return NULL;
+        return nullptr;
       }
 
       return data->recoveryD[ index - dSize ];

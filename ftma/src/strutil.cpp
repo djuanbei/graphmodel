@@ -10,8 +10,8 @@ string getFunArg(const string &fun ){
   if( end== string::npos){
     return "";
   }
-  if( end>start){
-    return fun.substr(start, end-start );
+  if( end>start+1){
+    return trim(fun.substr(start+1, end-start-1 ));
   }
   return "";
   

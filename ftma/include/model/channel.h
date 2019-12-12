@@ -27,6 +27,9 @@ public:
     is_ref    = false;
     action    = a;
   }
+  void shift( const int id){
+    //TODO:
+  }
 
   void setType( const CHANNEL_TYPE t ) { type = t; }
   void setIsRef( bool b ) { is_ref = b; }
@@ -36,15 +39,18 @@ public:
     }
   }
 
-  virtual int  getGlobalId( const int *state ) const { return gloabl_id; }
+  virtual int  getGlobalId(  int *state ) const { return gloabl_id; }
   int          getType() const { return type; }
   bool         isSend() const { return CHANNEL_SEND == action; }
   bool         isRecive() const { return CHANNEL_RECEIVE == action; }
+
+ protected:
+  int            local_id;
+ public:
   int          gloabl_id; // start from 1
   CHANNEL_TYPE type;
 
-protected:
-  int            local_id;
+ protected:
   CHANNEL_ACTION action;
   bool           is_ref;
 };

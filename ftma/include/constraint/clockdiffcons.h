@@ -8,8 +8,8 @@
  *
  *
  */
-#ifndef LIN_SIMP_CONS_HPP
-#define LIN_SIMP_CONS_HPP
+#ifndef LIN_SIMP_CONS_H
+#define LIN_SIMP_CONS_H
 
 
 #include <iomanip>

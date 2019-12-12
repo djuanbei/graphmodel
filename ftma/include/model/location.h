@@ -8,8 +8,8 @@
  *
  *
  */
-#ifndef __LOCATION_HPP
-#define __LOCATION_HPP
+#ifndef __LOCATION_H
+#define __LOCATION_H
 
 #include <iostream>
 #include <string>
@@ -31,13 +31,13 @@ public:
   explicit Location( int loc_id ) {
     location_id = loc_id;
     type        = NORMOAL_LOC;
-    name        = to_string( loc_id );
+    name        =LOC_NAME_PRE+to_string( loc_id );
   }
 
   explicit Location( int loc_id, Location_Type etype ) {
     location_id = loc_id;
     type        = etype;
-    name        = to_string( loc_id );
+    name        = LOC_NAME_PRE+to_string( loc_id );
   }
 
   int getId() const { return location_id; }
@@ -123,11 +123,13 @@ public:
    */
   Location &operator+=( ClockConstraint &cs );
 
-  void clockShift( int shift ) {
+  void clockShift(const int shift ) {
     for ( size_t i = 0; i < invariants.size(); i++ ) {
       invariants[ i ].clockShift( shift );
     }
   }
+  
+
 
   // string to_string( ) const{
   //   string re_str="name: "+name;

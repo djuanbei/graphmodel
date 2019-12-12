@@ -21,7 +21,7 @@ int getValue(const RealArgument & arg,  const int * counter_value  ){
     case EMPTY_ARG:
       return 0;
   }
-  if( NULL!= arg.index){
+  if( nullptr!= arg.index){
     int shift=getValue(arg.index, counter_value );
     return counter_value[ arg.value+shift ];
   }
@@ -48,7 +48,7 @@ int getValue(const shared_ptr<RealArgument> & arg,  const int * counter_value  )
     case EMPTY_ARG:
       return 0;
   }
-  if( NULL!= arg->index){
+  if( nullptr!= arg->index){
     int shift=getValue(arg->index, counter_value );
     return counter_value[ arg->value+shift ];
   }

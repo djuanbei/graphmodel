@@ -21,9 +21,9 @@ using namespace rapidxml;
 using namespace std;
 
 static int parse( xml_node<> *root, XmlConfig *cfg ) {
-  if ( root == NULL ) return 1;
+  if ( root == nullptr ) return 1;
 
-  for ( rapidxml::xml_node<> *node = root->first_node(); node != NULL;
+  for ( rapidxml::xml_node<> *node = root->first_node(); node != nullptr;
         node                       = node->next_sibling() ) {
     string name = trim( string( node->name() ) );
     if ( name.size() > 0 ) {
@@ -38,7 +38,7 @@ static int parse( xml_node<> *root, XmlConfig *cfg ) {
   cfg->setValue( value );
 
   for ( rapidxml::xml_attribute<char> *attr = root->first_attribute();
-        attr != NULL; attr                  = attr->next_attribute() ) {
+        attr != nullptr; attr                  = attr->next_attribute() ) {
     char *attrname = attr->name();
     char *attrval  = attr->value();
     cfg->setAttr( trim( string( attrname ) ), trim( string( attrval ) ) );
@@ -101,7 +101,7 @@ int XmlConfig::addChild( string key, const XmlConfig *c ) {
 }
 
 child_type XmlConfig::getChild( const string s ) const {
-  child_type               ptr( NULL );
+  child_type               ptr( nullptr );
   XML_NODE::const_iterator it = children.find( s );
 
   if ( it != children.end() ) {
@@ -112,7 +112,7 @@ child_type XmlConfig::getChild( const string s ) const {
 }
 
 const XmlConfig *XmlConfig::getOneChild( string id ) const {
-  const XmlConfig *        ptr( NULL );
+  const XmlConfig *        ptr( nullptr );
   XML_NODE::const_iterator it = children.find( id );
   if ( it != children.end() ) {
     if ( !it->second.empty() ) {

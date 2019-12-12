@@ -63,11 +63,11 @@ template <typename T> class SingleElem {
 public:
   SingleElem() {
     stateId = -1;
-    value   = NULL;
+    value   = nullptr;
   }
   ~SingleElem() {
     delete value;
-    value = NULL;
+    value = nullptr;
   }
 
   SingleElem( int id, T *v ) {
