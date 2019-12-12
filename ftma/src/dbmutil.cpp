@@ -9,11 +9,12 @@ int getValue(const RealArgument & arg,  const int * counter_value  ){
       return arg.value;
     case  TEMPLATE_VAR_ARG:
       break;
+    case SYSTEM_VAR_ARG:
+      break;
     case PARAMETER_ARG:
       return arg.value;
     case REF_PARAMETER_ARG:
       break;
-
     case FUN_POINTER_ARG:
       return (( ConstraintFun_t)arg.value)( counter_value);
     case SELECT_VAR_ARG:

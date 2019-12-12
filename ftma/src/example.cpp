@@ -178,8 +178,8 @@ std::uniform_int_distribution<int> distribution( 0, 1000 );
 void example2( void ) {
   INT_TAS_t                                       sys;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
-  Clock                                             x    = tmt1->addClock( "x" );
-  Clock                                             y    = tmt1->addClock( "y" );
+  Argument                                             x    = tmt1->addClock( "x" );
+  Argument                                             y    = tmt1->addClock( "y" );
   vector<typename INT_TAS_t::T_t>                 es;
   vector<typename INT_TAS_t::L_t>                 ls;
   typename INT_TAS_t::L_t                         L0( 0 );
@@ -188,19 +188,19 @@ void example2( void ) {
   typename INT_TAS_t::T_t E00a( L0, L0 );
   Clock ZERO;
   E00a.addReset( y,0 );                     // y-->0
-  typename INT_TAS_t::CS_t cs1( y, Clock::ZERO, LE, 2 ); // y<=2
+  typename INT_TAS_t::CS_t cs1( y, LE, Argument(2) ); // y<=2
   E00a += cs1;
 
   typename INT_TAS_t::T_t E00b( L0, L0 );
   //pair<int, int>          reset2( x, 0 );
   E00b.addReset( x,0 );                     // x-->0
-  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, 2 ); // x<=2
+  typename INT_TAS_t::CS_t cs2( x,  LE, Argument(2) ); // x<=2
   E00b += cs2;
 
   typename INT_TAS_t::T_t E01( L0, L1 );
 
-  typename INT_TAS_t::CS_t cs3( y, Clock::ZERO, LE, 2 ); // y<=2
-  typename INT_TAS_t::CS_t cs4( x, Clock::ZERO, GE, 4 ); // x>=4
+  typename INT_TAS_t::CS_t cs3( y,  LE, Argument( 2) ); // y<=2
+  typename INT_TAS_t::CS_t cs4( x,  GE,  Argument(4) ); // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -294,7 +294,7 @@ void fisher( int n ) {
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
   tmt1->addPara( "pid");
   
-  Clock                                             x    = tmt1->addClock( "x" );
+  Argument                                             x    = tmt1->addClock( "x" );
   //  ADD_CLOCK( tmt1, x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -303,7 +303,7 @@ void fisher( int n ) {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x,  LE, Argument( k) ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -323,7 +323,7 @@ void fisher( int n ) {
   A_req.addReset( x, 0 ); // x-->0
 
   typename INT_TAS_t::T_t  req_wait( req, wait );
-  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x,  LE, Argument(k) ); // x <= k
   req_wait += cs2;
 
 
@@ -348,7 +348,7 @@ void fisher( int n ) {
   Argument rhs01( CONST_ARG, 0 );
   void *   ccs2 = createConstraint( first1, second1, EQ, rhs01 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x,  GT, Argument(k) ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( cs, A );
@@ -454,7 +454,7 @@ void incrementalTest() {
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x, LE, Argument( k) ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -473,7 +473,7 @@ void incrementalTest() {
   A_req.addReset( x, 0 );// x-->0
 
   typename INT_TAS_t::T_t  req_wait( req, wait );
-  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x,  LE,  Argument(k) ); // x <= k
   req_wait += cs2;
 
   req_wait.addReset( x, 0 );// x-->0
@@ -499,7 +499,7 @@ void incrementalTest() {
 
   void *ccs2 = createConstraint( first4, second4, EQ, rhs4 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x,  GT, Argument( k) ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( cs, A );

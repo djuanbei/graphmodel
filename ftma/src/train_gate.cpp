@@ -36,13 +36,13 @@ INT_TAS_t TrainGate::generate( int n) const{
   typename INT_TAS_t::L_t Start( 3 );
   typename INT_TAS_t::L_t Cross( 4 );
 
-  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, 20 ); // x <= 20
+  typename INT_TAS_t::CS_t cs1( x,  LE, Argument(20) ); // x <= 20
   Appr += cs1;
 
-  typename INT_TAS_t::CS_t cs0( x, Clock::ZERO, LE, 15 ); // x <= 15
+  typename INT_TAS_t::CS_t cs0( x, LE, Argument(15) ); // x <= 15
   Start += cs0;
 
-  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, 5 ); // x <= 5
+  typename INT_TAS_t::CS_t cs2( x, LE, Argument( 5) ); // x <= 5
   Cross += cs2;
 
   ls.push_back( Safe );
@@ -61,7 +61,7 @@ INT_TAS_t TrainGate::generate( int n) const{
   Safe_Appr.addReset( x, 0 );// x-->0
 
   typename INT_TAS_t::T_t  Appr_Stop( Appr, Stop );
-  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, LE, 10 ); // x<=10
+  typename INT_TAS_t::CS_t cs3( x, LE, Argument(10) ); // x<=10
   Appr_Stop += cs3;
   Appr_Stop.setChannel( new ArrayChannel( "stop", -id, true ) );
 
@@ -71,17 +71,17 @@ INT_TAS_t TrainGate::generate( int n) const{
 
   typename INT_TAS_t::T_t Start_Cross( Start, Cross );
   Start_Cross.addReset( x, 0 );
-  typename INT_TAS_t::CS_t cs4( x, Clock::ZERO, GE, 7 ); // x>=7
+  typename INT_TAS_t::CS_t cs4( x,  GE, Argument( 7) ); // x>=7
   Start_Cross += cs4;
 
   typename INT_TAS_t::T_t  Cross_Safe( Cross, Safe );
-  typename INT_TAS_t::CS_t cs5( x, Clock::ZERO, GE, 3 ); // x>=3
+  typename INT_TAS_t::CS_t cs5( x,  GE, Argument( 3) ); // x>=3
   Cross_Safe += cs5;
   Cross_Safe.setChannel( new ArrayChannel( "leave", id, true ) );
 
   typename INT_TAS_t::T_t Appr_Cross( Appr, Cross );
   Appr_Cross.addReset( x, 0 );
-  typename INT_TAS_t::CS_t cs6( x, Clock::ZERO, GE, 10 ); // x>=10
+  typename INT_TAS_t::CS_t cs6( x,  GE, Argument( 10) ); // x>=10
   Appr_Cross += cs6;
 
   es.push_back( Safe_Appr );

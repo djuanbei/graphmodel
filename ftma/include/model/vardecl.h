@@ -50,7 +50,7 @@ struct ChanDecl : public BaseDecl {
 
 class VarDecl {
 public:
-  virtual Clock addClock(const std::string &n);
+  virtual Argument addClock(const std::string &n);
 
   virtual int addInt(const BaseDecl &ch);
 
@@ -89,7 +89,7 @@ public:
 
   int getClockNumber() const;
 
-  int getKeyStart(const string &key) const;
+  int getKeyStart(const TYPE_T type, const string &key) const;
 
 protected:
   PointerData data;

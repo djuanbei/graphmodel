@@ -32,11 +32,10 @@ class ClockConstraint {
 
 public:
   
-  ClockConstraint(const Clock &clock_id1, COMP_OPERATOR eop, const int rhs);
+  ClockConstraint(const Argument &clock_id1, COMP_OPERATOR eop, const Argument& rhs);
 
-  ClockConstraint(const Clock &clock_id1, const Clock &clock_id2,
-                  COMP_OPERATOR eop, const int rhs,
-                  const int eparameter_id = -100);
+  ClockConstraint(const Argument  &clock_id1, const Argument  &clock_id2,
+                  COMP_OPERATOR eop, const Argument & rhs);
 
   void globalUpdate(const vector<int> &parameter_value);
 
@@ -73,7 +72,7 @@ public:
   int matrix_value;
 
 private:
-  int parameter_id;
+
   friend ClockConstraint randConst(const int num, const int low, const int up);
   friend class DBMFactory;
 };

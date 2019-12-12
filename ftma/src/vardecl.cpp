@@ -2,11 +2,13 @@
 
 namespace graphsat {
 
-Clock VarDecl::addClock( const string &n ) {
+Argument VarDecl::addClock( const string &n ) {
   assert( !contain( n ) );
   int re = data.getTypeNum( CLOCK_T ) + 1;
   data.addValue( CLOCK_T, n, new BaseDecl( n ) );
-  return Clock(re);
+  Argument  temp( CONST_ARG, re);
+  temp.name=n;
+  return temp;
 }
 
 int VarDecl::addInt( const string &n, int num ) {
@@ -126,16 +128,15 @@ int VarDecl::getTypeNumber( const int type ) const {
   return re;
 }
 
-int VarDecl::getKeyStart( const string &key ) const {
+int VarDecl::getKeyStart( const TYPE_T type, const string &key ) const {
   int                                  re       = 0;
-  vector<pair<string, vector<void *>>> counters = data.getValue( INT_T );
+  vector<pair<string, vector<void *>>> counters = data.getValue( type );
   for ( vector<pair<string, vector<void *>>>::const_iterator it =
             counters.begin();
         it != counters.end(); it++ ) {
     if ( ( (BaseDecl *) it->second[ 0 ] )->name == key ) {
       return re;
     }
-
     re += ( (BaseDecl *) it->second[ 0 ] )->num;
   }
   assert( false );

@@ -144,18 +144,21 @@ int UppaalData::getGlobalChannelId( const string &name ) {
 void UppaalData::addClockConstraint( int clock1_id, int clock2_id,
                                      COMP_OPERATOR op, int rhs,
                                      int parameter_id ) {
+  Argument rhs_a( rhs);
+  if(parameter_id>0 ){
+    rhs_a.type=PARAMETER_ARG;
+  }
   if ( EQ == op ) {
-    void *cs = new INT_TAS_t::CS_t( Clock(clock1_id), Clock(clock2_id), GE, rhs,
-                                    parameter_id ); // x-y<= c
+    
+    void *cs = new INT_TAS_t::CS_t( Argument(TEMPLATE_VAR_ARG, clock1_id), Argument(TEMPLATE_VAR_ARG, clock2_id), GE, rhs_a); // x-y<= c
+    
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
 
-    cs = new INT_TAS_t::CS_t( Clock(clock1_id), Clock(clock2_id), LE, rhs,
-                              parameter_id ); // x-y>= c
+    cs = new INT_TAS_t::CS_t( Argument(TEMPLATE_VAR_ARG, clock1_id), Argument( TEMPLATE_VAR_ARG,clock2_id), LE, rhs_a ); // x-y>= c
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
 
   } else {
-    void *cs = new INT_TAS_t::CS_t( Clock(clock1_id), Clock(clock2_id), op, rhs,
-                                    parameter_id ); // x op c
+    void *cs = new INT_TAS_t::CS_t( Argument(TEMPLATE_VAR_ARG, clock1_id), Argument(TEMPLATE_VAR_ARG, clock2_id), op, rhs_a ); // x op c
     addValue( CLOCK_CS_T, STRING( CLOCK_CS_T ), cs );
   }
 }

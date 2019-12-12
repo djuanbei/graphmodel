@@ -78,8 +78,11 @@ public:
   int getStart(const TYPE_T type, const string &key) const {
     int start_loc = agent_tempate->getStart(type);
     start_loc += agent_tempate->getTypeNumber(type) * (id);
-    start_loc += agent_tempate->getKeyStart(key);
+    start_loc += agent_tempate->getKeyStart(type, key);
     return start_loc;
+  }
+  int getSYSStart( const TYPE_T type, const string & key) const{
+    return agent_tempate->getSYSStart( type, key);
   }
 
   int *getValue(const TYPE_T type, int *state, const string &key) const {
@@ -90,7 +93,7 @@ public:
     return agent_tempate;
   }
 
-  RealArgument to_real(const Argument &arg) const {
+  RealArgument to_real(TYPE_T type, const Argument &arg) const {
 
     RealArgument re;
     re.type = arg.type;
@@ -100,7 +103,10 @@ public:
       re.value = arg.value;
       break;
     case TEMPLATE_VAR_ARG:
-      re.value = getStart(INT_T, arg.name);
+      re.value = getStart(type, arg.name);
+      break;
+    case SYSTEM_VAR_ARG:
+      re.value = getSYSStart(type, arg.name);
       break;
     case PARAMETER_ARG:
       re.value = parameter.getParameter(arg.value);
@@ -118,7 +124,7 @@ public:
       break;
     }
     if (arg.index != nullptr) {
-      re.index.reset(new RealArgument(to_real(*arg.index)));
+      re.index.reset(new RealArgument(to_real(type, *arg.index)));
     }
 
     return re;

@@ -307,9 +307,9 @@ ClockConstraint DBMFactory::getCons( const int *const dbm, const int i,
   assert( j <= clock_num );
   if ( isStrict( dbm[ LOC( i, j ) ] ) ) {
 
-    return ClockConstraint( Clock(i), Clock(j), LT, getRight( dbm[ LOC( i, j ) ] ) );
+    return ClockConstraint( Argument(TEMPLATE_VAR_ARG, i), Argument(TEMPLATE_VAR_ARG, j), LT, Argument( getRight( dbm[ LOC( i, j ) ] ) ));
   } else {
-    return ClockConstraint( Clock(i), Clock(j), LE, getRight( dbm[ LOC( i, j ) ] ) );
+    return ClockConstraint( Argument(TEMPLATE_VAR_ARG,i), Argument( TEMPLATE_VAR_ARG,j), LE, Argument(getRight( dbm[ LOC( i, j ) ] ) ));
   }
 }
 

@@ -157,15 +157,17 @@ public:
     return -(state[component_id]) - 1;
   }
   bool hasDiffCons() const { return !difference_constraints.empty(); }
-  int getStart(const TYPE_T type) const {
-    if (type == CLOCK_T) {
-      return 0;
-    } else if (type == INT_T) {
-      return counter_start_loc;
-    }
-    assert(false);
-    return 0;
-  }
+//  int getStart(const TYPE_T type) const {
+//    if (type == CLOCK_T) {
+//      return 0;
+//    } else if (type == INT_T) {
+//      return counter_start_loc;
+//    }else if(type==CHAN_T){
+//      return 0;
+//    }
+//    assert(false);
+//    return 0;
+//  }
 
   // int getCounterStart() const { return counter_start_loc; }
 

@@ -14,7 +14,7 @@ FisherGenerator::FisherGenerator()
   typename INT_TAS_t::L_t A( 0 );
 
   typename INT_TAS_t::L_t  req( 1 );
-  typename INT_TAS_t::CS_t cs1( x, Clock::ZERO, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs1( x,  LE, Argument(k) ); // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait( 2 );
@@ -34,7 +34,7 @@ FisherGenerator::FisherGenerator()
   A_req.addReset( x, 0 );// x-->0
 
   typename INT_TAS_t::T_t  req_wait( req, wait );
-  typename INT_TAS_t::CS_t cs2( x, Clock::ZERO, LE, k ); // x <= k
+  typename INT_TAS_t::CS_t cs2( x,  LE,  Argument(k) ); // x <= k
   req_wait += cs2;
 
 
@@ -60,7 +60,7 @@ FisherGenerator::FisherGenerator()
 
   void *ccs2 = createConstraint( first4, second4, EQ, rhs4 ); // id==pid
   wait_cs.addCounterCons( ccs2 );
-  typename INT_TAS_t::CS_t cs3( x, Clock::ZERO, GT, k ); // x> k
+  typename INT_TAS_t::CS_t cs3( x,  GT, Argument(k) ); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A( cs, A );

@@ -183,7 +183,7 @@ public:
   }
 
   int getStartLoc(const TYPE_T type, const int template_id) const {
-    int re = stateManager->getStart(type);
+    int re =0; // stateManager->getStart(type);
 
     for (auto &agent : agents) {
       if (agent.getTemplate()->id < template_id) {
@@ -193,16 +193,13 @@ public:
     return re;
   }
 
-  // int getCounterStartLoc( const int id ) const {
-  //   int re = stateManager->getStart( INT_T);
-  //   for ( auto &agent : agents ) {
-  //     if ( agent.getTemplate()->id < id ) {
-  //       re += agent.getTemplate()->getCounterNumber();
-  //     }
-  //   }
-  //   return re;
-  // }
 
+  virtual Argument addClock( const string &n ) {
+    Argument dummy=VarDecl::addClock( n);
+    dummy.type=SYSTEM_VAR_ARG;
+    return dummy;
+  }
+  
 private:
   void transfrom(Agent_t &agent) {
 

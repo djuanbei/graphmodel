@@ -3,35 +3,56 @@
 
 namespace graphsat {
 
-ClockConstraint::ClockConstraint( const Clock& clock_id1,
-                                  COMP_OPERATOR eop, const int rhs
+ClockConstraint::ClockConstraint(const Argument&  clock_id1,
+                                  COMP_OPERATOR eop, const Argument& rhs
                                   ) {
-  init( clock_id1.id, 0, eop, rhs );
-    
-}
-  
-ClockConstraint::ClockConstraint( const Clock& clock_id1, const Clock& clock_id2,
-                                  COMP_OPERATOR eop, const int rhs,
-                                  const int eparameter_id ) {
+  clock_x_arg=clock_id1;
 
-  if ( eparameter_id < 0 ) {
-    init( clock_id1.id, clock_id2.id, eop, rhs );
+  clock_y_arg.type=CONST_ARG;
+  clock_y_arg.value=0;
+  rhs_arg=rhs;
+  
+  if(clock_id1.type==TEMPLATE_VAR_ARG && rhs.type==CONST_ARG ){
+    init( clock_id1.value, 0, eop, rhs.value );
     return;
   }
-  clock_x      = clock_id1.id;
-  clock_y      = clock_id2.id;
-  op           = eop;
-  parameter_id = eparameter_id;
+  assert( false &&"At now the program has not supprt other cases.");
+
+}
+  
+ClockConstraint::ClockConstraint( const Argument& clock_id1, const Argument& clock_id2,
+                                  COMP_OPERATOR eop, const Argument& rhs ) {
+
+  clock_x_arg=clock_id1;
+  clock_y_arg=clock_id2;
+  rhs_arg=rhs;
+  if(clock_id1.type==TEMPLATE_VAR_ARG && clock_id2.type==TEMPLATE_VAR_ARG  ){
+    init(clock_id1.value, clock_id2.value, eop, rhs.value );
+    return;
+  }
+
+  // if ( eparameter_id < 0 ) {
+  //   init( clock_id1.id, clock_id2.id, eop, rhs );
+  //   return;
+  // }
+  assert( false &&"At now the program has not supprt other cases.");
+  
+  // clock_x      = clock_id1.id;
+  // clock_y      = clock_id2.id;
+  // op           = eop;
+  // parameter_id = eparameter_id;
 }
 
 void ClockConstraint::globalUpdate( const vector<int> &parameter_value ) {
-  if ( parameter_id < 0 ) {
+  if(rhs_arg.type==CONST_ARG ){
     return;
+  }else if( rhs_arg.type==PARAMETER_ARG){
+    int rhs = parameter_value[ rhs_arg.value ];
+    int id1 = clock_x;
+    int id2 = clock_y;
+    init( id1, id2, op, rhs );
   }
-  int rhs = parameter_value[ parameter_id ];
-  int id1 = clock_x;
-  int id2 = clock_y;
-  init( id1, id2, op, rhs );
+
 }
 
 void ClockConstraint::clockShift( int shift ) {
@@ -118,7 +139,19 @@ std::ostream &operator<<( std::ostream &out, const ClockConstraint &cons ) {
 
 ClockConstraint::ClockConstraint( const int clock_id1, const int clock_id2,
                                   const int rhs, bool is_strict_ref ) {
-  parameter_id = -100;
+  clock_x_arg.type=TEMPLATE_VAR_ARG;
+  clock_x_arg.value=clock_id1;
+
+  clock_y_arg.type=TEMPLATE_VAR_ARG;
+  clock_y_arg.value=TEMPLATE_VAR_ARG;
+  op=LE;
+  if( is_strict_ref){
+    op=LT;
+  }
+  rhs_arg.type=CONST_ARG;
+  rhs_arg.value=rhs;
+  
+  
   clock_x      = clock_id1;
   clock_y      = clock_id2;
   matrix_value = getMatrixValue( rhs, is_strict_ref );
@@ -168,9 +201,9 @@ ClockConstraint randConst(const int num, const int low, const int up ) {
 
   int vv = distribution1( generator );
   if ( distribution1( generator ) % 2 ) {
-    return ClockConstraint(Clock(xx), Clock(yy), LT, vv );
+    return ClockConstraint(Argument( TEMPLATE_VAR_ARG, xx), Argument( TEMPLATE_VAR_ARG ,yy), LT, Argument( vv) );
   } else {
-    return ClockConstraint(Clock( xx), Clock(yy), LE, vv );
+    return ClockConstraint(Argument( TEMPLATE_VAR_ARG, xx), Argument(TEMPLATE_VAR_ARG, yy), LE, Argument(vv) );
   }
 }
 

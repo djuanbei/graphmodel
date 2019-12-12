@@ -70,7 +70,7 @@ const static int TYPE_FAMILY_LEN = 7;
   case T:                                                                      \
     return STRING(T);
 
-#define ADD_CLOCK(T, x) Clock x = T.addClock(STRING(x));
+#define ADD_CLOCK(T, x) Argument x = T.addClock(STRING(x));
 
 #define ADD_INT(T, x) int x = T.addInt(STRING(x));
 

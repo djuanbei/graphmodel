@@ -118,8 +118,9 @@ public:
    *
    */
   // void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
-  void addReset(const Clock &clock, int v) {
-    pair<int, int> dummy(clock.id, v);
+  void addReset(const Argument &arg, int v) {
+    assert( arg.type==TEMPLATE_VAR_ARG && "At now is only support this case.");
+    pair<int, int> dummy(arg.value, v);
     resets.push_back(dummy);
   }
 
