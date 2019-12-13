@@ -155,7 +155,7 @@ namespace graphsat {
         ENUM_ITEM_STR( CHAN_ACTION_T );
         
         ENUM_ITEM_STR( REF_CHAN_ACTION_T );
-        
+        ENUM_ITEM_STR(FUN_T);
         ENUM_ITEM_STR( NO_T );
     }
   }
