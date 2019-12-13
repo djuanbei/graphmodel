@@ -30,6 +30,14 @@ do
     clang-format -i $f
 done
 
+allfiles=$(find test -name *.cpp)
+
+for f in $allfiles
+do
+    echo $f
+    clang-format -i $f
+done
+
 
 allfiles=$(find src -name *.cpp)
 
