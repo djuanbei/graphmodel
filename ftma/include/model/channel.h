@@ -27,6 +27,7 @@ public:
     is_ref = false;
     action = a;
   }
+  virtual ~Channel() {}
   void shift(const int id) {
     // TODO:
   }
@@ -54,6 +55,7 @@ public:
 protected:
   CHANNEL_ACTION action;
   bool is_ref;
+  
 };
 
 class ArrayChannel : public Channel {

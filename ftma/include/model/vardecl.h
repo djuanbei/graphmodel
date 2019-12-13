@@ -66,6 +66,8 @@ public:
 
   virtual int addType(const string &n, const TypeDefArray &type);
 
+  virtual vector<string> getKeys(const TYPE_T type) const;
+
   virtual vector<BaseDecl> getInts() const;
 
   /**

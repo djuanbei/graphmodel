@@ -1,6 +1,7 @@
 #include "benchmark/train_gate.h"
 #include "model/selecttransition.h"
 
+
 namespace graphsat {
 
 INT_TAS_t TrainGate::generate( int n) const{
@@ -102,23 +103,26 @@ INT_TAS_t TrainGate::generate( int n) const{
   vector<typename INT_TAS_t::L_t> gls;
 
   typename INT_TAS_t::L_t Free( 0 );
+  gls.push_back( Free);
   typename INT_TAS_t::L_t Occ( 1 );
+  gls.push_back( Occ);
   typename INT_TAS_t::L_t Ok( 2, COMMIT_LOC );
+  gls.push_back( Ok);
 
   typename INT_TAS_t::T_t Free_Occ1( Free, Occ );
 
   Argument first1( TEMPLATE_VAR_ARG, len_id );
   Argument second1( EMPTY_ARG, 0 );
   Argument rhs1( CONST_ARG, 0 );
-  void *   ccs1 = createConstraint( first1, second1, LT, rhs1 ); // len >0
+  void *   ccs1 = createConstraint( first1, second1, GT, rhs1 ); // len >0
   Free_Occ1.addCounterCons( ccs1 );
 
   IndexChannel *ch1= new IndexChannel("go", CHANNEL_SEND );
   ch1->setFunName( "front");
   Free_Occ1.setChannel( ch1 );
-  
-  
+  ges.push_back(Free_Occ1 );
 
+  
   SelectTransition Free_Occ2( Free, Occ );
   Free_Occ2.setSelectVar( "e");
   Free_Occ2.setSelectCollect( "id_t");
@@ -141,7 +145,8 @@ INT_TAS_t TrainGate::generate( int n) const{
       new CounterAction( lhs2, CALL_ACTION, rhs2 ); // enqueue( e)
   Free_Occ2.addCounterAction(caction2 );
   
-
+  ges.push_back( Free_Occ2);
+  
   SelectTransition Occ_OK( Occ, Ok );
   Occ_OK.setSelectVar( "e");
   Occ_OK.setSelectCollect( "id_t");
@@ -156,16 +161,16 @@ INT_TAS_t TrainGate::generate( int n) const{
   CounterAction *caction4 =
       new CounterAction( lhs4, CALL_ACTION, rhs4 ); // enqueue( e)
   Occ_OK.addCounterAction(caction4);
-  
+
+  ges.push_back(Occ_OK );
 
   typename INT_TAS_t::T_t Ok_Occ( Ok, Occ );
 
   IndexChannel * ch4=new IndexChannel( "stop", CHANNEL_SEND);
   ch4->setFunName( "tail");
   Ok_Occ.setChannel( ch4);
+  ges.push_back( Ok_Occ);
   
-  
-
   SelectTransition Occ_Free( Occ, Free );
   Occ_Free.setSelectVar( "e");
   Occ_Free.setSelectCollect( "id_t");
@@ -179,15 +184,17 @@ INT_TAS_t TrainGate::generate( int n) const{
   SelectChannel *ch5=new SelectChannel( "leave", CHANNEL_RECEIVE);
   ch5->setSelectVar( "e");
   Occ_Free.setChannel( ch5);
-
+  
 
   Argument  lhs6( FUN_POINTER_ARG, "dequeue" );
   Argument       rhs6( EMPTY_ARG, 0 );
   CounterAction *caction6 =
       new CounterAction( lhs6, CALL_ACTION, rhs6 ); // dequeue
   Occ_Free.addCounterAction(caction6 );
+  ges.push_back(Occ_Free );
+  
   gate_tmt->initial( gls, ges, 0 );
-
+  
   Parameter param=gate_tmt->getParameter( );
   typename INT_TAS_t::Agent_t tma( gate_tmt, param );
   sys+=tma;
@@ -203,36 +210,44 @@ INT_TAS_t TrainGate::generate( int n) const{
 }
 
 
-// void enqueue( typename INT_TAS_t::Agent_t &agent, int *state,
-//               const int element ) {
-
-//   int *list          = agent.getValue( state, "list" );
-//   int *len           = agent.getValue( state, "len" );
-//   list[ ( *len )++ ] = element;
-// }
-
-// void dequeue( typename INT_TAS_t::Agent_t &agent, int *state ) {
-//   int *len  = agent.getValue( state, "len" );
-//   int *list = agent.getValue( state, "list" );
-//   int  i    = 0;
-//   *len -= 1;
-//   while ( i < *len ) {
-//     list[ i ] = list[ i - 1 ];
-//   }
-//   list[ i ] = 0;
-// }
-
-
-// int front(  void  *agent, int *state ) {
+int Enqueue_F::operator( )( int * state...){
+  va_list args;
+  va_start(args, state);
+  int element=  va_arg(args, int);
+  int *list=state+(*this)["list" ];
+  int *len=state+(*this)["len" ];
   
-//   int *list = ((typename INT_TAS_t::Agent_t*)agent)->getValue( state, "list" );
-//   return list[ 0 ];
-// }
+  list[ len[0]++]=element;
+  
+  va_end(args);
+  return 0;
+  
+}
 
-// int tail( typename INT_TAS_t::Agent_t &agent, int *state ) {
-//   int *list = agent.getValue( state, "list" );
-//   int *len  = agent.getValue( state, "len" );
-//   return list[ *len - 1 ];
-// }
+int Dequeue_F::operator( )( int * state...){
+  int *list=state+(*this)["list" ];
+  int *len=state+(*this)["len" ];
+  int i=0;
+  len[ 0]-=1;
+  while( i< len[ 0]){
+    list[ i]=list[ i+1];
+    i++;
+  }
+  list[ i]=0;
+  return 0;
+}
+
+int  Front_F::operator( )( int * state...){
+  int *list=state+(*this)["list" ];
+  return  list[ 0];
+}
+
+
+int  Tail_F::operator( )( int * state...){
+  int *list=state+(*this)["list" ];
+  int *len=state+(*this)["len" ];
+  return list[ len[ 0]-1];
+}
+
 
 } // namespace graphsat

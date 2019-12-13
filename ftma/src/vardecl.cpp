@@ -128,6 +128,17 @@ int VarDecl::getTypeNumber( const int type ) const {
   return re;
 }
 
+vector<string> VarDecl::getKeys(const TYPE_T type ) const{
+  vector<string> re;
+  vector<pair<string, vector<void *>>> counters = data.getValue( type );
+  for ( vector<pair<string, vector<void *>>>::const_iterator it =
+            counters.begin();
+        it != counters.end(); it++ ) {
+    re.push_back(( (BaseDecl *) it->second[ 0 ] )->name);
+  }
+  return re;
+}
+
 int VarDecl::getKeyStart( const TYPE_T type, const string &key ) const {
   int                                  re       = 0;
   vector<pair<string, vector<void *>>> counters = data.getValue( type );

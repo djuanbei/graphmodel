@@ -65,24 +65,13 @@ public:
 
     return *this;
   }
-  //  // TODO: del
-  //  void setCounterNum( int n ) {
-  //    assert( agents.empty() );
-  //    counters.resize( n );
-  //  }
-  //  // TODO: del
-  //  void setCounter( int id, Counter c ) {
-  //    assert( agents.empty() );
-  //    counters[ id ] = c;
-  //  }
-  //  void setChannelNumber( int n ) {
-  //    assert( agents.empty() );
-  //    channels.resize( n );
-  //  }
-  //  void setChannel( int id, Channel ch ) {
-  //    assert( agents.empty() );
-  //    channels[ id ] = ch;
-  //  }
+
+  void removeAgent() {
+    agents.clear();
+    for (auto &e : templates) {
+      e->reset();
+    }
+  }
 
   int getComponentNumber() const { return (int)agents.size(); }
 
@@ -183,7 +172,7 @@ public:
   }
 
   int getStartLoc(const TYPE_T type, const int template_id) const {
-    int re =0; // stateManager->getStart(type);
+    int re = 0; // stateManager->getStart(type);
 
     for (auto &agent : agents) {
       if (agent.getTemplate()->id < template_id) {
@@ -193,13 +182,12 @@ public:
     return re;
   }
 
-
-  virtual Argument addClock( const string &n ) {
-    Argument dummy=VarDecl::addClock( n);
-    dummy.type=SYSTEM_VAR_ARG;
+  virtual Argument addClock(const string &n) {
+    Argument dummy = VarDecl::addClock(n);
+    dummy.type = SYSTEM_VAR_ARG;
     return dummy;
   }
-  
+
 private:
   void transfrom(Agent_t &agent) {
 

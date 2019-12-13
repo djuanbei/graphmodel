@@ -76,9 +76,9 @@ public:
     return NOT_FOUND;
   }
   void reset() { agents.clear(); }
-  virtual Argument addClock( const string &n ) {
-    Argument dummy=VarDecl::addClock( n);
-    dummy.type=TEMPLATE_VAR_ARG;
+  virtual Argument addClock(const string &n) {
+    Argument dummy = VarDecl::addClock(n);
+    dummy.type = TEMPLATE_VAR_ARG;
     return dummy;
   }
 
@@ -111,8 +111,8 @@ private:
   }
 
   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
-  int getSYSStart( const TYPE_T type, const string &key) const{
-    return sys->getKeyStart(type, key );
+  int getSYSStart(const TYPE_T type, const string &key) const {
+    return sys->getKeyStart(type, key);
   }
 
   // int getCounterStartLoc() const { return sys->getCounterStartLoc( id ); }

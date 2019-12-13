@@ -2,31 +2,39 @@
  * @file   function.h
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Thu Dec 12 21:06:18 2019
- * 
+ *
  * @brief  The function data structure in model
- * 
- * 
+ *
+ *
  */
 #ifndef __FUNCTION_H
 #define __FUNCTION_H
 
-#include <vector>
+#include <map>
 #include <string>
+#include <vector>
 
-namespace graphsat{
+namespace graphsat {
 
 using namespace std;
 
-class Function{
-  
- public:
-  virtual  int operator( ) (int * , ...)=0;
-  virtual vector<string> getKeys( )const;
-  virtual int &operator[ ] ( const string & key );
+class Function {
+private:
+  map<string, int> value_map;
+
+public:
+  virtual int operator()(int *state...) = 0;
+
+  virtual vector<string> getKeys() const {
+    vector<string> re;
+    for (auto &e : value_map) {
+      re.push_back(e.first);
+    }
+    return re;
+  }
+  virtual int &operator[](const string &key) { return value_map[key]; }
 };
 
-}
-
+} // namespace graphsat
 
 #endif
-

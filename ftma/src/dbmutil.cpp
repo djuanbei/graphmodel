@@ -37,6 +37,8 @@ int getValue(const shared_ptr<RealArgument> & arg,  const int * counter_value  )
       return arg->value;
     case  TEMPLATE_VAR_ARG:
       break;
+    case SYSTEM_VAR_ARG:
+        break;
     case PARAMETER_ARG:
       return arg->value;
     case REF_PARAMETER_ARG:
@@ -64,6 +66,8 @@ int_fast64_t getMapValue( const Argument & arg, const vector<int> &id_map,
     case CONST_ARG:
       return arg.value;
     case TEMPLATE_VAR_ARG:
+      return arg.value;
+    case  SYSTEM_VAR_ARG:
       return arg.value;
     case PARAMETER_ARG:
       return parameter_value[arg.value ];

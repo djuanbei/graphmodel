@@ -10,10 +10,10 @@
 
 #ifndef TYEP_DEF_H
 #define TYEP_DEF_H
+#include "macrodef.h"
+#include <cstdarg>
 #include <cstdint>
 #include <string>
-#include <cstdarg>
-#include "macrodef.h"
 
 namespace graphsat {
 using std::string;
@@ -99,7 +99,6 @@ struct RealArgument {
   RealArgument() : type(EMPTY_ARG), value(0) {}
   RealArgument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
   RealArgument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
-  
 };
 
 struct Argument {
@@ -108,8 +107,7 @@ struct Argument {
   string name;
   shared_ptr<Argument> index;
   Argument() : type(EMPTY_ARG), value(0) {}
-  explicit Argument( int v):type(CONST_ARG), value( v){
-  }
+  explicit Argument(int v) : type(CONST_ARG), value(v) {}
   Argument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
   Argument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
   void setIndex(const shared_ptr<Argument> &out_index) { index = out_index; }

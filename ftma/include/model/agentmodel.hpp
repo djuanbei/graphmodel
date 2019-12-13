@@ -9,13 +9,16 @@
  */
 #ifndef AGENT_MODEL_H
 #define AGENT_MODEL_H
+#include "function.h"
 #include "templatemodel.hpp"
+#include "to_real.h"
 
 namespace graphsat {
 
 template <typename L, typename T> class AgentSystem;
 
-template <typename L, typename T> class Agent : public VariableMap {
+template <typename L, typename T>
+class Agent : public VariableMap, public TOReal {
 
 private:
   typedef Agent<L, T> Agent_t;
@@ -81,8 +84,8 @@ public:
     start_loc += agent_tempate->getKeyStart(type, key);
     return start_loc;
   }
-  int getSYSStart( const TYPE_T type, const string & key) const{
-    return agent_tempate->getSYSStart( type, key);
+  int getSYSStart(const TYPE_T type, const string &key) const {
+    return agent_tempate->getSYSStart(type, key);
   }
 
   int *getValue(const TYPE_T type, int *state, const string &key) const {
@@ -93,7 +96,7 @@ public:
     return agent_tempate;
   }
 
-  RealArgument to_real(TYPE_T type, const Argument &arg) const {
+  RealArgument to_real(const TYPE_T &type, const Argument &arg) const {
 
     RealArgument re;
     re.type = arg.type;
@@ -128,6 +131,13 @@ public:
     }
 
     return re;
+  }
+
+  void initFunction(Function *fun) const {
+    vector<string> int_vars = agent_tempate->getKeys(INT_T);
+    for (auto &e : int_vars) {
+      (*fun)[e] = getStart(INT_T, e);
+    }
   }
 
   // void toDot(ostream &out ) const{

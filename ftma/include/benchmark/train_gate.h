@@ -11,6 +11,7 @@
 #ifndef TRAIN_GATE_H
 #define TRAIN_GATE_H
 
+#include "model/function.h"
 #include "model/graphmodel.hpp"
 #include "model/location.h"
 #include "model/transition.h"
@@ -23,13 +24,25 @@ public:
   INT_TAS_t generate(int n) const;
 };
 
-void enqueue(typename INT_TAS_t::Agent_t &agent, int *state, const int element);
+class Enqueue_F : public Function {
+public:
+  virtual int operator()(int *state...);
+};
 
-void dequeue(typename INT_TAS_t::Agent_t &agent, int *state);
+class Dequeue_F : public Function {
+public:
+  virtual int operator()(int *state...);
+};
 
-int front(typename INT_TAS_t::Agent_t &agent, int *state);
+class Front_F : public Function {
+public:
+  virtual int operator()(int *state...);
+};
 
-int tail(typename INT_TAS_t::Agent_t &agent, int *state);
+class Tail_F : public Function {
+public:
+  virtual int operator()(int *state...);
+};
 
 } // namespace graphsat
 

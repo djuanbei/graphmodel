@@ -19,6 +19,8 @@
 
 #include "util/data.hpp"
 
+#include "model/to_real.h"
+
 namespace graphsat {
 using std::ostream;
 using std::setw;
@@ -36,6 +38,7 @@ public:
     int three = getValue(rhs_value, counter_value);
     return executeOp(one - two, op, three);
   }
+  void to_real(const TOReal *convertor);
 
 private:
   Argument first;
