@@ -5,17 +5,21 @@ namespace graphsat {
   extern string trim( std::string s );
   
   int getValue(const RealArgument & arg,   int * counter_value  ){
+    int shift=0;
+    if( nullptr!= arg.index){
+       shift=getValue(arg.index, counter_value );
+    }
     switch(arg.type ){
       case CONST_ARG:
-        return arg.value;
+        return arg.value+shift;
       case  TEMPLATE_VAR_ARG:
-        break;
+        return counter_value[arg.value+shift];
       case SYSTEM_VAR_ARG:
-        break;
+        return counter_value[arg.value+shift];
       case PARAMETER_ARG:
-        return arg.value;
+        return arg.value+shift;
       case REF_PARAMETER_ARG:
-        break;
+          return counter_value[arg.value+shift];
       case TEMPALTE_FUN_POINTER_ARG:
         return (*(( Function *)arg.value))( counter_value);
       case SYSTEM_FUN_POINTER_ARG:
@@ -25,12 +29,6 @@ namespace graphsat {
       case EMPTY_ARG:
         return 0;
     }
-    if( nullptr!= arg.index){
-      int shift=getValue(arg.index, counter_value );
-      return arg.value+shift ;
-    }
-    
-    return counter_value[ arg.value ];
   }
   
   int getValue(const shared_ptr<RealArgument> & arg,   int * counter_value  ){

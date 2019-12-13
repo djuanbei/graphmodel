@@ -31,6 +31,7 @@ class GraphModelTest: public ::testing::Test{
     int n=6;// 6 train
     train_tmt = sys.createTemplate();
     gate_tmt  = sys.createTemplate();
+    train_tmt->addPara("id");
     sys.addConstant( "N", n ); // const N=n;
     sys.addType( "id_t", 0,  sys[ "N" ] - 1  ); // typedef int[ 0,N-1] id_t;
     sys.addChan( "appr", sys[ "N" ], ONE2ONE_CH ); // chan appr[ N]
@@ -45,6 +46,7 @@ class GraphModelTest: public ::testing::Test{
   
 
     gate_tmt->addInt("list", sys[ "N" ] + 1 );
+    gate_tmt->addInt( "len", 1 );
 
  
     gate_tmt->addFun("enqueue", shared_ptr<Enqueue_F>(new Enqueue_F( )) );
@@ -254,10 +256,22 @@ TEST_F(GraphModelTest, IndexChannel ){
   shared_ptr<Function> tail_c=tma->getFun( "tail");
   
   EXPECT_EQ(18, tma->getStart(CHAN_T, "go"));
+  for( int i=0; i< n; i++){
+    (*enqueue_c)(counters, i );
+    int ffid=ch1(counters);
+    EXPECT_EQ(18, ffid);
+  }
+  
+  for( int i=0; i< n; i++){
+   
+    int ffid=ch1(counters);
+    EXPECT_EQ(18+i, ffid);
+    (*dequeue_c)(counters);
+  }
 
-  (*enqueue_c)(counters, 2 );
-  int ffid=ch1(counters);
-  EXPECT_EQ(20, ffid);
+
+
+  
 
 
   

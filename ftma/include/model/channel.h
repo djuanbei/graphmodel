@@ -30,6 +30,7 @@ public:
 
   void to_real(const shared_ptr<TOReal> &convertor) {
     real_chan_id = convertor->to_real(CHAN_T, chan_id);
+    real_chan_id.type=CONST_ARG;
   }
   CHANNEL_TYPE getType(void) const{
     return type;
