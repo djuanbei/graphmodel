@@ -11,11 +11,13 @@
 #ifndef ACTION_HPP
 #define ACTION_HPP
 
-#include "util/data.hpp"
-#include "util/dbmutil.hpp"
 #include <cassert>
 #include <cstdint>
 #include <vector>
+
+#include "model/function.h"
+#include "util/data.hpp"
+#include "util/dbmutil.hpp"
 
 namespace graphsat {
 using std::ostream;
@@ -40,8 +42,11 @@ using std::vector;
   case REF_PARAMETER_ARG:                                                      \
     counter_value[lhs_value] op counter_value[rhs_value];                      \
     return;                                                                    \
-  case FUN_POINTER_ARG:                                                        \
-    counter_value[lhs_value] op((IndexFun_t)rhs_value)(counter_value);         \
+  case TEMPALTE_FUN_POINTER_ARG:                                               \
+    counter_value[lhs_value] op (*((Function *)rhs_value))(counter_value);     \
+    return;                                                                    \
+  case SYSTEM_FUN_POINTER_ARG:                                                 \
+    counter_value[lhs_value] op (*((Function *)rhs_value))(counter_value);     \
     return;                                                                    \
   case SELECT_VAR_ARG:                                                         \
     counter_value[lhs_value] op rhs_value;                                     \
@@ -72,7 +77,11 @@ using std::vector;
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << "counter_" << act.rhs_value;               \
     return out;                                                                \
-  case FUN_POINTER_ARG:                                                        \
+  case TEMPALTE_FUN_POINTER_ARG:                                               \
+    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
+        << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;             \
+    return out;                                                                \
+  case SYSTEM_FUN_POINTER_ARG:                                                 \
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;             \
     return out;                                                                \
@@ -126,7 +135,9 @@ public:
     case REF_PARAMETER_ARG:
       lhs_value = counter_map[lhs.value];
       break;
-    case FUN_POINTER_ARG:
+    case TEMPALTE_FUN_POINTER_ARG:
+      break;
+    case SYSTEM_FUN_POINTER_ARG:
       break;
     case SELECT_VAR_ARG:
       break;
@@ -146,7 +157,9 @@ public:
     case REF_PARAMETER_ARG:
       rhs_value = counter_map[rhs.value];
       break;
-    case FUN_POINTER_ARG:
+    case TEMPALTE_FUN_POINTER_ARG:
+      break;
+    case SYSTEM_FUN_POINTER_ARG:
       break;
     case SELECT_VAR_ARG:
       break;

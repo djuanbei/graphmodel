@@ -1,4 +1,5 @@
 #include "util/dbmutil.hpp"
+#include "model/function.h"
 #include <cassert>
 namespace graphsat {
 extern string trim( std::string s );
@@ -15,8 +16,10 @@ int getValue(const RealArgument & arg,  const int * counter_value  ){
       return arg.value;
     case REF_PARAMETER_ARG:
       break;
-    case FUN_POINTER_ARG:
-      return (( ConstraintFun_t)arg.value)( counter_value);
+    case TEMPALTE_FUN_POINTER_ARG:
+      return (*(( Function *)arg.value))( counter_value);
+    case SYSTEM_FUN_POINTER_ARG:
+      return (*(( Function *)arg.value))( counter_value);  
     case SELECT_VAR_ARG:
       return arg.value;
     case EMPTY_ARG:
@@ -44,7 +47,7 @@ int getValue(const shared_ptr<RealArgument> & arg,  const int * counter_value  )
     case REF_PARAMETER_ARG:
       break;
 
-    case FUN_POINTER_ARG:
+    case TEMPALTE_FUN_POINTER_ARG:
       return (( ConstraintFun_t)arg->value)( counter_value);
     case SELECT_VAR_ARG:
       return arg->value;
@@ -73,7 +76,7 @@ int_fast64_t getMapValue( const Argument & arg, const vector<int> &id_map,
       return parameter_value[arg.value ];
     case REF_PARAMETER_ARG:
       return parameter_value[arg.value ];
-    case FUN_POINTER_ARG:
+    case TEMPALTE_FUN_POINTER_ARG:
       return arg.value;
     case SELECT_VAR_ARG:
       return parameter_value.back( );

@@ -49,6 +49,20 @@ int VarDecl::addChan( const string &name, int num, CHANNEL_TYPE type ) {
   return addChan( dummy);
 }
 
+int VarDecl::addFun( const string & name, shared_ptr<Function> fun ){
+  int re=functions.size( );
+  functions[ name]=fun;
+  return re;
+}
+
+shared_ptr<Function> VarDecl::getFun( const string &name) const{
+  return functions.at( name);
+}
+
+const map<string, shared_ptr<Function> > & VarDecl::getFuns() const{
+  return functions;
+}
+
 int VarDecl::addType( const string &n, const TypeDefArray &type ) {
   assert( !contain( n ) );
   int re          = self_types.size();

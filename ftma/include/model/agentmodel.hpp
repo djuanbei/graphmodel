@@ -117,8 +117,11 @@ public:
     case REF_PARAMETER_ARG:
       re.value = parameter.getCounter(arg.value);
       break;
-    case FUN_POINTER_ARG:
-      re.value = loadFun(re.name);
+    case TEMPALTE_FUN_POINTER_ARG:
+      re.value = loadFun(TEMPALTE_FUN_POINTER_ARG, re.name);
+      break;
+    case SYSTEM_FUN_POINTER_ARG:
+      re.value = loadFun(SYSTEM_FUN_POINTER_ARG, re.name);
       break;
     case SELECT_VAR_ARG:
       re.value = parameter.getSelect();
@@ -133,12 +136,7 @@ public:
     return re;
   }
 
-  void initFunction(Function *fun) const {
-    vector<string> int_vars = agent_tempate->getKeys(INT_T);
-    for (auto &e : int_vars) {
-      (*fun)[e] = getStart(INT_T, e);
-    }
-  }
+  shared_ptr<Function> getFun(const string &name) const { return fun_map.at(name); }
 
   // void toDot(ostream &out ) const{
   //   out<<"digraph G { "<<endl;
@@ -150,12 +148,43 @@ public:
   // }
 
 private:
-  int_fast64_t loadFun(const string &name) const {
+
+  void initFuns( ){
+    const map<string, shared_ptr<Function> >& funs=agent_tempate->getFuns( );
+    for( auto& e: funs ){
+      shared_ptr<Function> dummy(e.second->copy( )) ;
+      setFun( e.first, dummy );
+    }
+  }
+  int_fast64_t loadFun(const ARGUMENT_TYPE type, const string &name) const {
+    if(TEMPALTE_FUN_POINTER_ARG==type ){
+      return (int_fast64_t)(getFun( name).get( ));
+    }else if( SYSTEM_FUN_POINTER_ARG==type){
+      return (int_fast64_t)agent_tempate->getSYSFun( name);
+    }
     // TODO:
     return 0;
   }
 
+  void initFunction(const shared_ptr<Function> &fun) const {
+    vector<string> int_vars = agent_tempate->getKeys(INT_T);
+    for (auto &e : int_vars) {
+      (*fun)[e] = getStart(INT_T, e);
+    }
+  }
+
+  void setFun(const string &name, const shared_ptr<Function> &fun) {
+    initFunction(fun);
+    if (fun_map.find(name) != fun_map.end()) {
+      assert(false && "It does not allow two functions has same name.");
+    }
+    fun_map[name] = fun;
+  }
+
+
+
   shared_ptr<AgentTemplate_t> agent_tempate;
+  map<string, shared_ptr<Function>> fun_map;
   Parameter parameter;
   int id; // the interbal of instance of ta_tempate
 

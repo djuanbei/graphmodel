@@ -114,8 +114,9 @@ private:
   int getSYSStart(const TYPE_T type, const string &key) const {
     return sys->getKeyStart(type, key);
   }
-
-  // int getCounterStartLoc() const { return sys->getCounterStartLoc( id ); }
+  Function * getSYSFun( const string  &name) const{
+    sys->getFun( name);
+  }
 
   void initial() {
 
@@ -169,6 +170,7 @@ private:
 
   vector<string> parameters;
   vector<Agent<L, T> *> agents;
+  map<string, shared_ptr<Function>> fun_map;
 
   template <typename R1> friend class Reachability;
 

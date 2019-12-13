@@ -10,9 +10,34 @@
 
 #ifndef CHANNEL_H
 #define CHANNEL_H
+#include "to_real.h"
 #include "util/dbmutil.hpp"
+
 #include <map>
 namespace graphsat {
+
+class n_Channel {
+public:
+  n_Channel(const Argument &arg)
+      : chan_id(arg), type(ONE2ONE_CH), action(CHANNEL_SEND) {}
+  n_Channel(const Argument &arg, const CHANNEL_TYPE &t)
+      : chan_id(arg), type(t), action(CHANNEL_SEND) {}
+
+  int operator()(const int *counter_value) const {
+    return getValue(real_chan_id, counter_value);
+  }
+  void setAction(const CHANNEL_ACTION &a) { action = a; }
+
+  void to_real(const TOReal *convertor) {
+    real_chan_id = convertor->to_real(CHAN_T, chan_id);
+  }
+
+private:
+  Argument chan_id;
+  CHANNEL_TYPE type;
+  CHANNEL_ACTION action;
+  RealArgument real_chan_id;
+};
 
 class Channel {
 public:
@@ -55,7 +80,6 @@ public:
 protected:
   CHANNEL_ACTION action;
   bool is_ref;
-  
 };
 
 class ArrayChannel : public Channel {

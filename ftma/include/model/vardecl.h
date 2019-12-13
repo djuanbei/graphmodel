@@ -16,6 +16,8 @@
 #include "arraytype.h"
 #include "channel.h"
 #include "clock.h"
+#include "function.h"
+
 #include "util/data.hpp"
 
 namespace graphsat {
@@ -62,6 +64,12 @@ public:
 
   virtual int addChan(const string &name, int num, CHANNEL_TYPE type);
 
+  virtual int addFun(const string &name, shared_ptr<Function> fun);
+
+  virtual shared_ptr<Function>  getFun(const string &name) const;
+  
+  virtual  const map<string, shared_ptr<Function> > & getFuns() const;
+
   virtual int addConstant(const string &n, const int v);
 
   virtual int addType(const string &n, const TypeDefArray &type);
@@ -98,6 +106,7 @@ protected:
 
   map<string, int> const_values;
   vector<TypeDefArray> self_types;
+  map<string, shared_ptr<Function> > functions;
 
   int getTypeNumber(const int type) const;
 };

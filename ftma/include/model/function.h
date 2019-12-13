@@ -23,7 +23,9 @@ private:
   map<string, int> value_map;
 
 public:
-  virtual int operator()(int *state...) = 0;
+  virtual int operator()(int *state...) { return 0; }
+
+  virtual int operator()(const int *state...) { return 0; }
 
   virtual vector<string> getKeys() const {
     vector<string> re;
@@ -33,6 +35,7 @@ public:
     return re;
   }
   virtual int &operator[](const string &key) { return value_map[key]; }
+  virtual Function *copy() const = 0;
 };
 
 } // namespace graphsat

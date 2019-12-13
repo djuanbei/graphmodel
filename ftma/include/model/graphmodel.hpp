@@ -136,6 +136,7 @@ public:
     stateManager.reset(new StateManager_t(
         (int)agents.size(), counters, clock_num, temp_clock_upperbound,
         difference_cons, node_n, link_num, chan_num));
+    
   }
 
   template <typename D> void addInitState(D &data) const {
@@ -190,7 +191,9 @@ public:
 
 private:
   void transfrom(Agent_t &agent) {
-
+    
+    agent.initFuns( );
+    
     if (clock_num > 0) {
 
       for (size_t i = 0; i < agent.locations.size(); i++) {
@@ -240,7 +243,7 @@ private:
    */
   vector<shared_ptr<AgentTemplate_t>> templates;
 
-  vector<Agent_t> agents;
+  vector< Agent_t> agents;
   // vector<Channel> channels;
   // vector<Counter> counters; // TODO: del
 
