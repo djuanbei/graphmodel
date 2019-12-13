@@ -152,7 +152,7 @@ private:
   void initFuns( ){
     const map<string, shared_ptr<Function> >& funs=agent_tempate->getFuns( );
     for( auto& e: funs ){
-      shared_ptr<Function> dummy(e.second->copy( )) ;
+      shared_ptr<Function> dummy((e.second->copy( ))) ;
       setFun( e.first, dummy );
     }
   }

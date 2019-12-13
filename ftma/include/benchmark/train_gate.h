@@ -27,27 +27,27 @@ public:
 class Enqueue_F : public Function {
 public:
   virtual int operator()(int *state...);
-  virtual Function *copy() const { return new Enqueue_F(*this); }
+  virtual Function *copy() const { return new Enqueue_F(); }
 };
 
 class Dequeue_F : public Function {
 public:
   virtual int operator()(int *state...);
-  virtual Function *copy() const { return new Dequeue_F(*this); }
+  virtual Function *copy() const { return new Dequeue_F(); }
 };
 
 class Front_F : public Function {
 public:
   virtual int operator()(int *state...);
 
-  virtual Function *copy() const { return new Front_F(*this); }
+  virtual Function *copy() const { return new Front_F(); }
 };
 
 class Tail_F : public Function {
 public:
   virtual int operator()(int *state...);
 
-  virtual Function *copy() const { return new Tail_F(*this); }
+  virtual Function *copy() const { return new Tail_F(); }
 };
 
 } // namespace graphsat

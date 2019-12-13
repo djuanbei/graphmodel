@@ -2,6 +2,7 @@
 #include "benchmark/fisher.h"
 
 namespace graphsat {
+typedef typename INT_TAS_t::Agent_t Agent_t;
 FisherGenerator::FisherGenerator()
     : k( 2 ) {
   tmt = sys.createTemplate();
@@ -94,7 +95,7 @@ INT_TAS_t FisherGenerator::generate( int n ) const {
   for ( int i = 1; i <= n; i++ ) {
     Parameter param=tmt->getParameter(  );
     param.setParameterMap( 0, i );
-    typename INT_TAS_t::Agent_t tma( tmt, param );
+    shared_ptr<typename INT_TAS_t::Agent_t>  tma( new Agent_t( tmt, param ));
 
     re += tma;
   }

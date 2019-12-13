@@ -5,6 +5,7 @@
 
 namespace graphsat {
 using namespace std;
+typedef typename INT_TAS_t::Agent_t Agent_t;
 UppaalParser::UppaalParser( const string &xmlfile ) {
 
   XmlConfig  xmldoc( xmlfile );
@@ -118,8 +119,8 @@ int UppaalParser::parseSystem( XML_P system ) {
      * System declaration the corresponding  automation without parameter.
      */
     if ( formal_parameter_list.empty() ) {
-      typename INT_TAS_t::Agent_t tma( template_map[ component->tmt_name ].tat,
-                                       parameter );
+      shared_ptr<Agent_t> tma( new Agent_t(template_map[ component->tmt_name ].tat,
+                                           parameter ));
       sys += tma;
     } else if ( component->has_parameter ) {
       int para_id = 0;
@@ -144,8 +145,8 @@ int UppaalParser::parseSystem( XML_P system ) {
         }
         para_id++;
       }
-      typename INT_TAS_t::Agent_t tma( template_map[ component->tmt_name ].tat,
-                                       parameter );
+      shared_ptr<typename INT_TAS_t::Agent_t> tma( new Agent_t( template_map[ component->tmt_name ].tat,
+                                                                parameter ));
 
       sys += tma;
 
@@ -159,8 +160,8 @@ int UppaalParser::parseSystem( XML_P system ) {
               ->type_name );
       for ( auto e : iarray ) {
         parameter.setParameterMap( 0, e );
-        typename INT_TAS_t::Agent_t tma(
-            template_map[ component->tmt_name ].tat, parameter );
+        shared_ptr<typename INT_TAS_t::Agent_t> tma( new Agent_t( 
+            template_map[ component->tmt_name ].tat, parameter ));
         sys += tma;
       }
     }

@@ -3,7 +3,7 @@
 
 
 namespace graphsat {
-
+typedef typename INT_TAS_t::Agent_t Agent_t;
 INT_TAS_t TrainGate::generate( int n) const{
 
   INT_TAS_t                                       sys;
@@ -196,13 +196,13 @@ INT_TAS_t TrainGate::generate( int n) const{
   gate_tmt->initial( gls, ges, 0 );
   
   Parameter param=gate_tmt->getParameter( );
-  typename INT_TAS_t::Agent_t tma( gate_tmt, param );
+  shared_ptr<typename INT_TAS_t::Agent_t> tma( new Agent_t( gate_tmt, param ));
   sys+=tma;
 
   for( int i=0; i< n; i++){
     Parameter param=train_tmt->getParameter( );
     param.setParameterMap(0, i );
-    typename INT_TAS_t::Agent_t tma(train_tmt, param );
+    shared_ptr<typename INT_TAS_t::Agent_t> tma( new Agent_t(train_tmt, param ));
     sys+=tma;
   }
   

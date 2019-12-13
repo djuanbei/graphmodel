@@ -28,7 +28,7 @@ public:
   }
   void setAction(const CHANNEL_ACTION &a) { action = a; }
 
-  void to_real(const TOReal *convertor) {
+  void to_real(const shared_ptr<TOReal>& convertor) {
     real_chan_id = convertor->to_real(CHAN_T, chan_id);
   }
 

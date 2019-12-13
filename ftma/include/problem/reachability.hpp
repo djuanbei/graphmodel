@@ -164,23 +164,23 @@ private:
     int source = manager->getLoc(component, state);
 
     int out_degree =
-        sys.agents[component].agent_tempate->graph.getOutDegree(source);
+        sys.agents[component]->agent_tempate->graph.getOutDegree(source);
     for (int j = 0; j < out_degree; j++) {
 
-      int link = sys.agents[component].agent_tempate->graph.getAdj(source, j);
+      int link = sys.agents[component]->agent_tempate->graph.getAdj(source, j);
       /**
        * Whether the jump conditions satisfies except synchronize signal
        *
        */
 
-      if (!sys.agents[component].transitions[link].ready(component, manager,
+      if (!sys.agents[component]->transitions[link].ready(component, manager,
                                                          state)) {
         continue;
       }
 
-      if (sys.agents[component].transitions[link].hasChannel()) {
+      if (sys.agents[component]->transitions[link].hasChannel()) {
         const shared_ptr<Channel> &channel =
-            sys.agents[component].transitions[link].getChannel();
+            sys.agents[component]->transitions[link].getChannel();
         // channel.id start from 1
 
         if (doSynchronize(data, component, prop, state, link, channel)) {
@@ -217,7 +217,7 @@ private:
 
     const int block_link = next_state[block_component_id];
     int block_source = 0;
-    sys.agents[block_component_id].agent_tempate->graph.findSrc(block_link,
+    sys.agents[block_component_id]->agent_tempate->graph.findSrc(block_link,
                                                                 block_source);
     next_state[block_component_id] = block_source;
     int send_component_id = current_component;
@@ -236,32 +236,32 @@ private:
     /**
      *  TDOO: has some problems
      */
-    sys.agents[send_component_id].transitions[send_link](
+    sys.agents[send_component_id]->transitions[send_link](
         send_component_id, manager,
         next_state); // send part firstly update state
 
-    sys.agents[receive_component_id].transitions[receive_link](
+    sys.agents[receive_component_id]->transitions[receive_link](
         receive_component_id, manager, next_state);
 
     int send_target = 0;
-    sys.agents[send_component_id].agent_tempate->graph.findSnk(send_link,
+    sys.agents[send_component_id]->agent_tempate->graph.findSnk(send_link,
                                                                send_target);
     next_state[send_component_id] = send_target;
 
     bool is_send_commit =
-        sys.agents[send_component_id].locations[send_target].isCommit();
+        sys.agents[send_component_id]->locations[send_target].isCommit();
 
     if (is_send_commit) {
       manager->setCommitState(send_component_id, next_state);
     }
     int receive_target = 0;
 
-    sys.agents[receive_component_id].agent_tempate->graph.findSnk(
+    sys.agents[receive_component_id]->agent_tempate->graph.findSnk(
         receive_link, receive_target);
     next_state[receive_component_id] = receive_target;
 
     bool is_receive_commit =
-        sys.agents[receive_component_id].locations[receive_target].isCommit();
+        sys.agents[receive_component_id]->locations[receive_target].isCommit();
 
     if (is_receive_commit) {
       manager->setCommitState(receive_component_id, next_state);
@@ -269,27 +269,27 @@ private:
 
     int source, target;
     source = target = 0;
-    sys.agents[send_component_id].agent_tempate->graph.findSrcSnk(
+    sys.agents[send_component_id]->agent_tempate->graph.findSrcSnk(
         send_link, source, target);
 
-    if (sys.agents[send_component_id].locations[source].isFreezeLocation()) {
+    if (sys.agents[send_component_id]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
-    if (sys.agents[send_component_id].locations[target].isFreezeLocation()) {
+    if (sys.agents[send_component_id]->locations[target].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
 
-    sys.agents[receive_component_id].agent_tempate->graph.findSrcSnk(
+    sys.agents[receive_component_id]->agent_tempate->graph.findSrcSnk(
         receive_link, source, target);
 
-    if (sys.agents[receive_component_id].locations[source].isFreezeLocation()) {
+    if (sys.agents[receive_component_id]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
 
-    if (sys.agents[receive_component_id].locations[target].isFreezeLocation()) {
+    if (sys.agents[receive_component_id]->locations[target].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
@@ -376,17 +376,17 @@ private:
     manager->copy(next_state, state);
     int source = 0;
     int target = 0;
-    sys.agents[component].agent_tempate->graph.findSrcSnk(link, source, target);
-    if (sys.agents[component].locations[source].isFreezeLocation()) {
+    sys.agents[component]->agent_tempate->graph.findSrcSnk(link, source, target);
+    if (sys.agents[component]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
-    if (sys.agents[component].locations[target].isFreezeLocation()) {
+    if (sys.agents[component]->locations[target].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
 
-    sys.agents[component].transitions[link](
+    sys.agents[component]->transitions[link](
         component, manager,
         next_state); // update counter state and reset clock state
 
@@ -397,7 +397,7 @@ private:
   bool delay(D &data, const int component, const int target,
              const Property *prop, State_t *state) {
 
-    if (!sys.agents[component].locations[target].isReachable(
+    if (!sys.agents[component]->locations[target].isReachable(
             manager->getClockManager(), manager->getDBM(state))) {
       return false;
     }
@@ -408,7 +408,7 @@ private:
      */
     if (!manager->isFreeze(state)) {
 
-      sys.agents[component].locations[target](manager->getClockManager(),
+      sys.agents[component]->locations[target](manager->getClockManager(),
                                               manager->getDBM(state));
     }
 
@@ -419,7 +419,7 @@ private:
   bool postDelay(D &data, const int component, const int target,
                  const Property *prop, State_t *state) {
 
-    bool is_commit = sys.agents[component].locations[target].isCommit();
+    bool is_commit = sys.agents[component]->locations[target].isCommit();
 
     bool re_bool = false;
     if (!manager->isFreeze(state)) {
@@ -427,14 +427,14 @@ private:
 
         if (manager->withoutChannel(component_id, state)) {
           sys.agents[component_id]
-              .locations[manager->getLoc(component_id, state)]
+              ->locations[manager->getLoc(component_id, state)]
               .employInvariants(manager->getClockManager(),
                                 manager->getDBM(state));
         } else {
           int block_source;
-          sys.agents[component_id].agent_tempate->graph.findSrc(
+          sys.agents[component_id]->agent_tempate->graph.findSrc(
               state[component_id], block_source);
-          sys.agents[component_id].locations[block_source].employInvariants(
+          sys.agents[component_id]->locations[block_source].employInvariants(
               manager->getClockManager(), manager->getDBM(state));
         }
       }

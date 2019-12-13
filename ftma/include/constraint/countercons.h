@@ -38,7 +38,7 @@ public:
     int three = getValue(rhs_value, counter_value);
     return executeOp(one - two, op, three);
   }
-  void to_real(const TOReal *convertor);
+  void to_real(const shared_ptr<TOReal>& convertor);
 
 private:
   Argument first;

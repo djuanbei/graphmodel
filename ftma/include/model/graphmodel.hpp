@@ -59,7 +59,7 @@ public:
     return re;
   }
 
-  AgentSystem &operator+=(Agent_t &agent) {
+  AgentSystem &operator+=(shared_ptr< Agent_t> &agent) {
 
     agents.push_back(agent);
 
@@ -78,14 +78,14 @@ public:
   shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
 
   struct AgentCMP {
-    bool operator()(const Agent_t &lhs, const Agent_t &rhs) const {
-      if (lhs.agent_tempate->id < rhs.agent_tempate->id) {
+    bool operator()(const shared_ptr<Agent_t> &lhs, const shared_ptr<Agent_t> &rhs) const {
+      if (lhs->agent_tempate->id < rhs->agent_tempate->id) {
         return true;
       }
-      if (lhs.agent_tempate->id > rhs.agent_tempate->id) {
+      if (lhs->agent_tempate->id > rhs->agent_tempate->id) {
         return false;
       }
-      return (lhs.id < rhs.id);
+      return (lhs->id < rhs->id);
     }
   };
 
@@ -112,11 +112,11 @@ public:
     }
     vector<int> node_n;
     for (size_t i = 0; i < agents.size(); i++) {
-      node_n.push_back(agents[i].agent_tempate->graph.getVertex_num());
+      node_n.push_back(agents[i]->agent_tempate->graph.getVertex_num());
     }
     vector<int> link_num;
     for (auto &e : agents) {
-      link_num.push_back(e.agent_tempate->graph.getLink_num());
+      link_num.push_back(e->agent_tempate->graph.getLink_num());
     }
     vector<Counter> counters;
     vector<BaseDecl> sysCounts = getInts();
@@ -126,7 +126,7 @@ public:
     }
 
     for (auto &e : agents) {
-      vector<BaseDecl> counts = e.agent_tempate->getInts();
+      vector<BaseDecl> counts = e->agent_tempate->getInts();
       for (auto &ee : counts) {
         Counter counter(ee.low, ee.high);
         counters.push_back(counter);
@@ -145,14 +145,14 @@ public:
     bool withoutCommit = true;
     for (int component = 0; component < component_num; component++) {
       state[component] = initial_loc[component];
-      if (agents[component].isCommit(state[component])) {
+      if (agents[component]->isCommit(state[component])) {
         stateManager->setCommitState(component, state);
         withoutCommit = false;
       }
     }
     if (withoutCommit) {
       for (int component = 0; component < component_num; component++) {
-        agents[component].locationRun(initial_loc[component],
+        agents[component]->locationRun(initial_loc[component],
                                       stateManager->getClockManager(),
                                       stateManager->getDBM(state));
       }
@@ -160,7 +160,7 @@ public:
 
     for (int component = 0; component < component_num; component++) {
       agents[component]
-          .locations[stateManager->getLoc(component, state)]
+          ->locations[stateManager->getLoc(component, state)]
           .employInvariants(stateManager->getClockManager(),
                             stateManager->getDBM(state));
     }
@@ -176,8 +176,8 @@ public:
     int re = 0; // stateManager->getStart(type);
 
     for (auto &agent : agents) {
-      if (agent.getTemplate()->id < template_id) {
-        re += agent.getTemplate()->getTypeNumber(type);
+      if (agent->getTemplate()->id < template_id) {
+        re += agent->getTemplate()->getTypeNumber(type);
       }
     }
     return re;
@@ -190,27 +190,27 @@ public:
   }
 
 private:
-  void transfrom(Agent_t &agent) {
+  void transfrom(shared_ptr<Agent_t> &agent) {
     
-    agent.initFuns( );
+    agent->initFuns( );
     
     if (clock_num > 0) {
 
-      for (size_t i = 0; i < agent.locations.size(); i++) {
-        agent.locations[i].clockShift(clock_num);
+      for (size_t i = 0; i < agent->locations.size(); i++) {
+        agent->locations[i].clockShift(clock_num);
       }
-      for (size_t i = 0; i < agent.transitions.size(); i++) {
-        agent.transitions[i].clockShift(clock_num);
+      for (size_t i = 0; i < agent->transitions.size(); i++) {
+        agent->transitions[i].clockShift(clock_num);
       }
       for (size_t i = 0;
-           i < agent.agent_tempate->template_difference_cons.size(); i++) {
-        agent.difference_cons[i].clockShift(clock_num);
+           i < agent->agent_tempate->template_difference_cons.size(); i++) {
+        agent->difference_cons[i].clockShift(clock_num);
       }
     }
 
     if (chan_num > 0) {
-      for (size_t i = 0; i < agent.transitions.size(); i++) {
-        agent.transitions[i].chanShift(chan_num);
+      for (size_t i = 0; i < agent->transitions.size(); i++) {
+        agent->transitions[i].chanShift(chan_num);
       }
     }
 
@@ -223,18 +223,18 @@ private:
     //      }
     //    }
 
-    clock_num += agent.getClockNumber();
-    chan_num += agent.getChannelNumber();
+    clock_num += agent->getClockNumber();
+    chan_num += agent->getChannelNumber();
 
-    initial_loc.push_back(agent.getInitialLoc());
-    vec_clock_nums.push_back(agent.getClockNumber());
+    initial_loc.push_back(agent->getInitialLoc());
+    vec_clock_nums.push_back(agent->getClockNumber());
 
-    for (size_t i = 1; i < agent.getClockMaxValue().size(); i++) {
-      clock_max_value.push_back(agent.getClockMaxValue()[i]);
+    for (size_t i = 1; i < agent->getClockMaxValue().size(); i++) {
+      clock_max_value.push_back(agent->getClockMaxValue()[i]);
     }
 
-    difference_cons.insert(difference_cons.end(), agent.difference_cons.begin(),
-                           agent.difference_cons.end());
+    difference_cons.insert(difference_cons.end(), agent->difference_cons.begin(),
+                           agent->difference_cons.end());
   }
 
   /**
@@ -243,9 +243,8 @@ private:
    */
   vector<shared_ptr<AgentTemplate_t>> templates;
 
-  vector< Agent_t> agents;
-  // vector<Channel> channels;
-  // vector<Counter> counters; // TODO: del
+  vector< shared_ptr<Agent_t>> agents;
+
 
   int clock_num;
   int counter_num;
