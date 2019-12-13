@@ -59,7 +59,7 @@ public:
     return re;
   }
 
-  AgentSystem &operator+=(shared_ptr< Agent_t> &agent) {
+  AgentSystem &operator+=(shared_ptr<Agent_t> &agent) {
 
     agents.push_back(agent);
 
@@ -78,7 +78,8 @@ public:
   shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
 
   struct AgentCMP {
-    bool operator()(const shared_ptr<Agent_t> &lhs, const shared_ptr<Agent_t> &rhs) const {
+    bool operator()(const shared_ptr<Agent_t> &lhs,
+                    const shared_ptr<Agent_t> &rhs) const {
       if (lhs->agent_tempate->id < rhs->agent_tempate->id) {
         return true;
       }
@@ -136,7 +137,6 @@ public:
     stateManager.reset(new StateManager_t(
         (int)agents.size(), counters, clock_num, temp_clock_upperbound,
         difference_cons, node_n, link_num, chan_num));
-    
   }
 
   template <typename D> void addInitState(D &data) const {
@@ -153,8 +153,8 @@ public:
     if (withoutCommit) {
       for (int component = 0; component < component_num; component++) {
         agents[component]->locationRun(initial_loc[component],
-                                      stateManager->getClockManager(),
-                                      stateManager->getDBM(state));
+                                       stateManager->getClockManager(),
+                                       stateManager->getDBM(state));
       }
     }
 
@@ -191,9 +191,9 @@ public:
 
 private:
   void transfrom(shared_ptr<Agent_t> &agent) {
-    
-    agent->initFuns( );
-    
+
+    agent->initFuns();
+
     if (clock_num > 0) {
 
       for (size_t i = 0; i < agent->locations.size(); i++) {
@@ -233,7 +233,8 @@ private:
       clock_max_value.push_back(agent->getClockMaxValue()[i]);
     }
 
-    difference_cons.insert(difference_cons.end(), agent->difference_cons.begin(),
+    difference_cons.insert(difference_cons.end(),
+                           agent->difference_cons.begin(),
                            agent->difference_cons.end());
   }
 
@@ -243,8 +244,7 @@ private:
    */
   vector<shared_ptr<AgentTemplate_t>> templates;
 
-  vector< shared_ptr<Agent_t>> agents;
-
+  vector<shared_ptr<Agent_t>> agents;
 
   int clock_num;
   int counter_num;

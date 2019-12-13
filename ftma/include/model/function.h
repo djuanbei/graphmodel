@@ -23,12 +23,10 @@ private:
   map<string, int> value_map;
 
 public:
-  virtual ~Function( ){
-    
-  }
-  virtual int operator()(int *state...) { return 0; }
+  virtual ~Function() {}
+  virtual int operator()(int *state...) = 0;
 
-  virtual int operator()(const int *state...) { return 0; }
+  // virtual int operator()(const int *state...) { return 0; }
 
   virtual vector<string> getKeys() const {
     vector<string> re;

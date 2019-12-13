@@ -37,6 +37,7 @@ public:
     id = template_arg->agents.size();
     template_arg->agents.push_back(this);
   }
+  virtual ~Agent() {}
 
   void findRhs(const int link, const int lhs, int &rhs) const {
     agent_tempate->graph.findRhs(link, lhs, rhs);
@@ -79,10 +80,15 @@ public:
   string getLocName(int node_id) const { return locations[node_id].getName(); }
 
   int getStart(const TYPE_T type, const string &key) const {
-    int start_loc = agent_tempate->getStart(type);
-    start_loc += agent_tempate->getTypeNumber(type) * (id);
-    start_loc += agent_tempate->getKeyStart(type, key);
-    return start_loc;
+    int temp_var_id = agent_tempate->getKeyStart(type, key);
+    if (temp_var_id > -1) {
+      int start_loc = agent_tempate->getStart(type);
+      start_loc += agent_tempate->getTypeNumber(type) * (id);
+      start_loc += temp_var_id;
+      return start_loc;
+    } else {
+      return getSYSStart(type, key);
+    }
   }
   int getSYSStart(const TYPE_T type, const string &key) const {
     return agent_tempate->getSYSStart(type, key);
@@ -136,7 +142,9 @@ public:
     return re;
   }
 
-  shared_ptr<Function> getFun(const string &name) const { return fun_map.at(name); }
+  shared_ptr<Function> getFun(const string &name) const {
+    return fun_map.at(name);
+  }
 
   // void toDot(ostream &out ) const{
   //   out<<"digraph G { "<<endl;
@@ -148,19 +156,18 @@ public:
   // }
 
 private:
-
-  void initFuns( ){
-    const map<string, shared_ptr<Function> >& funs=agent_tempate->getFuns( );
-    for( auto& e: funs ){
-      shared_ptr<Function> dummy((e.second->copy( ))) ;
-      setFun( e.first, dummy );
+  void initFuns() {
+    const map<string, shared_ptr<Function>> &funs = agent_tempate->getFuns();
+    for (auto &e : funs) {
+      shared_ptr<Function> dummy((e.second->copy()));
+      setFun(e.first, dummy);
     }
   }
   int_fast64_t loadFun(const ARGUMENT_TYPE type, const string &name) const {
-    if(TEMPALTE_FUN_POINTER_ARG==type ){
-      return (int_fast64_t)(getFun( name).get( ));
-    }else if( SYSTEM_FUN_POINTER_ARG==type){
-      return (int_fast64_t)agent_tempate->getSYSFun( name);
+    if (TEMPALTE_FUN_POINTER_ARG == type) {
+      return (int_fast64_t)(getFun(name).get());
+    } else if (SYSTEM_FUN_POINTER_ARG == type) {
+      return (int_fast64_t)(agent_tempate->getSYSFun(name).get());
     }
     // TODO:
     return 0;
@@ -180,8 +187,6 @@ private:
     }
     fun_map[name] = fun;
   }
-
-
 
   shared_ptr<AgentTemplate_t> agent_tempate;
   map<string, shared_ptr<Function>> fun_map;

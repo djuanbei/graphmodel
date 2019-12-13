@@ -23,12 +23,12 @@ public:
   n_Channel(const Argument &arg, const CHANNEL_TYPE &t)
       : chan_id(arg), type(t), action(CHANNEL_SEND) {}
 
-  int operator()(const int *counter_value) const {
+  int operator()(int *counter_value) const {
     return getValue(real_chan_id, counter_value);
   }
   void setAction(const CHANNEL_ACTION &a) { action = a; }
 
-  void to_real(const shared_ptr<TOReal>& convertor) {
+  void to_real(const shared_ptr<TOReal> &convertor) {
     real_chan_id = convertor->to_real(CHAN_T, chan_id);
   }
 

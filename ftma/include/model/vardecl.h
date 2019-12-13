@@ -54,6 +54,8 @@ class VarDecl {
 public:
   virtual Argument addClock(const std::string &n);
 
+  virtual ~VarDecl() {}
+
   virtual int addInt(const BaseDecl &ch);
 
   virtual int addInt(const string &name, int num = 1);
@@ -66,9 +68,9 @@ public:
 
   virtual int addFun(const string &name, shared_ptr<Function> fun);
 
-  virtual shared_ptr<Function>  getFun(const string &name) const;
-  
-  virtual  const map<string, shared_ptr<Function> > & getFuns() const;
+  virtual shared_ptr<Function> getFun(const string &name) const;
+
+  virtual const map<string, shared_ptr<Function>> &getFuns() const;
 
   virtual int addConstant(const string &n, const int v);
 
@@ -106,7 +108,7 @@ protected:
 
   map<string, int> const_values;
   vector<TypeDefArray> self_types;
-  map<string, shared_ptr<Function> > functions;
+  map<string, shared_ptr<Function>> functions;
 
   int getTypeNumber(const int type) const;
 };

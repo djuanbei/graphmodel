@@ -164,7 +164,7 @@ int VarDecl::getKeyStart( const TYPE_T type, const string &key ) const {
     }
     re += ( (BaseDecl *) it->second[ 0 ] )->num;
   }
-  assert( false );
+  //assert( false );
   return -1;
 }
 } // namespace graphsat

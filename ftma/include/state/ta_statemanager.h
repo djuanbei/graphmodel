@@ -53,6 +53,8 @@ public:
                  const vector<int> &nodes, const vector<int> &links,
                  int channel_n);
 
+  virtual ~TMStateManager() {}
+
   int getStateLen() const { return state_length; }
 
   int getClockStart() const { return clock_start_loc; }

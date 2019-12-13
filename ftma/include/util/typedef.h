@@ -10,10 +10,14 @@
 
 #ifndef TYEP_DEF_H
 #define TYEP_DEF_H
-#include "macrodef.h"
+
 #include <cstdarg>
 #include <cstdint>
 #include <string>
+
+#include "macrodef.h"
+
+#include "model/function.h"
 
 namespace graphsat {
 using std::string;

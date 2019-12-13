@@ -24,11 +24,11 @@ using namespace std;
 #define PRINT_STATE_MACRO                                                      \
   for (int i = 0; i < component_num; i++) {                                    \
     if (state[i + component_num] == NO_CHANNEL)                                \
-      std::cout << setw(LOC_OUT_WIDTH) << sys.agents[i]->getLocName(state[i]);  \
+      std::cout << setw(LOC_OUT_WIDTH) << sys.agents[i]->getLocName(state[i]); \
     else {                                                                     \
       int block_source;                                                        \
-      sys.agents[i]->agent_tempate->graph.findSrc(state[i], block_source);      \
-      cout << setw(LOC_OUT_WIDTH) << sys.agents[i]->getLocName(block_source);   \
+      sys.agents[i]->agent_tempate->graph.findSrc(state[i], block_source);     \
+      cout << setw(LOC_OUT_WIDTH) << sys.agents[i]->getLocName(block_source);  \
     }                                                                          \
   }                                                                            \
   cout << endl;                                                                \

@@ -174,7 +174,7 @@ private:
        */
 
       if (!sys.agents[component]->transitions[link].ready(component, manager,
-                                                         state)) {
+                                                          state)) {
         continue;
       }
 
@@ -218,7 +218,7 @@ private:
     const int block_link = next_state[block_component_id];
     int block_source = 0;
     sys.agents[block_component_id]->agent_tempate->graph.findSrc(block_link,
-                                                                block_source);
+                                                                 block_source);
     next_state[block_component_id] = block_source;
     int send_component_id = current_component;
     int send_link = link;
@@ -245,7 +245,7 @@ private:
 
     int send_target = 0;
     sys.agents[send_component_id]->agent_tempate->graph.findSnk(send_link,
-                                                               send_target);
+                                                                send_target);
     next_state[send_component_id] = send_target;
 
     bool is_send_commit =
@@ -284,12 +284,16 @@ private:
     sys.agents[receive_component_id]->agent_tempate->graph.findSrcSnk(
         receive_link, source, target);
 
-    if (sys.agents[receive_component_id]->locations[source].isFreezeLocation()) {
+    if (sys.agents[receive_component_id]
+            ->locations[source]
+            .isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
 
-    if (sys.agents[receive_component_id]->locations[target].isFreezeLocation()) {
+    if (sys.agents[receive_component_id]
+            ->locations[target]
+            .isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
@@ -376,7 +380,8 @@ private:
     manager->copy(next_state, state);
     int source = 0;
     int target = 0;
-    sys.agents[component]->agent_tempate->graph.findSrcSnk(link, source, target);
+    sys.agents[component]->agent_tempate->graph.findSrcSnk(link, source,
+                                                           target);
     if (sys.agents[component]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
@@ -409,7 +414,7 @@ private:
     if (!manager->isFreeze(state)) {
 
       sys.agents[component]->locations[target](manager->getClockManager(),
-                                              manager->getDBM(state));
+                                               manager->getDBM(state));
     }
 
     return postDelay(data, component, target, prop, state);

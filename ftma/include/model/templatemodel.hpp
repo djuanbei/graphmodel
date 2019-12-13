@@ -36,6 +36,7 @@ private:
   typedef Agent<L, T> Agent_t;
 
 public:
+  virtual ~AgentTemplate() {}
   void initial(vector<L> &locs, vector<T> &es, int init) {
     template_locations = locs;
     template_transitions = es;
@@ -114,8 +115,8 @@ private:
   int getSYSStart(const TYPE_T type, const string &key) const {
     return sys->getKeyStart(type, key);
   }
-  Function * getSYSFun( const string  &name) const{
-    sys->getFun( name);
+  shared_ptr<Function> getSYSFun(const string &name) const {
+    return sys->getFun(name);
   }
 
   void initial() {
