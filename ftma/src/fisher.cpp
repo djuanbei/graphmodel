@@ -23,7 +23,7 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   typename INT_TAS_t::T_t A_req(A, req);
 
-  Argument first3(TEMPLATE_VAR_ARG, 0);
+  Argument first3(NORMAL_VAR_ARG, 0);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
   void *ccs1 = createConstraint(first3, second3, EQ, rhs3); // id==0
@@ -38,7 +38,7 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   req_wait.addReset(x, 0); // x-->0
 
-  Argument lhs(TEMPLATE_VAR_ARG, 0);
+  Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs(PARAMETER_ARG, 0);
   CounterAction *caction =
       new CounterAction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
@@ -52,7 +52,7 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
-  Argument first4(TEMPLATE_VAR_ARG, 0);
+  Argument first4(NORMAL_VAR_ARG, 0);
   Argument second4(PARAMETER_ARG, 0);
   Argument rhs4(CONST_ARG, 0);
 
@@ -63,7 +63,7 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   typename INT_TAS_t::T_t cs_A(cs, A);
 
-  Argument lhs2(TEMPLATE_VAR_ARG, 0);
+  Argument lhs2(NORMAL_VAR_ARG, 0);
   Argument rhs2(CONST_ARG, 0);
   CounterAction *caction1 =
       new CounterAction(lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;

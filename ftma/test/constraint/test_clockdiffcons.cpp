@@ -5,8 +5,8 @@
 using namespace graphsat;
 
 TEST(LIN_SIMP_CONS_H, ClockConstraint) {
-  Argument c1(TEMPLATE_VAR_ARG, 1);
-  Argument c2(TEMPLATE_VAR_ARG, 2);
+  Argument c1(NORMAL_VAR_ARG, 1);
+  Argument c2(NORMAL_VAR_ARG, 2);
 
   ClockConstraint cs1(c1, LE, Argument(10));
   ClockConstraint cs2(c2, LE, Argument(10));

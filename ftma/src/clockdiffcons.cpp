@@ -11,7 +11,7 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1, COMP_OPERATOR eop,
   clock_y_arg.value = 0;
   rhs_arg = rhs;
 
-  if (clock_id1.type == TEMPLATE_VAR_ARG && rhs.type == CONST_ARG) {
+  if (clock_id1.type == NORMAL_VAR_ARG && rhs.type == CONST_ARG) {
     init(clock_id1.value, 0, eop, rhs.value);
     return;
   }
@@ -25,8 +25,8 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1,
   clock_x_arg = clock_id1;
   clock_y_arg = clock_id2;
   rhs_arg = rhs;
-  if (clock_id1.type == TEMPLATE_VAR_ARG &&
-      clock_id2.type == TEMPLATE_VAR_ARG) {
+  if (clock_id1.type == NORMAL_VAR_ARG &&
+      clock_id2.type == NORMAL_VAR_ARG) {
     init(clock_id1.value, clock_id2.value, eop, rhs.value);
     return;
   }
@@ -135,11 +135,11 @@ std::ostream &operator<<(std::ostream &out, const ClockConstraint &cons) {
 
 ClockConstraint::ClockConstraint(const int clock_id1, const int clock_id2,
                                  const int rhs, bool is_strict_ref) {
-  clock_x_arg.type = TEMPLATE_VAR_ARG;
+  clock_x_arg.type = NORMAL_VAR_ARG;
   clock_x_arg.value = clock_id1;
 
-  clock_y_arg.type = TEMPLATE_VAR_ARG;
-  clock_y_arg.value = TEMPLATE_VAR_ARG;
+  clock_y_arg.type = NORMAL_VAR_ARG;
+  clock_y_arg.value = NORMAL_VAR_ARG;
   op = LE;
   if (is_strict_ref) {
     op = LT;
@@ -196,11 +196,11 @@ ClockConstraint randConst(const int num, const int low, const int up) {
 
   int vv = distribution1(generator);
   if (distribution1(generator) % 2) {
-    return ClockConstraint(Argument(TEMPLATE_VAR_ARG, xx),
-                           Argument(TEMPLATE_VAR_ARG, yy), LT, Argument(vv));
+    return ClockConstraint(Argument(NORMAL_VAR_ARG, xx),
+                           Argument(NORMAL_VAR_ARG, yy), LT, Argument(vv));
   } else {
-    return ClockConstraint(Argument(TEMPLATE_VAR_ARG, xx),
-                           Argument(TEMPLATE_VAR_ARG, yy), LE, Argument(vv));
+    return ClockConstraint(Argument(NORMAL_VAR_ARG, xx),
+                           Argument(NORMAL_VAR_ARG, yy), LE, Argument(vv));
   }
 }
 

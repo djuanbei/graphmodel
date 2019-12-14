@@ -13,10 +13,10 @@ int getIndex( const RealArgument & arg, int * counter_value){
   case CONST_ARG:
     assert( false && "It needs to return a index.");
     return arg.value + shift;
-  case TEMPLATE_VAR_ARG:
+  case NORMAL_VAR_ARG:
     return arg.value + shift;
-  case SYSTEM_VAR_ARG:
-    return arg.value + shift;
+//  case SYSTEM_VAR_ARG:
+//    return arg.value + shift;
   case PARAMETER_ARG:
     assert( false && "It needs to return a index.");
     return arg.value + shift;
@@ -44,10 +44,10 @@ int getValue(const RealArgument &arg, int *counter_value) {
   switch (arg.type) {
   case CONST_ARG:
     return arg.value + shift;
-  case TEMPLATE_VAR_ARG:
+  case NORMAL_VAR_ARG:
     return counter_value[arg.value + shift];
-  case SYSTEM_VAR_ARG:
-    return counter_value[arg.value + shift];
+//  case SYSTEM_VAR_ARG:
+//    return counter_value[arg.value + shift];
   case PARAMETER_ARG:
     return arg.value + shift;
   case REF_PARAMETER_ARG:
@@ -75,10 +75,10 @@ int getValue(const shared_ptr<RealArgument> &arg, int *counter_value) {
   switch (arg->type) {
   case CONST_ARG:
     return arg->value;
-  case TEMPLATE_VAR_ARG:
+  case NORMAL_VAR_ARG:
     break;
-  case SYSTEM_VAR_ARG:
-    break;
+//  case SYSTEM_VAR_ARG:
+//    break;
   case PARAMETER_ARG:
     return arg->value;
   case REF_PARAMETER_ARG:
@@ -106,10 +106,10 @@ int_fast64_t getMapValue(const Argument &arg, const vector<int> &id_map,
   switch (arg.type) {
   case CONST_ARG:
     return arg.value;
-  case TEMPLATE_VAR_ARG:
+  case NORMAL_VAR_ARG:
     return arg.value;
-  case SYSTEM_VAR_ARG:
-    return arg.value;
+//  case SYSTEM_VAR_ARG:
+//    return arg.value;
   case PARAMETER_ARG:
     return parameter_value[arg.value];
   case REF_PARAMETER_ARG:

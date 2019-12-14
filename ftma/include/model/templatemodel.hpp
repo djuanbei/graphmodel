@@ -79,7 +79,7 @@ public:
   void reset() { agents.clear(); }
   virtual Argument addClock(const string &n) {
     Argument dummy = VarDecl::addClock(n);
-    dummy.type = TEMPLATE_VAR_ARG;
+    dummy.type = NORMAL_VAR_ARG;
     return dummy;
   }
 

@@ -283,7 +283,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
               template_data.getPoints(RESET_T, getTypeStr(RESET_T));
           for (auto reset : resets) {
             transition.addReset(
-                Argument(TEMPLATE_VAR_ARG, ((pair<int, int> *)reset)->first),
+                Argument(NORMAL_VAR_ARG, ((pair<int, int> *)reset)->first),
                 ((pair<int, int> *)reset)->second);
             delete (pair<int, int> *)reset;
           }

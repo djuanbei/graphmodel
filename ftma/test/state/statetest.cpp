@@ -80,8 +80,8 @@ TEST(DBM1, include) {
     int y = abs(distribution(generator)) % (clock_num + 1);
     if (x != y) {
       int rhs = distribution(generator);
-      ClockConstraint cs(Argument(TEMPLATE_VAR_ARG, x),
-                         Argument(TEMPLATE_VAR_ARG, y), LE, Argument(rhs));
+      ClockConstraint cs(Argument(NORMAL_VAR_ARG, x),
+                         Argument(NORMAL_VAR_ARG, y), LE, Argument(rhs));
       int *dbm1 = manager.And(dbm, cs);
       EXPECT_TRUE(manager.include(dbm, dbm1));
       manager.destroyDBM(dbm1);

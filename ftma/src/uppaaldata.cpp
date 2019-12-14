@@ -150,20 +150,20 @@ void UppaalData::addClockConstraint(int clock1_id, int clock2_id,
   }
   if (EQ == op) {
 
-    void *cs = new INT_TAS_t::CS_t(Argument(TEMPLATE_VAR_ARG, clock1_id),
-                                   Argument(TEMPLATE_VAR_ARG, clock2_id), GE,
+    void *cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
+                                   Argument(NORMAL_VAR_ARG, clock2_id), GE,
                                    rhs_a); // x-y<= c
 
     addValue(CLOCK_CS_T, STRING(CLOCK_CS_T), cs);
 
-    cs = new INT_TAS_t::CS_t(Argument(TEMPLATE_VAR_ARG, clock1_id),
-                             Argument(TEMPLATE_VAR_ARG, clock2_id), LE,
+    cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
+                             Argument(NORMAL_VAR_ARG, clock2_id), LE,
                              rhs_a); // x-y>= c
     addValue(CLOCK_CS_T, STRING(CLOCK_CS_T), cs);
 
   } else {
-    void *cs = new INT_TAS_t::CS_t(Argument(TEMPLATE_VAR_ARG, clock1_id),
-                                   Argument(TEMPLATE_VAR_ARG, clock2_id), op,
+    void *cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
+                                   Argument(NORMAL_VAR_ARG, clock2_id), op,
                                    rhs_a); // x op c
     addValue(CLOCK_CS_T, STRING(CLOCK_CS_T), cs);
   }

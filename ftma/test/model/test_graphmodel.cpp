@@ -89,8 +89,8 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
   }
   sys.build();
 
-  Argument arg(TEMPLATE_VAR_ARG, "list");
-  shared_ptr<Argument> dummy(new Argument(TEMPLATE_VAR_ARG, "len"));
+  Argument arg(NORMAL_VAR_ARG, "list");
+  shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
   arg.setIndex(dummy);
 
   RealArgument rarg = tma->to_real(INT_T, arg);
@@ -101,7 +101,7 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
 
   EXPECT_EQ(getValue(rarg, counters), 0);
 
-  Argument len_arg(TEMPLATE_VAR_ARG, "len");
+  Argument len_arg(NORMAL_VAR_ARG, "len");
   RealArgument rlen_arg = tma->to_real(INT_T, len_arg);
 
   shared_ptr<Function> enqueue_c = tma->getFun("enqueue");
@@ -148,8 +148,8 @@ TEST_F(GraphModelTest, constraint) {
   }
   sys.build();
 
-  Argument arg(TEMPLATE_VAR_ARG, "list");
-  shared_ptr<Argument> dummy(new Argument(TEMPLATE_VAR_ARG, "len"));
+  Argument arg(NORMAL_VAR_ARG, "list");
+  shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
   arg.setIndex(dummy);
 
   RealArgument rarg = tma->to_real(INT_T, arg);
@@ -160,7 +160,7 @@ TEST_F(GraphModelTest, constraint) {
 
   EXPECT_EQ(getValue(rarg, counters), 0);
 
-  Argument len_arg(TEMPLATE_VAR_ARG, "len");
+  Argument len_arg(NORMAL_VAR_ARG, "len");
 
   RealArgument rlen_arg = tma->to_real(INT_T, len_arg);
 
@@ -210,8 +210,8 @@ TEST_F(GraphModelTest, Channel) {
   }
   sys.build();
 
-  Argument arg(TEMPLATE_VAR_ARG, "list");
-  shared_ptr<Argument> dummy(new Argument(TEMPLATE_VAR_ARG, "len"));
+  Argument arg(NORMAL_VAR_ARG, "list");
+  shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
   arg.setIndex(dummy);
 
   RealArgument rarg = tma->to_real(INT_T, arg);
@@ -220,7 +220,7 @@ TEST_F(GraphModelTest, Channel) {
 
   INT_TAS_t::State_t *counters = manager->getCounterValue(state);
 
-  Argument ch1_arg(SYSTEM_VAR_ARG, "go");
+  Argument ch1_arg(NORMAL_VAR_ARG, "go");
   shared_ptr<Argument> dummy1(new Argument(TEMPALTE_FUN_POINTER_ARG, "front"));
   ch1_arg.setIndex(dummy1);
 
@@ -284,7 +284,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   EXPECT_EQ( tt.getHigh( ), n-1);
   
   
-  Argument ch1_arg(SYSTEM_VAR_ARG, "appr");
+  Argument ch1_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy1(new Argument(SELECT_VAR_ARG, "e"));
   ch1_arg.setIndex(dummy1);
 

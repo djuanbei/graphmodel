@@ -186,7 +186,7 @@ public:
 
   virtual Argument addClock(const string &n) {
     Argument dummy = VarDecl::addClock(n);
-    dummy.type = SYSTEM_VAR_ARG;
+    dummy.type = NORMAL_VAR_ARG;
     return dummy;
   }
 

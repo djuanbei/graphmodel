@@ -32,10 +32,7 @@ using std::vector;
   case CONST_ARG:                                                              \
     counter_value[lhs_value] op rhs_value;                                     \
     return;                                                                    \
-  case TEMPLATE_VAR_ARG:                                                       \
-    counter_value[lhs_value] op counter_value[rhs_value];                      \
-    return;                                                                    \
-  case SYSTEM_VAR_ARG:                                                         \
+  case NORMAL_VAR_ARG:                                                       \
     counter_value[lhs_value] op counter_value[rhs_value];                      \
     return;                                                                    \
   case PARAMETER_ARG:                                                          \
@@ -63,14 +60,10 @@ using std::vector;
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << act.rhs_value;                             \
     return out;                                                                \
-  case TEMPLATE_VAR_ARG:                                                       \
+  case NORMAL_VAR_ARG:                                                       \
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << "counter_" << act.rhs_value;                                        \
-    return out;                                                                \
-  case SYSTEM_VAR_ARG:                                                         \
-    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
-        << "counter_" << act.rhs_value;                                        \
-    return out;                                                                \
+    return out;                                                                 \
   case PARAMETER_ARG:                                                          \
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << act.rhs_value;                             \
@@ -154,9 +147,7 @@ public:
     case CONST_ARG:
       assert(false);
       break;
-    case TEMPLATE_VAR_ARG:
-      break;
-    case SYSTEM_VAR_ARG:
+    case NORMAL_VAR_ARG:
       break;
     case PARAMETER_ARG:
       assert(false);
@@ -176,10 +167,10 @@ public:
     switch (rhs.type) {
     case CONST_ARG:
       break;
-    case TEMPLATE_VAR_ARG:
+    case NORMAL_VAR_ARG:
       break;
-    case SYSTEM_VAR_ARG:
-      break;
+//    case SYSTEM_VAR_ARG:
+//      break;
     case PARAMETER_ARG:
       rhs_value = parameter_value[rhs.value];
       break;

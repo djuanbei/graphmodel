@@ -118,7 +118,7 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   typename INT_TAS_t::T_t Free_Occ1(Free, Occ);
 
-  Argument first1(TEMPLATE_VAR_ARG, len_id);
+  Argument first1(NORMAL_VAR_ARG, len_id);
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
   void *ccs1 = createConstraint(first1, second1, GT, rhs1); // len >0
@@ -133,7 +133,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Free_Occ2.setSelectVar("e");
   Free_Occ2.setSelectCollect("id_t");
 
-  Argument first3(TEMPLATE_VAR_ARG, len_id);
+  Argument first3(NORMAL_VAR_ARG, len_id);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
   void *ccs3 = createConstraint(first3, second3, EQ, rhs3); // len==0

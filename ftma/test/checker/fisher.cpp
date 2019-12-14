@@ -167,7 +167,7 @@ TEST(REACHSET, FISHER) {
   typename INT_TAS_t::L_t cs(3);
 
   typename INT_TAS_t::T_t A_req(A, req);
-  Argument first(TEMPLATE_VAR_ARG, 0);
+  Argument first(NORMAL_VAR_ARG, 0);
   Argument second(EMPTY_ARG, 0);
   Argument rhs(CONST_ARG, 0);
 
@@ -182,7 +182,7 @@ TEST(REACHSET, FISHER) {
   req_wait += cs2;
 
   req_wait.addReset(x, 0); // x-->0
-  Argument lhs(TEMPLATE_VAR_ARG, 0);
+  Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs0(PARAMETER_ARG, 0);
   CounterAction *action =
       new CounterAction(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
@@ -196,7 +196,7 @@ TEST(REACHSET, FISHER) {
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
-  Argument first1(TEMPLATE_VAR_ARG, 0);
+  Argument first1(NORMAL_VAR_ARG, 0);
   Argument second1(PARAMETER_ARG, 0);
   Argument rhs01(CONST_ARG, 0);
   void *ccs2 = createConstraint(first1, second1, EQ, rhs01); // id==pid
@@ -206,7 +206,7 @@ TEST(REACHSET, FISHER) {
 
   typename INT_TAS_t::T_t cs_A(cs, A);
 
-  Argument lhs1(TEMPLATE_VAR_ARG, 0);
+  Argument lhs1(NORMAL_VAR_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
   CounterAction *caction1 = new CounterAction(lhs1, ASSIGNMENT_ACTION, rhs1);
 

@@ -120,12 +120,12 @@ public:
     case CONST_ARG:
       re.value = arg.value;
       break;
-    case TEMPLATE_VAR_ARG:
+    case NORMAL_VAR_ARG:
       re.value = getStart(type, arg.name);
       break;
-    case SYSTEM_VAR_ARG:
-      re.value = getSYSStart(type, arg.name);
-      break;
+//    case SYSTEM_VAR_ARG:
+//      re.value = getSYSStart(type, arg.name);
+//      break;
     case PARAMETER_ARG:
       re.value = parameter.getParameter(arg.value);
       break;

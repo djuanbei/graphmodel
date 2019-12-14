@@ -86,8 +86,8 @@ enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
 enum ARGUMENT_TYPE {
   CONST_ARG,                // constant value
-  TEMPLATE_VAR_ARG,         // template variable id
-  SYSTEM_VAR_ARG,           // system variable id
+  NORMAL_VAR_ARG,         // template variable id
+//  SYSTEM_VAR_ARG,           // system variable id
   PARAMETER_ARG,            // template argument id (pass value)
   REF_PARAMETER_ARG,        // temmplate argument if (pass reference)
   TEMPALTE_FUN_POINTER_ARG, // template function
