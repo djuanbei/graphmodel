@@ -87,23 +87,7 @@ public:
                 const Argument &out_rhs)
       : lhs(out_lhs), action(ee), rhs(out_rhs) {}
 
-  // void operator()(int *counter_value) const {
 
-  //   switch (action) {
-  //   case CALL_ACTION:
-  //     ((IndexFun_t)lhs_value)(counter_value);
-  //     return;
-  //   case ASSIGNMENT_ACTION: {
-  //     ACTION_TYPE_CASE(=);
-  //   }
-  //   case SELF_INC_ACTION: {
-  //     ACTION_TYPE_CASE(+=);
-  //   }
-  //   case SELF_DEC_ACTION: {
-  //     ACTION_TYPE_CASE(-=);
-  //   }
-  //   }
-  // }
   void to_real(const shared_ptr<TOReal> &convertor) {
     real_lhs = convertor->to_real(INT_T, lhs);
     real_rhs = convertor->to_real(INT_T, rhs);
@@ -130,51 +114,7 @@ public:
       assert(false);
     }
   }
-//  CounterAction *copy() const { return new CounterAction(lhs, action, rhs); }
-  // void globalUpdate(const vector<int> &counter_map,
-  //                   const vector<int> &parameter_value) {
-  //   lhs_value = lhs.value;
-  //   rhs_value = rhs.value;
 
-  //   switch (lhs.type) {
-  //   case CONST_ARG:
-  //     assert(false);
-  //     break;
-  //   case NORMAL_VAR_ARG:
-  //     break;
-  //   case PARAMETER_ARG:
-  //     assert(false);
-  //     break;
-  //   case REF_PARAMETER_ARG:
-  //     lhs_value = counter_map[lhs.value];
-  //     break;
-  //   case FUN_POINTER_ARG:
-  //     break;
-  //   case SELECT_VAR_ARG:
-  //     break;
-  //   case EMPTY_ARG:
-  //     assert(false);
-  //   }
-  //   switch (rhs.type) {
-  //   case CONST_ARG:
-  //     break;
-  //   case NORMAL_VAR_ARG:
-  //     break;
-  //   case PARAMETER_ARG:
-  //     rhs_value = parameter_value[rhs.value];
-  //     break;
-  //   case REF_PARAMETER_ARG:
-  //     rhs_value = counter_map[rhs.value];
-  //     break;
-  //   case FUN_POINTER_ARG:
-  //     break;
-
-  //   case SELECT_VAR_ARG:
-  //     break;
-  //   case EMPTY_ARG:
-  //     assert(false);
-  //   }
-  //}
   friend ostream &operator<<(ostream &out, const CounterAction &act) {
     switch (act.action) {
     case CALL_ACTION:
