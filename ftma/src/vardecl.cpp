@@ -78,16 +78,16 @@ int VarDecl::addType(const string &n, const int low, const int high) {
   return re;
 }
 
-TypeDefArray VarDecl::getType( const string & n) const{
-  for( auto &e:self_types ){
-    if( e.getName( )==n){
+TypeDefArray VarDecl::getType(const string &n) const {
+  for (auto &e : self_types) {
+    if (e.getName() == n) {
       return e;
     }
   }
-  if(nullptr!= parent ){
-    return parent->getType(n );
+  if (nullptr != parent) {
+    return parent->getType(n);
   }
-  return TypeDefArray( );
+  return TypeDefArray();
 }
 
 vector<BaseDecl> VarDecl::getInts() const {

@@ -25,8 +25,6 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   sys.addChan("go", sys["N"], URGENT_CH); // urgent chan go[ N]
 
-  
-
   ADD_CLOCK((*train_tmt), x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -52,7 +50,6 @@ INT_TAS_t TrainGate::generate(int n) const {
   ls.push_back(Start);
   ls.push_back(Cross);
 
-  // pair<int, int> resetX( x, 0 ); // x-->0
 
   typename INT_TAS_t::T_t Safe_Appr(Safe, Appr);
 
@@ -143,7 +140,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   ch2->setSelectVar("e");
   Free_Occ2.setChannel(ch2);
 
-  Argument lhs2(TEMPALTE_FUN_POINTER_ARG, 0);
+  Argument lhs2(FUN_POINTER_ARG, 0);
   lhs2.name = "enqueue(e)";
   Argument rhs2(EMPTY_ARG, 0);
   CounterAction *caction2 =
@@ -160,7 +157,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   ch3->setSelectVar("e");
   Occ_OK.setChannel(ch3);
 
-  Argument lhs4(TEMPALTE_FUN_POINTER_ARG, 0);
+  Argument lhs4(FUN_POINTER_ARG, 0);
   lhs4.name = "enqueue( e)";
   Argument rhs4(EMPTY_ARG, 0);
   CounterAction *caction4 =
@@ -182,7 +179,7 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   Argument first5(SELECT_VAR_ARG, "e");
   Argument second5(EMPTY_ARG, 0);
-  Argument rhs5(TEMPALTE_FUN_POINTER_ARG, "front");
+  Argument rhs5(FUN_POINTER_ARG, "front");
   void *ccs5 = createConstraint(first5, second5, EQ, rhs5); // e== front( )
   Occ_Free.addCounterCons(ccs5);
 
@@ -190,7 +187,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   ch5->setSelectVar("e");
   Occ_Free.setChannel(ch5);
 
-  Argument lhs6(TEMPALTE_FUN_POINTER_ARG, "dequeue");
+  Argument lhs6(FUN_POINTER_ARG, "dequeue");
   Argument rhs6(EMPTY_ARG, 0);
   CounterAction *caction6 =
       new CounterAction(lhs6, CALL_ACTION, rhs6); // dequeue

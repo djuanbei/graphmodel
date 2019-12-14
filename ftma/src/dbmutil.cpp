@@ -4,32 +4,29 @@
 namespace graphsat {
 extern string trim(std::string s);
 
-int getIndex( const RealArgument & arg, int * counter_value){
+int getIndex(const RealArgument &arg, int *counter_value) {
   int shift = 0;
   if (nullptr != arg.index) {
     shift = getValue(arg.index, counter_value);
   }
   switch (arg.type) {
   case CONST_ARG:
-    assert( false && "It needs to return a index.");
+    assert(false && "It needs to return a index.");
     return arg.value + shift;
   case NORMAL_VAR_ARG:
     return arg.value + shift;
-//  case SYSTEM_VAR_ARG:
-//    return arg.value + shift;
+    //  case SYSTEM_VAR_ARG:
+    //    return arg.value + shift;
   case PARAMETER_ARG:
-    assert( false && "It needs to return a index.");
+    assert(false && "It needs to return a index.");
     return arg.value + shift;
   case REF_PARAMETER_ARG:
     return arg.value + shift;
-  case TEMPALTE_FUN_POINTER_ARG:
-    assert( false && "It needs to return a index.");
-    return (*((Function *)arg.value))(counter_value);
-  case SYSTEM_FUN_POINTER_ARG:
-    assert( false && "It needs to return a index.");
+  case FUN_POINTER_ARG:
+    assert(false && "It needs to return a index.");
     return (*((Function *)arg.value))(counter_value);
   case SELECT_VAR_ARG:
-    assert( false && "It needs to return a index.");
+    assert(false && "It needs to return a index.");
     return arg.value;
   case EMPTY_ARG:
     return 0;
@@ -46,29 +43,21 @@ int getValue(const RealArgument &arg, int *counter_value) {
     return arg.value + shift;
   case NORMAL_VAR_ARG:
     return counter_value[arg.value + shift];
-//  case SYSTEM_VAR_ARG:
-//    return counter_value[arg.value + shift];
+    //  case SYSTEM_VAR_ARG:
+    //    return counter_value[arg.value + shift];
   case PARAMETER_ARG:
     return arg.value + shift;
   case REF_PARAMETER_ARG:
     return counter_value[arg.value + shift];
-  case TEMPALTE_FUN_POINTER_ARG:
+  case FUN_POINTER_ARG:
     return (*((Function *)arg.value))(counter_value, shift);
-  case SYSTEM_FUN_POINTER_ARG:
-    return (*((Function *)arg.value))(counter_value, shift);
+
   case SELECT_VAR_ARG:
     return arg.value;
   case EMPTY_ARG:
     return 0;
   }
 }
-// int getValue(const RealArgument &arg1, const RealArgument &arg2, int *counter_value){
-  
-//   if(arg1.type!=TEMPALTE_FUN_POINTER_ARG && arg1.type!=SYSTEM_FUN_POINTER_ARG  ){
-//     return  getValue(arg1, counter_value);
-//   }
-//   return (*((Function *)arg1.value))(counter_value, getValue(arg2, counter_value));
-// }
 
 int getValue(const shared_ptr<RealArgument> &arg, int *counter_value) {
 
@@ -77,17 +66,16 @@ int getValue(const shared_ptr<RealArgument> &arg, int *counter_value) {
     return arg->value;
   case NORMAL_VAR_ARG:
     break;
-//  case SYSTEM_VAR_ARG:
-//    break;
+    //  case SYSTEM_VAR_ARG:
+    //    break;
   case PARAMETER_ARG:
     return arg->value;
   case REF_PARAMETER_ARG:
     break;
 
-  case TEMPALTE_FUN_POINTER_ARG:
+  case FUN_POINTER_ARG:
     return (*((Function *)arg->value))(counter_value);
-  case SYSTEM_FUN_POINTER_ARG:
-    return (*((Function *)arg->value))(counter_value);
+
   case SELECT_VAR_ARG:
     return arg->value;
   case EMPTY_ARG:
@@ -108,16 +96,15 @@ int_fast64_t getMapValue(const Argument &arg, const vector<int> &id_map,
     return arg.value;
   case NORMAL_VAR_ARG:
     return arg.value;
-//  case SYSTEM_VAR_ARG:
-//    return arg.value;
+    //  case SYSTEM_VAR_ARG:
+    //    return arg.value;
   case PARAMETER_ARG:
     return parameter_value[arg.value];
   case REF_PARAMETER_ARG:
     return parameter_value[arg.value];
-  case TEMPALTE_FUN_POINTER_ARG:
+  case FUN_POINTER_ARG:
     return arg.value;
-  case SYSTEM_FUN_POINTER_ARG:
-    return arg.value;
+
   case SELECT_VAR_ARG:
     return parameter_value.back();
   case EMPTY_ARG:

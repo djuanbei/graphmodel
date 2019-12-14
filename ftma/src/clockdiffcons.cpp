@@ -25,8 +25,7 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1,
   clock_x_arg = clock_id1;
   clock_y_arg = clock_id2;
   rhs_arg = rhs;
-  if (clock_id1.type == NORMAL_VAR_ARG &&
-      clock_id2.type == NORMAL_VAR_ARG) {
+  if (clock_id1.type == NORMAL_VAR_ARG && clock_id2.type == NORMAL_VAR_ARG) {
     init(clock_id1.value, clock_id2.value, eop, rhs.value);
     return;
   }

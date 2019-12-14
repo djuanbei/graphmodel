@@ -85,25 +85,24 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
 enum ARGUMENT_TYPE {
-  CONST_ARG,                // constant value
-  NORMAL_VAR_ARG,         // template variable id
-//  SYSTEM_VAR_ARG,           // system variable id
-  PARAMETER_ARG,            // template argument id (pass value)
-  REF_PARAMETER_ARG,        // temmplate argument if (pass reference)
-  TEMPALTE_FUN_POINTER_ARG, // template function
-  SYSTEM_FUN_POINTER_ARG,   // template function
-  SELECT_VAR_ARG,           // select variable
-  EMPTY_ARG                 // otherwise
+  CONST_ARG,         // constant value
+  NORMAL_VAR_ARG,    // template variable id
+  PARAMETER_ARG,     // template argument id (pass value)
+  REF_PARAMETER_ARG, // temmplate argument if (pass reference)
+  FUN_POINTER_ARG,   // template function
+  SELECT_VAR_ARG,    // select variable
+  EMPTY_ARG          // otherwise
 };
 
 struct RealArgument {
   ARGUMENT_TYPE type;
   int_fast64_t value;
-  //string name;
+  // string name;
   shared_ptr<RealArgument> index;
   RealArgument() : type(EMPTY_ARG), value(0) {}
   RealArgument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
-  //  RealArgument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
+  //  RealArgument(ARGUMENT_TYPE t, const string &n) : type(t), value(0),
+  //  name(n) {}
 };
 
 struct Argument {

@@ -79,7 +79,9 @@ public:
       }
     }
   }
-  string getLocationName(int node_id) const { return locations[node_id].getName(); }
+  string getLocationName(int node_id) const {
+    return locations[node_id].getName();
+  }
 
   int getStart(const TYPE_T type, const string &key) const {
     int temp_var_id = agent_tempate->getKeyStart(type, key);
@@ -100,17 +102,15 @@ public:
     return state + getStart(type, key);
   }
 
-  TypeDefArray getType( const string&  name ) const{
-    return agent_tempate->getType( name);
+  TypeDefArray getType(const string &name) const {
+    return agent_tempate->getType(name);
   }
 
   const shared_ptr<AgentTemplate_t> getTemplate() const {
     return agent_tempate;
   }
 
-  void setSelect( const int v){
-    parameter.setSelect( v);
-  }
+  void setSelect(const int v) { parameter.setSelect(v); }
 
   RealArgument to_real(const TYPE_T &type, const Argument &arg) const {
 
@@ -123,20 +123,17 @@ public:
     case NORMAL_VAR_ARG:
       re.value = getStart(type, arg.name);
       break;
-//    case SYSTEM_VAR_ARG:
-//      re.value = getSYSStart(type, arg.name);
-//      break;
+      //    case SYSTEM_VAR_ARG:
+      //      re.value = getSYSStart(type, arg.name);
+      //      break;
     case PARAMETER_ARG:
       re.value = parameter.getParameter(arg.value);
       break;
     case REF_PARAMETER_ARG:
       re.value = parameter.getCounter(arg.value);
       break;
-    case TEMPALTE_FUN_POINTER_ARG:
-        loadFun(TEMPALTE_FUN_POINTER_ARG, arg.name, re);
-      break;
-    case SYSTEM_FUN_POINTER_ARG:
-        loadFun(SYSTEM_FUN_POINTER_ARG, arg.name, re);
+    case FUN_POINTER_ARG:
+      loadFun(FUN_POINTER_ARG, arg.name, re);
       break;
     case SELECT_VAR_ARG:
       re.value = parameter.getSelect();
@@ -150,10 +147,12 @@ public:
 
     return re;
   }
-  
 
-  shared_ptr<Function> getFun(const string &name) const {
-    return fun_map.at(name);
+  shared_ptr<Function> getFun(const string &fun_name) const {
+    if (fun_map.find(fun_name) != fun_map.end()) {
+      return fun_map.at(fun_name);
+    }
+    return agent_tempate->getSYSFun(fun_name);
   }
 
   // void toDot(ostream &out ) const{
@@ -173,21 +172,17 @@ private:
       setFun(e.first, dummy);
     }
   }
-  void loadFun(const ARGUMENT_TYPE type, const string &name, RealArgument & re) const {
-    string fun_name=getFunName( name);
-    
-    if (TEMPALTE_FUN_POINTER_ARG == type) {
-      re.value=(int_fast64_t)(getFun(fun_name).get());
-    } else if (SYSTEM_FUN_POINTER_ARG == type) {
-      re.value=(int_fast64_t)(agent_tempate->getSYSFun(fun_name).get());
-    }
-    string var=getFunArg( name);
-    if( var!=""){
-      re.index=shared_ptr<RealArgument> (new RealArgument( SELECT_VAR_ARG, parameter.getSelect() ) );
-    }
+  void loadFun(const ARGUMENT_TYPE type, const string &name,
+               RealArgument &re) const {
+    string fun_name = getFunName(name);
+    re.value = (int_fast64_t)(getFun(fun_name).get());
 
+    string var = getFunArg(name);
+    if (var != "") {
+      re.index = shared_ptr<RealArgument>(
+          new RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
+    }
   }
-  
 
   void initFunction(const shared_ptr<Function> &fun) const {
     vector<string> int_vars = agent_tempate->getKeys(INT_T);

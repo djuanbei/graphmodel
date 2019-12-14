@@ -32,7 +32,7 @@ using std::vector;
   case CONST_ARG:                                                              \
     counter_value[lhs_value] op rhs_value;                                     \
     return;                                                                    \
-  case NORMAL_VAR_ARG:                                                       \
+  case NORMAL_VAR_ARG:                                                         \
     counter_value[lhs_value] op counter_value[rhs_value];                      \
     return;                                                                    \
   case PARAMETER_ARG:                                                          \
@@ -41,10 +41,7 @@ using std::vector;
   case REF_PARAMETER_ARG:                                                      \
     counter_value[lhs_value] op counter_value[rhs_value];                      \
     return;                                                                    \
-  case TEMPALTE_FUN_POINTER_ARG:                                               \
-    counter_value[lhs_value] op (*((Function *)rhs_value))(counter_value);     \
-    return;                                                                    \
-  case SYSTEM_FUN_POINTER_ARG:                                                 \
+  case FUN_POINTER_ARG:                                                        \
     counter_value[lhs_value] op (*((Function *)rhs_value))(counter_value);     \
     return;                                                                    \
   case SELECT_VAR_ARG:                                                         \
@@ -60,10 +57,10 @@ using std::vector;
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << act.rhs_value;                             \
     return out;                                                                \
-  case NORMAL_VAR_ARG:                                                       \
+  case NORMAL_VAR_ARG:                                                         \
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << "counter_" << act.rhs_value;                                        \
-    return out;                                                                 \
+    return out;                                                                \
   case PARAMETER_ARG:                                                          \
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << act.rhs_value;                             \
@@ -72,11 +69,7 @@ using std::vector;
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << "counter_" << act.rhs_value;               \
     return out;                                                                \
-  case TEMPALTE_FUN_POINTER_ARG:                                               \
-    out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
-        << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;             \
-    return out;                                                                \
-  case SYSTEM_FUN_POINTER_ARG:                                                 \
+  case FUN_POINTER_ARG:                                                        \
     out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str         \
         << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;             \
     return out;                                                                \
@@ -111,31 +104,30 @@ public:
     }
   }
   void to_real(const shared_ptr<TOReal> &convertor) {
-    real_lhs=convertor->to_real( INT_T,lhs );
-    real_rhs=convertor->to_real( INT_T, rhs);
+    real_lhs = convertor->to_real(INT_T, lhs);
+    real_rhs = convertor->to_real(INT_T, rhs);
   }
-  
-  void test_do(int * counter_value ) const{
-    if(action==CALL_ACTION ){
-        getValue( real_lhs, counter_value);
-        return ;
-    }
-    int lhs_index=getIndex(real_lhs, counter_value );
-    int rhs_v=getValue( real_rhs, counter_value);
-    switch(action ){
-      case ASSIGNMENT_ACTION:
-        counter_value[ lhs_index]=rhs_v;
-        return;
-      case SELF_INC_ACTION:
-        counter_value[ lhs_index]+=rhs_v;
-        return ;
-      case SELF_DEC_ACTION:
-        counter_value[ lhs_index]-=rhs_v;
-        return ;
-      case CALL_ACTION:
-        assert( false);
-    }
 
+  void test_do(int *counter_value) const {
+    if (action == CALL_ACTION) {
+      getValue(real_lhs, counter_value);
+      return;
+    }
+    int lhs_index = getIndex(real_lhs, counter_value);
+    int rhs_v = getValue(real_rhs, counter_value);
+    switch (action) {
+    case ASSIGNMENT_ACTION:
+      counter_value[lhs_index] = rhs_v;
+      return;
+    case SELF_INC_ACTION:
+      counter_value[lhs_index] += rhs_v;
+      return;
+    case SELF_DEC_ACTION:
+      counter_value[lhs_index] -= rhs_v;
+      return;
+    case CALL_ACTION:
+      assert(false);
+    }
   }
   CounterAction *copy() const { return new CounterAction(lhs, action, rhs); }
   void globalUpdate(const vector<int> &counter_map,
@@ -155,9 +147,7 @@ public:
     case REF_PARAMETER_ARG:
       lhs_value = counter_map[lhs.value];
       break;
-    case TEMPALTE_FUN_POINTER_ARG:
-      break;
-    case SYSTEM_FUN_POINTER_ARG:
+    case FUN_POINTER_ARG:
       break;
     case SELECT_VAR_ARG:
       break;
@@ -169,18 +159,15 @@ public:
       break;
     case NORMAL_VAR_ARG:
       break;
-//    case SYSTEM_VAR_ARG:
-//      break;
     case PARAMETER_ARG:
       rhs_value = parameter_value[rhs.value];
       break;
     case REF_PARAMETER_ARG:
       rhs_value = counter_map[rhs.value];
       break;
-    case TEMPALTE_FUN_POINTER_ARG:
+    case FUN_POINTER_ARG:
       break;
-    case SYSTEM_FUN_POINTER_ARG:
-      break;
+
     case SELECT_VAR_ARG:
       break;
     case EMPTY_ARG:

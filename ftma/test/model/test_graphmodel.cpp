@@ -221,7 +221,7 @@ TEST_F(GraphModelTest, Channel) {
   INT_TAS_t::State_t *counters = manager->getCounterValue(state);
 
   Argument ch1_arg(NORMAL_VAR_ARG, "go");
-  shared_ptr<Argument> dummy1(new Argument(TEMPALTE_FUN_POINTER_ARG, "front"));
+  shared_ptr<Argument> dummy1(new Argument(FUN_POINTER_ARG, "front"));
   ch1_arg.setIndex(dummy1);
 
   n_Channel ch1(ch1_arg);
@@ -248,13 +248,10 @@ TEST_F(GraphModelTest, Channel) {
     EXPECT_EQ(18 + i, ffid);
     (*dequeue_c)(counters);
   }
-  manager->destroyState( state);
-  
-  
+  manager->destroyState(state);
 }
 
 TEST_F(GraphModelTest, SELECT_VAR_ARG) {
-
 
   sys.removeAgent();
   int n = sys["N"];
@@ -272,18 +269,15 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   }
   sys.build();
 
-
   shared_ptr<Function> enqueue_c = tma->getFun("enqueue");
   shared_ptr<Function> dequeue_c = tma->getFun("dequeue");
   shared_ptr<Function> front_c = tma->getFun("front");
   shared_ptr<Function> tail_c = tma->getFun("tail");
 
-    
-  TypeDefArray tt=tma->getType( "id_t");
-  EXPECT_EQ( tt.getLow( ), 0);
-  EXPECT_EQ( tt.getHigh( ), n-1);
-  
-  
+  TypeDefArray tt = tma->getType("id_t");
+  EXPECT_EQ(tt.getLow(), 0);
+  EXPECT_EQ(tt.getHigh(), n - 1);
+
   Argument ch1_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy1(new Argument(SELECT_VAR_ARG, "e"));
   ch1_arg.setIndex(dummy1);
@@ -296,42 +290,38 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   INT_TAS_t::State_t *state = manager->newState();
   INT_TAS_t::State_t *counters = manager->getCounterValue(state);
-  
-  for ( int i=tt.getLow( ); i<= tt.getHigh( ); i++){
-    tma->setSelect( i);
+
+  for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
+    tma->setSelect(i);
     ch1.to_real(tma);
     int ffid = ch1(counters);
     EXPECT_EQ(i, ffid);
   }
 
-  Argument lhs2(TEMPALTE_FUN_POINTER_ARG, "enqueue(e)");
+  Argument lhs2(FUN_POINTER_ARG, "enqueue(e)");
   Argument rhs2(EMPTY_ARG, 0);
   CounterAction caction2(lhs2, CALL_ACTION, rhs2); // enqueue( e)
-  
-  for ( int i=tt.getLow( ); i<= tt.getHigh( ); i++){
-    tma->setSelect( i);
+
+  for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
+    tma->setSelect(i);
     caction2.to_real(tma);
     caction2.test_do(counters);
     EXPECT_EQ((*tail_c)(counters), i);
-
   }
-  
-  Argument lhs1(SELECT_VAR_ARG, "e");
-  
-  Argument second1(EMPTY_ARG, 0);
-  Argument rhs1(TEMPALTE_FUN_POINTER_ARG, "front");
-  nCounterConstraint ccs1 (lhs1, second1, EQ, rhs1); // e==front()
 
-  for ( int i=tt.getLow( ); i<= tt.getHigh( ); i++){
-    tma->setSelect( i);
+  Argument lhs1(SELECT_VAR_ARG, "e");
+
+  Argument second1(EMPTY_ARG, 0);
+  Argument rhs1(FUN_POINTER_ARG, "front");
+  nCounterConstraint ccs1(lhs1, second1, EQ, rhs1); // e==front()
+
+  for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
+    tma->setSelect(i);
     (*enqueue_c)(counters, i);
     ccs1.to_real(tma);
     EXPECT_TRUE(ccs1(counters));
     (*dequeue_c)(counters);
   }
 
-  
-  manager->destroyState( state);
-    
-  
+  manager->destroyState(state);
 }
