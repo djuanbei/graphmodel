@@ -15,6 +15,9 @@ class TOReal {
 public:
   virtual RealArgument to_real(const TYPE_T &type,
                                const Argument &arg) const = 0;
+  virtual CHANNEL_TYPE getChanType( const string &chan_name) const{
+    return ONE2ONE_CH;
+  }
 };
 } // namespace graphsat
 

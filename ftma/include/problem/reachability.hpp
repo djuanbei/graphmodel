@@ -17,7 +17,7 @@
 #include <set>
 #include <vector>
 
-//#include "model/graphmodel.hpp"
+
 #include "model/channel.h"
 #include "property/property.h"
 #include "util/parallel.h"
@@ -315,13 +315,15 @@ private:
 
     vector<int> wait_components;
     bool is_send = true;
+    State_t *counter_value=manager->getCounterValue(state);
     if (channel->isSend()) {
+  
       wait_components =
-          manager->blockComponents(-channel->getGlobalId(state), state);
+          manager->blockComponents(-channel->getGlobalId(counter_value), state);
     } else if (channel->isRecive()) {
       is_send = false;
       wait_components =
-          manager->blockComponents(channel->getGlobalId(state), state);
+          manager->blockComponents(channel->getGlobalId(counter_value), state);
     }
     if (!wait_components.empty()) {
       // TODO: check all the channel type
@@ -344,13 +346,14 @@ private:
 
     } else {
       manager->copy(cache_state, state);
-      assert(channel->getGlobalId(state) > 0); // chan it start with 1
+       State_t *counter_value=manager->getCounterValue(state);
+      assert(channel->getGlobalId(counter_value) > 0); // chan it start with 1
       if (channel->isSend()) {
         cache_state[component + component_num] =
-            channel->getGlobalId(state); // send part
+            channel->getGlobalId(counter_value); // send part
       } else if (channel->isRecive()) {
         cache_state[component + component_num] =
-            -channel->getGlobalId(state); // receive part
+            -channel->getGlobalId(counter_value); // receive part
       }
 
       cache_state[component] = link; // block link

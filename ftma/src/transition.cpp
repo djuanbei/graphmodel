@@ -18,7 +18,7 @@ Transition::Transition(const VariableMap *varMap, const Transition &other,
   has_channel = other.has_channel;
   if (has_channel) {
     channel = other.channel;
-    channel->globalIpUpdate(param.getChanMap());
+  //  channel->globalIpUpdate(param.getChanMap());
   }
 
   for (auto a : other.actions) {
@@ -94,7 +94,6 @@ void Transition::operator()(const int component,
     }
   }
 
-  //    return re_state;
 }
 
 void Transition::clockShift(const int shift) {
@@ -105,10 +104,13 @@ void Transition::clockShift(const int shift) {
     resets[i].first += shift;
   }
 }
-void Transition::chanShift(const int shift) {
-  if (has_channel) {
-    channel->shift(shift);
+
+void  Transition::to_real(const shared_ptr<TOReal> &convertor){
+  if( has_channel){
+    channel->to_real( convertor);
   }
+  
 }
+
 
 } // namespace graphsat

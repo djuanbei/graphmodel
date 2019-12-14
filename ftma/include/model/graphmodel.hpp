@@ -209,20 +209,11 @@ private:
       }
     }
 
-    if (chan_num > 0) {
-      for (size_t i = 0; i < agent->transitions.size(); i++) {
-        agent->transitions[i].chanShift(chan_num);
-      }
+    //    if (chan_num > 0) {
+    for (size_t i = 0; i < agent->transitions.size(); i++) {
+      agent->transitions[i].to_real( agent);
     }
-
-    //    for ( size_t i = 0; i < agent.transitions.size(); i++ ) {
-    //      if ( agent.transitions[ i ].hasChannel() ) {
-    //
-    //        agent.transitions[ i ].setChanType(
-    //            channels[ agent.transitions[ i ].getChannel()->gloabl_id
-    //            ].type );
-    //      }
-    //    }
+      //}
 
     clock_num += agent->getClockNumber();
     chan_num += agent->getChannelNumber();

@@ -177,4 +177,17 @@ int VarDecl::getKeyStart(const TYPE_T type, const string &key) const {
   // assert( false );
   return -1;
 }
+CHANNEL_TYPE VarDecl::getChanType( const string & name ) const{
+  vector<pair<string, vector<void *>>> temp = data.getValue(CHAN_T);
+  for( auto & e: temp){
+    if( e.first==name){
+      return ((ChanDecl*)e.second[ 0])->type;
+    }
+  }
+  if( nullptr!= parent){
+    return parent->getChanType(name );
+  }
+  return ONE2ONE_CH;
+}
+
 } // namespace graphsat

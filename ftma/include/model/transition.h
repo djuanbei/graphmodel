@@ -96,7 +96,7 @@ public:
 
   const shared_ptr<Channel> &getChannel() const { return channel; }
 
-  void setChanType(CHANNEL_TYPE type) { channel->setType(type); }
+ // void setChanType(CHANNEL_TYPE type) { channel->setType(type); }
 
   bool hasChannel() const { return has_channel; }
 
@@ -117,7 +117,6 @@ public:
    * @param reset The reset
    *
    */
-  // void addReset( pair<int, int> &reset ) { resets.push_back( reset ); }
   void addReset(const Argument &arg, int v) {
     assert(arg.type == NORMAL_VAR_ARG && "At now is only support this case.");
     pair<int, int> dummy(arg.value, v);
@@ -154,6 +153,8 @@ public:
 
   void clockShift(const int shift);
 
+  void  to_real(const shared_ptr<TOReal> &convertor);
+  
   void chanShift(const int shift);
 
 private:

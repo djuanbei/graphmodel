@@ -224,7 +224,7 @@ TEST_F(GraphModelTest, Channel) {
   shared_ptr<Argument> dummy1(new Argument(FUN_POINTER_ARG, "front"));
   ch1_arg.setIndex(dummy1);
 
-  n_Channel ch1(ch1_arg);
+  Channel ch1(ch1_arg);
   ch1.setAction(CHANNEL_SEND);
   ch1.to_real(tma);
 
@@ -282,7 +282,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   shared_ptr<Argument> dummy1(new Argument(SELECT_VAR_ARG, "e"));
   ch1_arg.setIndex(dummy1);
 
-  n_Channel ch1(ch1_arg);
+  Channel ch1(ch1_arg);
 
   ch1.setAction(CHANNEL_RECEIVE);
   EXPECT_EQ(0, tma->getStart(CHAN_T, "appr"));
@@ -324,4 +324,10 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   }
 
   manager->destroyState(state);
+}
+
+TEST(TRAIN_GATE_H, generate ){
+  TrainGate TG;
+  INT_TAS_t tg=TG.generate( 6);
+  
 }

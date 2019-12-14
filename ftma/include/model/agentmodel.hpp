@@ -123,9 +123,7 @@ public:
     case NORMAL_VAR_ARG:
       re.value = getStart(type, arg.name);
       break;
-      //    case SYSTEM_VAR_ARG:
-      //      re.value = getSYSStart(type, arg.name);
-      //      break;
+
     case PARAMETER_ARG:
       re.value = parameter.getParameter(arg.value);
       break;
@@ -145,8 +143,14 @@ public:
       re.index.reset(new RealArgument(to_real(type, *arg.index)));
     }
 
+
     return re;
   }
+
+  virtual CHANNEL_TYPE getChanType( const string &chan_name) const{
+    return agent_tempate->getChanType(chan_name );
+  }
+  
 
   shared_ptr<Function> getFun(const string &fun_name) const {
     if (fun_map.find(fun_name) != fun_map.end()) {
