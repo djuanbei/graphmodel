@@ -53,7 +53,7 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   typename INT_TAS_t::T_t Safe_Appr(Safe, Appr);
 
-  train_tmt->addPara("id") + 1;
+  train_tmt->addPara("id");
 
   Argument ch1_arg(NORMAL_VAR_ARG, "appr" );
   shared_ptr<Argument> dummy1(new Argument(PARAMETER_ARG, "id"));
@@ -136,7 +136,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument first1(NORMAL_VAR_ARG, len_id);
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
-  void *ccs1 = createConstraint(first1, second1, GT, rhs1); // len >0
+  CounterConstraint ccs1(first1, second1, GT, rhs1); // len >0
   Free_Occ1.addCounterCons(ccs1);
 
   Argument ch5_arg(NORMAL_VAR_ARG, "go" );
@@ -154,7 +154,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument first3(NORMAL_VAR_ARG, len_id);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
-  void *ccs3 = createConstraint(first3, second3, EQ, rhs3); // len==0
+  CounterConstraint ccs3(first3, second3, EQ, rhs3); // len==0
   Free_Occ2.addCounterCons(ccs3);
   
   Argument ch6_arg( NORMAL_VAR_ARG, "appr");
@@ -165,8 +165,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument lhs2(FUN_POINTER_ARG, 0);
   lhs2.name = "enqueue(e)";
   Argument rhs2(EMPTY_ARG, 0);
-  CounterAction *caction2 =
-      new CounterAction(lhs2, CALL_ACTION, rhs2); // enqueue( e)
+  CounterAction caction2(lhs2, CALL_ACTION, rhs2); // enqueue( e)
   Free_Occ2.addCounterAction(caction2);
 
   ges.push_back(Free_Occ2);
@@ -185,8 +184,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument lhs4(FUN_POINTER_ARG, 0);
   lhs4.name = "enqueue(e)";
   Argument rhs4(EMPTY_ARG, 0);
-  CounterAction *caction4 =
-      new CounterAction(lhs4, CALL_ACTION, rhs4); // enqueue( e)
+  CounterAction caction4(lhs4, CALL_ACTION, rhs4); // enqueue( e)
   Occ_OK.addCounterAction(caction4);
 
   ges.push_back(Occ_OK);
@@ -207,7 +205,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument first5(SELECT_VAR_ARG, "e");
   Argument second5(EMPTY_ARG, 0);
   Argument rhs5(FUN_POINTER_ARG, "front");
-  void *ccs5 = createConstraint(first5, second5, EQ, rhs5); // e== front( )
+  CounterConstraint ccs5(first5, second5, EQ, rhs5); // e== front( )
   Occ_Free.addCounterCons(ccs5);
 
 
@@ -218,8 +216,7 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   Argument lhs6(FUN_POINTER_ARG, "dequeue");
   Argument rhs6(EMPTY_ARG, 0);
-  CounterAction *caction6 =
-      new CounterAction(lhs6, CALL_ACTION, rhs6); // dequeue
+  CounterAction caction6(lhs6, CALL_ACTION, rhs6); // dequeue
   Occ_Free.addCounterAction(caction6);
   ges.push_back(Occ_Free);
 

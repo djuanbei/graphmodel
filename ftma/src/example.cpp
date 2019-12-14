@@ -316,7 +316,7 @@ void fisher(int n) {
   Argument second(EMPTY_ARG, 0);
   Argument rhs(CONST_ARG, 0);
 
-  void *ccs1 = createConstraint(first, second, EQ, rhs); // id==0
+  CounterConstraint ccs1(first, second, EQ, rhs); // id==0
 
   A_req.addCounterCons(ccs1);
 
@@ -329,8 +329,7 @@ void fisher(int n) {
   req_wait.addReset(x, 0); // x-->0
   Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs0(PARAMETER_ARG, 0);
-  CounterAction *action =
-      new CounterAction(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
+  CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
 
   req_wait.addCounterAction(action);
 
@@ -344,7 +343,7 @@ void fisher(int n) {
   Argument first1(NORMAL_VAR_ARG, 0);
   Argument second1(PARAMETER_ARG, 0);
   Argument rhs01(CONST_ARG, 0);
-  void *ccs2 = createConstraint(first1, second1, EQ, rhs01); // id==pid
+  CounterConstraint ccs2(first1, second1, EQ, rhs01); // id==pid
   wait_cs.addCounterCons(ccs2);
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
   wait_cs += cs3;
@@ -353,7 +352,7 @@ void fisher(int n) {
 
   Argument lhs1(NORMAL_VAR_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
-  CounterAction *caction1 = new CounterAction(lhs1, ASSIGNMENT_ACTION, rhs1);
+  CounterAction caction1(lhs1, ASSIGNMENT_ACTION, rhs1);
 
   cs_A.addCounterAction(caction1);
 
@@ -462,7 +461,7 @@ void incrementalTest() {
   Argument first3(NORMAL_VAR_ARG, 0);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
-  void *ccs1 = createConstraint(first3, second3, EQ, rhs3); // id==0
+  CounterConstraint ccs1(first3, second3, EQ, rhs3); // id==0
 
   A_req.addCounterCons(ccs1);
 
@@ -476,8 +475,7 @@ void incrementalTest() {
 
   Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs(PARAMETER_ARG, 0);
-  CounterAction *caction =
-      new CounterAction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
+  CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
 
   req_wait.addCounterAction(caction);
 
@@ -492,7 +490,7 @@ void incrementalTest() {
   Argument second4(PARAMETER_ARG, 0);
   Argument rhs4(CONST_ARG, 0);
 
-  void *ccs2 = createConstraint(first4, second4, EQ, rhs4); // id==pid
+  CounterConstraint ccs2(first4, second4, EQ, rhs4); // id==pid
   wait_cs.addCounterCons(ccs2);
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
   wait_cs += cs3;
@@ -501,8 +499,7 @@ void incrementalTest() {
 
   Argument lhs2(NORMAL_VAR_ARG, 0);
   Argument rhs2(CONST_ARG, 0);
-  CounterAction *caction1 =
-      new CounterAction(lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;
+  CounterAction caction1 (lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;
 
   cs_A.addCounterAction(caction1);
 

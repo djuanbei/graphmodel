@@ -167,11 +167,11 @@ TEST(REACHSET, FISHER) {
   typename INT_TAS_t::L_t cs(3);
 
   typename INT_TAS_t::T_t A_req(A, req);
-  Argument first(NORMAL_VAR_ARG, 0);
+  Argument first(NORMAL_VAR_ARG, "id");
   Argument second(EMPTY_ARG, 0);
   Argument rhs(CONST_ARG, 0);
 
-  void *ccs1 = createConstraint(first, second, EQ, rhs); // id==0
+  CounterConstraint ccs1(first, second, EQ, rhs); // id==0
 
   A_req.addCounterCons(ccs1);
 
@@ -182,10 +182,9 @@ TEST(REACHSET, FISHER) {
   req_wait += cs2;
 
   req_wait.addReset(x, 0); // x-->0
-  Argument lhs(NORMAL_VAR_ARG, 0);
-  Argument rhs0(PARAMETER_ARG, 0);
-  CounterAction *action =
-      new CounterAction(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
+  Argument lhs(NORMAL_VAR_ARG, "id");
+  Argument rhs0(PARAMETER_ARG, "pid");
+  CounterAction action (lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
 
   req_wait.addCounterAction(action);
 
@@ -196,10 +195,10 @@ TEST(REACHSET, FISHER) {
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
-  Argument first1(NORMAL_VAR_ARG, 0);
-  Argument second1(PARAMETER_ARG, 0);
+  Argument first1(NORMAL_VAR_ARG, "id");
+  Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
-  void *ccs2 = createConstraint(first1, second1, EQ, rhs01); // id==pid
+  CounterConstraint ccs2 (first1, second1, EQ, rhs01); // id==pid
   wait_cs.addCounterCons(ccs2);
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
   wait_cs += cs3;
@@ -208,7 +207,7 @@ TEST(REACHSET, FISHER) {
 
   Argument lhs1(NORMAL_VAR_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
-  CounterAction *caction1 = new CounterAction(lhs1, ASSIGNMENT_ACTION, rhs1);
+  CounterAction caction1 (lhs1, ASSIGNMENT_ACTION, rhs1);
 
   cs_A.addCounterAction(caction1);
 
@@ -223,18 +222,14 @@ TEST(REACHSET, FISHER) {
   es.push_back(wait_req);
   es.push_back(wait_cs);
   es.push_back(cs_A);
-  // typename INT_TAS_t::TAT_t
+
   tmt1->initial(ls, es, 0);
 
-  // sys.addInt("id",1, 0, n+1 );
-  // Counter   counter( 0, n + 1 );
-  // sys.setCounterNum( 1 );
-  // sys.setCounter( 0, counter );
 
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt1->getParameter();
 
-    param.setParameterMap(0, i); // add relation between local id and global id
+    param.setParameterMap("pid", i); // add relation between local id and global id
     shared_ptr<typename INT_TAS_t::Agent_t> tma1(
         new INT_TAS_t::Agent_t(tmt1, param));
 

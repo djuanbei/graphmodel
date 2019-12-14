@@ -112,8 +112,12 @@ int UppaalParser::parseSystem(XML_P system) {
 
     auto formal_parameter_list =
         template_map[component->tmt_name].getPoints(FORMAL_PARAMETER_T);
+    vector<string> ps;
+    for( auto &e:formal_parameter_list ){
+      ps.push_back( e.first);
+    }
 
-    Parameter parameter(formal_parameter_list.size());
+    Parameter parameter(ps);
     /**
      * System declaration the corresponding  automation without parameter.
      */
@@ -128,15 +132,15 @@ int UppaalParser::parseSystem(XML_P system) {
             (FormalParameterItem *)formal_p.second[0];
         if ((para_item->type == REF_INT_T) ||
             (para_item->type == CONST_REF_INT_T)) {
-          parameter.setCounterMap(para_id,
+          parameter.setCounterMap(formal_parameter_list[para_id].first,
                                   component->real_param_list[para_id].id);
         } else if (isRefChan(para_item->type)) {
-          parameter.setChanMap(para_id, component->real_param_list[para_id].id);
+          parameter.setChanMap(formal_parameter_list[para_id].first, component->real_param_list[para_id].id);
         } else if (para_item->type == CLOCK_T) {
           // TODO : add clock parameter support
           assert(false);
         } else if (para_item->type == INT_T) {
-          parameter.setParameterMap(para_id,
+          parameter.setParameterMap(formal_parameter_list[para_id].first,
                                     component->real_param_list[para_id].id);
         } else {
           assert(false);
@@ -264,7 +268,8 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
           vector<void *> counterCs =
               template_data.getPoints(INT_CS_T, STRING(INT_CS_T));
           for (auto cs : counterCs) {
-            transition.addCounterCons((CounterConstraint *)cs);
+            transition.addCounterCons(*((CounterConstraint *)cs));
+            delete (CounterConstraint *)cs;
           }
 
           template_data.clear(INT_CS_T);
@@ -275,7 +280,8 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
           vector<void *> updates =
               template_data.getPoints(INT_UPDATE_T, STRING(INT_UPDATE_T));
           for (auto update : updates) {
-            transition.addCounterAction((CounterAction *)update);
+            transition.addCounterAction(*((CounterAction *)update));
+            delete (CounterAction *)update;
           }
           template_data.clear(INT_UPDATE_T);
 

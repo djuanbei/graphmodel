@@ -27,9 +27,9 @@ using std::setw;
 using std::to_string;
 
 // first - second op rhs
-class nCounterConstraint {
+class CounterConstraint {
 public:
-  nCounterConstraint(const Argument &out_first, const Argument &out_second,
+  CounterConstraint(const Argument &out_first, const Argument &out_second,
                      COMP_OPERATOR oop, const Argument &out_rhs)
       : first(out_first), second(out_second), op(oop), rhs(out_rhs) {}
   bool operator()(int *counter_value) const {
@@ -50,367 +50,371 @@ private:
   RealArgument second_value;
   RealArgument rhs_value;
 };
-class InstanceFactory;
 
-class CounterConstraint {
+CounterConstraint *createConstraint (const Argument &out_first, const Argument &out_second,
+                  COMP_OPERATOR oop, const Argument &out_rhs);
+}
+// class InstanceFactory;
 
-public:
-  virtual bool operator()(const int *counter_value) const = 0;
-  /**
-   *Deley set the counter id
-   */
-  virtual void globalUpdate(const vector<int> &id_map,
-                            const vector<int> &parameter_value) = 0;
-  friend std::ostream &operator<<(std::ostream &out,
-                                  const CounterConstraint &cons) {
-    return cons.dump(out);
-  }
+// class CounterConstraint {
 
-protected:
-  virtual ~CounterConstraint() {}
+// public:
+//   virtual bool operator()(const int *counter_value) const = 0;
+//   /**
+//    *Deley set the counter id
+//    */
+//   virtual void globalUpdate(const vector<int> &id_map,
+//                             const vector<int> &parameter_value) = 0;
+//   friend std::ostream &operator<<(std::ostream &out,
+//                                   const CounterConstraint &cons) {
+//     return cons.dump(out);
+//   }
 
-private:
-  virtual CounterConstraint *copy() const = 0;
-  virtual std::ostream &dump(ostream &out) const = 0;
+// protected:
+//   virtual ~CounterConstraint() {}
 
-  friend class InstanceFactory;
-};
+// private:
+//   virtual CounterConstraint *copy() const = 0;
+//   virtual std::ostream &dump(ostream &out) const = 0;
 
-/**
- * A constant bool value  class.
- */
-class OneParameterConstraint : public CounterConstraint {
-public:
-  /**
-   * @return  a constant bool value which does not depend on value of
-   * counter_value
-   */
-  bool operator()(const int *counter_value) const { return value; }
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {
-    int lhs = parameter_value[parameter_id];
-    value = executeOp(lhs, op, rhs);
-  }
+//   friend class InstanceFactory;
+// };
 
-protected:
-  ~OneParameterConstraint() {}
+// /**
+//  * A constant bool value  class.
+//  */
+// class OneParameterConstraint : public CounterConstraint {
+// public:
+//   /**
+//    * @return  a constant bool value which does not depend on value of
+//    * counter_value
+//    */
+//   bool operator()(const int *counter_value) const { return value; }
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {
+//     int lhs = parameter_value[parameter_id];
+//     value = executeOp(lhs, op, rhs);
+//   }
 
-private:
-  OneParameterConstraint(int eparameter_id, COMP_OPERATOR opp, int erhs) {
-    parameter_id = eparameter_id;
-    op = opp;
-    rhs = erhs;
-  }
+// protected:
+//   ~OneParameterConstraint() {}
 
-  CounterConstraint *copy() const {
-    return new OneParameterConstraint(parameter_id, op, rhs);
-  }
+// private:
+//   OneParameterConstraint(int eparameter_id, COMP_OPERATOR opp, int erhs) {
+//     parameter_id = eparameter_id;
+//     op = opp;
+//     rhs = erhs;
+//   }
 
-  std::ostream &dump(ostream &out) const {
-    out << std::setw(VALUE_OUT_WIDTH);
-    if (value) {
-      out << "true";
-    } else {
-      out << "false";
-    }
-    return out;
-  }
-  bool value;
-  int parameter_id;
-  COMP_OPERATOR op;
-  int rhs;
-  friend class InstanceFactory;
-};
+//   CounterConstraint *copy() const {
+//     return new OneParameterConstraint(parameter_id, op, rhs);
+//   }
 
-/**
- *  Form of counter op constant value
- *
- */
-class OneCounterConstraint : public CounterConstraint {
+//   std::ostream &dump(ostream &out) const {
+//     out << std::setw(VALUE_OUT_WIDTH);
+//     if (value) {
+//       out << "true";
+//     } else {
+//       out << "false";
+//     }
+//     return out;
+//   }
+//   bool value;
+//   int parameter_id;
+//   COMP_OPERATOR op;
+//   int rhs;
+//   friend class InstanceFactory;
+// };
 
-public:
-  /**
-   * @return true if  the vlaue corresponding counter op rhs, false otherwise.
-   */
-  bool operator()(const int *counter_value) const {
-    return executeOp(counter_value[global_counter_id], op, rhs);
-  }
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {}
+// /**
+//  *  Form of counter op constant value
+//  *
+//  */
+// class OneCounterConstraint : public CounterConstraint {
 
-protected:
-  ~OneCounterConstraint() {}
+// public:
+//   /**
+//    * @return true if  the vlaue corresponding counter op rhs, false otherwise.
+//    */
+//   bool operator()(const int *counter_value) const {
+//     return executeOp(counter_value[global_counter_id], op, rhs);
+//   }
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {}
 
-private:
-  OneCounterConstraint(int g_counter_id, COMP_OPERATOR opp, int right_side) {
+// protected:
+//   ~OneCounterConstraint() {}
 
-    global_counter_id = g_counter_id;
-    op = opp;
-    rhs = right_side;
-  }
+// private:
+//   OneCounterConstraint(int g_counter_id, COMP_OPERATOR opp, int right_side) {
 
-  CounterConstraint *copy() const {
+//     global_counter_id = g_counter_id;
+//     op = opp;
+//     rhs = right_side;
+//   }
 
-    return new OneCounterConstraint(global_counter_id, op, rhs);
-  }
-  ostream &dump(ostream &out) const {
-    out << "counter_" << global_counter_id << setw(OP_OUT_WIDTH) << getOpStr(op)
-        << setw(VALUE_OUT_WIDTH) << rhs;
-    return out;
-  }
+//   CounterConstraint *copy() const {
 
-  int global_counter_id;
-  COMP_OPERATOR op;
-  int rhs;
-  friend class InstanceFactory;
-};
+//     return new OneCounterConstraint(global_counter_id, op, rhs);
+//   }
+//   ostream &dump(ostream &out) const {
+//     out << "counter_" << global_counter_id << setw(OP_OUT_WIDTH) << getOpStr(op)
+//         << setw(VALUE_OUT_WIDTH) << rhs;
+//     return out;
+//   }
 
-class OneRefCounterConstraint : public CounterConstraint {
+//   int global_counter_id;
+//   COMP_OPERATOR op;
+//   int rhs;
+//   friend class InstanceFactory;
+// };
 
-public:
-  /**
-   * @return true if  the vlaue corresponding counter op rhs, false otherwise.
-   */
-  bool operator()(const int *counter_value) const {
-    return executeOp(counter_value[global_counter_id], op, rhs);
-  }
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {
-    global_counter_id = id_map[ref_id];
-  }
+// class OneRefCounterConstraint : public CounterConstraint {
 
-protected:
-  ~OneRefCounterConstraint() {}
+// public:
+//   /**
+//    * @return true if  the vlaue corresponding counter op rhs, false otherwise.
+//    */
+//   bool operator()(const int *counter_value) const {
+//     return executeOp(counter_value[global_counter_id], op, rhs);
+//   }
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {
+//     global_counter_id = id_map[ref_id];
+//   }
 
-private:
-  OneRefCounterConstraint(int out_ref_id, COMP_OPERATOR opp, int right_side) {
-    ref_id = out_ref_id;
-    op = opp;
-    rhs = right_side;
-  }
+// protected:
+//   ~OneRefCounterConstraint() {}
 
-  CounterConstraint *copy() const {
+// private:
+//   OneRefCounterConstraint(int out_ref_id, COMP_OPERATOR opp, int right_side) {
+//     ref_id = out_ref_id;
+//     op = opp;
+//     rhs = right_side;
+//   }
 
-    return new OneRefCounterConstraint(ref_id, op, rhs);
-  }
-  ostream &dump(ostream &out) const {
-    out << "counter_" << global_counter_id << setw(OP_OUT_WIDTH) << getOpStr(op)
-        << setw(VALUE_OUT_WIDTH) << rhs;
-    return out;
-  }
+//   CounterConstraint *copy() const {
 
-  int ref_id;
-  int global_counter_id;
-  COMP_OPERATOR op;
-  int rhs;
-  friend class InstanceFactory;
-};
-/**
- *  Form of counter - parameter op rhs
- */
+//     return new OneRefCounterConstraint(ref_id, op, rhs);
+//   }
+//   ostream &dump(ostream &out) const {
+//     out << "counter_" << global_counter_id << setw(OP_OUT_WIDTH) << getOpStr(op)
+//         << setw(VALUE_OUT_WIDTH) << rhs;
+//     return out;
+//   }
 
-class CounterParameterConstraint : public CounterConstraint {
+//   int ref_id;
+//   int global_counter_id;
+//   COMP_OPERATOR op;
+//   int rhs;
+//   friend class InstanceFactory;
+// };
+// /**
+//  *  Form of counter - parameter op rhs
+//  */
 
-public:
-  /**
-   * @return  true if the counter op parameter, false otherwise.
-   */
-  bool operator()(const int *counter_value) const {
-    return executeOp(counter_value[global_counter_id], op, rhs);
-  }
+// class CounterParameterConstraint : public CounterConstraint {
 
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {
+// public:
+//   /**
+//    * @return  true if the counter op parameter, false otherwise.
+//    */
+//   bool operator()(const int *counter_value) const {
+//     return executeOp(counter_value[global_counter_id], op, rhs);
+//   }
 
-    rhs = parameter_value[parameter_id] + erhs;
-  }
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {
 
-protected:
-  ~CounterParameterConstraint() {}
+//     rhs = parameter_value[parameter_id] + erhs;
+//   }
 
-private:
-  int global_counter_id;
-  COMP_OPERATOR op;
-  int parameter_id;
-  int erhs;
-  int rhs;
+// protected:
+//   ~CounterParameterConstraint() {}
 
-  CounterParameterConstraint(int g_parameter_id, int eparameter_id,
-                             COMP_OPERATOR opp, int out_rhs) {
-    global_counter_id = g_parameter_id;
-    op = opp;
-    parameter_id = eparameter_id;
-    erhs = out_rhs;
-    rhs = 0;
-  }
+// private:
+//   int global_counter_id;
+//   COMP_OPERATOR op;
+//   int parameter_id;
+//   int erhs;
+//   int rhs;
 
-  CounterConstraint *copy() const {
+//   CounterParameterConstraint(int g_parameter_id, int eparameter_id,
+//                              COMP_OPERATOR opp, int out_rhs) {
+//     global_counter_id = g_parameter_id;
+//     op = opp;
+//     parameter_id = eparameter_id;
+//     erhs = out_rhs;
+//     rhs = 0;
+//   }
 
-    return new CounterParameterConstraint(global_counter_id, parameter_id, op,
-                                          erhs);
-  }
-  ostream &dump(ostream &out) const {
-    out << "counter_" << global_counter_id << setw(OP_OUT_WIDTH) << getOpStr(op)
-        << setw(VALUE_OUT_WIDTH) << rhs;
-    return out;
-  }
+//   CounterConstraint *copy() const {
 
-  friend class InstanceFactory;
-};
+//     return new CounterParameterConstraint(global_counter_id, parameter_id, op,
+//                                           erhs);
+//   }
+//   ostream &dump(ostream &out) const {
+//     out << "counter_" << global_counter_id << setw(OP_OUT_WIDTH) << getOpStr(op)
+//         << setw(VALUE_OUT_WIDTH) << rhs;
+//     return out;
+//   }
 
-/**
- * Form of parameterA - parameterB op rhs (constant value)
- */
-class TwoParameterConstraint : public CounterConstraint {
-public:
-  bool operator()(const int *counter_value) const { return value; }
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {
-    int lhs = parameter_value[first_paramter_id] -
-              parameter_value[second_parameter_id];
-    value = executeOp(lhs, op, rhs);
-  }
+//   friend class InstanceFactory;
+// };
 
-protected:
-  ~TwoParameterConstraint() {}
+// /**
+//  * Form of parameterA - parameterB op rhs (constant value)
+//  */
+// class TwoParameterConstraint : public CounterConstraint {
+// public:
+//   bool operator()(const int *counter_value) const { return value; }
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {
+//     int lhs = parameter_value[first_paramter_id] -
+//               parameter_value[second_parameter_id];
+//     value = executeOp(lhs, op, rhs);
+//   }
 
-private:
-  TwoParameterConstraint(int efirst_parameter_id, int esecond_parameter_id,
-                         COMP_OPERATOR eop, int erhs) {
+// protected:
+//   ~TwoParameterConstraint() {}
 
-    value = false;
-    first_paramter_id = efirst_parameter_id;
-    second_parameter_id = esecond_parameter_id;
-    op = eop;
-    rhs = erhs;
-  }
-  CounterConstraint *copy() const {
-    return new TwoParameterConstraint(first_paramter_id, second_parameter_id,
-                                      op, rhs);
-  }
-  ostream &dump(ostream &out) const {
-    out << std::setw(VALUE_OUT_WIDTH);
-    if (value) {
-      out << "true";
-    } else {
-      out << "false";
-    }
-    return out;
-  }
+// private:
+//   TwoParameterConstraint(int efirst_parameter_id, int esecond_parameter_id,
+//                          COMP_OPERATOR eop, int erhs) {
 
-  bool value;
-  int first_paramter_id, second_parameter_id, rhs;
-  COMP_OPERATOR op;
-  friend class InstanceFactory;
-};
+//     value = false;
+//     first_paramter_id = efirst_parameter_id;
+//     second_parameter_id = esecond_parameter_id;
+//     op = eop;
+//     rhs = erhs;
+//   }
+//   CounterConstraint *copy() const {
+//     return new TwoParameterConstraint(first_paramter_id, second_parameter_id,
+//                                       op, rhs);
+//   }
+//   ostream &dump(ostream &out) const {
+//     out << std::setw(VALUE_OUT_WIDTH);
+//     if (value) {
+//       out << "true";
+//     } else {
+//       out << "false";
+//     }
+//     return out;
+//   }
 
-/**
- * Form of counterA - counterB op constant_value
- */
+//   bool value;
+//   int first_paramter_id, second_parameter_id, rhs;
+//   COMP_OPERATOR op;
+//   friend class InstanceFactory;
+// };
 
-class TwoCounterConstraint : public CounterConstraint {
+// /**
+//  * Form of counterA - counterB op constant_value
+//  */
 
-public:
-  /**
-   * @return  true if counterA - counterB op constant, false otherwise.
-   */
-  bool operator()(const int *counter_value) const {
-    int diff =
-        counter_value[global_counter_x] - counter_value[global_counter_y];
-    return executeOp(diff, op, rhs);
-  }
+// class TwoCounterConstraint : public CounterConstraint {
 
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {
-    if (parameter_id > -1) {
-      rhs = parameter_value[parameter_id];
-    }
-  }
+// public:
+//   /**
+//    * @return  true if counterA - counterB op constant, false otherwise.
+//    */
+//   bool operator()(const int *counter_value) const {
+//     int diff =
+//         counter_value[global_counter_x] - counter_value[global_counter_y];
+//     return executeOp(diff, op, rhs);
+//   }
 
-protected:
-  ~TwoCounterConstraint() {}
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {
+//     if (parameter_id > -1) {
+//       rhs = parameter_value[parameter_id];
+//     }
+//   }
 
-private:
-  TwoCounterConstraint(int x, int y, COMP_OPERATOR p, int r,
-                       int out_parameter_id = -10) {
-    parameter_id = out_parameter_id;
+// protected:
+//   ~TwoCounterConstraint() {}
 
-    global_counter_x = x;
-    global_counter_y = y;
-    op = p;
-    rhs = r;
-  }
-  CounterConstraint *copy() const {
+// private:
+//   TwoCounterConstraint(int x, int y, COMP_OPERATOR p, int r,
+//                        int out_parameter_id = -10) {
+//     parameter_id = out_parameter_id;
 
-    return new TwoCounterConstraint(global_counter_x, global_counter_y, op, rhs,
-                                    parameter_id);
-  }
-  ostream &dump(ostream &out) const {
-    out << "counter_" << global_counter_x << setw(OP_OUT_WIDTH) << "-"
-        << "counter_" << global_counter_x << setw(OP_OUT_WIDTH) << getOpStr(op)
-        << setw(VALUE_OUT_WIDTH) << rhs;
-    return out;
-  }
+//     global_counter_x = x;
+//     global_counter_y = y;
+//     op = p;
+//     rhs = r;
+//   }
+//   CounterConstraint *copy() const {
 
-  int global_counter_x, global_counter_y;
-  COMP_OPERATOR op;
-  int rhs;
-  int parameter_id;
-  friend class InstanceFactory;
-};
+//     return new TwoCounterConstraint(global_counter_x, global_counter_y, op, rhs,
+//                                     parameter_id);
+//   }
+//   ostream &dump(ostream &out) const {
+//     out << "counter_" << global_counter_x << setw(OP_OUT_WIDTH) << "-"
+//         << "counter_" << global_counter_x << setw(OP_OUT_WIDTH) << getOpStr(op)
+//         << setw(VALUE_OUT_WIDTH) << rhs;
+//     return out;
+//   }
 
-/**
- * Form  \sum c_i counter_i op \sum f_i parameter_i
- *
- */
+//   int global_counter_x, global_counter_y;
+//   COMP_OPERATOR op;
+//   int rhs;
+//   int parameter_id;
+//   friend class InstanceFactory;
+// };
 
-class DefaultCounterConstraint : public CounterConstraint {
+// /**
+//  * Form  \sum c_i counter_i op \sum f_i parameter_i
+//  *
+//  */
 
-public:
-  /**
-   * @return  true if \sum c_i counter_i op \sum f_i parameter_i
-   */
-  bool operator()(const int *counter_value) const {
-    int dummy = parameter_part;
+// class DefaultCounterConstraint : public CounterConstraint {
 
-    for (size_t i = 0; i < global_constraint.size(); i += 2) {
-      dummy += global_constraint[i] * counter_value[global_constraint[i + 1]];
-    }
-    return executeOp(dummy, op, rhs);
-  }
+// public:
+//   /**
+//    * @return  true if \sum c_i counter_i op \sum f_i parameter_i
+//    */
+//   bool operator()(const int *counter_value) const {
+//     int dummy = parameter_part;
 
-  void globalUpdate(const vector<int> &id_map,
-                    const vector<int> &parameter_value) {
-    parameter_part = 0;
-    for (size_t i = 0; i < pconstraint.size(); i += 2) {
-      parameter_part += pconstraint[i] * parameter_value[pconstraint[i + 1]];
-    }
-  }
+//     for (size_t i = 0; i < global_constraint.size(); i += 2) {
+//       dummy += global_constraint[i] * counter_value[global_constraint[i + 1]];
+//     }
+//     return executeOp(dummy, op, rhs);
+//   }
 
-protected:
-  ~DefaultCounterConstraint() {}
+//   void globalUpdate(const vector<int> &id_map,
+//                     const vector<int> &parameter_value) {
+//     parameter_part = 0;
+//     for (size_t i = 0; i < pconstraint.size(); i += 2) {
+//       parameter_part += pconstraint[i] * parameter_value[pconstraint[i + 1]];
+//     }
+//   }
 
-private:
-  DefaultCounterConstraint(const vector<int> &pcons, const vector<int> &cons,
-                           int erhs, COMP_OPERATOR eop)
-      : pconstraint(pcons), global_constraint(cons), rhs(erhs), op(eop) {}
+// protected:
+//   ~DefaultCounterConstraint() {}
 
-  CounterConstraint *copy() const {
+// private:
+//   DefaultCounterConstraint(const vector<int> &pcons, const vector<int> &cons,
+//                            int erhs, COMP_OPERATOR eop)
+//       : pconstraint(pcons), global_constraint(cons), rhs(erhs), op(eop) {}
 
-    return new DefaultCounterConstraint(pconstraint, global_constraint, rhs,
-                                        op);
-  }
-  ostream &dump(ostream &out) const { return out; }
+//   CounterConstraint *copy() const {
 
-private:
-  vector<int> pconstraint;
-  vector<int> global_constraint;
-  int rhs;
-  COMP_OPERATOR op;
-  int parameter_part;
-  friend class InstanceFactory;
-};
+//     return new DefaultCounterConstraint(pconstraint, global_constraint, rhs,
+//                                         op);
+//   }
+//   ostream &dump(ostream &out) const { return out; }
 
-} // namespace graphsat
+// private:
+//   vector<int> pconstraint;
+//   vector<int> global_constraint;
+//   int rhs;
+//   COMP_OPERATOR op;
+//   int parameter_part;
+//   friend class InstanceFactory;
+// };
+
+// } // namespace graphsat
 
 #endif

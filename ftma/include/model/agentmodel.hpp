@@ -30,8 +30,9 @@ public:
   Agent(const shared_ptr<AgentTemplate_t> &template_arg, const Parameter &param)
       : parameter(param) {
     agent_tempate = template_arg;
+
     for (auto e : template_arg->template_transitions) {
-      transitions.push_back(T(this, e, param));
+      transitions.push_back(T(e));
     }
 
     locations = template_arg->template_locations;
@@ -125,10 +126,10 @@ public:
       break;
 
     case PARAMETER_ARG:
-      re.value = parameter.getParameter(arg.value);
+      re.value = parameter.getParameter(arg.name);
       break;
     case REF_PARAMETER_ARG:
-      re.value = parameter.getCounter(arg.value);
+      re.value = parameter.getCounter(arg.name);
       break;
     case FUN_POINTER_ARG:
       loadFun(FUN_POINTER_ARG, arg.name, re);

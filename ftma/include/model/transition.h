@@ -39,20 +39,13 @@ public:
     source = target = -1;
     has_channel = false;
   }
-  // Transition( int s, int t ) {
-  //   source      = s;
-  //   target      = t;
-  //   has_channel = false;
-  // }
+
   Transition(const Location &lhs, const Location &rhs)
       : source(lhs.getId()), target(rhs.getId()), has_channel(false) {
-    // source      = lhs.getId();
-    // target      = rhs.getId();
-    // has_channel = false;
   }
 
-  Transition(const VariableMap *varMap, const Transition &other,
-             const Parameter &param);
+  Transition( const Transition &other
+            );
 
   void setSource(int s) { source = s; }
 
@@ -107,8 +100,8 @@ public:
    * @param action Add one counter action
    *
    */
-  void addCounterAction(const void *action) {
-    actions.push_back((CounterAction *)action);
+  void addCounterAction(const CounterAction action) {
+    actions.push_back(action);
   }
 
   /**
@@ -123,8 +116,8 @@ public:
     resets.push_back(dummy);
   }
 
-  void addCounterCons(void *guards) {
-    counter_cons.push_back((CounterConstraint *)guards);
+  void addCounterCons(CounterConstraint guard) {
+    counter_cons.push_back(guard);
   }
 
   /**
@@ -162,12 +155,12 @@ private:
   // transitionedge. The index of location in tma.locations
   vector<ClockConstraint> guards; // set of constraint at this transitionedge
 
-  vector<CounterConstraint *>
+  vector<CounterConstraint >
       counter_cons;            // counter constraint like pid ==id or id==0
   shared_ptr<Channel> channel; // Only one synchronisation channels
   bool has_channel;
 
-  vector<const CounterAction *>
+  vector< CounterAction >
       actions;                   // set of actions at this transitionedge
   vector<pair<int, int>> resets; // set of reset clock variables
 };

@@ -26,7 +26,7 @@ FisherGenerator::FisherGenerator() : k(2) {
   Argument first3(NORMAL_VAR_ARG, 0);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
-  void *ccs1 = createConstraint(first3, second3, EQ, rhs3); // id==0
+  CounterConstraint ccs1(first3, second3, EQ, rhs3); // id==0
 
   A_req.addCounterCons(ccs1);
 
@@ -40,8 +40,7 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs(PARAMETER_ARG, 0);
-  CounterAction *caction =
-      new CounterAction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
+  CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
 
   req_wait.addCounterAction(caction);
 
@@ -56,7 +55,7 @@ FisherGenerator::FisherGenerator() : k(2) {
   Argument second4(PARAMETER_ARG, 0);
   Argument rhs4(CONST_ARG, 0);
 
-  void *ccs2 = createConstraint(first4, second4, EQ, rhs4); // id==pid
+  CounterConstraint ccs2(first4, second4, EQ, rhs4); // id==pid
   wait_cs.addCounterCons(ccs2);
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
   wait_cs += cs3;
@@ -65,8 +64,7 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   Argument lhs2(NORMAL_VAR_ARG, 0);
   Argument rhs2(CONST_ARG, 0);
-  CounterAction *caction1 =
-      new CounterAction(lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;
+  CounterAction caction1(lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;
 
   cs_A.addCounterAction(caction1);
 

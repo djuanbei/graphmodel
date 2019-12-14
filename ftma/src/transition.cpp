@@ -3,16 +3,16 @@
 #include <cassert>
 
 namespace graphsat {
-Transition::Transition(const VariableMap *varMap, const Transition &other,
-                       const Parameter &param) {
+Transition::Transition( const Transition &other
+                       ) {
   source = other.source;
   target = other.target;
   guards = other.guards;
 
-  for (auto e : other.counter_cons) {
-    CounterConstraint *dummy = copy(e);
-    dummy->globalUpdate(param.getCounterMap(), param.getParameterMap());
-    counter_cons.push_back(dummy);
+  for (auto& e : other.counter_cons) {
+//    CounterConstraint dummy =e;
+//    dummy->globalUpdate(param.getCounterMap(), param.getParameterMap());
+    counter_cons.push_back(e);
   }
 
   has_channel = other.has_channel;
@@ -21,10 +21,10 @@ Transition::Transition(const VariableMap *varMap, const Transition &other,
   //  channel->globalIpUpdate(param.getChanMap());
   }
 
-  for (auto a : other.actions) {
-    CounterAction *dummy = a->copy();
-    dummy->globalUpdate(param.getCounterMap(), param.getParameterMap());
-    actions.push_back(dummy);
+  for (auto& a : other.actions) {
+//    CounterAction *dummy = a->copy();
+//    dummy->globalUpdate(param.getCounterMap(), param.getParameterMap());
+    actions.push_back(a);
   }
   resets = other.resets;
 }
@@ -51,10 +51,10 @@ bool Transition::ready(const int component,
   }
 
   if (!counter_cons.empty()) {
-    const int *counter_value = manager->getCounterValue(state);
-
+   const int *counter_value = manager->getCounterValue(state);
+    
     for (auto cs : counter_cons) {
-      if (!(*cs)(counter_value)) {
+      if (!cs( const_cast<int*>(counter_value))) {
         return false;
       }
     }
@@ -89,8 +89,8 @@ void Transition::operator()(const int component,
 
     int *counterValue = manager->getCounterValue(re_state);
 
-    for (auto act : actions) {
-      (*act)(counterValue);
+    for (auto action : actions) {
+      action(counterValue);
     }
   }
 
@@ -109,7 +109,12 @@ void  Transition::to_real(const shared_ptr<TOReal> &convertor){
   if( has_channel){
     channel->to_real( convertor);
   }
-  
+  for(auto &e: counter_cons ){
+    e.to_real( convertor);
+  }
+  for(auto & e: actions ){
+    e.to_real( convertor);
+  }
 }
 
 

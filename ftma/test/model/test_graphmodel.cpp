@@ -82,7 +82,7 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma(
         new INT_TAS_t::Agent_t(train_tmt, param));
     sys += tma;
@@ -141,7 +141,7 @@ TEST_F(GraphModelTest, constraint) {
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma(
         new INT_TAS_t::Agent_t(train_tmt, param));
     sys += tma;
@@ -173,8 +173,8 @@ TEST_F(GraphModelTest, constraint) {
 
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
-  nCounterConstraint *ccs1 =
-      new nCounterConstraint(len_arg, second1, GT, rhs1); // len >0
+  CounterConstraint *ccs1 =
+      new CounterConstraint(len_arg, second1, GT, rhs1); // len >0
   ccs1->to_real(tma);
 
   EXPECT_FALSE((*ccs1)(counters));
@@ -203,7 +203,7 @@ TEST_F(GraphModelTest, Channel) {
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma(
         new INT_TAS_t::Agent_t(train_tmt, param));
     sys += tma;
@@ -262,7 +262,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma(
         new INT_TAS_t::Agent_t(train_tmt, param));
     sys += tma;
@@ -305,7 +305,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
     caction2.to_real(tma);
-    caction2.test_do(counters);
+    caction2(counters);
     EXPECT_EQ((*tail_c)(counters), i);
   }
 
@@ -313,7 +313,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(FUN_POINTER_ARG, "front");
-  nCounterConstraint ccs1(lhs1, second1, EQ, rhs1); // e==front()
+  CounterConstraint ccs1(lhs1, second1, EQ, rhs1); // e==front()
 
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
@@ -328,6 +328,6 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
 TEST(TRAIN_GATE_H, generate ){
   TrainGate TG;
-  INT_TAS_t tg=TG.generate( 6);
+ // INT_TAS_t tg=TG.generate( 6);
   
 }

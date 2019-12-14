@@ -39,6 +39,7 @@ public:
   virtual ~AgentTemplate() {}
   void initial(vector<L> &locs, vector<T> &es, int init) {
     template_locations = locs;
+    
     template_transitions = es;
     initial_loc = init;
     initial();
@@ -64,7 +65,7 @@ public:
     return re;
   }
   Parameter getParameter() const {
-    Parameter re(parameters.size());
+    Parameter re(parameters);
     return re;
   }
 

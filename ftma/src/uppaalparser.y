@@ -529,7 +529,7 @@ parameter_identifier '-'  parameter_identifier compare_relation const_expression
 counter_identifier compare_relation const_expression
 {
 
-  Argument first( COUNTER_ARG, $1);
+  Argument first( NORMAL_VAR_ARG, $1);
   Argument second( EMPTY_ARG, 0);
   Argument rhs( CONST_ARG, $3);
   void* cs = createConstraint( first, second, $2, rhs);
@@ -540,7 +540,7 @@ const_expression compare_relation counter_identifier
 {
   COMP_OPERATOR nop=negation( $2);
   
-  Argument first( COUNTER_ARG, $3);
+  Argument first( NORMAL_VAR_ARG, $3);
   Argument second( EMPTY_ARG, 0);
   Argument rhs( CONST_ARG, $1);
   void* cs = createConstraint( first, second, nop, rhs);
@@ -550,7 +550,7 @@ const_expression compare_relation counter_identifier
 |
 counter_identifier compare_relation parameter_identifier
 {
-  Argument first( COUNTER_ARG, $1);
+  Argument first( NORMAL_VAR_ARG, $1);
   Argument second( PARAMETER_ARG, $3);
   Argument rhs( CONST_ARG, 0);
   void* cs = createConstraint( first, second, $2, rhs);
@@ -561,7 +561,7 @@ counter_identifier compare_relation parameter_identifier
 parameter_identifier  compare_relation  counter_identifier{
   COMP_OPERATOR nop=negation( $2);
 
-  Argument first( COUNTER_ARG, $3);
+  Argument first( NORMAL_VAR_ARG, $3);
   Argument second( PARAMETER_ARG, $1);
   Argument rhs( CONST_ARG, 0);
   void* cs = createConstraint( first, second, nop, rhs);
@@ -581,8 +581,8 @@ clock_identifier '-' clock_identifier compare_relation parameter_identifier
 |
 counter_identifier '-' counter_identifier compare_relation const_expression
 {
-  Argument first( COUNTER_ARG, $1);
-  Argument second( COUNTER_ARG, $3);
+  Argument first( NORMAL_VAR_ARG, $1);
+  Argument second( NORMAL_VAR_ARG, $3);
   Argument rhs( CONST_ARG, $5);
   void* cs = createConstraint( first, second, $4, rhs);
   current_data->addPointer( INT_CS_T, cs );
@@ -590,8 +590,8 @@ counter_identifier '-' counter_identifier compare_relation const_expression
 |
 counter_identifier '-' counter_identifier compare_relation parameter_identifier
 {
-  Argument first( COUNTER_ARG, $1);
-  Argument second( COUNTER_ARG, $3);
+  Argument first( NORMAL_VAR_ARG, $1);
+  Argument second( NORMAL_VAR_ARG, $3);
   Argument rhs( PARAMETER_ARG, $5);
   void* cs = createConstraint( first, second, $4, rhs);
 
@@ -599,7 +599,7 @@ counter_identifier '-' counter_identifier compare_relation parameter_identifier
 }
 |
 counter_identifier{
-  Argument first( COUNTER_ARG, $1);
+  Argument first( NORMAL_VAR_ARG, $1);
   Argument second( EMPTY_ARG, 0);
   Argument rhs( CONST_ARG, 0);
   void* cs = createConstraint( first, second,NE, rhs);
@@ -609,7 +609,7 @@ counter_identifier{
 |
 '!'
 counter_identifier{
-  Argument first( COUNTER_ARG, $2);
+  Argument first( NORMAL_VAR_ARG, $2);
   Argument second( EMPTY_ARG, 0);
   Argument rhs( CONST_ARG, 0);
   void* cs = createConstraint( first, second, EQ, rhs);
@@ -701,7 +701,7 @@ clock_identifier '=' const_expression
 |
 counter_identifier '=' const_expression
 {
-  Argument lhs(COUNTER_ARG, $1 );
+  Argument lhs(NORMAL_VAR_ARG, $1 );
   Argument rhs( CONST_ARG, $3);
   CounterAction   *action=new CounterAction(lhs, ASSIGNMENT_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
@@ -709,15 +709,15 @@ counter_identifier '=' const_expression
 |
 counter_identifier '=' counter_identifier
 {
-  Argument lhs(COUNTER_ARG, $1 );
-  Argument rhs( COUNTER_ARG, $3);
+  Argument lhs(NORMAL_VAR_ARG, $1 );
+  Argument rhs( NORMAL_VAR_ARG, $3);
   CounterAction *action =new CounterAction(lhs, ASSIGNMENT_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier '='  parameter_identifier
 {
-  Argument lhs( COUNTER_ARG, $1);
+  Argument lhs( NORMAL_VAR_ARG, $1);
   Argument rhs( PARAMETER_ARG, $3);
   CounterAction *action =new CounterAction(lhs, ASSIGNMENT_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
@@ -725,7 +725,7 @@ counter_identifier '='  parameter_identifier
 |
 counter_identifier ADD_ASSIGN const_expression
 {
-  Argument lhs( COUNTER_ARG, $1);
+  Argument lhs( NORMAL_VAR_ARG, $1);
   Argument rhs( CONST_ARG, $3);
   CounterAction   *action=new CounterAction(lhs, SELF_INC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
@@ -733,15 +733,15 @@ counter_identifier ADD_ASSIGN const_expression
 |
 counter_identifier ADD_ASSIGN counter_identifier
 {
-  Argument lhs( COUNTER_ARG, $1);
-  Argument rhs( COUNTER_ARG, $3);
+  Argument lhs( NORMAL_VAR_ARG, $1);
+  Argument rhs( NORMAL_VAR_ARG, $3);
   CounterAction *action =new CounterAction(lhs, SELF_INC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier ADD_ASSIGN  parameter_identifier
 {
-  Argument lhs( COUNTER_ARG, $1);
+  Argument lhs( NORMAL_VAR_ARG, $1);
   Argument rhs( PARAMETER_ARG, $3);
   CounterAction *action =new CounterAction(lhs, SELF_INC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
@@ -750,7 +750,7 @@ counter_identifier ADD_ASSIGN  parameter_identifier
 |
 counter_identifier SUB_ASSIGN const_expression
 {
-  Argument lhs( COUNTER_ARG, $1);
+  Argument lhs( NORMAL_VAR_ARG, $1);
   Argument rhs( CONST_ARG, $3);
   CounterAction   *action=new CounterAction(lhs, SELF_DEC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
@@ -758,15 +758,15 @@ counter_identifier SUB_ASSIGN const_expression
 |
 counter_identifier SUB_ASSIGN counter_identifier
 {
-  Argument lhs( COUNTER_ARG, $1);
-  Argument rhs( COUNTER_ARG, $3);
+  Argument lhs( NORMAL_VAR_ARG, $1);
+  Argument rhs( NORMAL_VAR_ARG, $3);
   CounterAction *action =new CounterAction(lhs, SELF_DEC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);
 }
 |
 counter_identifier SUB_ASSIGN  parameter_identifier
 {
-  Argument lhs( COUNTER_ARG, $1);
+  Argument lhs( NORMAL_VAR_ARG, $1);
   Argument rhs( PARAMETER_ARG, $3);
   CounterAction *action =new CounterAction(lhs, SELF_DEC_ACTION, rhs);
   current_data->addPointer( INT_UPDATE_T, action);

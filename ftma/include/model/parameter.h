@@ -24,36 +24,45 @@ class UppaalParser;
 class Parameter {
 
 public:
-  void setCounterMap(int local_id, int global_id) {
-    ref_parameter_id_map[local_id] = global_id;
+  void setCounterMap(const string &key, int value) {
+    assert( contain( key));
+    ref_parameter_id_map[key] = value;
   }
-  void setParameterMap(int local_id, int value) {
-    parameter_value[local_id] = value;
-  }
-
-  void setChanMap(int local_id, int global_id) {
-    chan_map[local_id] = global_id;
+  void setParameterMap(const string &key, int value)  {
+    assert( contain( key));
+    parameter_value[key] = value;
   }
 
-  const vector<int> &getCounterMap(void) const { return ref_parameter_id_map; }
-  int getCounter(const int id) const { return ref_parameter_id_map[id]; }
-  const vector<int> &getParameterMap(void) const { return parameter_value; }
-  int getParameter(const int id) const { return parameter_value[id]; }
+  void setChanMap(const string &key, int value)  {
+    assert( contain( key));
+    chan_map[key] = value;
+  }
 
-  const vector<int> &getChanMap(void) const { return chan_map; }
-  int getChan(const int id) const { return chan_map[id]; }
+  int getCounter(const string & key) const {
+
+    return ref_parameter_id_map.at( key); }
+
+  int getParameter(const string &key) const { return parameter_value.at( key); }
+
+
+  int getChan(const string &key) const { return chan_map.at( key); }
   void setSelect(const int v) { select_value = v; }
 
   int getSelect() const { return select_value; }
+  
+  bool contain( const string& key) const{
+    return  find(parameters.begin( ), parameters.end( ), key )!= parameters.end( );
+  }
 
 private:
-  Parameter(int n)
-      : ref_parameter_id_map(n, NO_DEF), parameter_value(n, NO_DEF),
-        chan_map(n, NO_DEF) {}
+  Parameter( const vector<string> & ps):parameters( ps){
+    
+  }
 
-  vector<int> ref_parameter_id_map;
-  vector<int> parameter_value;
-  vector<int> chan_map;
+  vector<string> parameters;
+  map<string,int> ref_parameter_id_map;
+  map<string, int> parameter_value;
+  map<string, int> chan_map;
   int select_value;
 
   template <typename L1, typename T1> friend class AgentTemplate;
