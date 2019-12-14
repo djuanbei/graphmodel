@@ -304,14 +304,32 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
     EXPECT_EQ(i, ffid);
   }
 
-  Argument lhs2(TEMPALTE_FUN_POINTER_ARG, 0);
-  lhs2.name = "enqueue(e)";
+  Argument lhs2(TEMPALTE_FUN_POINTER_ARG, "enqueue(e)");
   Argument rhs2(EMPTY_ARG, 0);
   CounterAction caction2(lhs2, CALL_ACTION, rhs2); // enqueue( e)
   
+  for ( int i=tt.getLow( ); i<= tt.getHigh( ); i++){
+    tma->setSelect( i);
+    caction2.to_real(tma);
+    caction2.test_do(counters);
+    EXPECT_EQ((*tail_c)(counters), i);
 
+  }
   
+  Argument lhs1(SELECT_VAR_ARG, "e");
   
+  Argument second1(EMPTY_ARG, 0);
+  Argument rhs1(TEMPALTE_FUN_POINTER_ARG, "front");
+  nCounterConstraint ccs1 (lhs1, second1, EQ, rhs1); // e==front()
+
+  for ( int i=tt.getLow( ); i<= tt.getHigh( ); i++){
+    tma->setSelect( i);
+    (*enqueue_c)(counters, i);
+    ccs1.to_real(tma);
+    EXPECT_TRUE(ccs1(counters));
+    (*dequeue_c)(counters);
+  }
+
   
   manager->destroyState( state);
     

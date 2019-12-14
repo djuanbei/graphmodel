@@ -12,6 +12,10 @@ TEST(STR_UTIL, getFunArg) {
   string fun1 = "get()";
   string arg1 = getFunArg(fun1);
   EXPECT_EQ(arg1, "");
+  string fun_name=getFunName( fun1);
+  EXPECT_EQ(fun_name,"get" );
+  fun_name=getFunName( fun);
+  EXPECT_EQ(fun_name,"get" );
 }
 
 TEST(STR_UTIL, trim) {

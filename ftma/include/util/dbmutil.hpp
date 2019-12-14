@@ -46,7 +46,11 @@ bool executeOp(const T &lhs, COMP_OPERATOR op, const T &rhs) {
   }
 }
 
+int getIndex( const RealArgument & arg, int * counter_value);
+
 int getValue(const RealArgument &arg, int *counter_value);
+//int getValue(const RealArgument &arg1, const RealArgument &arg2, int *counter_value);
+
 int getValue(const shared_ptr<RealArgument> &arg, int *counter_value);
 
 int_fast64_t getMapValue(const Argument &arg, const vector<int> &id_map,

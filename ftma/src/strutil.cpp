@@ -16,6 +16,14 @@ string getFunArg(const string &fun) {
   return "";
 }
 
+string getFunName( const string &fun){
+  string::size_type start = fun.find("(");
+  if (start == string::npos) {
+    return trim( fun);
+  }
+  return trim( fun.substr(0, start));
+}
+
 std::string trim(std::string s) {
   if (s.empty()) {
     return s;

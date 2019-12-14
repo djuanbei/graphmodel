@@ -3,8 +3,8 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:39:22 2019
  *
- * @brief  Action class which  do x=x+c where x is a counter
- *        variable and c is a constant integer
+ * @brief  Action class which  do x = (+=, -=)  y where x is a counter
+ *        variable and y is a counter, constant integer or function
  *
  *
  */
@@ -16,6 +16,8 @@
 #include <vector>
 
 #include "model/function.h"
+#include "model/to_real.h"
+
 #include "util/data.hpp"
 #include "util/dbmutil.hpp"
 
@@ -115,6 +117,33 @@ public:
     }
     }
   }
+  void to_real(const shared_ptr<TOReal> &convertor) {
+    real_lhs=convertor->to_real( INT_T,lhs );
+    real_rhs=convertor->to_real( INT_T, rhs);
+  }
+  
+  void test_do(int * counter_value ) const{
+    if(action==CALL_ACTION ){
+        getValue( real_lhs, counter_value);
+        return ;
+    }
+    int lhs_index=getIndex(real_lhs, counter_value );
+    int rhs_v=getValue( real_rhs, counter_value);
+    switch(action ){
+      case ASSIGNMENT_ACTION:
+        counter_value[ lhs_index]=rhs_v;
+        return;
+      case SELF_INC_ACTION:
+        counter_value[ lhs_index]+=rhs_v;
+        return ;
+      case SELF_DEC_ACTION:
+        counter_value[ lhs_index]-=rhs_v;
+        return ;
+      case CALL_ACTION:
+        assert( false);
+    }
+
+  }
   CounterAction *copy() const { return new CounterAction(lhs, action, rhs); }
   void globalUpdate(const vector<int> &counter_map,
                     const vector<int> &parameter_value) {
@@ -190,6 +219,8 @@ private:
   Argument rhs;
   int_fast64_t lhs_value;
   int_fast64_t rhs_value;
+  RealArgument real_lhs;
+  RealArgument real_rhs;
 };
 
 } // namespace graphsat

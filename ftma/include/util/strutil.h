@@ -17,6 +17,8 @@ using std::string;
 
 string getFunArg(const string &fun);
 
+string getFunName( const string &fun);
+
 /**
  * delete start spaces and  last spaces
  *

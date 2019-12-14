@@ -13,6 +13,8 @@
 #include "templatemodel.hpp"
 #include "to_real.h"
 
+#include "util/strutil.h"
+
 namespace graphsat {
 
 template <typename L, typename T> class AgentSystem;
@@ -114,7 +116,6 @@ public:
 
     RealArgument re;
     re.type = arg.type;
-   // re.name = arg.name;
     switch (re.type) {
     case CONST_ARG:
       re.value = arg.value;
@@ -132,10 +133,10 @@ public:
       re.value = parameter.getCounter(arg.value);
       break;
     case TEMPALTE_FUN_POINTER_ARG:
-      re.value = loadFun(TEMPALTE_FUN_POINTER_ARG, arg.name);
+        loadFun(TEMPALTE_FUN_POINTER_ARG, arg.name, re);
       break;
     case SYSTEM_FUN_POINTER_ARG:
-      re.value = loadFun(SYSTEM_FUN_POINTER_ARG, arg.name);
+        loadFun(SYSTEM_FUN_POINTER_ARG, arg.name, re);
       break;
     case SELECT_VAR_ARG:
       re.value = parameter.getSelect();
@@ -149,6 +150,7 @@ public:
 
     return re;
   }
+  
 
   shared_ptr<Function> getFun(const string &name) const {
     return fun_map.at(name);
@@ -171,15 +173,21 @@ private:
       setFun(e.first, dummy);
     }
   }
-  int_fast64_t loadFun(const ARGUMENT_TYPE type, const string &name) const {
+  void loadFun(const ARGUMENT_TYPE type, const string &name, RealArgument & re) const {
+    string fun_name=getFunName( name);
+    
     if (TEMPALTE_FUN_POINTER_ARG == type) {
-      return (int_fast64_t)(getFun(name).get());
+      re.value=(int_fast64_t)(getFun(fun_name).get());
     } else if (SYSTEM_FUN_POINTER_ARG == type) {
-      return (int_fast64_t)(agent_tempate->getSYSFun(name).get());
+      re.value=(int_fast64_t)(agent_tempate->getSYSFun(fun_name).get());
     }
-    // TODO:
-    return 0;
+    string var=getFunArg( name);
+    if( var!=""){
+      re.index=shared_ptr<RealArgument> (new RealArgument( SELECT_VAR_ARG, parameter.getSelect() ) );
+    }
+
   }
+  
 
   void initFunction(const shared_ptr<Function> &fun) const {
     vector<string> int_vars = agent_tempate->getKeys(INT_T);
