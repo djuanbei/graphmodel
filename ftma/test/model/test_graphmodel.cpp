@@ -71,7 +71,7 @@ TEST_F(GraphModelTest, getConstant) {
   EXPECT_EQ(sys.getChanNumber(), 24);
 }
 
-TEST_F(GraphModelTest, SELECT_VAR_ARG) {
+TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
   sys.removeAgent();
 
   int n = sys["N"];
@@ -192,7 +192,7 @@ TEST_F(GraphModelTest, constraint) {
   manager->destroyState(state);
 }
 
-TEST_F(GraphModelTest, IndexChannel) {
+TEST_F(GraphModelTest, Channel) {
 
   sys.removeAgent();
   int n = sys["N"];
@@ -248,6 +248,72 @@ TEST_F(GraphModelTest, IndexChannel) {
     EXPECT_EQ(18 + i, ffid);
     (*dequeue_c)(counters);
   }
+  manager->destroyState( state);
+  
+  
 }
 
-TEST(GRAPH_MODEL, SELECT_VAR_ARG) {}
+TEST_F(GraphModelTest, SELECT_VAR_ARG) {
+
+
+  sys.removeAgent();
+  int n = sys["N"];
+  Parameter param = gate_tmt->getParameter();
+  shared_ptr<typename INT_TAS_t::Agent_t> tma(
+      new INT_TAS_t::Agent_t(gate_tmt, param));
+  sys += tma;
+
+  for (int i = 0; i < n; i++) {
+    Parameter param = train_tmt->getParameter();
+    param.setParameterMap(0, i);
+    shared_ptr<typename INT_TAS_t::Agent_t> tma(
+        new INT_TAS_t::Agent_t(train_tmt, param));
+    sys += tma;
+  }
+  sys.build();
+
+
+  shared_ptr<Function> enqueue_c = tma->getFun("enqueue");
+  shared_ptr<Function> dequeue_c = tma->getFun("dequeue");
+  shared_ptr<Function> front_c = tma->getFun("front");
+  shared_ptr<Function> tail_c = tma->getFun("tail");
+
+    
+  TypeDefArray tt=tma->getType( "id_t");
+  EXPECT_EQ( tt.getLow( ), 0);
+  EXPECT_EQ( tt.getHigh( ), n-1);
+  
+  
+  Argument ch1_arg(SYSTEM_VAR_ARG, "appr");
+  shared_ptr<Argument> dummy1(new Argument(SELECT_VAR_ARG, "e"));
+  ch1_arg.setIndex(dummy1);
+
+  n_Channel ch1(ch1_arg);
+
+  ch1.setAction(CHANNEL_RECEIVE);
+  EXPECT_EQ(0, tma->getStart(CHAN_T, "appr"));
+
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
+  INT_TAS_t::State_t *state = manager->newState();
+  INT_TAS_t::State_t *counters = manager->getCounterValue(state);
+  
+  for ( int i=tt.getLow( ); i<= tt.getHigh( ); i++){
+    tma->setSelect( i);
+    ch1.to_real(tma);
+    int ffid = ch1(counters);
+    EXPECT_EQ(i, ffid);
+  }
+
+  Argument lhs2(TEMPALTE_FUN_POINTER_ARG, 0);
+  lhs2.name = "enqueue(e)";
+  Argument rhs2(EMPTY_ARG, 0);
+  CounterAction caction2(lhs2, CALL_ACTION, rhs2); // enqueue( e)
+  
+
+  
+  
+  
+  manager->destroyState( state);
+    
+  
+}

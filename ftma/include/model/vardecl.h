@@ -52,6 +52,15 @@ struct ChanDecl : public BaseDecl {
 
 class VarDecl {
 public:
+  VarDecl( ):parent( nullptr){
+    
+  }
+  VarDecl( VarDecl * p):parent( p){
+    
+  }
+  void setParent( VarDecl *p){
+    parent= p;
+  }
   virtual Argument addClock(const std::string &n);
 
   virtual ~VarDecl() {}
@@ -91,6 +100,8 @@ public:
    */
   virtual int addType(const string &n, const int low, const int high);
 
+  virtual TypeDefArray getType( const string & n) const;
+
   bool contain(const string &n) const;
 
   int operator[](const string &k) const;
@@ -104,6 +115,7 @@ public:
   int getKeyStart(const TYPE_T type, const string &key) const;
 
 protected:
+  VarDecl * parent;
   PointerData data;
 
   map<string, int> const_values;

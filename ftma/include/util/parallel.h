@@ -19,8 +19,8 @@
 #define parallel_for _Pragma("omp parallel for") for
 #define parallel_for_1 _Pragma("omp parallel for schedule (static,1)") for
 #define parallel_for_256 _Pragma("omp parallel for schedule (static,256)") for
-static int getWorkers() { return omp_get_max_threads(); }
-static void setWorkers(int n) { omp_set_num_threads(n); }
+int getWorkers();
+void setWorkers(int n);
 
 // c++
 #else
@@ -31,8 +31,8 @@ static void setWorkers(int n) { omp_set_num_threads(n); }
 #define parallel_for_1 for
 #define parallel_for_256 for
 #define cilk_for for
-static int getWorkers() { return 1; }
-static void setWorkers(int n) {}
+int getWorkers();
+void setWorkers(int n);
 
 #endif
 

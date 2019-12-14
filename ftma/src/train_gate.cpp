@@ -25,6 +25,8 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   sys.addChan("go", sys["N"], URGENT_CH); // urgent chan go[ N]
 
+  
+
   ADD_CLOCK((*train_tmt), x);
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
@@ -95,6 +97,14 @@ INT_TAS_t TrainGate::generate(int n) const {
   gate_tmt->addInt("list", sys["N"] + 1);
 
   int len_id = gate_tmt->addInt("len", 1);
+
+  gate_tmt->addFun("enqueue", shared_ptr<Enqueue_F>(new Enqueue_F()));
+
+  gate_tmt->addFun("dequeue", shared_ptr<Dequeue_F>(new Dequeue_F()));
+
+  gate_tmt->addFun("front", shared_ptr<Front_F>(new Front_F()));
+
+  gate_tmt->addFun("tail", shared_ptr<Tail_F>(new Tail_F()));
 
   vector<typename INT_TAS_t::T_t> ges;
   vector<typename INT_TAS_t::L_t> gls;

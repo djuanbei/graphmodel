@@ -54,6 +54,7 @@ public:
 
   shared_ptr<AgentTemplate_t> createTemplate() {
     shared_ptr<AgentTemplate_t> re(new AgentTemplate_t(this));
+    re->setParent( this);
     re->id = templates.size();
     templates.push_back(re);
     return re;

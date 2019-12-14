@@ -77,7 +77,7 @@ public:
       }
     }
   }
-  string getLocName(int node_id) const { return locations[node_id].getName(); }
+  string getLocationName(int node_id) const { return locations[node_id].getName(); }
 
   int getStart(const TYPE_T type, const string &key) const {
     int temp_var_id = agent_tempate->getKeyStart(type, key);
@@ -98,15 +98,23 @@ public:
     return state + getStart(type, key);
   }
 
+  TypeDefArray getType( const string&  name ) const{
+    return agent_tempate->getType( name);
+  }
+
   const shared_ptr<AgentTemplate_t> getTemplate() const {
     return agent_tempate;
+  }
+
+  void setSelect( const int v){
+    parameter.setSelect( v);
   }
 
   RealArgument to_real(const TYPE_T &type, const Argument &arg) const {
 
     RealArgument re;
     re.type = arg.type;
-    re.name = arg.name;
+   // re.name = arg.name;
     switch (re.type) {
     case CONST_ARG:
       re.value = arg.value;
@@ -124,10 +132,10 @@ public:
       re.value = parameter.getCounter(arg.value);
       break;
     case TEMPALTE_FUN_POINTER_ARG:
-      re.value = loadFun(TEMPALTE_FUN_POINTER_ARG, re.name);
+      re.value = loadFun(TEMPALTE_FUN_POINTER_ARG, arg.name);
       break;
     case SYSTEM_FUN_POINTER_ARG:
-      re.value = loadFun(SYSTEM_FUN_POINTER_ARG, re.name);
+      re.value = loadFun(SYSTEM_FUN_POINTER_ARG, arg.name);
       break;
     case SELECT_VAR_ARG:
       re.value = parameter.getSelect();

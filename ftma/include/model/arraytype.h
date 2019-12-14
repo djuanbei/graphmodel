@@ -15,7 +15,7 @@
 class TypeDefArray {
 
 public:
-  TypeDefArray() { low = high = 0; }
+  TypeDefArray() { low = high = -1; } //no elements
   TypeDefArray(const std::string &n) : name(n) { low = high = 0; }
   TypeDefArray(const std::string &n, int l, int h) : name(n), low(l), high(h) {}
   void setLow(const int l) { low = l; }
@@ -27,7 +27,7 @@ public:
 
 private:
   std::string name;
-  int low, high;
+  int low, high; //[low, high]
 };
 
 #endif
