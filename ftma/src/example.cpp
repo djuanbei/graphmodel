@@ -312,9 +312,9 @@ void fisher(int n) {
   typename INT_TAS_t::L_t cs(3);
 
   typename INT_TAS_t::T_t A_req(A, req);
-  Argument first(NORMAL_VAR_ARG, 0);
-  Argument second(EMPTY_ARG, 0);
-  Argument rhs(CONST_ARG, 0);
+  Argument first(NORMAL_VAR_ARG, "id");
+  Argument second;
+  Argument rhs( 0);
 
   CounterConstraint ccs1(first, second, EQ, rhs); // id==0
 
