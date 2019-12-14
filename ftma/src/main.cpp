@@ -18,8 +18,8 @@
 #include "example.h"
 #include "log/logset.h"
 
-#include "io/uppaalmodelparser.h"
 #include "benchmark/train_gate.h"
+#include "io/uppaalmodelparser.h"
 #include <iostream>
 
 extern int yy_flex_debug;
@@ -29,27 +29,27 @@ using namespace graphsat;
 
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 
-int main( int argc, const char *argv[] ) {
+int main(int argc, const char *argv[]) {
 
- // google::InitGoogleLogging( argv[ 0 ] );
+  // google::InitGoogleLogging( argv[ 0 ] );
   logSet();
   // TrainGate tg;
   // tg.generate( 2);
   // return 0;
   // set_log_dir_2("./log");
   // google::InitGoogleLogging("testlog");
-  //LOG( ERROR ) << "Found " << 2 << " cookies";
+  // LOG( ERROR ) << "Found " << 2 << " cookies";
   incrementalTest1();
-//  google::ShutdownGoogleLogging();
+  //  google::ShutdownGoogleLogging();
   return 0;
 
-  runxml( "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml" );
+  runxml("/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml");
   return 0;
-  if ( argc > 1 ) {
-    runxml( argv[ 1 ] );
+  if (argc > 1) {
+    runxml(argv[1]);
     return 0;
   }
-  fisher( 2 );
+  fisher(2);
   return 0;
   testIsConsistent();
 
