@@ -6,7 +6,7 @@
 #include "problem/reachability.hpp"
 #include "state/reachableset.hpp"
 
-#include "model/selecttransition.h"
+
 
 #include "benchmark/train_gate.h"
 
@@ -326,8 +326,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   manager->destroyState(state);
 }
 
-TEST(TRAIN_GATE_H, generate ){
+TEST(TRAIN_GATE_H, generate) {
   TrainGate TG;
- // INT_TAS_t tg=TG.generate( 6);
-  
+  // INT_TAS_t tg=TG.generate( 6);
 }

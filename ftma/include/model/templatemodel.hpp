@@ -39,8 +39,10 @@ public:
   virtual ~AgentTemplate() {}
   void initial(vector<L> &locs, vector<T> &es, int init) {
     template_locations = locs;
-    
+
     template_transitions = es;
+    
+    
     initial_loc = init;
     initial();
   }
@@ -85,7 +87,7 @@ public:
   }
 
 private:
-  AgentTemplate(const AgentSystem<L, T> *s) : sys(s) { initial_loc = -1; }
+  AgentTemplate(const AgentSystem<L, T> *s) : sys(s) { initial_loc = 0; }
   AgentTemplate(const AgentTemplate &other) : sys(nullptr) { assert(false); }
 
   AgentTemplate &operator=(const AgentTemplate &other) {
@@ -142,16 +144,16 @@ private:
 
     fill(clock_max_value.begin(), clock_max_value.end(), 0);
 
-    for (auto loc : template_locations) {
+    for (auto& loc : template_locations) {
       const vector<CS_t> &invariants = loc.getInvarients();
-      for (auto cs : invariants) {
+      for (auto& cs : invariants) {
         updateUpperAndDiff(cs);
       }
     }
 
-    for (auto t : template_transitions) {
+    for (auto& t : template_transitions) {
       const vector<CS_t> &gurads = t.getGuards();
-      for (auto cs : gurads) {
+      for (auto& cs : gurads) {
         updateUpperAndDiff(cs);
       }
     }

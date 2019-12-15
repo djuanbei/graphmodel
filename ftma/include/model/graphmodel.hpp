@@ -175,8 +175,8 @@ public:
 
   int getStartLoc(const TYPE_T type, const int template_id) const {
     int re = 0; // stateManager->getStart(type);
-    if(CLOCK_T==type){
-      re=1;
+    if (CLOCK_T == type) {
+      re = 1;
     }
     for (auto &agent : agents) {
       if (agent->getTemplate()->id < template_id) {
@@ -196,30 +196,35 @@ private:
   void transfrom(shared_ptr<Agent_t> &agent) {
 
     agent->initFuns();
-    
-    for( auto & e: agent->locations ){
-      e.to_real( agent);
+    agent->locations=agent->agent_tempate->template_locations;
+    for (auto &e : agent->locations) {
+      e.to_real(agent);
     }
-    
-    // for (size_t i = 0; i < agent->locations.size(); i++) {
-    
-    //   agent->locations[i].clockShift(clock_num);
+
+    //the clock guard can not contain select variable
+    // for (size_t i = 0;
+    //      i < agent->agent_tempate->template_difference_cons.size(); i++) {
+    //   agent->difference_cons[i].to_real(agent);
     // }
+    agent->transitions.clear( );
+    for (size_t i = 0; i < agent->agent_tempate->template_transitions.size(); i++) {
+      if(agent->agent_tempate->template_transitions[ i].isSelect( ) ){
+        T dummy(agent->agent_tempate->template_transitions[ i] );
+        TypeDefArray select_domain = agent->getType(dummy.getSelectCollect( ));
+        for( int i=select_domain.getLow( ); i!= select_domain.getHigh( ); i++ ){
+          agent->setSelect( i);
+          dummy.to_real( agent);
+          agent->transitions.push_back(dummy );
+        }
+      }else{
+        T dummy(agent->agent_tempate->template_transitions[ i] );
+        dummy.to_real( agent);
+        agent->transitions.push_back(dummy );
+      }
+    }
     
-    for (size_t i = 0; i < agent->transitions.size(); i++) {
-      agent->transitions[i].clockShift(clock_num);
-    }
-    for (size_t i = 0;
-         i < agent->agent_tempate->template_difference_cons.size(); i++) {
-      agent->difference_cons[i].to_real(agent );
-    }
+    agent->initial( );
     
-
-    for (size_t i = 0; i < agent->transitions.size(); i++) {
-      agent->transitions[i].to_real( agent);
-    }
-
-
     clock_num += agent->getClockNumber();
     chan_num += agent->getChannelNumber();
 

@@ -35,13 +35,17 @@ TEST(TA, UNREACH) {
 
   INT_TAS_t::T_t E00a(L0, L0);
 
-  E00a.addReset(y, 0);                     // y-->0
+  ClockReset reset(y, Argument(0)); // y-->0
+  E00a += reset;
+  // E00a.addReset(y, 0);                     // y-->0
   INT_TAS_t::CS_t cs1(y, LE, Argument(2)); // y<=2
   E00a += cs1;
 
   INT_TAS_t::T_t E00b(L0, L0);
 
-  E00b.addReset(x, 0);                     // x-->0
+  ClockReset reset1(x, Argument(0)); // x-->0
+  E00b += reset1;
+  // E00b.addReset(x, 0);                     // x-->0
   INT_TAS_t::CS_t cs2(x, LE, Argument(2)); // x<=2
   E00b += cs2;
 
@@ -100,8 +104,12 @@ TEST(REACHSET, TERIMINAL) {
 
   INT_TAS_t::T_t start_loop(start, loop);
 
-  start_loop.addReset(x, 0); // x-->0
-  start_loop.addReset(y, 0); // y-->0
+  ClockReset reset3(x, Argument(0)); // x-->0
+  start_loop += reset3;
+  ClockReset reset4(y, Argument(0));
+  start_loop += reset4; // y-->0
+  // start_loop.addReset(x, 0); // x-->0
+  // start_loop.addReset(y, 0); // y-->0
 
   INT_TAS_t::T_t loop_loop(loop, loop);
   INT_TAS_t::CS_t cs2(x, LE, Argument(10)); // x <= 10
@@ -109,13 +117,18 @@ TEST(REACHSET, TERIMINAL) {
   loop_loop += cs2;
   loop_loop += cs3;
 
-  loop_loop.addReset(x, 0); // x-->0
+  loop_loop += ClockReset(x, Argument(0)); // x-->0
+                                           // ClockReset reset5(x,)
+                                           // loop_loop.addReset(x, 0); // x-->0
 
   INT_TAS_t::T_t loop_end(loop, end);
   INT_TAS_t::CS_t cs4(y, GE, Argument(20)); // y>=20=== 0-y <= -20
   loop_end += cs4;
-  loop_end.addReset(x, 0); // x-->0
-  loop_end.addReset(y, 0); // y--> 0
+  loop_end += ClockReset(x, Argument(0)); // x-->0
+  loop_end += ClockReset(y, Argument(0)); // y--> 0
+
+  // loop_end.addReset(x, 0); // x-->0
+  // loop_end.addReset(y, 0); // y--> 0
   ls.push_back(start);
   ls.push_back(loop);
   ls.push_back(end);
@@ -173,33 +186,36 @@ TEST(REACHSET, FISHER) {
 
   CounterConstraint ccs1(first, second, EQ, rhs); // id==0
 
-  A_req.addCounterCons(ccs1);
+  A_req += ccs1;
 
-  A_req.addReset(x, 0); // x-->0
+  A_req += ClockReset(x, Argument(0)); // x-->0
+                                       //  A_req.addReset(x, 0); // x-->0
 
   typename INT_TAS_t::T_t req_wait(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
   req_wait += cs2;
 
-  req_wait.addReset(x, 0); // x-->0
+  req_wait += ClockReset(x, Argument(0)); // x-->0
+                                          // req_wait.addReset(x, 0); // x-->0
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs0(PARAMETER_ARG, "pid");
-  CounterAction action (lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
+  CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
 
-  req_wait.addCounterAction(action);
+  req_wait += action;
 
   typename INT_TAS_t::T_t wait_req(wait, req);
 
-  wait_req.addReset(x, 0);       // x-->0
-  wait_req.addCounterCons(ccs1); // id==0
+  wait_req += ClockReset(x, Argument(0)); // x-->0
+  //  wait_req.addReset(x, 0);       // x-->0
+  wait_req += ccs1; // id==0
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
   Argument first1(NORMAL_VAR_ARG, "id");
   Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
-  CounterConstraint ccs2 (first1, second1, EQ, rhs01); // id==pid
-  wait_cs.addCounterCons(ccs2);
+  CounterConstraint ccs2(first1, second1, EQ, rhs01); // id==pid
+  wait_cs += ccs2;
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
   wait_cs += cs3;
 
@@ -207,9 +223,9 @@ TEST(REACHSET, FISHER) {
 
   Argument lhs1(NORMAL_VAR_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
-  CounterAction caction1 (lhs1, ASSIGNMENT_ACTION, rhs1);
+  CounterAction caction1(lhs1, ASSIGNMENT_ACTION, rhs1);
 
-  cs_A.addCounterAction(caction1);
+  cs_A += caction1;
 
   ls.push_back(A);
 
@@ -225,11 +241,11 @@ TEST(REACHSET, FISHER) {
 
   tmt1->initial(ls, es, 0);
 
-
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt1->getParameter();
 
-    param.setParameterMap("pid", i); // add relation between local id and global id
+    param.setParameterMap("pid",
+                          i); // add relation between local id and global id
     shared_ptr<typename INT_TAS_t::Agent_t> tma1(
         new INT_TAS_t::Agent_t(tmt1, param));
 

@@ -20,6 +20,7 @@
 #include "model/location.h"
 #include "state/ta_statemanager.h"
 
+#include "action/clockreset.h"
 #include "constraint/clockdiffcons.h"
 #include "util/instancefactory.h"
 
@@ -41,11 +42,7 @@ public:
   }
 
   Transition(const Location &lhs, const Location &rhs)
-      : source(lhs.getId()), target(rhs.getId()), has_channel(false) {
-  }
-
-  Transition( const Transition &other
-            );
+      : source(lhs.getId()), target(rhs.getId()), has_channel(false) {}
 
   void setSource(int s) { source = s; }
 
@@ -66,19 +63,42 @@ public:
    * @return Transition
    */
 
-  friend Transition &operator+(Transition &lhs, ClockConstraint &cs) {
-    lhs.guards.push_back(cs);
-    return lhs;
-  }
-
   /**
    *  add one constraint to this transition
    *
    * @param cs  constraint
    *
    */
-  Transition &operator+=(ClockConstraint &cs) {
+  Transition &operator+=(const ClockConstraint &cs) {
     guards.push_back(cs);
+    return *this;
+  }
+  /**
+   *
+   *  add one action to this transition
+   *
+   * @param action Add one counter action
+   *
+   */
+  Transition &operator+=(const CounterAction action) {
+    actions.push_back(action);
+    return *this;
+  }
+
+  /**
+   * add one clock reset  to this transition
+   *
+   * @param reset The reset
+   *
+   */
+
+  Transition &operator+=(const ClockReset &reset) {
+    reset_arg.push_back(reset);
+    return *this;
+  }
+
+  Transition &operator+=(const CounterConstraint &guard) {
+    counter_cons.push_back(guard);
     return *this;
   }
 
@@ -89,36 +109,7 @@ public:
 
   const shared_ptr<Channel> &getChannel() const { return channel; }
 
- // void setChanType(CHANNEL_TYPE type) { channel->setType(type); }
-
   bool hasChannel() const { return has_channel; }
-
-  /**
-   *
-   *  add one action to this transition
-   *
-   * @param action Add one counter action
-   *
-   */
-  void addCounterAction(const CounterAction action) {
-    actions.push_back(action);
-  }
-
-  /**
-   * add one clock reset  to this transition
-   *
-   * @param reset The reset
-   *
-   */
-  void addReset(const Argument &arg, int v) {
-    assert(arg.type == NORMAL_VAR_ARG && "At now is only support this case.");
-    pair<int, int> dummy(arg.value, v);
-    resets.push_back(dummy);
-  }
-
-  void addCounterCons(CounterConstraint guard) {
-    counter_cons.push_back(guard);
-  }
 
   /**
    * @brief Except synchronize signal, other state satisfies jump conditions
@@ -144,25 +135,41 @@ public:
                   const shared_ptr<const TMStateManager> &manager,
                   int *re_state) const;
 
-  void clockShift(const int shift);
 
-  void  to_real(const shared_ptr<TOReal> &convertor);
+
+  void to_real(const shared_ptr<TOReal> &convertor);
+
+  void setSelectVar(const string &n) { select_var = n; }
+  string getSelectVar( void) const{
+    return select_var;
+  }
+  void setSelectCollect(const string &c) { select_collect = c; }
   
-  void chanShift(const int shift);
+  string getSelectCollect( void) const{
+    return select_collect;
+  }
+  bool isSelect( ) const{
+    return (select_var!="") && (select_collect!="");
+  }
 
 private:
   int source, target; // source location and target location of this
   // transitionedge. The index of location in tma.locations
   vector<ClockConstraint> guards; // set of constraint at this transitionedge
 
-  vector<CounterConstraint >
+  vector<CounterConstraint>
       counter_cons;            // counter constraint like pid ==id or id==0
   shared_ptr<Channel> channel; // Only one synchronisation channels
   bool has_channel;
 
-  vector< CounterAction >
-      actions;                   // set of actions at this transitionedge
+  vector<CounterAction> actions; // set of actions at this transitionedge
+
   vector<pair<int, int>> resets; // set of reset clock variables
+
+  vector<ClockReset> reset_arg;
+
+  string select_var;
+  string select_collect;
 };
 } // namespace graphsat
 

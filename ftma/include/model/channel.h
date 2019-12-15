@@ -25,29 +25,25 @@ public:
 
   Channel(const Argument &arg, const CHANNEL_ACTION &a)
       : chan_id(arg), type(ONE2ONE_CH), action(a) {}
-  
+
   Channel(const Argument &arg, const CHANNEL_TYPE &t, const CHANNEL_ACTION &a)
-  : chan_id(arg), type(t), action(a) {}
+      : chan_id(arg), type(t), action(a) {}
 
   int operator()(int *counter_value) const {
     return getValue(real_chan_id, counter_value);
   }
-  int getGlobalId(int *counter_value) const{
-    return (*this)(counter_value);
-  }
+  int getGlobalId(int *counter_value) const { return (*this)(counter_value); }
   void setAction(const CHANNEL_ACTION &a) { action = a; }
 
   void to_real(const shared_ptr<TOReal> &convertor) {
     real_chan_id = convertor->to_real(CHAN_T, chan_id);
     real_chan_id.type = CONST_ARG;
-    type=convertor->getChanType(chan_id.name );
+    type = convertor->getChanType(chan_id.name);
   }
   CHANNEL_TYPE getType(void) const { return type; }
-  
-  bool isSend()const{
-     return CHANNEL_SEND == action;
-  }
-  bool  isRecive() const { return CHANNEL_RECEIVE == action; }
+
+  bool isSend() const { return CHANNEL_SEND == action; }
+  bool isRecive() const { return CHANNEL_RECEIVE == action; }
 
 private:
   Argument chan_id;
@@ -123,11 +119,11 @@ private:
 
 // class IndexChannel : public ArrayChannel {
 // public:
-//   IndexChannel(const string &n, int id, bool ref) : ArrayChannel(n, id, ref) {}
-//   IndexChannel(const string &n, const CHANNEL_ACTION a) : ArrayChannel(n, a) {}
-//   virtual int getGlobalId(int *state) const;
-//   void setIndexFun(IndexFun_t fun) { index_fun = fun; }
-//   void setFunName(const string &n) { fun_name = n; }
+//   IndexChannel(const string &n, int id, bool ref) : ArrayChannel(n, id, ref)
+//   {} IndexChannel(const string &n, const CHANNEL_ACTION a) : ArrayChannel(n,
+//   a) {} virtual int getGlobalId(int *state) const; void
+//   setIndexFun(IndexFun_t fun) { index_fun = fun; } void setFunName(const
+//   string &n) { fun_name = n; }
 
 // protected:
 //   IndexFun_t index_fun;
@@ -140,7 +136,8 @@ private:
 //       : ArrayChannel(n, id, ref) {
 //     shift = 0;
 //   }
-//   SelectChannel(const string &n, const CHANNEL_ACTION a) : ArrayChannel(n, a) {}
+//   SelectChannel(const string &n, const CHANNEL_ACTION a) : ArrayChannel(n, a)
+//   {}
 
 //   void setSelectVar(const string &n) { select_var = n; }
 

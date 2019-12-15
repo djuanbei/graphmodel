@@ -118,15 +118,9 @@ public:
    *
    * @return a new location
    */
-  Location &operator+=(ClockConstraint &cs);
+  Location &operator+=(const ClockConstraint &cs);
 
-  void  to_real(const shared_ptr<TOReal> &convertor);
-
-  // void clockShift(const int shift) {
-  //   for (size_t i = 0; i < invariants.size(); i++) {
-  //     invariants[i].clockShift(shift);
-  //   }
-  // }
+  void to_real(const shared_ptr<TOReal> &convertor);
 
   // string to_string( ) const{
   //   string re_str="name: "+name;

@@ -30,7 +30,7 @@ using std::to_string;
 class CounterConstraint {
 public:
   CounterConstraint(const Argument &out_first, const Argument &out_second,
-                     COMP_OPERATOR oop, const Argument &out_rhs)
+                    COMP_OPERATOR oop, const Argument &out_rhs)
       : first(out_first), second(out_second), op(oop), rhs(out_rhs) {}
   bool operator()(int *counter_value) const {
     int one = getValue(first_value, counter_value);
@@ -51,9 +51,9 @@ private:
   RealArgument rhs_value;
 };
 
-CounterConstraint *createConstraint (const Argument &out_first, const Argument &out_second,
-                  COMP_OPERATOR oop, const Argument &out_rhs);
-}
-
+CounterConstraint *createConstraint(const Argument &out_first,
+                                    const Argument &out_second,
+                                    COMP_OPERATOR oop, const Argument &out_rhs);
+} // namespace graphsat
 
 #endif

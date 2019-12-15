@@ -1,5 +1,5 @@
 #include "benchmark/train_gate.h"
-#include "model/selecttransition.h"
+
 
 namespace graphsat {
 typedef typename INT_TAS_t::Agent_t Agent_t;
@@ -50,38 +50,38 @@ INT_TAS_t TrainGate::generate(int n) const {
   ls.push_back(Start);
   ls.push_back(Cross);
 
-
   typename INT_TAS_t::T_t Safe_Appr(Safe, Appr);
 
   train_tmt->addPara("id");
 
-  Argument ch1_arg(NORMAL_VAR_ARG, "appr" );
+  Argument ch1_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy1(new Argument(PARAMETER_ARG, "id"));
   ch1_arg.setIndex(dummy1);
-  Safe_Appr.setChannel(new Channel( ch1_arg, CHANNEL_SEND));
-  
-  Safe_Appr.addReset(x, 0); // x-->0
+  Safe_Appr.setChannel(new Channel(ch1_arg, CHANNEL_SEND));
+
+  Safe_Appr += ClockReset(x, Argument(0)); // x-->0
+  //  Safe_Appr.addReset(x, 0); // x-->0
 
   typename INT_TAS_t::T_t Appr_Stop(Appr, Stop);
   typename INT_TAS_t::CS_t cs3(x, LE, Argument(10)); // x<=10
   Appr_Stop += cs3;
 
-
-  Argument ch2_arg(NORMAL_VAR_ARG, "stop" );
+  Argument ch2_arg(NORMAL_VAR_ARG, "stop");
   shared_ptr<Argument> dummy2(new Argument(PARAMETER_ARG, "id"));
-  ch2_arg.setIndex( dummy2);
-  Appr_Stop.setChannel(new Channel( ch2_arg, CHANNEL_RECEIVE ));
-  
+  ch2_arg.setIndex(dummy2);
+  Appr_Stop.setChannel(new Channel(ch2_arg, CHANNEL_RECEIVE));
 
   typename INT_TAS_t::T_t Stop_Start(Stop, Start);
-  Stop_Start.addReset(x, 0);
-  Argument ch3_arg( NORMAL_VAR_ARG, "go");
+  Stop_Start += ClockReset(x, Argument(0));
+  //  Stop_Start.addReset(x, 0);
+  Argument ch3_arg(NORMAL_VAR_ARG, "go");
   shared_ptr<Argument> dummy3(new Argument(PARAMETER_ARG, "id"));
-  ch3_arg.setIndex( dummy3);
-  Stop_Start.setChannel( new Channel( ch3_arg, CHANNEL_RECEIVE));
+  ch3_arg.setIndex(dummy3);
+  Stop_Start.setChannel(new Channel(ch3_arg, CHANNEL_RECEIVE));
 
   typename INT_TAS_t::T_t Start_Cross(Start, Cross);
-  Start_Cross.addReset(x, 0);
+  Start_Cross += ClockReset(x, Argument(0)); // x-->0
+  // Start_Cross.addReset(x, 0);
   typename INT_TAS_t::CS_t cs4(x, GE, Argument(7)); // x>=7
   Start_Cross += cs4;
 
@@ -89,14 +89,15 @@ INT_TAS_t TrainGate::generate(int n) const {
   typename INT_TAS_t::CS_t cs5(x, GE, Argument(3)); // x>=3
   Cross_Safe += cs5;
 
-  Argument  ch4_arg( NORMAL_VAR_ARG, "leave");
+  Argument ch4_arg(NORMAL_VAR_ARG, "leave");
   shared_ptr<Argument> dummy4(new Argument(PARAMETER_ARG, "id"));
-  ch4_arg.setIndex( dummy4);
-  
-  Cross_Safe.setChannel(new Channel( ch4_arg, CHANNEL_SEND ));
+  ch4_arg.setIndex(dummy4);
+
+  Cross_Safe.setChannel(new Channel(ch4_arg, CHANNEL_SEND));
 
   typename INT_TAS_t::T_t Appr_Cross(Appr, Cross);
-  Appr_Cross.addReset(x, 0);
+  Appr_Cross += ClockReset(x, Argument(0)); // x-->0
+  // Appr_Cross.addReset(x, 0);
   typename INT_TAS_t::CS_t cs6(x, GE, Argument(10)); // x>=10
   Appr_Cross += cs6;
 
@@ -137,17 +138,16 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
   CounterConstraint ccs1(first1, second1, GT, rhs1); // len >0
-  Free_Occ1.addCounterCons(ccs1);
+  Free_Occ1 += ccs1;
 
-  Argument ch5_arg(NORMAL_VAR_ARG, "go" );
+  Argument ch5_arg(NORMAL_VAR_ARG, "go");
   shared_ptr<Argument> dummy5(new Argument(FUN_POINTER_ARG, "front"));
-  ch5_arg.setIndex( dummy5);
-  
+  ch5_arg.setIndex(dummy5);
 
-  Free_Occ1.setChannel(new Channel( ch5_arg, CHANNEL_SEND));
+  Free_Occ1.setChannel(new Channel(ch5_arg, CHANNEL_SEND));
   ges.push_back(Free_Occ1);
 
-  SelectTransition Free_Occ2(Free, Occ);
+  typename INT_TAS_t::T_t Free_Occ2(Free, Occ);
   Free_Occ2.setSelectVar("e");
   Free_Occ2.setSelectCollect("id_t");
 
@@ -155,50 +155,48 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
   CounterConstraint ccs3(first3, second3, EQ, rhs3); // len==0
-  Free_Occ2.addCounterCons(ccs3);
-  
-  Argument ch6_arg( NORMAL_VAR_ARG, "appr");
+  Free_Occ2 += ccs3;
+
+  Argument ch6_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy6(new Argument(SELECT_VAR_ARG, "e"));
-  ch6_arg.setIndex(dummy6 );
-  Free_Occ2.setChannel(new Channel( ch6_arg, CHANNEL_RECEIVE));
+  ch6_arg.setIndex(dummy6);
+  Free_Occ2.setChannel(new Channel(ch6_arg, CHANNEL_RECEIVE));
 
   Argument lhs2(FUN_POINTER_ARG, 0);
   lhs2.name = "enqueue(e)";
   Argument rhs2(EMPTY_ARG, 0);
   CounterAction caction2(lhs2, CALL_ACTION, rhs2); // enqueue( e)
-  Free_Occ2.addCounterAction(caction2);
+  Free_Occ2 += caction2;
 
   ges.push_back(Free_Occ2);
 
-  SelectTransition Occ_OK(Occ, Ok);
+  typename INT_TAS_t::T_t Occ_OK(Occ, Ok);
   Occ_OK.setSelectVar("e");
   Occ_OK.setSelectCollect("id_t");
 
-  
-  Argument ch7_arg( NORMAL_VAR_ARG, "appr");
+  Argument ch7_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy7(new Argument(SELECT_VAR_ARG, "e"));
-  ch7_arg.setIndex( dummy7);
-  Occ_OK.setChannel(new Channel( ch7_arg, CHANNEL_RECEIVE));
-  
+  ch7_arg.setIndex(dummy7);
+  Occ_OK.setChannel(new Channel(ch7_arg, CHANNEL_RECEIVE));
 
   Argument lhs4(FUN_POINTER_ARG, 0);
   lhs4.name = "enqueue(e)";
   Argument rhs4(EMPTY_ARG, 0);
   CounterAction caction4(lhs4, CALL_ACTION, rhs4); // enqueue( e)
-  Occ_OK.addCounterAction(caction4);
+  Occ_OK += caction4;
 
   ges.push_back(Occ_OK);
 
   typename INT_TAS_t::T_t Ok_Occ(Ok, Occ);
-  
-  Argument ch8_arg( NORMAL_VAR_ARG, "stop");
+
+  Argument ch8_arg(NORMAL_VAR_ARG, "stop");
   shared_ptr<Argument> dummy8(new Argument(FUN_POINTER_ARG, "tail"));
-  ch8_arg.setIndex(dummy8 );
-  Ok_Occ.setChannel(new Channel( ch8_arg, CHANNEL_SEND));
-  
+  ch8_arg.setIndex(dummy8);
+  Ok_Occ.setChannel(new Channel(ch8_arg, CHANNEL_SEND));
+
   ges.push_back(Ok_Occ);
 
-  SelectTransition Occ_Free(Occ, Free);
+  typename INT_TAS_t::T_t Occ_Free(Occ, Free);
   Occ_Free.setSelectVar("e");
   Occ_Free.setSelectCollect("id_t");
 
@@ -206,18 +204,17 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument second5(EMPTY_ARG, 0);
   Argument rhs5(FUN_POINTER_ARG, "front");
   CounterConstraint ccs5(first5, second5, EQ, rhs5); // e== front( )
-  Occ_Free.addCounterCons(ccs5);
+  Occ_Free += ccs5;
 
-
-  Argument ch9_arg( NORMAL_VAR_ARG, "leave");
+  Argument ch9_arg(NORMAL_VAR_ARG, "leave");
   shared_ptr<Argument> dummy9(new Argument(SELECT_VAR_ARG, "e"));
-  ch9_arg.setIndex( dummy9);
-  Occ_Free.setChannel(new Channel( ch9_arg, CHANNEL_RECEIVE));
+  ch9_arg.setIndex(dummy9);
+  Occ_Free.setChannel(new Channel(ch9_arg, CHANNEL_RECEIVE));
 
   Argument lhs6(FUN_POINTER_ARG, "dequeue");
   Argument rhs6(EMPTY_ARG, 0);
   CounterAction caction6(lhs6, CALL_ACTION, rhs6); // dequeue
-  Occ_Free.addCounterAction(caction6);
+  Occ_Free += caction6;
   ges.push_back(Occ_Free);
 
   gate_tmt->initial(gls, ges, 0);

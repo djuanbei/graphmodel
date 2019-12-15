@@ -105,8 +105,8 @@ struct RealArgument {
   //  name(n) {}
 };
 
-  class  ClockConstraint;
-  class DBMFactory;
+class ClockConstraint;
+class DBMFactory;
 struct Argument {
   ARGUMENT_TYPE type;
   int_fast64_t value;
@@ -116,10 +116,9 @@ struct Argument {
   explicit Argument(int v) : type(CONST_ARG), value(v) {}
   Argument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
   void setIndex(const shared_ptr<Argument> &out_index) { index = out_index; }
-   Argument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
-  
+  Argument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
+
 private:
-  
   friend class ClockConstraint;
   friend class DBMFactory;
   friend ClockConstraint randConst(const int num, const int low, const int up);

@@ -17,7 +17,6 @@
 #include <set>
 #include <vector>
 
-
 #include "model/channel.h"
 #include "property/property.h"
 #include "util/parallel.h"
@@ -315,9 +314,9 @@ private:
 
     vector<int> wait_components;
     bool is_send = true;
-    State_t *counter_value=manager->getCounterValue(state);
+    State_t *counter_value = manager->getCounterValue(state);
     if (channel->isSend()) {
-  
+
       wait_components =
           manager->blockComponents(-channel->getGlobalId(counter_value), state);
     } else if (channel->isRecive()) {
@@ -346,7 +345,7 @@ private:
 
     } else {
       manager->copy(cache_state, state);
-       State_t *counter_value=manager->getCounterValue(state);
+      State_t *counter_value = manager->getCounterValue(state);
       assert(channel->getGlobalId(counter_value) > 0); // chan it start with 1
       if (channel->isSend()) {
         cache_state[component + component_num] =

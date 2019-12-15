@@ -9,13 +9,16 @@
  */
 #ifndef AGENT_MODEL_H
 #define AGENT_MODEL_H
+#include "graph/graph.hpp"
+
+
 #include "function.h"
 #include "templatemodel.hpp"
 #include "to_real.h"
-
 #include "util/strutil.h"
 
 namespace graphsat {
+using namespace raptor;
 
 template <typename L, typename T> class AgentSystem;
 
@@ -30,13 +33,15 @@ public:
   Agent(const shared_ptr<AgentTemplate_t> &template_arg, const Parameter &param)
       : parameter(param) {
     agent_tempate = template_arg;
+    initial_loc=template_arg->initial_loc;
+    // for (auto e : template_arg->template_transitions) {
+    //   transitions.push_back(T(e));
+    // }
 
-    for (auto e : template_arg->template_transitions) {
-      transitions.push_back(T(e));
-    }
-
-    locations = template_arg->template_locations;
-    difference_cons = template_arg->template_difference_cons;
+    //locations = template_arg->template_locations;
+    //transitions=template_arg->template_transitions;
+    
+    //difference_cons = template_arg->template_difference_cons;
     id = template_arg->agents.size();
     template_arg->agents.push_back(this);
   }
@@ -144,14 +149,12 @@ public:
       re.index.reset(new RealArgument(to_real(type, *arg.index)));
     }
 
-
     return re;
   }
 
-  virtual CHANNEL_TYPE getChanType( const string &chan_name) const{
-    return agent_tempate->getChanType(chan_name );
+  virtual CHANNEL_TYPE getChanType(const string &chan_name) const {
+    return agent_tempate->getChanType(chan_name);
   }
-  
 
   shared_ptr<Function> getFun(const string &fun_name) const {
     if (fun_map.find(fun_name) != fun_map.end()) {
@@ -183,7 +186,7 @@ private:
     re.value = (int_fast64_t)(getFun(fun_name).get());
 
     string var = getFunArg(name);
-    if (var != "") {
+    if (var != "") { //If the function has argument then let the argument as select variable
       re.index = shared_ptr<RealArgument>(
           new RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
     }
@@ -204,6 +207,66 @@ private:
     fun_map[name] = fun;
   }
 
+
+
+  void initial() {
+
+    vector<int> srcs;
+    vector<int> snks;
+
+    for (auto& t : transitions) {
+      srcs.push_back(t.getSource());
+      snks.push_back(t.getTarget());
+    }
+
+    graph.initial(srcs, snks);
+
+    int vertex_num = graph.getVertex_num();
+
+    // // There are no edges connect with  initial location
+    if(!transitions.empty()){
+      assert(initial_loc >= 0 && initial_loc < vertex_num);
+    }
+
+    difference_cons.clear();
+    clock_max_value.resize(getClockNumber() + 1); // clock is start with 1
+
+    fill(clock_max_value.begin(), clock_max_value.end(), 0);
+
+    for (auto& loc : locations) {
+      const vector<ClockConstraint> &invariants = loc.getInvarients();
+      for (auto& cs : invariants) {
+        updateUpperAndDiff(cs);
+      }
+    }
+
+    for (auto& t : transitions) {
+      const vector<ClockConstraint> &gurads = t.getGuards();
+      for (auto& cs : gurads) {
+        updateUpperAndDiff(cs);
+      }
+    }
+  }
+
+  void updateUpperAndDiff(const ClockConstraint &cs) {
+
+    if (cs.clock_x > 0 && cs.clock_y > 0) {
+      difference_cons.push_back(cs);
+    }
+    int realRhs = getRight(cs.matrix_value);
+    if (cs.clock_x > 0) {
+      if (realRhs > clock_max_value[cs.clock_x]) {
+        clock_max_value[cs.clock_x] = realRhs;
+      }
+    }
+
+    if (cs.clock_y > 0) {
+      if (-realRhs > clock_max_value[cs.clock_y]) {
+        clock_max_value[cs.clock_y] = -realRhs;
+      }
+    }
+  }
+
   shared_ptr<AgentTemplate_t> agent_tempate;
   map<string, shared_ptr<Function>> fun_map;
   Parameter parameter;
@@ -212,6 +275,10 @@ private:
   vector<L> locations;
   vector<T> transitions;
   vector<ClockConstraint> difference_cons;
+
+  Graph_t<int> graph; //topology
+  int initial_loc;
+  vector<int> clock_max_value;
 
   template <typename R1> friend class Reachability;
 

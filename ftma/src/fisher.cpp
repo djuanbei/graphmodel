@@ -25,48 +25,51 @@ FisherGenerator::FisherGenerator() : k(2) {
 
   Argument first3(NORMAL_VAR_ARG, "id");
   Argument second3;
-  Argument rhs3( 0);
+  Argument rhs3(0);
   CounterConstraint ccs1(first3, second3, EQ, rhs3); // id==0
 
-  A_req.addCounterCons(ccs1);
-
-  A_req.addReset(x, 0); // x-->0
+  A_req += ccs1;
+  ClockReset reset(x, Argument(0));
+  A_req += reset; // x-->0
+                  // A_req.addReset(x, 0); // x-->0
 
   typename INT_TAS_t::T_t req_wait(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
   req_wait += cs2;
 
-  req_wait.addReset(x, 0); // x-->0
+  req_wait += ClockReset(x, Argument(0)); // x-->0
+  // req_wait.addReset(x, 0); // x-->0
 
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs(PARAMETER_ARG, "pid");
   CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
 
-  req_wait.addCounterAction(caction);
+  req_wait += caction;
 
   typename INT_TAS_t::T_t wait_req(wait, req);
 
-  wait_req.addReset(x, 0);       // x-->0
-  wait_req.addCounterCons(ccs1); // id==0
+  wait_req += ClockReset(x, Argument(0)); // x-->0
+  // wait_req.addReset(x, 0);       // x-->0
+  wait_req += ccs1; // id==0
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
   Argument first4(NORMAL_VAR_ARG, "id");
   Argument second4(PARAMETER_ARG, "pid");
-  Argument rhs4( 0);
+  Argument rhs4(0);
 
   CounterConstraint ccs2(first4, second4, EQ, rhs4); // id==pid
-  wait_cs.addCounterCons(ccs2);
+  wait_cs += ccs2;
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A(cs, A);
 
   Argument lhs2(NORMAL_VAR_ARG, "id");
-  Argument rhs2( 0);
+  Argument rhs2(0);
   CounterAction caction1(lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;
 
-  cs_A.addCounterAction(caction1);
+  cs_A += caction1;
 
   ls.push_back(A);
   ls.push_back(req);

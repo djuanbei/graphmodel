@@ -113,8 +113,8 @@ int UppaalParser::parseSystem(XML_P system) {
     auto formal_parameter_list =
         template_map[component->tmt_name].getPoints(FORMAL_PARAMETER_T);
     vector<string> ps;
-    for( auto &e:formal_parameter_list ){
-      ps.push_back( e.first);
+    for (auto &e : formal_parameter_list) {
+      ps.push_back(e.first);
     }
 
     Parameter parameter(ps);
@@ -135,7 +135,8 @@ int UppaalParser::parseSystem(XML_P system) {
           parameter.setCounterMap(formal_parameter_list[para_id].first,
                                   component->real_param_list[para_id].id);
         } else if (isRefChan(para_item->type)) {
-          parameter.setChanMap(formal_parameter_list[para_id].first, component->real_param_list[para_id].id);
+          parameter.setChanMap(formal_parameter_list[para_id].first,
+                               component->real_param_list[para_id].id);
         } else if (para_item->type == CLOCK_T) {
           // TODO : add clock parameter support
           assert(false);
@@ -268,7 +269,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
           vector<void *> counterCs =
               template_data.getPoints(INT_CS_T, STRING(INT_CS_T));
           for (auto cs : counterCs) {
-            transition.addCounterCons(*((CounterConstraint *)cs));
+            transition += (*((CounterConstraint *)cs));
             delete (CounterConstraint *)cs;
           }
 
@@ -280,7 +281,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
           vector<void *> updates =
               template_data.getPoints(INT_UPDATE_T, STRING(INT_UPDATE_T));
           for (auto update : updates) {
-            transition.addCounterAction(*((CounterAction *)update));
+            transition += *((CounterAction *)update);
             delete (CounterAction *)update;
           }
           template_data.clear(INT_UPDATE_T);
@@ -288,9 +289,13 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
           vector<void *> resets =
               template_data.getPoints(RESET_T, getTypeStr(RESET_T));
           for (auto reset : resets) {
-            transition.addReset(
+            transition += ClockReset(
                 Argument(NORMAL_VAR_ARG, ((pair<int, int> *)reset)->first),
-                ((pair<int, int> *)reset)->second);
+                Argument(((pair<int, int> *)reset)->second));
+            //            transition.addReset(
+            //                Argument(NORMAL_VAR_ARG, ((pair<int, int>
+            //                *)reset)->first),
+            //                ((pair<int, int> *)reset)->second);
             delete (pair<int, int> *)reset;
           }
           template_data.clear(RESET_T);
@@ -304,15 +309,15 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
               template_data.getValue(CHAN_ACTION_T);
 
           for (auto e : normol_chan_actions1) {
-            assert( false &&"API has change.");
-            //transition.setChannel(new Channel(e));
+            assert(false && "API has change.");
+            // transition.setChannel(new Channel(e));
           }
           vector<int> ref_chan_actions =
               template_data.getValue(REF_CHAN_ACTION_T);
 
           for (auto e : ref_chan_actions) {
-            assert( false &&"API has change.");
-            //transition.setChannel(new Channel(e, true));
+            assert(false && "API has change.");
+            // transition.setChannel(new Channel(e, true));
           }
           assert(normol_chan_actions1.size() + ref_chan_actions.size() < 2);
 

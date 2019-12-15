@@ -3,31 +3,6 @@
 #include <cassert>
 
 namespace graphsat {
-Transition::Transition( const Transition &other
-                       ) {
-  source = other.source;
-  target = other.target;
-  guards = other.guards;
-
-  for (auto& e : other.counter_cons) {
-//    CounterConstraint dummy =e;
-//    dummy->globalUpdate(param.getCounterMap(), param.getParameterMap());
-    counter_cons.push_back(e);
-  }
-
-  has_channel = other.has_channel;
-  if (has_channel) {
-    channel = other.channel;
-  //  channel->globalIpUpdate(param.getChanMap());
-  }
-
-  for (auto& a : other.actions) {
-//    CounterAction *dummy = a->copy();
-//    dummy->globalUpdate(param.getCounterMap(), param.getParameterMap());
-    actions.push_back(a);
-  }
-  resets = other.resets;
-}
 
 bool Transition::ready(const int component,
                        const shared_ptr<const TMStateManager> &manager,
@@ -51,10 +26,10 @@ bool Transition::ready(const int component,
   }
 
   if (!counter_cons.empty()) {
-   const int *counter_value = manager->getCounterValue(state);
-    
+    const int *counter_value = manager->getCounterValue(state);
+
     for (auto cs : counter_cons) {
-      if (!cs( const_cast<int*>(counter_value))) {
+      if (!cs(const_cast<int *>(counter_value))) {
         return false;
       }
     }
@@ -93,32 +68,27 @@ void Transition::operator()(const int component,
       action(counterValue);
     }
   }
-
 }
 
-void Transition::clockShift(const int shift) {
-  // for (size_t i = 0; i < guards.size(); i++) {
-  //   guards[i].clockShift(shift);
-  // }
-  for (size_t i = 0; i < resets.size(); i++) {
-    resets[i].first += shift;
+
+void Transition::to_real(const shared_ptr<TOReal> &convertor) {
+  if (has_channel) {
+    channel->to_real(convertor);
+  }
+  for (auto &e : guards) {
+    e.to_real(convertor);
+  }
+  for (auto &e : counter_cons) {
+    e.to_real(convertor);
+  }
+  for (auto &e : actions) {
+    e.to_real(convertor);
+  }
+  resets.clear();
+  for (auto &e : reset_arg) {
+    e.to_real(convertor);
+    resets.push_back(e.getValue());
   }
 }
-
-void  Transition::to_real(const shared_ptr<TOReal> &convertor){
-  if( has_channel){
-    channel->to_real( convertor);
-  }
-  for( auto & e: guards ){
-    e.to_real( convertor);
-  }
-  for(auto &e: counter_cons ){
-    e.to_real( convertor);
-  }
-  for(auto & e: actions ){
-    e.to_real( convertor);
-  }
-}
-
 
 } // namespace graphsat

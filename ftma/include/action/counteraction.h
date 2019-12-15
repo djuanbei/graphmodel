@@ -82,18 +82,16 @@ using std::vector;
 
 class CounterAction {
 public:
- 
   CounterAction(const Argument &out_lhs, const Action_e &ee,
                 const Argument &out_rhs)
       : lhs(out_lhs), action(ee), rhs(out_rhs) {}
-
 
   void to_real(const shared_ptr<TOReal> &convertor) {
     real_lhs = convertor->to_real(INT_T, lhs);
     real_rhs = convertor->to_real(INT_T, rhs);
   }
 
-  void operator( )(int *counter_value) const {
+  void operator()(int *counter_value) const {
     if (action == CALL_ACTION) {
       getValue(real_lhs, counter_value);
       return;
