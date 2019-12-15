@@ -6,8 +6,6 @@
 #include "problem/reachability.hpp"
 #include "state/reachableset.hpp"
 
-
-
 #include "benchmark/train_gate.h"
 
 #undef PRINT_STATE

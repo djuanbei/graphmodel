@@ -70,7 +70,6 @@ void Transition::operator()(const int component,
   }
 }
 
-
 void Transition::to_real(const shared_ptr<TOReal> &convertor) {
   if (has_channel) {
     channel->to_real(convertor);

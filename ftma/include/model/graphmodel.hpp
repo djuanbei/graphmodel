@@ -48,8 +48,8 @@ public:
   typedef AgentTemplate<L, T> AgentTemplate_t;
 
   AgentSystem() {
-    clock_max_value.push_back(0);
-    counter_num = clock_num = chan_num = 0;
+    clock_max_value[0] = 0;
+    counter_num = chan_num = 0;
   }
 
   shared_ptr<AgentTemplate_t> createTemplate() {
@@ -95,13 +95,19 @@ public:
     AgentCMP cmp;
     sort(agents.begin(), agents.end(), cmp);
     counter_num = getTypeNumber(INT_T);
-    clock_num = getTypeNumber(CLOCK_T);
     chan_num = getTypeNumber(CHAN_T);
     difference_cons.clear();
 
     for (auto &e : agents) {
       transfrom(e);
     }
+    int clock_num = 1;
+    for (auto &e : clock_max_value) {
+      if (e.first > clock_num) {
+        clock_num = e.first;
+      }
+    }
+
     vector<int> temp_clock_upperbound(2 * clock_num + 2, 0);
 
     for (int i = 0; i < clock_num + 1; i++) {
@@ -196,44 +202,45 @@ private:
   void transfrom(shared_ptr<Agent_t> &agent) {
 
     agent->initFuns();
-    agent->locations=agent->agent_tempate->template_locations;
+    agent->locations = agent->agent_tempate->template_locations;
     for (auto &e : agent->locations) {
       e.to_real(agent);
     }
 
-    //the clock guard can not contain select variable
-    // for (size_t i = 0;
-    //      i < agent->agent_tempate->template_difference_cons.size(); i++) {
-    //   agent->difference_cons[i].to_real(agent);
-    // }
-    agent->transitions.clear( );
-    for (size_t i = 0; i < agent->agent_tempate->template_transitions.size(); i++) {
-      if(agent->agent_tempate->template_transitions[ i].isSelect( ) ){
-        T dummy(agent->agent_tempate->template_transitions[ i] );
-        TypeDefArray select_domain = agent->getType(dummy.getSelectCollect( ));
-        for( int i=select_domain.getLow( ); i!= select_domain.getHigh( ); i++ ){
-          agent->setSelect( i);
-          dummy.to_real( agent);
-          agent->transitions.push_back(dummy );
+    agent->transitions.clear();
+    for (size_t i = 0; i < agent->agent_tempate->template_transitions.size();
+         i++) {
+      if (agent->agent_tempate->template_transitions[i].isSelect()) {
+        T dummy(agent->agent_tempate->template_transitions[i]);
+        TypeDefArray select_domain = agent->getType(dummy.getSelectCollect());
+        for (int i = select_domain.getLow(); i != select_domain.getHigh();
+             i++) {
+          agent->setSelect(i);
+          dummy.to_real(agent);
+          agent->transitions.push_back(dummy);
         }
-      }else{
-        T dummy(agent->agent_tempate->template_transitions[ i] );
-        dummy.to_real( agent);
-        agent->transitions.push_back(dummy );
+      } else {
+        T dummy(agent->agent_tempate->template_transitions[i]);
+        dummy.to_real(agent);
+        agent->transitions.push_back(dummy);
       }
     }
-    
-    agent->initial( );
-    
-    clock_num += agent->getClockNumber();
+
+    agent->initial();
+
+    //    clock_num += agent->getClockNumber();
     chan_num += agent->getChannelNumber();
 
     initial_loc.push_back(agent->getInitialLoc());
-    vec_clock_nums.push_back(agent->getClockNumber());
-
-    for (size_t i = 1; i < agent->getClockMaxValue().size(); i++) {
-      clock_max_value.push_back(agent->getClockMaxValue()[i]);
+    map<int, int> temp_max = agent->getClockMaxValue();
+    for (auto &e : temp_max) {
+      if (clock_max_value[e.first] < e.second) {
+        clock_max_value[e.first] = e.second;
+      }
     }
+    // for (size_t i = 1; i < agent->getClockMaxValue().size(); i++) {
+    //   clock_max_value.push_back(agent->getClockMaxValue()[i]);
+    // }
 
     difference_cons.insert(difference_cons.end(),
                            agent->difference_cons.begin(),
@@ -248,14 +255,13 @@ private:
 
   vector<shared_ptr<Agent_t>> agents;
 
-  int clock_num;
+  //  int clock_num;
   int counter_num;
   int chan_num;
 
   vector<int> initial_loc;
-  vector<int> vec_clock_nums;
 
-  vector<int> clock_max_value;
+  map<int, int> clock_max_value;
   vector<ClockConstraint> difference_cons;
 
   shared_ptr<StateManager_t> stateManager;

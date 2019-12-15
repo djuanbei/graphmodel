@@ -135,22 +135,14 @@ public:
                   const shared_ptr<const TMStateManager> &manager,
                   int *re_state) const;
 
-
-
   void to_real(const shared_ptr<TOReal> &convertor);
 
   void setSelectVar(const string &n) { select_var = n; }
-  string getSelectVar( void) const{
-    return select_var;
-  }
+  string getSelectVar(void) const { return select_var; }
   void setSelectCollect(const string &c) { select_collect = c; }
-  
-  string getSelectCollect( void) const{
-    return select_collect;
-  }
-  bool isSelect( ) const{
-    return (select_var!="") && (select_collect!="");
-  }
+
+  string getSelectCollect(void) const { return select_collect; }
+  bool isSelect() const { return (select_var != "") && (select_collect != ""); }
 
 private:
   int source, target; // source location and target location of this

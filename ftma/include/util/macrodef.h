@@ -28,7 +28,7 @@ using namespace std;
                 << sys.agents[i]->getLocationName(state[i]);                   \
     else {                                                                     \
       int block_source;                                                        \
-      sys.agents[i]->agent_tempate->graph.findSrc(state[i], block_source);     \
+      sys.agents[i]->graph.findSrc(state[i], block_source);                    \
       cout << setw(LOC_OUT_WIDTH)                                              \
            << sys.agents[i]->getLocationName(block_source);                    \
     }                                                                          \

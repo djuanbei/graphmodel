@@ -1,6 +1,5 @@
 #include "benchmark/train_gate.h"
 
-
 namespace graphsat {
 typedef typename INT_TAS_t::Agent_t Agent_t;
 INT_TAS_t TrainGate::generate(int n) const {

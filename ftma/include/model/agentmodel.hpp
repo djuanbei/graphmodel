@@ -11,7 +11,6 @@
 #define AGENT_MODEL_H
 #include "graph/graph.hpp"
 
-
 #include "function.h"
 #include "templatemodel.hpp"
 #include "to_real.h"
@@ -33,27 +32,25 @@ public:
   Agent(const shared_ptr<AgentTemplate_t> &template_arg, const Parameter &param)
       : parameter(param) {
     agent_tempate = template_arg;
-    initial_loc=template_arg->initial_loc;
+    initial_loc = template_arg->initial_loc;
     // for (auto e : template_arg->template_transitions) {
     //   transitions.push_back(T(e));
     // }
 
-    //locations = template_arg->template_locations;
-    //transitions=template_arg->template_transitions;
-    
-    //difference_cons = template_arg->template_difference_cons;
+    // locations = template_arg->template_locations;
+    // transitions=template_arg->template_transitions;
+
+    // difference_cons = template_arg->template_difference_cons;
     id = template_arg->agents.size();
     template_arg->agents.push_back(this);
   }
   virtual ~Agent() {}
 
   void findRhs(const int link, const int lhs, int &rhs) const {
-    agent_tempate->graph.findRhs(link, lhs, rhs);
+    graph.findRhs(link, lhs, rhs);
   }
 
-  vector<int> getClockMaxValue() const {
-    return agent_tempate->clock_max_value;
-  }
+  map<int, int> getClockMaxValue() const { return clock_max_value; }
 
   int getClockNumber() const { return agent_tempate->getClockNumber(); }
 
@@ -186,7 +183,8 @@ private:
     re.value = (int_fast64_t)(getFun(fun_name).get());
 
     string var = getFunArg(name);
-    if (var != "") { //If the function has argument then let the argument as select variable
+    if (var != "") { // If the function has argument then let the argument as
+                     // select variable
       re.index = shared_ptr<RealArgument>(
           new RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
     }
@@ -207,14 +205,12 @@ private:
     fun_map[name] = fun;
   }
 
-
-
   void initial() {
 
     vector<int> srcs;
     vector<int> snks;
 
-    for (auto& t : transitions) {
+    for (auto &t : transitions) {
       srcs.push_back(t.getSource());
       snks.push_back(t.getTarget());
     }
@@ -224,25 +220,26 @@ private:
     int vertex_num = graph.getVertex_num();
 
     // // There are no edges connect with  initial location
-    if(!transitions.empty()){
+    if (!transitions.empty()) {
       assert(initial_loc >= 0 && initial_loc < vertex_num);
     }
 
     difference_cons.clear();
-    clock_max_value.resize(getClockNumber() + 1); // clock is start with 1
+    // clock_max_value.resize(getClockNumber() + 1); // clock is start with 1
 
-    fill(clock_max_value.begin(), clock_max_value.end(), 0);
+    // fill(clock_max_value.begin(), clock_max_value.end(), 0);
+    clock_max_value.clear();
 
-    for (auto& loc : locations) {
+    for (auto &loc : locations) {
       const vector<ClockConstraint> &invariants = loc.getInvarients();
-      for (auto& cs : invariants) {
+      for (auto &cs : invariants) {
         updateUpperAndDiff(cs);
       }
     }
 
-    for (auto& t : transitions) {
+    for (auto &t : transitions) {
       const vector<ClockConstraint> &gurads = t.getGuards();
-      for (auto& cs : gurads) {
+      for (auto &cs : gurads) {
         updateUpperAndDiff(cs);
       }
     }
@@ -272,13 +269,14 @@ private:
   Parameter parameter;
   int id; // the interbal of instance of ta_tempate
 
+  Graph_t<int> graph; // topology
   vector<L> locations;
   vector<T> transitions;
+
   vector<ClockConstraint> difference_cons;
 
-  Graph_t<int> graph; //topology
   int initial_loc;
-  vector<int> clock_max_value;
+  map<int, int> clock_max_value;
 
   template <typename R1> friend class Reachability;
 

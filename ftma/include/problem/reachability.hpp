@@ -162,11 +162,10 @@ private:
 
     int source = manager->getLoc(component, state);
 
-    int out_degree =
-        sys.agents[component]->agent_tempate->graph.getOutDegree(source);
+    int out_degree = sys.agents[component]->graph.getOutDegree(source);
     for (int j = 0; j < out_degree; j++) {
 
-      int link = sys.agents[component]->agent_tempate->graph.getAdj(source, j);
+      int link = sys.agents[component]->graph.getAdj(source, j);
       /**
        * Whether the jump conditions satisfies except synchronize signal
        *
@@ -216,8 +215,7 @@ private:
 
     const int block_link = next_state[block_component_id];
     int block_source = 0;
-    sys.agents[block_component_id]->agent_tempate->graph.findSrc(block_link,
-                                                                 block_source);
+    sys.agents[block_component_id]->graph.findSrc(block_link, block_source);
     next_state[block_component_id] = block_source;
     int send_component_id = current_component;
     int send_link = link;
@@ -243,8 +241,7 @@ private:
         receive_component_id, manager, next_state);
 
     int send_target = 0;
-    sys.agents[send_component_id]->agent_tempate->graph.findSnk(send_link,
-                                                                send_target);
+    sys.agents[send_component_id]->graph.findSnk(send_link, send_target);
     next_state[send_component_id] = send_target;
 
     bool is_send_commit =
@@ -255,8 +252,8 @@ private:
     }
     int receive_target = 0;
 
-    sys.agents[receive_component_id]->agent_tempate->graph.findSnk(
-        receive_link, receive_target);
+    sys.agents[receive_component_id]->graph.findSnk(receive_link,
+                                                    receive_target);
     next_state[receive_component_id] = receive_target;
 
     bool is_receive_commit =
@@ -268,8 +265,7 @@ private:
 
     int source, target;
     source = target = 0;
-    sys.agents[send_component_id]->agent_tempate->graph.findSrcSnk(
-        send_link, source, target);
+    sys.agents[send_component_id]->graph.findSrcSnk(send_link, source, target);
 
     if (sys.agents[send_component_id]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
@@ -280,8 +276,8 @@ private:
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
 
-    sys.agents[receive_component_id]->agent_tempate->graph.findSrcSnk(
-        receive_link, source, target);
+    sys.agents[receive_component_id]->graph.findSrcSnk(receive_link, source,
+                                                       target);
 
     if (sys.agents[receive_component_id]
             ->locations[source]
@@ -382,8 +378,7 @@ private:
     manager->copy(next_state, state);
     int source = 0;
     int target = 0;
-    sys.agents[component]->agent_tempate->graph.findSrcSnk(link, source,
-                                                           target);
+    sys.agents[component]->graph.findSrcSnk(link, source, target);
     if (sys.agents[component]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
@@ -439,8 +434,8 @@ private:
                                 manager->getDBM(state));
         } else {
           int block_source;
-          sys.agents[component_id]->agent_tempate->graph.findSrc(
-              state[component_id], block_source);
+          sys.agents[component_id]->graph.findSrc(state[component_id],
+                                                  block_source);
           sys.agents[component_id]->locations[block_source].employInvariants(
               manager->getClockManager(), manager->getDBM(state));
         }
