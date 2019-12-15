@@ -39,7 +39,11 @@ public:
     type = etype;
     name = LOC_NAME_PRE + to_string(loc_id);
   }
-
+  explicit Location(int loc_id, const string &n) {
+    location_id = loc_id;
+    type = NORMOAL_LOC;
+    name = n;
+  }
   int getId() const { return location_id; }
 
   void setName(const string &n) { name = n; }

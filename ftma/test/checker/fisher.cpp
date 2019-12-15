@@ -15,6 +15,10 @@
 #include "property/fisherprop.h"
 #include "property/locreachprop.h"
 
+#include "benchmark/fisher.h"
+
+#include <problem/pmcp.hpp>
+
 using namespace graphsat;
 using namespace std;
 typedef AgentSystem<Location, Transition> INT_TAS_t;
@@ -261,6 +265,14 @@ TEST(REACHSET, FISHER) {
   FischerMutual prop;
 
   EXPECT_FALSE(reacher.satisfy(data, &prop));
+}
+
+TEST( PMCP, FISHER){
+  FisherGenerator F;
+  IncrementalCheck<INT_TAS_t, FisherGenerator> check;
+  FischerMutual prop;
+  EXPECT_TRUE(check.check(F, &prop) );
+
 }
 
 // int main( int argc, char *argv[] ) {
