@@ -120,11 +120,13 @@ public:
    */
   Location &operator+=(ClockConstraint &cs);
 
-  void clockShift(const int shift) {
-    for (size_t i = 0; i < invariants.size(); i++) {
-      invariants[i].clockShift(shift);
-    }
-  }
+  void  to_real(const shared_ptr<TOReal> &convertor);
+
+  // void clockShift(const int shift) {
+  //   for (size_t i = 0; i < invariants.size(); i++) {
+  //     invariants[i].clockShift(shift);
+  //   }
+  // }
 
   // string to_string( ) const{
   //   string re_str="name: "+name;

@@ -97,9 +97,9 @@ void Transition::operator()(const int component,
 }
 
 void Transition::clockShift(const int shift) {
-  for (size_t i = 0; i < guards.size(); i++) {
-    guards[i].clockShift(shift);
-  }
+  // for (size_t i = 0; i < guards.size(); i++) {
+  //   guards[i].clockShift(shift);
+  // }
   for (size_t i = 0; i < resets.size(); i++) {
     resets[i].first += shift;
   }
@@ -108,6 +108,9 @@ void Transition::clockShift(const int shift) {
 void  Transition::to_real(const shared_ptr<TOReal> &convertor){
   if( has_channel){
     channel->to_real( convertor);
+  }
+  for( auto & e: guards ){
+    e.to_real( convertor);
   }
   for(auto &e: counter_cons ){
     e.to_real( convertor);

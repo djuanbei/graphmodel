@@ -30,37 +30,36 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1,
     return;
   }
 
-  // if ( eparameter_id < 0 ) {
-  //   init( clock_id1.id, clock_id2.id, eop, rhs );
-  //   return;
-  // }
   assert(false && "At now the program has not supprt other cases.");
-
-  // clock_x      = clock_id1.id;
-  // clock_y      = clock_id2.id;
-  // op           = eop;
-  // parameter_id = eparameter_id;
 }
 
-void ClockConstraint::globalUpdate(const vector<int> &parameter_value) {
-  if (rhs_arg.type == CONST_ARG) {
-    return;
-  } else if (rhs_arg.type == PARAMETER_ARG) {
-    int rhs = parameter_value[rhs_arg.value];
-    int id1 = clock_x;
-    int id2 = clock_y;
-    init(id1, id2, op, rhs);
-  }
+void ClockConstraint::to_real(const shared_ptr<TOReal> &convertor) {
+  real_clock_x_arg=convertor->to_real(CLOCK_T, clock_x_arg );
+  real_clock_y_arg=convertor->to_real(CLOCK_T, clock_y_arg);
+  real_rhs_arg=convertor->to_real(CLOCK_T, rhs_arg);
+  init(real_clock_x_arg.value, real_clock_y_arg.value, op, real_rhs_arg.value );
 }
 
-void ClockConstraint::clockShift(int shift) {
-  if (clock_x > 0) {
-    clock_x += shift;
-  }
-  if (clock_y > 0) {
-    clock_y += shift;
-  }
-}
+
+// void ClockConstraint::globalUpdate(const vector<int> &parameter_value) {
+//   if (rhs_arg.type == CONST_ARG) {
+//     return;
+//   } else if (rhs_arg.type == PARAMETER_ARG) {
+//     int rhs = parameter_value[rhs_arg.value];
+//     int id1 = clock_x;
+//     int id2 = clock_y;
+//     init(id1, id2, op, rhs);
+//   }
+//}
+
+// void ClockConstraint::clockShift(int shift) {
+//   if (clock_x > 0) {
+//     clock_x += shift;
+//   }
+//   if (clock_y > 0) {
+//     clock_y += shift;
+//   }
+// }
 
 ClockConstraint ClockConstraint::neg() const {
   ClockConstraint re(*this);

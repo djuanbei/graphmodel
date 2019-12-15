@@ -175,7 +175,9 @@ public:
 
   int getStartLoc(const TYPE_T type, const int template_id) const {
     int re = 0; // stateManager->getStart(type);
-
+    if(CLOCK_T==type){
+      re=1;
+    }
     for (auto &agent : agents) {
       if (agent->getTemplate()->id < template_id) {
         re += agent->getTemplate()->getTypeNumber(type);
@@ -194,21 +196,24 @@ private:
   void transfrom(shared_ptr<Agent_t> &agent) {
 
     agent->initFuns();
-
-    if (clock_num > 0) {
-
-      for (size_t i = 0; i < agent->locations.size(); i++) {
-        agent->locations[i].clockShift(clock_num);
-      }
-      for (size_t i = 0; i < agent->transitions.size(); i++) {
-        agent->transitions[i].clockShift(clock_num);
-      }
-      for (size_t i = 0;
-           i < agent->agent_tempate->template_difference_cons.size(); i++) {
-        agent->difference_cons[i].clockShift(clock_num);
-      }
+    
+    for( auto & e: agent->locations ){
+      e.to_real( agent);
     }
-
+    
+    // for (size_t i = 0; i < agent->locations.size(); i++) {
+    
+    //   agent->locations[i].clockShift(clock_num);
+    // }
+    
+    for (size_t i = 0; i < agent->transitions.size(); i++) {
+      agent->transitions[i].clockShift(clock_num);
+    }
+    for (size_t i = 0;
+         i < agent->agent_tempate->template_difference_cons.size(); i++) {
+      agent->difference_cons[i].to_real(agent );
+    }
+    
 
     for (size_t i = 0; i < agent->transitions.size(); i++) {
       agent->transitions[i].to_real( agent);

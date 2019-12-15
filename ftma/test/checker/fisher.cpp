@@ -21,7 +21,7 @@ typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 // typedef ReachableSet<INT_TAS_t> R_t;
 
-// ref:  paper    "Timed Automata: Semantics, Algorithms and Tools"  Fig. 6
+// ref:  GRAZ1.pdf  example
 TEST(TA, UNREACH) {
   INT_TAS_t sys;
   shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();

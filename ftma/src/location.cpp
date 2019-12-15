@@ -20,4 +20,9 @@ Location &Location::operator+=(ClockConstraint &cs) {
   invariants.push_back(cs);
   return *this;
 }
+void  Location::to_real(const shared_ptr<TOReal> &convertor){
+  for( auto &e: invariants){
+    e.to_real( convertor);
+  }
+}
 } // namespace graphsat

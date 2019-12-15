@@ -19,6 +19,8 @@ public:
     return ONE2ONE_CH;
   }
 };
+
+
 } // namespace graphsat
 
 #endif

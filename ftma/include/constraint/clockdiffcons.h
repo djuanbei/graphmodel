@@ -16,6 +16,7 @@
 #include <random>
 
 #include "model/clock.h"
+#include "model/to_real.h"
 #include "util/dbmutil.hpp"
 
 namespace graphsat {
@@ -37,9 +38,10 @@ public:
   ClockConstraint(const Argument &clock_id1, const Argument &clock_id2,
                   COMP_OPERATOR eop, const Argument &rhs);
 
-  void globalUpdate(const vector<int> &parameter_value);
+  void to_real(const shared_ptr<TOReal> &convertor) ;
 
-  void clockShift(int shift);
+  //void globalUpdate(const vector<int> &parameter_value);
+  //void clockShift(int shift);
 
   ClockConstraint neg(void) const;
 
@@ -65,6 +67,10 @@ public:
   Argument clock_x_arg;
   Argument clock_y_arg;
   Argument rhs_arg;
+
+  RealArgument real_clock_x_arg;
+  RealArgument real_clock_y_arg;
+  RealArgument real_rhs_arg;
 
   int clock_x;
   int clock_y;
