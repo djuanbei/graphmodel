@@ -18,11 +18,12 @@
 #include <vector>
 #include<cassert>
 
+#include "util/parallel.h"
+#include "util/macrodef.h"
+
 #include "model/channel.h"
 #include "property/property.h"
-#include "util/parallel.h"
 
-#include "util/macrodef.h"
 
 namespace graphsat {
 
