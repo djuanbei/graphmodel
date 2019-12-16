@@ -233,17 +233,17 @@ TEST_F(GraphModelTest, Channel) {
 
   shared_ptr<Function> tail_c = tma->getFun("tail");
 
-  EXPECT_EQ(18, tma->getStart(CHAN_T, "go"));
+  EXPECT_EQ(19, tma->getKeyID(CHAN_T, "go"));
   for (int i = 0; i < n; i++) {
     (*enqueue_c)(counters, i);
     int ffid = ch1(counters);
-    EXPECT_EQ(18, ffid);
+    EXPECT_EQ(19, ffid);
   }
 
   for (int i = 0; i < n; i++) {
 
     int ffid = ch1(counters);
-    EXPECT_EQ(18 + i, ffid);
+    EXPECT_EQ(19 + i, ffid);
     (*dequeue_c)(counters);
   }
   manager->destroyState(state);
@@ -283,7 +283,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   Channel ch1(ch1_arg);
 
   ch1.setAction(CHANNEL_RECEIVE);
-  EXPECT_EQ(0, tma->getStart(CHAN_T, "appr"));
+  EXPECT_EQ(1, tma->getKeyID(CHAN_T, "appr")); // the channel id start with 1
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   INT_TAS_t::State_t *state = manager->newState();
@@ -293,7 +293,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
     tma->setSelect(i);
     ch1.to_real(tma);
     int ffid = ch1(counters);
-    EXPECT_EQ(i, ffid);
+    EXPECT_EQ(i+1, ffid);
   }
 
   Argument lhs2(FUN_POINTER_ARG, "enqueue(e)");
@@ -326,5 +326,13 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
 TEST(TRAIN_GATE_H, generate) {
   TrainGate TG;
-  // INT_TAS_t tg=TG.generate( 6);
+  INT_TAS_t tg_sys = TG.generate(2);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      tg_sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  tg_sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(tg_sys);
+ // reacher.computeAllReachableSet(data);
 }
+
+TEST(PMCP, train_gate) {}

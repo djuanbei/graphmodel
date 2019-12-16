@@ -267,12 +267,11 @@ TEST(REACHSET, FISHER) {
   EXPECT_FALSE(reacher.satisfy(data, &prop));
 }
 
-TEST( PMCP, FISHER){
+TEST(PMCP, FISHER) {
   FisherGenerator F;
   IncrementalCheck<INT_TAS_t, FisherGenerator> check;
   FischerMutual prop;
-  EXPECT_TRUE(check.check(F, &prop) );
-
+  EXPECT_TRUE(check.check(F, &prop));
 }
 
 // int main( int argc, char *argv[] ) {

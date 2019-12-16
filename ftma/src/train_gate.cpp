@@ -12,8 +12,7 @@ INT_TAS_t TrainGate::generate(int n) const {
       sys.createTemplate();
 
   sys.addConstant("N", n); // const N=n;
-  //  TypeDefArray id_t( "id_t", 0, sys[ "N" ] - 1 ); // typedef int[ 0,N-1]
-  //  id_t;
+
   sys.addType("id_t", 0, sys["N"] - 1); // typedef int[ 0,N-1] id_t;
 
   sys.addChan("appr", sys["N"], ONE2ONE_CH); // chan appr[ N]
@@ -28,11 +27,11 @@ INT_TAS_t TrainGate::generate(int n) const {
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
 
-  typename INT_TAS_t::L_t Safe(0);
-  typename INT_TAS_t::L_t Appr(1);
-  typename INT_TAS_t::L_t Stop(2);
-  typename INT_TAS_t::L_t Start(3);
-  typename INT_TAS_t::L_t Cross(4);
+  typename INT_TAS_t::L_t Safe(0, "Safe");
+  typename INT_TAS_t::L_t Appr(1, "Appr");
+  typename INT_TAS_t::L_t Stop(2, "Stop");
+  typename INT_TAS_t::L_t Start(3, "Start");
+  typename INT_TAS_t::L_t Cross(4, "Cross");
 
   typename INT_TAS_t::CS_t cs1(x, LE, Argument(20)); // x <= 20
   Appr += cs1;
@@ -56,7 +55,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch1_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy1(new Argument(PARAMETER_ARG, "id"));
   ch1_arg.setIndex(dummy1);
-  Safe_Appr.setChannel(new Channel(ch1_arg, CHANNEL_SEND));
+  Safe_Appr.setChannel(Channel(ch1_arg, CHANNEL_SEND));
 
   Safe_Appr += ClockReset(x, Argument(0)); // x-->0
   //  Safe_Appr.addReset(x, 0); // x-->0
@@ -68,7 +67,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch2_arg(NORMAL_VAR_ARG, "stop");
   shared_ptr<Argument> dummy2(new Argument(PARAMETER_ARG, "id"));
   ch2_arg.setIndex(dummy2);
-  Appr_Stop.setChannel(new Channel(ch2_arg, CHANNEL_RECEIVE));
+  Appr_Stop.setChannel(Channel(ch2_arg, CHANNEL_RECEIVE));
 
   typename INT_TAS_t::T_t Stop_Start(Stop, Start);
   Stop_Start += ClockReset(x, Argument(0));
@@ -76,7 +75,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch3_arg(NORMAL_VAR_ARG, "go");
   shared_ptr<Argument> dummy3(new Argument(PARAMETER_ARG, "id"));
   ch3_arg.setIndex(dummy3);
-  Stop_Start.setChannel(new Channel(ch3_arg, CHANNEL_RECEIVE));
+  Stop_Start.setChannel(Channel(ch3_arg, CHANNEL_RECEIVE));
 
   typename INT_TAS_t::T_t Start_Cross(Start, Cross);
   Start_Cross += ClockReset(x, Argument(0)); // x-->0
@@ -92,7 +91,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   shared_ptr<Argument> dummy4(new Argument(PARAMETER_ARG, "id"));
   ch4_arg.setIndex(dummy4);
 
-  Cross_Safe.setChannel(new Channel(ch4_arg, CHANNEL_SEND));
+  Cross_Safe.setChannel(Channel(ch4_arg, CHANNEL_SEND));
 
   typename INT_TAS_t::T_t Appr_Cross(Appr, Cross);
   Appr_Cross += ClockReset(x, Argument(0)); // x-->0
@@ -111,7 +110,7 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   gate_tmt->addInt("list", sys["N"] + 1);
 
-  int len_id = gate_tmt->addInt("len", 1);
+  gate_tmt->addInt("len", 1);
 
   gate_tmt->addFun("enqueue", shared_ptr<Enqueue_F>(new Enqueue_F()));
 
@@ -124,16 +123,16 @@ INT_TAS_t TrainGate::generate(int n) const {
   vector<typename INT_TAS_t::T_t> ges;
   vector<typename INT_TAS_t::L_t> gls;
 
-  typename INT_TAS_t::L_t Free(0);
+  typename INT_TAS_t::L_t Free(0, "Free");
   gls.push_back(Free);
-  typename INT_TAS_t::L_t Occ(1);
+  typename INT_TAS_t::L_t Occ(1, "Occ");
   gls.push_back(Occ);
   typename INT_TAS_t::L_t Ok(2, COMMIT_LOC);
   gls.push_back(Ok);
 
   typename INT_TAS_t::T_t Free_Occ1(Free, Occ);
 
-  Argument first1(NORMAL_VAR_ARG, len_id);
+  Argument first1(NORMAL_VAR_ARG, "len");
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
   CounterConstraint ccs1(first1, second1, GT, rhs1); // len >0
@@ -143,14 +142,14 @@ INT_TAS_t TrainGate::generate(int n) const {
   shared_ptr<Argument> dummy5(new Argument(FUN_POINTER_ARG, "front"));
   ch5_arg.setIndex(dummy5);
 
-  Free_Occ1.setChannel(new Channel(ch5_arg, CHANNEL_SEND));
+  Free_Occ1.setChannel(Channel(ch5_arg, CHANNEL_SEND));
   ges.push_back(Free_Occ1);
 
   typename INT_TAS_t::T_t Free_Occ2(Free, Occ);
   Free_Occ2.setSelectVar("e");
   Free_Occ2.setSelectCollect("id_t");
 
-  Argument first3(NORMAL_VAR_ARG, len_id);
+  Argument first3(NORMAL_VAR_ARG, "len");
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
   CounterConstraint ccs3(first3, second3, EQ, rhs3); // len==0
@@ -159,7 +158,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch6_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy6(new Argument(SELECT_VAR_ARG, "e"));
   ch6_arg.setIndex(dummy6);
-  Free_Occ2.setChannel(new Channel(ch6_arg, CHANNEL_RECEIVE));
+  Free_Occ2.setChannel(Channel(ch6_arg, CHANNEL_RECEIVE));
 
   Argument lhs2(FUN_POINTER_ARG, 0);
   lhs2.name = "enqueue(e)";
@@ -176,7 +175,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch7_arg(NORMAL_VAR_ARG, "appr");
   shared_ptr<Argument> dummy7(new Argument(SELECT_VAR_ARG, "e"));
   ch7_arg.setIndex(dummy7);
-  Occ_OK.setChannel(new Channel(ch7_arg, CHANNEL_RECEIVE));
+  Occ_OK.setChannel(Channel(ch7_arg, CHANNEL_RECEIVE));
 
   Argument lhs4(FUN_POINTER_ARG, 0);
   lhs4.name = "enqueue(e)";
@@ -191,7 +190,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch8_arg(NORMAL_VAR_ARG, "stop");
   shared_ptr<Argument> dummy8(new Argument(FUN_POINTER_ARG, "tail"));
   ch8_arg.setIndex(dummy8);
-  Ok_Occ.setChannel(new Channel(ch8_arg, CHANNEL_SEND));
+  Ok_Occ.setChannel(Channel(ch8_arg, CHANNEL_SEND));
 
   ges.push_back(Ok_Occ);
 
@@ -208,7 +207,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   Argument ch9_arg(NORMAL_VAR_ARG, "leave");
   shared_ptr<Argument> dummy9(new Argument(SELECT_VAR_ARG, "e"));
   ch9_arg.setIndex(dummy9);
-  Occ_Free.setChannel(new Channel(ch9_arg, CHANNEL_RECEIVE));
+  Occ_Free.setChannel(Channel(ch9_arg, CHANNEL_RECEIVE));
 
   Argument lhs6(FUN_POINTER_ARG, "dequeue");
   Argument rhs6(EMPTY_ARG, 0);
@@ -224,10 +223,11 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma(new Agent_t(train_tmt, param));
     sys += tma;
   }
+  sys.build();
 
   return sys;
 }

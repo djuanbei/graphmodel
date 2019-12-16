@@ -102,12 +102,12 @@ public:
     return *this;
   }
 
-  void setChannel(Channel *ch) {
-    channel.reset(ch);
+  void setChannel(const Channel &ch) {
+    channel = ch;
     has_channel = true;
   }
 
-  const shared_ptr<Channel> &getChannel() const { return channel; }
+  const Channel &getChannel() const { return channel; }
 
   bool hasChannel() const { return has_channel; }
 
@@ -150,8 +150,8 @@ private:
   vector<ClockConstraint> guards; // set of constraint at this transitionedge
 
   vector<CounterConstraint>
-      counter_cons;            // counter constraint like pid ==id or id==0
-  shared_ptr<Channel> channel; // Only one synchronisation channels
+      counter_cons; // counter constraint like pid ==id or id==0
+  Channel channel;  // Only one synchronisation channels
   bool has_channel;
 
   vector<CounterAction> actions; // set of actions at this transitionedge

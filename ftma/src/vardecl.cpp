@@ -163,8 +163,11 @@ vector<string> VarDecl::getKeys(const TYPE_T type) const {
   return re;
 }
 
-int VarDecl::getKeyStart(const TYPE_T type, const string &key) const {
+int VarDecl::getLocalKeyID(const TYPE_T type, const string &key) const {
   int re = 0;
+  //  if(type==CLOCK_T|| type== CHAN_T){
+  //    re=1;
+  //  }
   vector<pair<string, vector<void *>>> counters = data.getValue(type);
   for (vector<pair<string, vector<void *>>>::const_iterator it =
            counters.begin();
@@ -175,7 +178,7 @@ int VarDecl::getKeyStart(const TYPE_T type, const string &key) const {
     re += ((BaseDecl *)it->second[0])->num;
   }
   // assert( false );
-  return -1;
+  return NOT_FOUND;
 }
 CHANNEL_TYPE VarDecl::getChanType(const string &name) const {
   vector<pair<string, vector<void *>>> temp = data.getValue(CHAN_T);

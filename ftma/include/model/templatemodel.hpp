@@ -50,8 +50,6 @@ public:
     graph.findRhs(link, lhs, rhs);
   }
 
-  //  vector<int> getClockMaxValue() const { return clock_max_value; }
-
   int getClockNumber() const { return data.getTypeNum(CLOCK_T); }
 
   int getChannelNumber() const { return data.getTypeNum(CHAN_T); }
@@ -94,28 +92,10 @@ private:
     return *this;
   }
 
-  // void updateUpperAndDiff(const CS_t &cs) {
-
-  //   if (cs.clock_x > 0 && cs.clock_y > 0) {
-  //     template_difference_cons.push_back(cs);
-  //   }
-  //   int realRhs = getRight(cs.matrix_value);
-  //   if (cs.clock_x > 0) {
-  //     if (realRhs > clock_max_value[cs.clock_x]) {
-  //       clock_max_value[cs.clock_x] = realRhs;
-  //     }
-  //   }
-
-  //   if (cs.clock_y > 0) {
-  //     if (-realRhs > clock_max_value[cs.clock_y]) {
-  //       clock_max_value[cs.clock_y] = -realRhs;
-  //     }
-  //   }
-  // }
-
   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
-  int getSYSStart(const TYPE_T type, const string &key) const {
-    return sys->getKeyStart(type, key);
+
+  int getParentKeyID(const TYPE_T type, const string &key) const {
+    return sys->getLocalKeyID(type, key)+sys->getTypeStart(type);
   }
   shared_ptr<Function> getSYSFun(const string &name) const {
     return sys->getFun(name);
@@ -137,25 +117,6 @@ private:
 
     // // There are no edges connect with  initial location
     assert(initial_loc >= 0 && initial_loc < vertex_num);
-
-    // template_difference_cons.clear();
-    // clock_max_value.resize(getClockNumber() + 1); // clock is start with 1
-
-    // fill(clock_max_value.begin(), clock_max_value.end(), 0);
-
-    // for (auto& loc : template_locations) {
-    //   const vector<CS_t> &invariants = loc.getInvarients();
-    //   for (auto& cs : invariants) {
-    //     updateUpperAndDiff(cs);
-    //   }
-    // }
-
-    // for (auto& t : template_transitions) {
-    //   const vector<CS_t> &gurads = t.getGuards();
-    //   for (auto& cs : gurads) {
-    //     updateUpperAndDiff(cs);
-    //   }
-    // }
   }
   const AgentSystem<L, T> *sys;
   int id;
@@ -166,10 +127,6 @@ private:
   int initial_loc;
 
   Graph_t<int> graph;
-
-  // vector<int> clock_max_value;
-
-  //  vector<ClockConstraint> template_difference_cons;
 
   vector<string> parameters;
   vector<Agent<L, T> *> agents;

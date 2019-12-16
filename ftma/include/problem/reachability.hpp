@@ -160,9 +160,9 @@ private:
   bool oneComponent(D &data, int component, const Property *prop,
                     State_t *state) {
 
-    int source = manager->getLoc(component, state);
+    const int source = manager->getLoc(component, state);
 
-    int out_degree = sys.agents[component]->graph.getOutDegree(source);
+    const int out_degree = sys.agents[component]->graph.getOutDegree(source);
     for (int j = 0; j < out_degree; j++) {
 
       int link = sys.agents[component]->graph.getAdj(source, j);
@@ -177,7 +177,7 @@ private:
       }
 
       if (sys.agents[component]->transitions[link].hasChannel()) {
-        const shared_ptr<Channel> &channel =
+        const Channel &channel =
             sys.agents[component]->transitions[link].getChannel();
         // channel.id start from 1
 
@@ -305,31 +305,30 @@ private:
    */
   template <typename D>
   bool doSynchronize(D &data, int component, const Property *prop,
-                     State_t *state, int link,
-                     const shared_ptr<Channel> &channel) {
+                     State_t *state, int link, const Channel &channel) {
 
     vector<int> wait_components;
     bool is_send = true;
     State_t *counter_value = manager->getCounterValue(state);
-    if (channel->isSend()) {
+    if (channel.isSend()) {
 
       wait_components =
-          manager->blockComponents(-channel->getGlobalId(counter_value), state);
-    } else if (channel->isRecive()) {
+          manager->blockComponents(-channel.getGlobalId(counter_value), state);
+    } else if (channel.isRecive()) {
       is_send = false;
       wait_components =
-          manager->blockComponents(channel->getGlobalId(counter_value), state);
+          manager->blockComponents(channel.getGlobalId(counter_value), state);
     }
     if (!wait_components.empty()) {
       // TODO: check all the channel type
-      if (channel->getType() == ONE2ONE_CH || channel->getType() == URGENT_CH) {
+      if (channel.getType() == ONE2ONE_CH || channel.getType() == URGENT_CH) {
         std::uniform_int_distribution<int> distribution(
             0, (int)wait_components.size() - 1);
         int id = distribution(generator);
         int block_component_id = wait_components[id];
         return unBlockOne(data, component, block_component_id, link, state,
                           prop, is_send);
-      } else if (channel->getType() == BROADCAST_CH) {
+      } else if (channel.getType() == BROADCAST_CH) {
         for (auto id : wait_components) {
           int block_component_id = wait_components[id];
           if (unBlockOne(data, component, block_component_id, link, state, prop,
@@ -342,13 +341,13 @@ private:
     } else {
       manager->copy(cache_state, state);
       State_t *counter_value = manager->getCounterValue(state);
-      assert(channel->getGlobalId(counter_value) > 0); // chan it start with 1
-      if (channel->isSend()) {
+      assert(channel.getGlobalId(counter_value) > 0); // chan it start with 1
+      if (channel.isSend()) {
         cache_state[component + component_num] =
-            channel->getGlobalId(counter_value); // send part
-      } else if (channel->isRecive()) {
+            channel.getGlobalId(counter_value); // send part
+      } else if (channel.isRecive()) {
         cache_state[component + component_num] =
-            -channel->getGlobalId(counter_value); // receive part
+            -channel.getGlobalId(counter_value); // receive part
       }
 
       cache_state[component] = link; // block link

@@ -159,7 +159,7 @@ enum TYPE_T {
 
 class VariableMap {
 public:
-  virtual int getStart(const TYPE_T type, const string &key) const = 0;
+  virtual int getKeyID(const TYPE_T type, const string &key) const = 0;
   virtual int *getValue(const TYPE_T type, int *state,
                         const string &key) const = 0;
 };

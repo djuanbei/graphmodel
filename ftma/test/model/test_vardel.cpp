@@ -23,9 +23,9 @@ TEST(VAR_DECL_H, VarDecl) {
   vdel.addChan("go", 10, ONE2ONE_CH);
   EXPECT_EQ(vdel.getCounterNumber(), 11);
 
-  EXPECT_EQ(vdel.getKeyStart(INT_T, "za"), 1);
+  EXPECT_EQ(vdel.getLocalKeyID(INT_T, "za"), 1);
   vdel.addInt("aa", 10, 0, 100);
-  EXPECT_EQ(vdel.getKeyStart(INT_T, "aa"), 11);
+  EXPECT_EQ(vdel.getLocalKeyID(INT_T, "aa"), 11);
   EXPECT_EQ(vdel.getInts().size(), 21);
   EXPECT_EQ(vdel.getCounterNumber(), 21);
 }

@@ -33,14 +33,6 @@ public:
       : parameter(param) {
     agent_tempate = template_arg;
     initial_loc = template_arg->initial_loc;
-    // for (auto e : template_arg->template_transitions) {
-    //   transitions.push_back(T(e));
-    // }
-
-    // locations = template_arg->template_locations;
-    // transitions=template_arg->template_transitions;
-
-    // difference_cons = template_arg->template_difference_cons;
     id = template_arg->agents.size();
     template_arg->agents.push_back(this);
   }
@@ -86,23 +78,21 @@ public:
     return locations[node_id].getName();
   }
 
-  int getStart(const TYPE_T type, const string &key) const {
-    int temp_var_id = agent_tempate->getKeyStart(type, key);
+  int getKeyID(const TYPE_T type, const string &key) const {
+    int temp_var_id = agent_tempate->getLocalKeyID(type, key);
     if (temp_var_id > -1) {
       int start_loc = agent_tempate->getStart(type);
       start_loc += agent_tempate->getTypeNumber(type) * (id);
       start_loc += temp_var_id;
       return start_loc;
     } else {
-      return getSYSStart(type, key);
+      return agent_tempate->getParentKeyID(type, key);
     }
   }
-  int getSYSStart(const TYPE_T type, const string &key) const {
-    return agent_tempate->getSYSStart(type, key);
-  }
+
 
   int *getValue(const TYPE_T type, int *state, const string &key) const {
-    return state + getStart(type, key);
+    return state + getKeyID(type, key);
   }
 
   TypeDefArray getType(const string &name) const {
@@ -124,7 +114,7 @@ public:
       re.value = arg.value;
       break;
     case NORMAL_VAR_ARG:
-      re.value = getStart(type, arg.name);
+      re.value = getKeyID(type, arg.name);
       break;
 
     case PARAMETER_ARG:
@@ -193,7 +183,7 @@ private:
   void initFunction(const shared_ptr<Function> &fun) const {
     vector<string> int_vars = agent_tempate->getKeys(INT_T);
     for (auto &e : int_vars) {
-      (*fun)[e] = getStart(INT_T, e);
+      (*fun)[e] = getKeyID(INT_T, e);
     }
   }
 
@@ -225,9 +215,7 @@ private:
     }
 
     difference_cons.clear();
-    // clock_max_value.resize(getClockNumber() + 1); // clock is start with 1
-
-    // fill(clock_max_value.begin(), clock_max_value.end(), 0);
+   
     clock_max_value.clear();
 
     for (auto &loc : locations) {

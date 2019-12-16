@@ -105,8 +105,10 @@ public:
   int getChanNumber() const;
 
   int getClockNumber() const;
-
-  int getKeyStart(const TYPE_T type, const string &key) const;
+  
+  //int getLocalKeyID(const TYPE_T type, const string &key) const;
+  
+  int getLocalKeyID(const TYPE_T type, const string &key) const;
 
   CHANNEL_TYPE getChanType(const string &name) const;
 

@@ -378,9 +378,9 @@ void fisher(int n) {
   for (int i = 1; i <= n; i++) {
 
     Parameter param = tmt1->getParameter();
-    param.setCounterMap(0, 0); // add relation between local id and global id
+    // param.setCounterMap(0, 0); // add relation between local id and global id
 
-    param.setParameterMap(0, i);
+    param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
 
     sys += tma1;
@@ -526,7 +526,7 @@ void incrementalTest() {
 
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt1->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
 
     sys += tma1;
@@ -557,7 +557,7 @@ void incrementalTest() {
   INT_TAS_t sys1;
   for (int i = 1; i <= 2; i++) {
     Parameter param = tmt1->getParameter();
-    param.setParameterMap(0, i);
+    param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
 
     sys1 += tma1;

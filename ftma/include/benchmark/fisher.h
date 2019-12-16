@@ -25,10 +25,10 @@ public:
 
 private:
   size_t k = 0;
-  //shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt;
+  // shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt;
   INT_TAS_t sys;
-  
-  void initial(  shared_ptr<typename INT_TAS_t::AgentTemplate_t> & tmt)const;
+
+  void initial(shared_ptr<typename INT_TAS_t::AgentTemplate_t> &tmt) const;
 };
 
 } // namespace graphsat

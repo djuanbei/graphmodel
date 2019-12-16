@@ -178,12 +178,17 @@ public:
     }
     stateManager->destroyState(state);
   }
+  
+  int getTypeStart(const TYPE_T type) const{
+     // clock and channel id start with 1
+    if (CLOCK_T == type || CHAN_T == type) {
+      return 1;
+    }
+    return 0;
+  }
 
   int getStartLoc(const TYPE_T type, const int template_id) const {
-    int re = 0; // stateManager->getStart(type);
-    if (CLOCK_T == type) {
-      re = 1;
-    }
+    int re = getTypeStart(type);
     for (auto &agent : agents) {
       if (agent->getTemplate()->id < template_id) {
         re += agent->getTemplate()->getTypeNumber(type);
@@ -213,7 +218,7 @@ private:
       if (agent->agent_tempate->template_transitions[i].isSelect()) {
         T dummy(agent->agent_tempate->template_transitions[i]);
         TypeDefArray select_domain = agent->getType(dummy.getSelectCollect());
-        for (int i = select_domain.getLow(); i != select_domain.getHigh();
+        for (int i = select_domain.getLow(); i <= select_domain.getHigh();
              i++) {
           agent->setSelect(i);
           dummy.to_real(agent);
@@ -228,7 +233,6 @@ private:
 
     agent->initial();
 
-    //    clock_num += agent->getClockNumber();
     chan_num += agent->getChannelNumber();
 
     initial_loc.push_back(agent->getInitialLoc());
@@ -238,9 +242,6 @@ private:
         clock_max_value[e.first] = e.second;
       }
     }
-    // for (size_t i = 1; i < agent->getClockMaxValue().size(); i++) {
-    //   clock_max_value.push_back(agent->getClockMaxValue()[i]);
-    // }
 
     difference_cons.insert(difference_cons.end(),
                            agent->difference_cons.begin(),
