@@ -31,7 +31,7 @@ endif()
 # include_directories(${COMMON_INCLUDES}) in other CMakeLists.txt files.
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 include_directories(${COMMON_INCLUDES}
-    ~/mycode/c++/raptor/include
+    ../../raptor/include
     #    /usr/local/include
 )
 

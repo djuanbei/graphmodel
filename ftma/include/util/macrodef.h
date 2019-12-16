@@ -23,9 +23,12 @@ using namespace std;
 
 #define PRINT_STATE_MACRO                                                      \
   for (int i = 0; i < component_num; i++) {                                    \
+    int loc = state[i];                                                        \
+    if (manager->isCommitComp(i, state)) {                                     \
+      loc = manager->getCommitLoc(i, state);                                   \
+    }                                                                          \
     if (state[i + component_num] == NO_CHANNEL)                                \
-      std::cout << setw(LOC_OUT_WIDTH)                                         \
-                << sys.agents[i]->getLocationName(state[i]);                   \
+      std::cout << setw(LOC_OUT_WIDTH) << sys.agents[i]->getLocationName(loc); \
     else {                                                                     \
       int block_source;                                                        \
       sys.agents[i]->graph.findSrc(state[i], block_source);                    \

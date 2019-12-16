@@ -60,7 +60,7 @@ public:
   int getClockStart() const { return clock_start_loc; }
 
   int getFreezeLocation() const { return freeze_location_index; }
-
+// check whether this state allow time delay
   bool isFreeze(const int *const state) const {
     return state[freeze_location_index] > 0;
   }

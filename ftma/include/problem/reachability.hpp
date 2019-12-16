@@ -118,14 +118,15 @@ private:
     data.incCurrentParent();
 
 #endif
-
+  
     PRINT_STATE_MACRO;
     /**
      freeze state the time can not delay
      */
     if (manager->isFreeze(state)) {
       for (int component = 0; component < component_num; component++) {
-        if (manager->isCommitComp(component, state)) {
+        // component is at  freeze location and component does not wait another components.
+        if (manager->isCommitComp(component, state)&& !manager->isBlock(state, component)) {
           return oneComponent(data, component, prop, state);
         }
       }
@@ -166,6 +167,7 @@ private:
     for (int j = 0; j < out_degree; j++) {
 
       int link = sys.agents[component]->graph.getAdj(source, j);
+      assert(link>=0&& "The value of link id requires greater or equal than 1.");
       /**
        * Whether the jump conditions satisfies except synchronize signal
        *
@@ -213,7 +215,12 @@ private:
     manager->copy(next_state, state);
     manager->unBlock(next_state, block_component_id);
 
-    const int block_link = next_state[block_component_id];
+    int block_link = next_state[block_component_id];
+    if(manager->isCommitComp(block_component_id, next_state ) ){
+      block_link=manager->getCommitLoc(block_component_id, next_state );
+    }
+    assert(block_link>=0);
+  
     int block_source = 0;
     sys.agents[block_component_id]->graph.findSrc(block_link, block_source);
     next_state[block_component_id] = block_source;
@@ -349,12 +356,16 @@ private:
         cache_state[component + component_num] =
             -channel.getGlobalId(counter_value); // receive part
       }
+      //TODO: add commit property
+      if (manager->isCommitComp(component, state)) {
+        cache_state[component] = link; // block link
+        manager->setCommitState(component, cache_state); // save  commit property
+      }else{
+        cache_state[component] = link; // block link
+      }
 
-      cache_state[component] = link; // block link
       data.add(cache_state);
-      //        if ( addToReachableSet( cache_state ) ) {
-      //          addToWait( cache_state );
-      //        }
+     
     }
     return false;
   }

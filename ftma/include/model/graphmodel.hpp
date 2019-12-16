@@ -120,11 +120,11 @@ public:
     }
     vector<int> node_n;
     for (size_t i = 0; i < agents.size(); i++) {
-      node_n.push_back(agents[i]->agent_tempate->graph.getVertex_num());
+      node_n.push_back(agents[i]->graph.getVertex_num());
     }
     vector<int> link_num;
     for (auto &e : agents) {
-      link_num.push_back(e->agent_tempate->graph.getLink_num());
+      link_num.push_back(e->graph.getLink_num());
     }
     vector<Counter> counters;
     vector<BaseDecl> sysCounts = getInts();

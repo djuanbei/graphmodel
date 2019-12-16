@@ -128,6 +128,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   typename INT_TAS_t::L_t Occ(1, "Occ");
   gls.push_back(Occ);
   typename INT_TAS_t::L_t Ok(2, COMMIT_LOC);
+  Ok.setName("Ok");
   gls.push_back(Ok);
 
   typename INT_TAS_t::T_t Free_Occ1(Free, Occ);

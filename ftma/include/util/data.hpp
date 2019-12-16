@@ -15,6 +15,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include<cassert>
 
 #include "macrodef.h"
 

@@ -20,6 +20,15 @@
 
 #include "benchmark/train_gate.h"
 #include "io/uppaalmodelparser.h"
+
+#include "model/graphmodel.hpp"
+#include "model/location.h"
+#include "model/transition.h"
+#include "problem/reachability.hpp"
+#include "state/reachableset.hpp"
+
+#include "benchmark/train_gate.h"
+
 #include <iostream>
 
 extern int yy_flex_debug;
@@ -29,7 +38,20 @@ using namespace graphsat;
 
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 
+void test(){
+  TrainGate TG;
+  INT_TAS_t tg_sys = TG.generate(2);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+  tg_sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  tg_sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(tg_sys);
+  reacher.computeAllReachableSet(data);
+}
+
 int main(int argc, const char *argv[]) {
+  test();
+  return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
   logSet();

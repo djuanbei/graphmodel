@@ -14,6 +14,7 @@
 #include <cstdarg>
 #include <cstdint>
 #include <string>
+#include <memory>
 
 #include "macrodef.h"
 

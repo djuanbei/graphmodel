@@ -332,7 +332,7 @@ TEST(TRAIN_GATE_H, generate) {
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
   tg_sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(tg_sys);
- // reacher.computeAllReachableSet(data);
+  reacher.computeAllReachableSet(data);
 }
 
 TEST(PMCP, train_gate) {}
