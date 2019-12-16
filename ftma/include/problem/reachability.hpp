@@ -16,6 +16,7 @@
 #include <random>
 #include <set>
 #include <vector>
+#include<cassert>
 
 #include "model/channel.h"
 #include "property/property.h"
