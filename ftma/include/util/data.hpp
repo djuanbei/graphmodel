@@ -10,12 +10,12 @@
 
 #ifndef __DATA_H
 #define __DATA_H
+#include <cassert>
 #include <iomanip>
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
-#include<cassert>
 
 #include "macrodef.h"
 

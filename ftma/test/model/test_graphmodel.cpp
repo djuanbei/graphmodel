@@ -7,6 +7,9 @@
 #include "state/reachableset.hpp"
 
 #include "benchmark/train_gate.h"
+#include "benchmark/train_gate_projector.h"
+
+#include "problem/pmcp.hpp"
 
 #undef PRINT_STATE
 
@@ -293,7 +296,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
     tma->setSelect(i);
     ch1.to_real(tma);
     int ffid = ch1(counters);
-    EXPECT_EQ(i+1, ffid);
+    EXPECT_EQ(i + 1, ffid);
   }
 
   Argument lhs2(FUN_POINTER_ARG, "enqueue(e)");
@@ -326,13 +329,27 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
 TEST(TRAIN_GATE_H, generate) {
   TrainGate TG;
-  INT_TAS_t tg_sys = TG.generate(2);
+  int n = 4;
+  INT_TAS_t tg_sys = TG.generate(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       tg_sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
   tg_sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(tg_sys);
-  reacher.computeAllReachableSet(data);
+
+  TrainGatePro prop(n);
+  prop.setCS(4);
+
+  EXPECT_FALSE(reacher.satisfy(data, &prop));
 }
 
-TEST(PMCP, train_gate) {}
+TEST(PMCP, train_gate) {
+  TrainGate TG;
+  IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector<INT_TAS_t::StateManager_t>> check;
+  TrainGatePro prop(2);
+  prop.setCS(4);
+  // FischerMutual prop;
+  EXPECT_TRUE(check.check(TG, &prop));
+    
+  
+}

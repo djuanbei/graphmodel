@@ -178,9 +178,9 @@ public:
     }
     stateManager->destroyState(state);
   }
-  
-  int getTypeStart(const TYPE_T type) const{
-     // clock and channel id start with 1
+
+  int getTypeStart(const TYPE_T type) const {
+    // clock and channel id start with 1
     if (CLOCK_T == type || CHAN_T == type) {
       return 1;
     }

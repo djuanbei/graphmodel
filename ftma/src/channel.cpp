@@ -1,7 +1,3 @@
 #include "model/channel.h"
 
-namespace graphsat {
-
-
-
-} // namespace graphsat
+namespace graphsat {} // namespace graphsat

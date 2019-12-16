@@ -16,8 +16,9 @@
 #include "property/locreachprop.h"
 
 #include "benchmark/fisher.h"
+#include "benchmark/fisher_projector.h"
 
-#include <problem/pmcp.hpp>
+#include "problem/pmcp.hpp"
 
 using namespace graphsat;
 using namespace std;
@@ -269,7 +270,7 @@ TEST(REACHSET, FISHER) {
 
 TEST(PMCP, FISHER) {
   FisherGenerator F;
-  IncrementalCheck<INT_TAS_t, FisherGenerator> check;
+  IncrementalCheck<INT_TAS_t, FisherGenerator, FisherProjector<INT_TAS_t::StateManager_t>> check;
   FischerMutual prop;
   EXPECT_TRUE(check.check(F, &prop));
 }

@@ -90,7 +90,6 @@ public:
     }
   }
 
-
   int *getValue(const TYPE_T type, int *state, const string &key) const {
     return state + getKeyID(type, key);
   }
@@ -215,7 +214,7 @@ private:
     }
 
     difference_cons.clear();
-   
+
     clock_max_value.clear();
 
     for (auto &loc : locations) {

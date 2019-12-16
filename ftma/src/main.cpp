@@ -38,11 +38,11 @@ using namespace graphsat;
 
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 
-void test(){
+void test() {
   TrainGate TG;
   INT_TAS_t tg_sys = TG.generate(2);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
-  tg_sys.getStateManager();
+      tg_sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
   tg_sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(tg_sys);
@@ -50,8 +50,8 @@ void test(){
 }
 
 int main(int argc, const char *argv[]) {
-  test();
-  return 0;
+  // test();
+  // return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
   logSet();

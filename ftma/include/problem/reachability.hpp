@@ -12,18 +12,17 @@
 #ifndef __REACHABILITY_HPP
 #define __REACHABILITY_HPP
 
+#include <cassert>
 #include <map>
 #include <random>
 #include <set>
 #include <vector>
-#include<cassert>
 
-#include "util/parallel.h"
 #include "util/macrodef.h"
+#include "util/parallel.h"
 
 #include "model/channel.h"
 #include "property/property.h"
-
 
 namespace graphsat {
 
@@ -120,15 +119,17 @@ private:
     data.incCurrentParent();
 
 #endif
-  
+
     PRINT_STATE_MACRO;
     /**
      freeze state the time can not delay
      */
     if (manager->isFreeze(state)) {
       for (int component = 0; component < component_num; component++) {
-        // component is at  freeze location and component does not wait another components.
-        if (manager->isCommitComp(component, state)&& !manager->isBlock(state, component)) {
+        // component is at  freeze location and component does not wait another
+        // components.
+        if (manager->isCommitComp(component, state) &&
+            !manager->isBlock(state, component)) {
           return oneComponent(data, component, prop, state);
         }
       }
@@ -169,7 +170,8 @@ private:
     for (int j = 0; j < out_degree; j++) {
 
       int link = sys.agents[component]->graph.getAdj(source, j);
-      assert(link>=0&& "The value of link id requires greater or equal than 1.");
+      assert(link >= 0 &&
+             "The value of link id requires greater or equal than 1.");
       /**
        * Whether the jump conditions satisfies except synchronize signal
        *
@@ -218,11 +220,11 @@ private:
     manager->unBlock(next_state, block_component_id);
 
     int block_link = next_state[block_component_id];
-    if(manager->isCommitComp(block_component_id, next_state ) ){
-      block_link=manager->getCommitLoc(block_component_id, next_state );
+    if (manager->isCommitComp(block_component_id, next_state)) {
+      block_link = manager->getCommitLoc(block_component_id, next_state);
     }
-    assert(block_link>=0);
-  
+    assert(block_link >= 0);
+
     int block_source = 0;
     sys.agents[block_component_id]->graph.findSrc(block_link, block_source);
     next_state[block_component_id] = block_source;
@@ -358,16 +360,16 @@ private:
         cache_state[component + component_num] =
             -channel.getGlobalId(counter_value); // receive part
       }
-      //TODO: add commit property
+      // TODO: add commit property
       if (manager->isCommitComp(component, state)) {
         cache_state[component] = link; // block link
-        manager->setCommitState(component, cache_state); // save  commit property
-      }else{
+        manager->setCommitState(component,
+                                cache_state); // save  commit property
+      } else {
         cache_state[component] = link; // block link
       }
 
       data.add(cache_state);
-     
     }
     return false;
   }

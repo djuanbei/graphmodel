@@ -95,7 +95,7 @@ private:
   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
 
   int getParentKeyID(const TYPE_T type, const string &key) const {
-    return sys->getLocalKeyID(type, key)+sys->getTypeStart(type);
+    return sys->getLocalKeyID(type, key) + sys->getTypeStart(type);
   }
   shared_ptr<Function> getSYSFun(const string &name) const {
     return sys->getFun(name);

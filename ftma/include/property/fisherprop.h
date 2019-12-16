@@ -7,7 +7,8 @@
  *
  *
  */
-
+#ifndef FISHER_PROPERTY_H
+#define FISHER_PROPERTY_H
 #include "property/property.h"
 namespace graphsat {
 
@@ -28,3 +29,5 @@ public:
 };
 
 } // namespace graphsat
+
+#endif

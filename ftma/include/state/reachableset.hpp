@@ -115,24 +115,21 @@ public:
 
   size_t size() const { return reach_set.size(); }
 
-  void project(int m, vector<vector<State_t>> &re) {
+  /**
+   * For one template  system, this function projection
+   * state [ 0,m-1] of system
+   *
+   */
+  template <typename PROJ>
+  void project(const PROJ &proj, vector<vector<State_t>> &re) {
     re.clear();
-    int clock_start_loc = manager->getClockStart();
+    // int clock_start_loc = manager->getClockStart();
 
     for (auto state : reach_set) {
 
       compress_state.decode(state, convert_C_t);
-
       vector<State_t> dummy;
-      for (int i = 0; i < m; i++) {
-        dummy.push_back(convert_C_t[i]);
-      }
-      for (int i = 0; i <= m; i++) {
-        for (int j = 0; j <= m; j++) {
-          dummy.push_back(
-              convert_C_t[i * (component_num + 1) + j + clock_start_loc]);
-        }
-      }
+      proj(convert_C_t, dummy);
 
       re.push_back(dummy);
     }
