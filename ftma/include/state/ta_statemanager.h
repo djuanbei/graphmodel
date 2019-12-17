@@ -70,7 +70,7 @@ public:
     state[comp_id + component_num] = NO_CHANNEL;
   }
 
-  bool isBlock(const int *const state, const int comp_id) const {
+  bool isBlock(const int comp_id, const int *const state) const {
     return hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
   }
 

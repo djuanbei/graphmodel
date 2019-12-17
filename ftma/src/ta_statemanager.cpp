@@ -139,7 +139,7 @@ int TMStateManager::getLocationID(const int component,
     re = getCommitLoc(component, state);
   }
 
-  if (isBlock(state, component)) {
+  if (isBlock(component, state)) {
     re = sys.getSrc(component, re);
   }
   assert(re >= 0 && "The location id must greater or equal to then 0.");

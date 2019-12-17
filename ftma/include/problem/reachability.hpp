@@ -131,7 +131,7 @@ private:
         // component is at  freeze location and component does not wait another
         // components.
         if (manager->isCommitComp(component, state) &&
-            !manager->isBlock(state, component)) {
+            !manager->isBlock(component, state)) {
           return oneComponent(data, component, prop, state);
         }
       }
@@ -139,7 +139,7 @@ private:
 
     for (int component = 0; component < component_num; component++) {
 
-      if (manager->isBlock(state, component)) {
+      if (manager->isBlock(component, state)) {
         /**
          * Waiting for synchronize signal
          *

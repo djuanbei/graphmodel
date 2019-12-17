@@ -40,6 +40,8 @@ using namespace std;
 
 #define LOC(row, col) (row) * (clock_num) + (col)
 
+#define LOC_N(row, col, N) (row) * (N) + (col)
+
 #define IMPL(FUN, dbm)                                                         \
   int *new##dbm = createDBM(dbm);                                              \
   FUN##Impl(new##dbm);                                                         \
@@ -106,7 +108,11 @@ public:
 
   int getSize() const { return matrix_size; }
 
-  ostream &dump(ostream &out, const int *const dbm) const;
+  static ostream &dump(ostream &out, const int *const dbm, const int clock_num);
+
+  ostream &dump(ostream &out, const int *const dbm) const {
+    return DBMFactory::dump(out, dbm, clock_num);
+  }
 
   void dump(const int *const dbm) const { dump(cout, dbm); }
 

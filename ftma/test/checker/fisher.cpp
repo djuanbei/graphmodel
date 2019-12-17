@@ -270,9 +270,7 @@ TEST(REACHSET, FISHER) {
 
 TEST(PMCP, FISHER) {
   FisherGenerator F;
-  IncrementalCheck<INT_TAS_t, FisherGenerator,
-                   FisherProjector<INT_TAS_t::StateManager_t>>
-      check;
+  IncrementalCheck<INT_TAS_t, FisherGenerator, FisherProjector> check;
   FischerMutual prop;
   EXPECT_TRUE(check.check(F, &prop));
 }

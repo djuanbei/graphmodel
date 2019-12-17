@@ -74,13 +74,15 @@ int *DBMFactory::randomFeasiableDBM() {
   return dbm;
 }
 
-ostream &DBMFactory::dump(ostream &out, const int *const dbm) const {
-
+ostream &DBMFactory::dump(ostream &out, const int *const dbm,
+                          const int clock_num) {
+  int MAX_INT = getMAX_INT<int>();
+  ;
   for (int i = 0; i < clock_num; i++) {
     out << "[ ";
     for (int j = 0; j < clock_num; j++) {
       out << "(";
-      int v = dbm[LOC(i, j)];
+      int v = dbm[LOC_N(i, j, clock_num)];
       out << setw(3);
       if (isStrict<int>(v)) {
         out << "< ";
