@@ -427,7 +427,9 @@ void testIsConsistent() {
 
 void incrementalTest1() {
   FisherGenerator F;
-  IncrementalCheck<INT_TAS_t, FisherGenerator, FisherProjector<INT_TAS_t::StateManager_t>> check;
+  IncrementalCheck<INT_TAS_t, FisherGenerator,
+                   FisherProjector<INT_TAS_t::StateManager_t>>
+      check;
   FischerMutual prop;
 
   if (check.check(F, &prop)) {
@@ -553,7 +555,7 @@ void incrementalTest() {
 
   cout << "reach data size: " << data.size() << endl;
   vector<vector<int>> project;
-  FisherProjector<INT_TAS_t::StateManager_t> proj( manager,2 );
+  FisherProjector<INT_TAS_t::StateManager_t> proj(manager, 2);
   data.project(proj, project);
 
   INT_TAS_t sys1;
@@ -583,7 +585,7 @@ void incrementalTest() {
 
   cout << "reach data size: " << data1.size() << endl;
   vector<vector<int>> project1;
-  FisherProjector<INT_TAS_t::StateManager_t> proj1( manager1,2 );
+  FisherProjector<INT_TAS_t::StateManager_t> proj1(manager1, 2);
   data1.project(proj1, project1);
   int num = 0;
   size_t mm = project[0].size();

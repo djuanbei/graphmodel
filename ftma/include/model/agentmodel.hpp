@@ -255,11 +255,13 @@ private:
   map<string, shared_ptr<Function>> fun_map;
   Parameter parameter;
   int id; // the interbal of instance of ta_tempate
-
+public:
   Graph_t<int> graph; // topology
+
   vector<L> locations;
   vector<T> transitions;
 
+private:
   vector<ClockConstraint> difference_cons;
 
   int initial_loc;

@@ -12,16 +12,16 @@
 #include "alg/projector.h"
 
 namespace graphsat {
-template<typename StateManager_t>
+template <typename StateManager_t>
 class FisherProjector : public Projector<StateManager_t> {
 public:
-  FisherProjector(const shared_ptr<StateManager_t> & manager, const int pro_d){
-    component_num=manager->getComponentNum( );
-    pro_dim=pro_d;
-    clock_start=manager->getClockStart();
+  FisherProjector(const shared_ptr<StateManager_t> &manager, const int pro_d) {
+    component_num = manager->getComponentNum();
+    pro_dim = pro_d;
+    clock_start = manager->getClockStart();
   }
-  
-  virtual void operator()(const int *original_state, vector<int> &proj) const{
+
+  virtual void operator()(const int *original_state, vector<int> &proj) const {
     for (int i = 0; i < pro_dim; i++) {
       proj.push_back(original_state[i]);
     }
@@ -30,7 +30,7 @@ public:
         proj.push_back(
             original_state[i * (component_num + 1) + j + clock_start]);
       }
-    } 
+    }
   }
 
   bool include(const vector<vector<int>> &lhs,
@@ -73,7 +73,15 @@ public:
     return true;
   }
 
- private:
+  virtual ostream &dump(const vector<int> &proj_e, ostream &out) const {
+    return out;
+  }
+
+  virtual ostream &dump(const vector<vector<int>> &proj, ostream &out) const {
+    return out;
+  }
+
+private:
   int component_num;
   int pro_dim;
   int clock_start;

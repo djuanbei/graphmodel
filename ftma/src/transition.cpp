@@ -37,6 +37,38 @@ bool Transition::ready(const int component,
   return true;
 }
 
+bool Transition::ready(const int component, const TMStateManager *manager,
+                       const int *const state) const {
+  if (!guards.empty()) {
+
+    const DBMFactory &dbm_manager = manager->getClockManager();
+    const int *source_DBM = manager->getDBM(state);
+    assert(dbm_manager.isConsistent(source_DBM));
+    int *copy_DBM = dbm_manager.createDBM(source_DBM);
+
+    for (auto cs : guards) {
+      dbm_manager.andImpl(copy_DBM, cs);
+    }
+
+    if (!dbm_manager.isConsistent(copy_DBM)) {
+      dbm_manager.destroyDBM(copy_DBM);
+      return false;
+    }
+    dbm_manager.destroyDBM(copy_DBM);
+  }
+
+  if (!counter_cons.empty()) {
+    const int *counter_value = manager->getCounterValue(state);
+
+    for (auto cs : counter_cons) {
+      if (!cs(const_cast<int *>(counter_value))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 void Transition::operator()(const int component,
                             const shared_ptr<const TMStateManager> &manager,
                             int *re_state) const {

@@ -142,7 +142,7 @@ public:
     }
 
     stateManager.reset(new StateManager_t(
-        (int)agents.size(), counters, clock_num, temp_clock_upperbound,
+        *this, (int)agents.size(), counters, clock_num, temp_clock_upperbound,
         difference_cons, node_n, link_num, chan_num));
   }
 
@@ -167,7 +167,7 @@ public:
 
     for (int component = 0; component < component_num; component++) {
       agents[component]
-          ->locations[stateManager->getLoc(component, state)]
+          ->locations[stateManager->getLocationID(component, state)]
           .employInvariants(stateManager->getClockManager(),
                             stateManager->getDBM(state));
     }
@@ -201,6 +201,30 @@ public:
     Argument dummy = VarDecl::addClock(n);
     dummy.type = NORMAL_VAR_ARG;
     return dummy;
+  }
+
+  int getSrc(const int component, const int link) const {
+    int re = 0;
+    agents[component]->graph.findSrc(link, re);
+    return re;
+  }
+
+  string getLocationName(const int component, const int loc_ID) const {
+    return agents[component]->getLocationName(loc_ID);
+  }
+
+  vector<int> getOutTransition(const int component, const int src) const {
+    return agents[component]->graph.getAdj(src);
+  }
+
+  bool transitionReady(const int component, const int link,
+                       const int *const state) const {
+    return agents[component]->transitions[link].ready(component, stateManager,
+                                                      state);
+  }
+
+  const Channel &getChan(const int component, const int link) const {
+    return agents[component]->transitions[link].getChannel();
   }
 
 private:
@@ -256,7 +280,6 @@ private:
 
   vector<shared_ptr<Agent_t>> agents;
 
-  //  int clock_num;
   int counter_num;
   int chan_num;
 
@@ -266,8 +289,7 @@ private:
   vector<ClockConstraint> difference_cons;
 
   shared_ptr<StateManager_t> stateManager;
-
-  template <typename R1> friend class Reachability;
+  template <typename TT> friend class Reachability;
 };
 
 } // namespace graphsat

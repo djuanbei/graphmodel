@@ -3,12 +3,13 @@
 #include <cassert>
 
 namespace graphsat {
-TMStateManager::TMStateManager(int comp_num, const vector<Counter> &ecounters,
-                               int clock_num,
+TMStateManager::TMStateManager(const INT_TAS_t &s, int comp_num,
+                               const vector<Counter> &ecounters, int clock_num,
                                const vector<int> &oclock_upper_bounds,
                                const vector<ClockConstraint> &edifference_cons,
                                const vector<int> &nodes,
-                               const vector<int> &links, int channel_n) {
+                               const vector<int> &links, int channel_n)
+    : sys(s) {
 
   assert((int)oclock_upper_bounds.size() == 2 * clock_num + 2);
   state_length = 0;
@@ -115,13 +116,39 @@ Compression<int> TMStateManager::getBodyCompression() const {
   }
   return re_comp;
 }
+vector<int> TMStateManager::getOutTransition(const int component,
+                                             const int src) const {
+  return sys.getOutTransition(component, src);
+}
 
-int TMStateManager::getLoc(int component, const int *const state) const {
+bool TMStateManager::transitionReady(const int component, const int link,
+                                     const int *const state) const {
+  return sys.transitionReady(component, link, state);
+}
+
+const Channel &TMStateManager::getChan(const int component,
+                                       const int link) const {
+  return sys.getChan(component, link);
+}
+
+int TMStateManager::getLocationID(const int component,
+                                  const int *const state) const {
+  int re = state[component];
+
   if (isCommitComp(component, state)) { // commit location
-    return getCommitLoc(component, state);
+    re = getCommitLoc(component, state);
   }
 
-  return state[component];
+  if (isBlock(state, component)) {
+    re = sys.getSrc(component, re);
+  }
+  assert(re >= 0 && "The location id must greater or equal to then 0.");
+  return re;
+}
+
+string TMStateManager::getLocationName(const int component,
+                                       const int loc_ID) const {
+  return sys.getLocationName(component, loc_ID);
 }
 
 vector<int> TMStateManager::blockComponents(const int chid,
@@ -160,6 +187,19 @@ void TMStateManager::constructState(const int component_id, const int target,
   if (isCommit) {
     setCommitState(component_id, state);
   }
+}
+
+ostream &TMStateManager::dump(const State_t *state, ostream &out) const {
+
+  for (int i = 0; i < component_num; i++) {
+
+    int loc = getLocationID(i, state);
+
+    out << setw(LOC_OUT_WIDTH)
+        << getLocationName(i, loc); // agents[i]->getLocationName(loc);
+  }
+  out << endl;
+  return getClockManager().dump(out, getDBM(state)) << endl;
 }
 
 } // namespace graphsat

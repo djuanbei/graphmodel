@@ -119,8 +119,10 @@ private:
     data.incCurrentParent();
 
 #endif
-
-    PRINT_STATE_MACRO;
+#ifdef PRINT_STATE
+    manager->dump(state);
+#endif
+    // PRINT_STATE_MACRO;
     /**
      freeze state the time can not delay
      */
@@ -164,12 +166,11 @@ private:
   bool oneComponent(D &data, int component, const Property *prop,
                     State_t *state) {
 
-    const int source = manager->getLoc(component, state);
+    const int source = manager->getLocationID(component, state);
 
-    const int out_degree = sys.agents[component]->graph.getOutDegree(source);
-    for (int j = 0; j < out_degree; j++) {
+    const vector<int> out_ts = manager->getOutTransition(component, source);
+    for (auto link : out_ts) {
 
-      int link = sys.agents[component]->graph.getAdj(source, j);
       assert(link >= 0 &&
              "The value of link id requires greater or equal than 1.");
       /**
@@ -177,8 +178,7 @@ private:
        *
        */
 
-      if (!sys.agents[component]->transitions[link].ready(component, manager,
-                                                          state)) {
+      if (!manager->transitionReady(component, link, state)) {
         continue;
       }
 
@@ -443,7 +443,7 @@ private:
 
         if (manager->withoutChannel(component_id, state)) {
           sys.agents[component_id]
-              ->locations[manager->getLoc(component_id, state)]
+              ->locations[manager->getLocationID(component_id, state)]
               .employInvariants(manager->getClockManager(),
                                 manager->getDBM(state));
         } else {

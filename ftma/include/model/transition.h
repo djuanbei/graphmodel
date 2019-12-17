@@ -124,6 +124,8 @@ public:
   bool ready(const int component,
              const shared_ptr<const TMStateManager> &manager,
              const int *const state) const;
+  bool ready(const int component, const TMStateManager *manager,
+             const int *const state) const;
 
   /**
    *

@@ -13,14 +13,19 @@
 #include <vector>
 
 #include "discretestate.hpp"
-#include "model/graphmodel.hpp"
 #include "model/parameter.h"
 #include "state/componentstate.h"
 #include "util/datacompression.h"
 
+#include "model/graphmodel.hpp"
+#include "model/location.h"
+#include "model/transition.h"
+
 namespace graphsat {
 
 using std::vector;
+
+class Transition;
 
 class TMStateManager : public ComponentInfo {
 
@@ -40,14 +45,10 @@ class TMStateManager : public ComponentInfo {
    */
 public:
   typedef int State_t;
-  TMStateManager() {
+  typedef AgentSystem<Location, Transition> INT_TAS_t;
 
-    component_num = state_length = counter_start_loc = freeze_location_index =
-        0;
-    channel_num = 0;
-  }
-
-  TMStateManager(int comp_num, const vector<Counter> &ecounters, int clock_num,
+  TMStateManager(const INT_TAS_t &s, int comp_num,
+                 const vector<Counter> &ecounters, int clock_num,
                  const vector<int> &oclock_upper_bounds,
                  const vector<ClockConstraint> &edifference_cons,
                  const vector<int> &nodes, const vector<int> &links,
@@ -79,11 +80,23 @@ public:
 
   bool hasChannel() const { return channel_num > 0; }
 
-  int getLoc(int component, const int *const state) const;
+  vector<int> getOutTransition(const int component, const int src) const;
 
-  inline bool withoutChannel(int component, const int *const state) const {
+  int getOutDegree(const int component, const int src) const;
+
+  int getLocationID(const int component, const int *const state) const;
+
+  string getLocationName(const int component, const int loc_ID) const;
+
+  inline bool withoutChannel(const int component,
+                             const int *const state) const {
     return state[component + component_num] == NO_CHANNEL;
   }
+
+  bool transitionReady(const int component, const int link,
+                       const int *const state) const;
+
+  const Channel &getChan(const int component, const int link) const;
 
   int *newState() const;
 
@@ -158,22 +171,15 @@ public:
                           const int *const state) const {
     return -(state[component_id]) - 1;
   }
-  bool hasDiffCons() const { return !difference_constraints.empty(); }
-  //  int getStart(const TYPE_T type) const {
-  //    if (type == CLOCK_T) {
-  //      return 0;
-  //    } else if (type == INT_T) {
-  //      return counter_start_loc;
-  //    }else if(type==CHAN_T){
-  //      return 0;
-  //    }
-  //    assert(false);
-  //    return 0;
-  //  }
 
-  // int getCounterStart() const { return counter_start_loc; }
+  bool hasDiffCons() const { return !difference_constraints.empty(); }
+
+  ostream &dump(const State_t *state, ostream &out) const;
+
+  void dump(const State_t *state) const { dump(state, cout); }
 
 private:
+  const INT_TAS_t &sys;
   int channel_num;
   int component_num;
   int state_length;

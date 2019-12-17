@@ -24,8 +24,8 @@ bool element_cmp(const vector<int> &lhs, const vector<int> &rhs);
 template <typename SYS, typename G, typename PROJ> class IncrementalCheck {
 
 public:
-  IncrementalCheck() : start(2), end(5), project_dim(2) {}
-  
+  IncrementalCheck() : start(2), end(8), project_dim(2) {}
+
   bool check(const G &g, const Property *prop) {
     SYS dummy = g.generate(start);
     shared_ptr<typename SYS::StateManager_t> manager = dummy.getStateManager();
@@ -38,11 +38,12 @@ public:
     }
     vector<vector<int>> pre_project;
     PROJ proj(manager, project_dim);
-    
-    pre_data.project(proj, pre_project);
-    //  sort(pre_project.begin(), pre_project.end(), element_cmp);
 
-    for (int i = 3; i < 5; i++) {
+    pre_data.project(proj, pre_project);
+    /// sort(pre_project.begin(), pre_project.end(), element_cmp);
+    //  deleteRepeat(pre_project);
+
+    for (int i = start + 1; i < end; i++) {
       SYS dummy = g.generate(i);
       shared_ptr<typename SYS::StateManager_t> manager =
           dummy.getStateManager();
@@ -56,6 +57,7 @@ public:
       vector<vector<int>> project;
       PROJ proj(manager, project_dim);
       data.project(proj, project);
+      // deleteRepeat(project);
       //  sort(project.begin(), project.end(), element_cmp);
 
       if (proj.include(project, pre_project)) {
@@ -67,11 +69,14 @@ public:
   }
 
 private:
+  void deleteRepeat(vector<vector<int>> &pre_project) const {
+    std::vector<vector<int>>::iterator it;
+    it = std::unique(pre_project.begin(), pre_project.end());
+    pre_project.resize(std::distance(pre_project.begin(), it));
+  }
   int start;
   int end;
   size_t project_dim;
-
-
 };
 
 } // namespace graphsat
