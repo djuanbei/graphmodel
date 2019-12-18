@@ -84,8 +84,7 @@ public:
     return state[component + component_num] == NO_CHANNEL;
   }
 
-  bool transitionReady(const int component, const int link,
-                       const State_t *const state) const;
+
 
   int *newState() const;
 
@@ -185,6 +184,8 @@ private:
   vector<Parameter> parameters;
   vector<int> node_nums;
   vector<int> link_nums;
+  int chan_num;
+  bool hasDiff;
   bool hasChannel() const;
 };
 } // namespace graphsat

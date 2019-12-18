@@ -17,8 +17,10 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   clock_upper_bounds = oclock_upper_bounds;
   node_nums = nodes;
   link_nums = links;
+  chan_num=sys.getChanNum( );
+  
 
-  if (sys.getChanNum() > 0) {
+  if (chan_num > 0) {
     counter_start_loc = 2 * component_num;
     state_length = 2 * component_num + (int)ecounters.size();
   } else {
@@ -31,7 +33,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   clock_start_loc = state_length;
 
   state_length += (clock_num + 1) * (clock_num + 1);
-
+  hasDiff=!sys.getDiffCons().empty( );
   dbm_manager = DBMFactory(clock_num, clock_upper_bounds, sys.getDiffCons());
   counters = ecounters;
 }
@@ -49,7 +51,7 @@ int *TMStateManager::newState() const {
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);
-  if (sys.getChanNum() > 1) {
+  if (chan_num > 0) {
     for (int component_id = 0; component_id < component_num; component_id++) {
 
       // the value contain link id
@@ -64,10 +66,10 @@ Compression<int> TMStateManager::getHeadCompression() const {
     }
   }
 
-  if (sys.getChanNum() > 0) {
+  if (chan_num > 0) {
     for (int component_id = 0; component_id < component_num; component_id++) {
-      re_comp.setBound(component_id + component_num, -sys.getChanNum(),
-                       sys.getChanNum());
+      re_comp.setBound(component_id + component_num, -chan_num,
+                       chan_num);
     }
   }
   int k = 0;
@@ -114,12 +116,12 @@ Compression<int> TMStateManager::getBodyCompression() const {
   return re_comp;
 }
 
-bool TMStateManager::transitionReady(const int component, const int link,
-                                     const State_t *const state) const {
-  return sys.transitionReady(component, link, state);
-}
+// bool TMStateManager::transitionReady(const int component, const int link,
+//                                      const State_t *const state) const {
+//   return sys.transitionReady(component, link, state);
+// }
 
-bool TMStateManager::hasDiffCons() const { return !sys.getDiffCons().empty(); }
+bool TMStateManager::hasDiffCons() const { return hasDiff; }
 
 int TMStateManager::getLocationID(const int component,
                                   const State_t *const state) const {

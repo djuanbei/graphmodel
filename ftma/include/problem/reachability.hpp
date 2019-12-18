@@ -178,7 +178,7 @@ private:
        *
        */
 
-      if (!manager->transitionReady(component, link, state)) {
+      if (!sys.transitionReady(component, link, state)) {
         continue;
       }
 

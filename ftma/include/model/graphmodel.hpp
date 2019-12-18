@@ -231,6 +231,7 @@ public:
     return agents[component]->transitions[link].getChannel();
   }
 
+
 private:
   void transfrom(shared_ptr<Agent_t> &agent) {
 
