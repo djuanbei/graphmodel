@@ -4,7 +4,7 @@ namespace graphsat {
 
 TrainGateProjector::TrainGateProjector(
     const shared_ptr<TMStateManager> &out_manager, const int pro_d)
-    : manager(out_manager) : manager(out_manager) {
+    :  manager(out_manager) {
   component_num = manager->getComponentNum();
   pro_dim = pro_d;
   clock_start = manager->getClockStart();
@@ -17,7 +17,7 @@ void TrainGateProjector::operator()(const int *original_state,
   for (int i = 0; i < pro_dim; i++) {
     int loc = manager->getLocationID(i, original_state);
 
-    assert(loc = 0 && "The location must greater or equal to 0.");
+    assert(loc >= 0 && "The location must greater or equal to 0.");
     proj.push_back(loc);
   }
   vector<int> locs(pro_dim, -1);
@@ -101,6 +101,7 @@ bool TrainGateProjector::include(const vector<vector<int>> &lhs,
       }
     }
     if (j == rhs.size()) {
+      dump_D(lhs[i]);
       return false;
     }
   }
@@ -116,3 +117,6 @@ ostream &TrainGateProjector::dump(const vector<int> &proj_e, ostream &out) const
 }
 
 } // namespace graphsat
+
+
+

@@ -348,6 +348,5 @@ TEST(PMCP, train_gate) {
   IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector> check;
   TrainGatePro prop(2);
   prop.setCS(4);
-  // FischerMutual prop;
-  // EXPECT_TRUE(check.check(TG, &prop));
+  EXPECT_TRUE(check.check(TG, &prop));
 }

@@ -28,10 +28,6 @@ public:
     return out;
   }
 
-  virtual ostream &dump(const vector<vector<int>> &proj, ostream &out) const {
-    return out;
-  }
-
 private:
   int component_num;
   int pro_dim;

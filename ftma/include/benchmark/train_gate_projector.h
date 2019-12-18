@@ -24,17 +24,10 @@ public:
   bool include(const vector<vector<int>> &lhs,
                const vector<vector<int>> &rhs) const;
 
-  void setLocName(const int id, const string &n) { loc_name_map[id] = n; }
+  
 
   virtual ostream &dump(const vector<int> &proj_e, ostream &out) const ;
   
-
-  virtual ostream &dump(const vector<vector<int>> &proj, ostream &out) const {
-    for (auto &e : proj) {
-      dump(e, out);
-    }
-    return out;
-  }
 
 private:
   const shared_ptr<TMStateManager> manager;
@@ -42,7 +35,7 @@ private:
   int pro_dim;
   int clock_start;
   int pro_clock_start;
-  map<int, string> loc_name_map;
+
 
   enum Order { UNKOWN = 0, EQUAL = 1, FRONTER = 2, LATER = 3 };
 };

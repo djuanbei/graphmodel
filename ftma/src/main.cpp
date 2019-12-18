@@ -10,7 +10,7 @@
  */
 //#define ONLINE_CHECK
 
-#define PRINT_STATE 1
+//#define PRINT_STATE 
 #define DRAW_GRAPH 1
 
 //#define YYDEBUG 1
@@ -29,6 +29,12 @@
 
 #include "benchmark/train_gate.h"
 
+#include "benchmark/train_gate_projector.h"
+
+#include "problem/pmcp.hpp"
+
+
+
 #include <iostream>
 
 extern int yy_flex_debug;
@@ -39,19 +45,23 @@ using namespace graphsat;
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 
 void test() {
+  
   TrainGate TG;
-  INT_TAS_t tg_sys = TG.generate(2);
-  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
-      tg_sys.getStateManager();
-  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  tg_sys.addInitState(data);
-  Reachability<INT_TAS_t> reacher(tg_sys);
-  reacher.computeAllReachableSet(data);
+  IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector> check;
+  TrainGatePro prop(2);
+  prop.setCS(4);
+  if(check.check(TG, &prop)){
+    cout<<"ok"<<endl;
+  }else{
+    cout<<"no"<<endl;
+  }
+  
+
 }
 
 int main(int argc, const char *argv[]) {
-  // test();
-  // return 0;
+   test();
+   return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
   logSet();

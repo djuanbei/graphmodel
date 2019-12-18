@@ -15,35 +15,11 @@
 #include <iostream>
 
 using namespace std;
-#define PRINT_STATE 1
+//#define PRINT_STATE 1
 
 #define STRING(s) #s
 
-// #ifdef PRINT_STATE
 
-// #define PRINT_STATE_MACRO                                                      \
-//   for (int i = 0; i < component_num; i++) {                                    \
-//     int loc = state[i];                                                        \
-//     if (manager->isCommitComp(i, state)) {                                     \
-//       loc = manager->getCommitLoc(i, state);                                   \
-//     }                                                                          \
-//     if (state[i + component_num] == NO_CHANNEL)                                \
-//       std::cout << setw(LOC_OUT_WIDTH) << sys.agents[i]->getLocationName(loc); \
-//     else {                                                                     \
-//       int block_source;                                                        \
-//       sys.agents[i]->graph.findSrc(loc, block_source);                    \
-//       cout << setw(LOC_OUT_WIDTH)                                              \
-//            << sys.agents[i]->getLocationName(block_source);                    \
-//     }                                                                          \
-//   }                                                                            \
-//   cout << endl;                                                                \
-//   manager->getClockManager().dump(cout, manager->getDBM(state)) << endl;
-
-// #else
-
-// #define PRINT_STATE_MACRO
-
-// #endif
 
 #define LTEQ_ZERO (1)
 
