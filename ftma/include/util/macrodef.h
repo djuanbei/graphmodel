@@ -19,8 +19,6 @@ using namespace std;
 
 #define STRING(s) #s
 
-
-
 #define LTEQ_ZERO (1)
 
 #define newA(__E, __n) (__E *)malloc((__n) * sizeof(__E))

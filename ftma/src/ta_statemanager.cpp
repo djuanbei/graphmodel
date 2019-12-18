@@ -3,25 +3,22 @@
 #include <cassert>
 
 namespace graphsat {
-TMStateManager::TMStateManager(const INT_TAS_t &s, int comp_num,
+TMStateManager::TMStateManager(const INT_TAS_t &s,
                                const vector<Counter> &ecounters, int clock_num,
                                const vector<int> &oclock_upper_bounds,
-                               const vector<ClockConstraint> &edifference_cons,
                                const vector<int> &nodes,
-                               const vector<int> &links, int channel_n)
+                               const vector<int> &links)
     : sys(s) {
 
   assert((int)oclock_upper_bounds.size() == 2 * clock_num + 2);
   state_length = 0;
-  component_num = comp_num;
+  component_num = sys.getComponentNumber();
 
-  difference_constraints = edifference_cons;
   clock_upper_bounds = oclock_upper_bounds;
   node_nums = nodes;
   link_nums = links;
-  channel_num = channel_n;
 
-  if (channel_num > 0) {
+  if (sys.getChanNum() > 0) {
     counter_start_loc = 2 * component_num;
     state_length = 2 * component_num + (int)ecounters.size();
   } else {
@@ -35,8 +32,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s, int comp_num,
 
   state_length += (clock_num + 1) * (clock_num + 1);
 
-  dbm_manager =
-      DBMFactory(clock_num, clock_upper_bounds, difference_constraints);
+  dbm_manager = DBMFactory(clock_num, clock_upper_bounds, sys.getDiffCons());
   counters = ecounters;
 }
 
@@ -53,7 +49,7 @@ int *TMStateManager::newState() const {
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);
-  if (channel_num > 1) {
+  if (sys.getChanNum() > 1) {
     for (int component_id = 0; component_id < component_num; component_id++) {
 
       // the value contain link id
@@ -68,9 +64,10 @@ Compression<int> TMStateManager::getHeadCompression() const {
     }
   }
 
-  if (channel_num > 0) {
+  if (sys.getChanNum() > 0) {
     for (int component_id = 0; component_id < component_num; component_id++) {
-      re_comp.setBound(component_id + component_num, -channel_num, channel_num);
+      re_comp.setBound(component_id + component_num, -sys.getChanNum(),
+                       sys.getChanNum());
     }
   }
   int k = 0;
@@ -116,23 +113,16 @@ Compression<int> TMStateManager::getBodyCompression() const {
   }
   return re_comp;
 }
-vector<int> TMStateManager::getOutTransition(const int component,
-                                             const int src) const {
-  return sys.getOutTransition(component, src);
-}
 
 bool TMStateManager::transitionReady(const int component, const int link,
-                                     const int *const state) const {
+                                     const State_t *const state) const {
   return sys.transitionReady(component, link, state);
 }
 
-const Channel &TMStateManager::getChan(const int component,
-                                       const int link) const {
-  return sys.getChan(component, link);
-}
+bool TMStateManager::hasDiffCons() const { return !sys.getDiffCons().empty(); }
 
 int TMStateManager::getLocationID(const int component,
-                                  const int *const state) const {
+                                  const State_t *const state) const {
   int re = state[component];
 
   if (isCommitComp(component, state)) { // commit location
@@ -151,8 +141,10 @@ string TMStateManager::getLocationName(const int component,
   return sys.getLocationName(component, loc_ID);
 }
 
+bool TMStateManager::hasChannel() const { return sys.getChanNum() > 0; }
+
 vector<int> TMStateManager::blockComponents(const int chid,
-                                            const int *const state) const {
+                                            const State_t *const state) const {
   vector<int> re_block_components;
   for (int i = 0; i < component_num; i++) {
 
@@ -169,8 +161,8 @@ vector<int> TMStateManager::blockComponents(const int chid,
 }
 
 void TMStateManager::constructState(const int component_id, const int target,
-                                    const int *const state, int *dbm,
-                                    bool isCommit, int *re_state) const {
+                                    const State_t *const state, State_t *dbm,
+                                    bool isCommit, State_t *re_state) const {
 
   memcpy(re_state, state, clock_start_loc * sizeof(int));
 
@@ -182,14 +174,14 @@ void TMStateManager::constructState(const int component_id, const int target,
   }
 }
 void TMStateManager::constructState(const int component_id, const int target,
-                                    bool isCommit, int *state) const {
+                                    bool isCommit, State_t *state) const {
   state[component_id] = target;
   if (isCommit) {
     setCommitState(component_id, state);
   }
 }
 
-ostream &TMStateManager::dump(const State_t *state, ostream &out) const {
+ostream &TMStateManager::dump(const State_t *const state, ostream &out) const {
 
   for (int i = 0; i < component_num; i++) {
 

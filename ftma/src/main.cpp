@@ -10,7 +10,7 @@
  */
 //#define ONLINE_CHECK
 
-//#define PRINT_STATE 
+//#define PRINT_STATE
 #define DRAW_GRAPH 1
 
 //#define YYDEBUG 1
@@ -33,8 +33,6 @@
 
 #include "problem/pmcp.hpp"
 
-
-
 #include <iostream>
 
 extern int yy_flex_debug;
@@ -45,23 +43,21 @@ using namespace graphsat;
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 
 void test() {
-  
+
   TrainGate TG;
   IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector> check;
   TrainGatePro prop(2);
   prop.setCS(4);
-  if(check.check(TG, &prop)){
-    cout<<"ok"<<endl;
-  }else{
-    cout<<"no"<<endl;
+  if (check.check(TG, &prop)) {
+    cout << "ok" << endl;
+  } else {
+    cout << "no" << endl;
   }
-  
-
 }
 
 int main(int argc, const char *argv[]) {
-   test();
-   return 0;
+  test();
+  return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
   logSet();

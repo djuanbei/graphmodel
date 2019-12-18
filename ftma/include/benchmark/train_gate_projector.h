@@ -24,10 +24,7 @@ public:
   bool include(const vector<vector<int>> &lhs,
                const vector<vector<int>> &rhs) const;
 
-  
-
-  virtual ostream &dump(const vector<int> &proj_e, ostream &out) const ;
-  
+  virtual ostream &dump(const vector<int> &proj_e, ostream &out) const;
 
 private:
   const shared_ptr<TMStateManager> manager;
@@ -35,7 +32,6 @@ private:
   int pro_dim;
   int clock_start;
   int pro_clock_start;
-
 
   enum Order { UNKOWN = 0, EQUAL = 1, FRONTER = 2, LATER = 3 };
 };

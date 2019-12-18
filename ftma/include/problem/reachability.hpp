@@ -168,7 +168,7 @@ private:
 
     const int source = manager->getLocationID(component, state);
 
-    const vector<int> out_ts = manager->getOutTransition(component, source);
+    const vector<int> out_ts = sys.getOutTransition(component, source);
     for (auto link : out_ts) {
 
       assert(link >= 0 &&
@@ -217,7 +217,7 @@ private:
                   const Property *prop, bool is_send) {
 
     manager->copy(next_state, state);
-    manager->unBlock(next_state, block_component_id);
+    manager->unBlock(block_component_id, next_state);
 
     int block_link = next_state[block_component_id];
     if (manager->isCommitComp(block_component_id, next_state)) {

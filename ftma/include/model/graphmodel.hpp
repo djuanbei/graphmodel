@@ -76,6 +76,10 @@ public:
 
   int getComponentNumber() const { return (int)agents.size(); }
 
+  int getChanNum() const { return chan_num; }
+
+  const vector<ClockConstraint> &getDiffCons() const { return difference_cons; }
+
   shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
 
   struct AgentCMP {
@@ -142,8 +146,7 @@ public:
     }
 
     stateManager.reset(new StateManager_t(
-        *this, (int)agents.size(), counters, clock_num, temp_clock_upperbound,
-        difference_cons, node_n, link_num, chan_num));
+        *this, counters, clock_num, temp_clock_upperbound, node_n, link_num));
   }
 
   template <typename D> void addInitState(D &data) const {
