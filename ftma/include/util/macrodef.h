@@ -16,6 +16,8 @@
 
 using namespace std;
 //#define PRINT_STATE 1
+#define DRAW_GRAPH 1
+
 
 #define STRING(s) #s
 

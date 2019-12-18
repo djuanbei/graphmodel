@@ -98,9 +98,7 @@ public:
       if ((*prop)(manager.get(), convert_C_t)) {
         return TRUE;
       }
-      //      if ( isReach( prop, convert_C_t ) ) {
-      //        return TRUE;
-      //      }
+     
     }
     return UNKOWN;
   }
@@ -145,7 +143,14 @@ public:
 #ifdef DRAW_GRAPH
     ofstream fout(filename);
     fout << "digraph G {" << endl;
+
     int len = compress_state.getCompressionSize();
+    
+    for (size_t i = 0; i < state_parent.size(); i++) {
+      compress_state.decode(&(process_states[i*len]), cache_state);
+      fout<<i<<" [ label=\""<<i<<" : "<<manager->getDotLabel(cache_state) +"\"];"<<endl;
+    }
+
     for (size_t i = 1; i < state_parent.size(); i++) {
       int parent = state_parent[i];
       compress_state.decode(&(process_states[parent * len]), cache_state);

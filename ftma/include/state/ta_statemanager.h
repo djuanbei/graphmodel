@@ -163,6 +163,8 @@ public:
 
   bool hasDiffCons() const;
 
+  string getDotLabel(const  State_t *const state) const;
+
   ostream &dump(const State_t *const state, ostream &out) const;
 
   void dump(const State_t *const state) const { dump(state, cout); }

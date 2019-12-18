@@ -2,7 +2,7 @@
 #include <cassert>
 
 namespace graphsat {
-
+bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 UppaalData::UppaalData() {
   IS_SYSTEM_PROCEDURE = false;
   init_loc = 0;

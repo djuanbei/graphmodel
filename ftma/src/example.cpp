@@ -299,20 +299,20 @@ void fisher(int n) {
   tmt1->addPara("pid");
 
   Argument x = tmt1->addClock("x");
-  //  ADD_CLOCK( tmt1, x);
+
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
   int k = 2;
 
-  typename INT_TAS_t::L_t A(0);
+  typename INT_TAS_t::L_t A(0, "A");
 
-  typename INT_TAS_t::L_t req(1);
+  typename INT_TAS_t::L_t req(1, "req");
   typename INT_TAS_t::CS_t cs1(x, LE, Argument(k)); // x <= k
   req += cs1;
 
-  typename INT_TAS_t::L_t wait(2);
+  typename INT_TAS_t::L_t wait(2, "wait");
 
-  typename INT_TAS_t::L_t cs(3);
+  typename INT_TAS_t::L_t cs(3, "cs");
 
   typename INT_TAS_t::T_t A_req(A, req);
   Argument first(NORMAL_VAR_ARG, "id");
@@ -324,7 +324,7 @@ void fisher(int n) {
   A_req += ccs1;
 
   A_req += ClockReset(x, Argument(0)); // x-->0
-  // A_req.addReset(x, 0); // x-->0
+
 
   typename INT_TAS_t::T_t req_wait(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
@@ -332,8 +332,8 @@ void fisher(int n) {
 
   req_wait += ClockReset(x, Argument(0)); // x-->0
                                           //  req_wait.addReset(x, 0); // x-->0
-  Argument lhs(NORMAL_VAR_ARG, 0);
-  Argument rhs0(PARAMETER_ARG, 0);
+  Argument lhs(NORMAL_VAR_ARG, "id");
+  Argument rhs0(PARAMETER_ARG, "pid");
   CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
 
   req_wait += action;
@@ -346,8 +346,8 @@ void fisher(int n) {
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
-  Argument first1(NORMAL_VAR_ARG, 0);
-  Argument second1(PARAMETER_ARG, 0);
+  Argument first1(NORMAL_VAR_ARG, "id");
+  Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
   CounterConstraint ccs2(first1, second1, EQ, rhs01); // id==pid
   wait_cs += ccs2;
@@ -356,7 +356,7 @@ void fisher(int n) {
 
   typename INT_TAS_t::T_t cs_A(cs, A);
 
-  Argument lhs1(NORMAL_VAR_ARG, 0);
+  Argument lhs1(NORMAL_VAR_ARG, "id");
   Argument rhs1(CONST_ARG, 0);
   CounterAction caction1(lhs1, ASSIGNMENT_ACTION, rhs1);
 
@@ -379,14 +379,14 @@ void fisher(int n) {
   for (int i = 1; i <= n; i++) {
 
     Parameter param = tmt1->getParameter();
-    // param.setCounterMap(0, 0); // add relation between local id and global id
 
     param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
 
     sys += tma1;
   }
-  //  INT_TAS_t   sys = n * tma1;
+  sys.build();
+
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);

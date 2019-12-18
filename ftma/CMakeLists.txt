@@ -48,12 +48,12 @@ source_group("parser" FILES ${PARSER_SRC})
 file(GLOB_RECURSE LIB_SRCS   ${PROJECT_ROOT}/src/*.cpp)
 list(REMOVE_ITEM LIB_SRCS "src/main.cpp")
 add_library(gmodel_lib ${LIB_SRCS} ${CURRENT_HEADERS} ${PARSER_SRC})
-add_executable(gmodel src/main.cpp)
+add_executable(gmodel src/main.cpp ${LIB_SRCS})
 # Key idea: SEPARATE OUT your main() function into its own file so it can be its
 # own executable. Separating out main() means you can add this library to be
 # used elsewhere.
 
-target_link_libraries(gmodel gmodel_lib)
+#target_link_libraries(gmodel gmodel_lib)
 
 ################################
 # Testing

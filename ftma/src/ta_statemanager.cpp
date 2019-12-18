@@ -173,6 +173,19 @@ void TMStateManager::constructState(const int component_id, const int target,
     setCommitState(component_id, re_state);
   }
 }
+string TMStateManager::getDotLabel(const  State_t *const state) const{
+  string re="";
+  for( int i=0; i< component_num; i++){
+    int loc=getLocationID(i, state );
+    if( i!=0){
+      re+=","+getLocationName( i, loc);
+    }else{
+      re+=getLocationName( i, loc);
+    }
+  }
+  return re;
+}
+
 void TMStateManager::constructState(const int component_id, const int target,
                                     bool isCommit, State_t *state) const {
   state[component_id] = target;

@@ -22,7 +22,7 @@
 
 #include "action/clockreset.h"
 #include "constraint/clockdiffcons.h"
-#include "util/instancefactory.h"
+
 
 namespace graphsat {
 

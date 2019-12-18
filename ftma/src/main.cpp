@@ -40,7 +40,7 @@ extern int yy_flex_debug;
 using std::vector;
 using namespace graphsat;
 
-bool UppaalData::IS_SYSTEM_PROCEDURE = false;
+
 
 void test() {
 
@@ -56,6 +56,8 @@ void test() {
 }
 
 int main(int argc, const char *argv[]) {
+  fisher(3);
+  return 0;
   
  // test();
  // return 0;
