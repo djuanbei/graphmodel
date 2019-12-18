@@ -12,6 +12,7 @@
 #define __PARAMETER_H
 #include <map>
 #include <vector>
+#include<cassert>
 
 #include "util/typedef.h"
 

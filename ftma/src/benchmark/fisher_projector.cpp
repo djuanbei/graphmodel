@@ -37,13 +37,13 @@ bool FisherProjector::include(const vector<vector<int>> &lhs,
     size_t j = 0;
     for (; j < rhs.size(); j++) {
       size_t k = 0;
-      for (; k < pro_dim; k++) {
+      for (; k < (size_t)pro_dim; k++) {
         if (lhs[i][k] != rhs[j][k]) {
           break;
         }
       }
 
-      if (k == pro_dim) {
+      if (k == (size_t)pro_dim) {
         for (; k < n; k++) {
           if (lhs[i][k] > rhs[j][k]) {
             break;
