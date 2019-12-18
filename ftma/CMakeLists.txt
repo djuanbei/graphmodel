@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-
+set( CMAKE_VERBOSE_MAKEFILE on )
 set(PROJECT_ROOT "/Users/yunyun/mycode/c++/graphmodel/ftma")
 
 # Options. Turn on with 'cmake -Dmyvarname=ON'.

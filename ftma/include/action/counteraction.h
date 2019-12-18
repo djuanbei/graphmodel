@@ -128,6 +128,7 @@ public:
       ACTION_TYPE_CASE_OUT("-=");
     }
     }
+    return out;
   }
 
 private:
