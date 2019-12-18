@@ -12,7 +12,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
 
   assert((int)oclock_upper_bounds.size() == 2 * clock_num + 2);
   state_length = 0;
-  component_num = sys.getComponentNumber();
+  component_num = s.getComponentNumber();
 
   clock_upper_bounds = oclock_upper_bounds;
   node_nums = nodes;

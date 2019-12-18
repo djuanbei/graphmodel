@@ -51,6 +51,7 @@ public:
     clock_max_value[0] = 0;
     counter_num = chan_num = 0;
   }
+  virtual ~AgentSystem() {}
 
   shared_ptr<AgentTemplate_t> createTemplate() {
     shared_ptr<AgentTemplate_t> re(new AgentTemplate_t(this));

@@ -56,8 +56,9 @@ void test() {
 }
 
 int main(int argc, const char *argv[]) {
-  test();
-  return 0;
+  
+ // test();
+ // return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
   logSet();

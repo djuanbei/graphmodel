@@ -63,8 +63,8 @@ public:
       if (proj.include(project, pre_project)) {
         return true;
       }
-      pre_project = project;
-      // pre_project.swap(project);
+
+      pre_project.swap(project);
     }
     return false;
   }

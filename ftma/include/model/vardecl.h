@@ -57,8 +57,9 @@ public:
   void setParent(VarDecl *p) { parent = p; }
   virtual Argument addClock(const std::string &n);
 
-  virtual ~VarDecl() {}
-
+  virtual ~VarDecl(){
+    
+  }
   virtual int addInt(const BaseDecl &ch);
 
   virtual int addInt(const string &name, int num = 1);
@@ -105,8 +106,6 @@ public:
   int getChanNumber() const;
 
   int getClockNumber() const;
-
-  // int getLocalKeyID(const TYPE_T type, const string &key) const;
 
   int getLocalKeyID(const TYPE_T type, const string &key) const;
 
