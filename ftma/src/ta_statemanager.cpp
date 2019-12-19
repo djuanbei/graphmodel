@@ -4,14 +4,15 @@
 
 namespace graphsat {
 TMStateManager::TMStateManager(const INT_TAS_t &s,
-                               const vector<Counter> &ecounters, int out_clock_num,
+                               const vector<Counter> &ecounters,
+                               int out_clock_num,
                                const vector<int> &oclock_upper_bounds,
                                const vector<int> &nodes,
                                const vector<int> &links)
     : sys(s) {
-  clock_num=out_clock_num;
+  clock_num = out_clock_num;
   assert((int)oclock_upper_bounds.size() == 2 * clock_num + 2);
-  
+
   state_length = 0;
   component_num = s.getComponentNumber();
 
@@ -175,7 +176,7 @@ void TMStateManager::constructState(const int component_id, const int target,
   }
 }
 string TMStateManager::getLocDotLabel(const State_t *const state) const {
-  string re="";
+  string re = "";
   for (int i = 0; i < component_num; i++) {
     int loc = getLocationID(i, state);
     if (i != 0) {
@@ -187,30 +188,30 @@ string TMStateManager::getLocDotLabel(const State_t *const state) const {
   return re;
 }
 
-vector<string> TMStateManager::getCounterDotLabel( const State_t *const state) const{
+vector<string>
+TMStateManager::getCounterDotLabel(const State_t *const state) const {
 
   vector<string> re;
-  const State_t *counter_value=getCounterValue(const_cast<int*>(state) );
-  vector<BaseDecl>  vars=sys.getAllVar( INT_T);
-  for( auto &e: vars ){
-    string item=e.name;
-    if( e.num==1){
-      item+=" = "+to_string(counter_value[ e.start_loc]);
-    }else{
-      item+=" = [";
-      for(int i=0; i< e.num; i++ ){
-        if( i>0){
-          item+=",";
+  const State_t *counter_value = getCounterValue(const_cast<int *>(state));
+  vector<BaseDecl> vars = sys.getAllVar(INT_T);
+  for (auto &e : vars) {
+    string item = e.name;
+    if (e.num == 1) {
+      item += " = " + to_string(counter_value[e.start_loc]);
+    } else {
+      item += " = [";
+      for (int i = 0; i < e.num; i++) {
+        if (i > 0) {
+          item += ",";
         }
-        item+=to_string(counter_value[ e.start_loc+i])+" ";
+        item += to_string(counter_value[e.start_loc + i]) + " ";
       }
-      item+="]";
+      item += "]";
     }
-    re.push_back( item);
+    re.push_back(item);
   }
   return re;
 }
-
 
 void TMStateManager::constructState(const int component_id, const int target,
                                     bool isCommit, State_t *state) const {

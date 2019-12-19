@@ -92,7 +92,7 @@ ostream &DBMFactory::dumpDot(ostream &out, const int *const dbm,
       out << setw(4);
       int right = getRight(v);
       if (right >= MAX_INT / 2) {
-        out << std::left <<"&#8734;";
+        out << std::left << "&#8734;";
       } else {
         out << std::left << (int)right;
       }

@@ -57,9 +57,7 @@ public:
 
   int getClockStart() const { return clock_start_loc; }
 
-  int getClockNumber( ) const{
-    return clock_num;
-  }
+  int getClockNumber() const { return clock_num; }
 
   int getFreezeLocation() const { return freeze_location_index; }
   // check whether this state allow time delay
@@ -166,8 +164,7 @@ public:
 
   string getLocDotLabel(const State_t *const state) const;
 
-  vector<string> getCounterDotLabel( const State_t *const state) const;
-  
+  vector<string> getCounterDotLabel(const State_t *const state) const;
 
   ostream &dump(const State_t *const state, ostream &out) const;
 

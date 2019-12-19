@@ -163,7 +163,7 @@ vector<string> VarDecl::getKeys(const TYPE_T type) const {
   return re;
 }
 
-vector<BaseDecl> VarDecl::getAllVar( const TYPE_T type) const{
+vector<BaseDecl> VarDecl::getAllVar(const TYPE_T type) const {
   vector<BaseDecl> re;
   vector<pair<string, vector<void *>>> counters = data.getValue(type);
   for (vector<pair<string, vector<void *>>>::const_iterator it =

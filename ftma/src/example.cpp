@@ -33,7 +33,6 @@
 
 #include "benchmark/train_gate.h"
 
-
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -305,7 +304,7 @@ void fisher(int n) {
 
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
-  int k = 2;
+  int k = 3;
 
   typename INT_TAS_t::L_t A(0, "A");
 
@@ -693,7 +692,7 @@ void testcompression() {
     }
   }
 }
-void train_gate( const int n){
+void train_gate(const int n) {
   TrainGate TG;
 
   INT_TAS_t tg_sys = TG.generate(n);
@@ -706,8 +705,8 @@ void train_gate( const int n){
   TrainGatePro prop(n);
   prop.setCS(4);
 
-  if(reacher.satisfy(data, &prop)){
-    cout<<"some thing is wrong!"<<endl;
+  if (reacher.satisfy(data, &prop)) {
+    cout << "some thing is wrong!" << endl;
   }
   data.generatorDot("test.gv");
 }

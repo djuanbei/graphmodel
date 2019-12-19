@@ -29,19 +29,19 @@ struct BaseDecl {
   int num;
   int low, high;
   BaseDecl() {
-    start_loc=0;
+    start_loc = 0;
     num = 0;
     low = DEFAULT_COUNTER_LOWER;
     high = DEFAULT_COUNTER_UPPER;
   }
   BaseDecl(const string &n) : name(n), num(1) {
-    start_loc=0;
+    start_loc = 0;
     low = DEFAULT_COUNTER_LOWER;
     high = DEFAULT_COUNTER_UPPER;
   }
 
   BaseDecl(const string &n, int len, int l, int h) {
-    start_loc=0;
+    start_loc = 0;
     name = n;
     num = len;
     low = l;
@@ -84,7 +84,7 @@ public:
 
   virtual vector<string> getKeys(const TYPE_T type) const;
 
-  virtual vector<BaseDecl> getAllVar( const TYPE_T type) const;
+  virtual vector<BaseDecl> getAllVar(const TYPE_T type) const;
 
   virtual vector<BaseDecl> getInts() const;
 

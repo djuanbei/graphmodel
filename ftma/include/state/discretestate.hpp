@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "util/fastHash.h"
+#include "util/typedef.h"
 
 namespace graphsat {
 
@@ -127,7 +128,7 @@ public:
     size_t body_size = body_part_elements[head_id].size();
     for (size_t i = 0; i < body_size; i += body_part_len) {
       if (containBody(&(body_part_elements[head_id][i]), body_part)) {
-        return -1;
+        return NOT_FOUND;
       }
     }
 
@@ -699,73 +700,6 @@ private:
   vector<CompleteCompactComposeStateSet<T>> composeValue;
   ExpandComposeStateSet<T> other;
 };
-
-// class NIntState : public StateElem {
-
-// public:
-//   NIntState()
-//       : n( 0 )
-//       , start( 0 )
-//       , value( NULL ) {}
-//   NIntState( int s, int ss = 0 ) {
-//     assert( s > 0 );
-//     n     = s;
-//     start = ss;
-//     value = new int[ n ];
-//     fill( value, value + n, 0 );
-//   }
-
-//   ~NIntState() {
-//     delete[] value;
-//     value = NULL;
-//   }
-
-//   NIntState *copy() const {
-//     NIntState *re = new NIntState( n, start );
-//     memcpy( re->value, value, n * sizeof( int ) );
-//     return re;
-//   }
-
-//   inline int hash_value() const {
-//     return FastHash( (char *) value, n * sizeof( int ) );
-//   }
-//   void setValue( const int *v ) { memcpy( value, v, sizeof( int ) * n ); }
-
-//   inline bool contain( const StateElem *other ) const {
-
-//     const NIntState *rhs = (const NIntState *) other;
-
-//     if ( 0 != memcmp( value, rhs->value, start * sizeof( int ) ) ) {
-//       return false;
-//     }
-
-//     for ( int i = start; i < n; i++ ) {
-//       if ( value[ i ] < rhs->value[ i ] ) {
-//         return false;
-//       }
-//     }
-//     return true;
-//   }
-
-//   bool equal( const StateElem *other ) const {
-
-//     const NIntState *rhs = (const NIntState *) other;
-
-//     return ( 0 == memcmp( value, rhs->value, n * sizeof( int ) ) );
-//   }
-
-// private:
-//   int  n;
-//   int  start = 0;
-//   int *value;
-//   NIntState( const NIntState &other ) { assert( false ); }
-//   NIntState &operator=( const NIntState &other ) { return *this; }
-
-//   template <typename C> friend class StateManager;
-
-//   template <typename C, typename L, typename T> friend class TAS;
-//   template <typename S> friend class ReachableSet;
-// };
 
 } // namespace graphsat
 #endif

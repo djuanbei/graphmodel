@@ -75,8 +75,10 @@ public:
    * @return next state by order given order
    */
   State_t *next() {
-    State_t *state = wait_set.front();
+    State_t *state = wait_set.front(); // BFS
     wait_set.pop_front();
+    // State_t *state = wait_set.back( ); //DFS
+    // wait_set.pop_back();
     return state;
   }
   /**
@@ -144,23 +146,22 @@ public:
     fout << "digraph G {" << endl;
 
     int len = compress_state.getCompressionSize();
-    int clock_num=manager->getClockNumber( );
+    int clock_num = manager->getClockNumber();
     for (size_t i = 0; i < state_parent.size(); i++) {
       compress_state.decode(&(process_states[i * len]), cache_state);
-      fout << i << " [ label=<";
+      fout << i << " [ shape=none, label=<";
       fout << "<table border=\"1\" >" << endl;
       fout << "<tr><td COLSPAN=\"" << clock_num + 1
-           << "\"> <font color=\"red\">" << i << " : "
-           << manager->getLocDotLabel(cache_state) << "</font></td> </tr> "
+           << "\"> <b>" << i << " : "
+           << manager->getLocDotLabel(cache_state) << "</b></td> </tr> "
            << endl;
-      vector<string> couter_labels=manager-> getCounterDotLabel( cache_state);
-      for( auto & l: couter_labels){
+      vector<string> couter_labels = manager->getCounterDotLabel(cache_state);
+      for (auto &l : couter_labels) {
         fout << "<tr><td COLSPAN=\"" << clock_num + 1
-             << "\"> <font color=\"blue\">"
-             << l << "</font></td> </tr> "
+             << "\"> <font color=\"blue\">" << l << "</font></td> </tr> "
              << endl;
       }
-      
+
       manager->getClockManager().dumpDot(fout, manager->getDBM(cache_state));
       fout << "</table>";
       fout << ">];" << endl;
@@ -171,9 +172,36 @@ public:
       compress_state.decode(&(process_states[parent * len]), cache_state);
       compress_state.decode(&(process_states[i * len]), convert_C_t);
       fout << "\t" << state_parent[i] << " -> " << i << "  [label=\"";
+      int diff_num = 0;
       for (int j = 0; j < component_num; j++) {
-        if (cache_state[j] != convert_C_t[j]) {
-          fout << j << " ";
+        if (manager->getLocationID(j, cache_state) !=
+            manager->getLocationID(j, convert_C_t)) {
+          if (0 == diff_num) {
+            fout << j;
+          } else {
+            fout << ", " << j;
+          }
+          diff_num++;
+        }
+      }
+      fout << "\"];" << endl;
+    }
+    for (auto &p : passed_pair) {
+      compress_state.decode(&(process_states[p.first * len]), cache_state);
+      compress_state.decode(&(process_states[p.second * len]), convert_C_t);
+
+      fout << "\t" << p.first << " -> " << p.second
+           << "  [style=dotted color=red label=\"";
+      int diff_num = 0;
+      for (int j = 0; j < component_num; j++) {
+        if (manager->getLocationID(j, cache_state) !=
+            manager->getLocationID(j, convert_C_t)) {
+          if (0 == diff_num) {
+            fout << j;
+          } else {
+            fout << ", " << j;
+          }
+          diff_num++;
         }
       }
       fout << "\"];" << endl;
@@ -198,9 +226,42 @@ private:
   inline bool addToReachableSet(const State_t *const state) {
 
     compress_state.encode(state, convert_UINT);
-    return reach_set.add(convert_UINT) > -1;
+#ifdef DRAW_GRAPH
+    int re = reach_set.add(convert_UINT);
+    if (re != NOT_FOUND) {
+      return true;
+    } else {
+      int target = findPassEd(convert_UINT);
+      assert(target != NOT_FOUND);
+      passed_pair.push_back(make_pair(current_parent, target));
+      return false;
+    }
+#else
+    return reach_set.add(convert_UINT) != NOT_FOUND;
+#endif
+  }
 
-    return true;
+  int findPassEd(const UINT *state) const {
+    int len = compress_state.getCompressionSize();
+    int head_part_len = compress_state.getCompressionHeadSize();
+    int bodySize = len - head_part_len;
+
+    for (size_t i = 0; i < state_parent.size(); i++) {
+      if (0 == memcmp(state, &(process_states[i * len]),
+                      head_part_len * sizeof(UINT))) {
+        int j = 0;
+        for (; j < bodySize; j++) {
+          if (state[head_part_len + j] >
+              process_states[i * len + head_part_len + j]) {
+            break;
+          }
+        }
+        if (j == bodySize) {
+          return i;
+        }
+      }
+    }
+    return NOT_FOUND;
   }
 
 private:
@@ -220,6 +281,7 @@ private:
   vector<UINT> process_states;
   vector<int> state_parent;
   int current_parent;
+  vector<pair<int, int>> passed_pair;
 #endif
 
 }; // namespace graphsat
