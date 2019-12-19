@@ -31,6 +31,9 @@
 
 #include "problem/pmcp.hpp"
 
+#include "benchmark/train_gate.h"
+
+
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -325,7 +328,6 @@ void fisher(int n) {
 
   A_req += ClockReset(x, Argument(0)); // x-->0
 
-
   typename INT_TAS_t::T_t req_wait(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
   req_wait += cs2;
@@ -386,7 +388,6 @@ void fisher(int n) {
     sys += tma1;
   }
   sys.build();
-
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
@@ -691,6 +692,24 @@ void testcompression() {
       assert(dd[j] == d[j]);
     }
   }
+}
+void train_gate( const int n){
+  TrainGate TG;
+
+  INT_TAS_t tg_sys = TG.generate(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      tg_sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  tg_sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(tg_sys);
+
+  TrainGatePro prop(n);
+  prop.setCS(4);
+
+  if(reacher.satisfy(data, &prop)){
+    cout<<"some thing is wrong!"<<endl;
+  }
+  data.generatorDot("test.gv");
 }
 
 } // namespace graphsat

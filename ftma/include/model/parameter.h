@@ -10,9 +10,9 @@
 
 #ifndef __PARAMETER_H
 #define __PARAMETER_H
+#include <cassert>
 #include <map>
 #include <vector>
-#include<cassert>
 
 #include "util/typedef.h"
 

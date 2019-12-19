@@ -23,7 +23,6 @@
 #include "action/clockreset.h"
 #include "constraint/clockdiffcons.h"
 
-
 namespace graphsat {
 
 using std::vector;

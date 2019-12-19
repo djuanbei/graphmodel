@@ -24,20 +24,24 @@ namespace graphsat {
 
 using namespace std;
 struct BaseDecl {
+  int start_loc;
   string name;
   int num;
   int low, high;
   BaseDecl() {
+    start_loc=0;
     num = 0;
     low = DEFAULT_COUNTER_LOWER;
     high = DEFAULT_COUNTER_UPPER;
   }
   BaseDecl(const string &n) : name(n), num(1) {
+    start_loc=0;
     low = DEFAULT_COUNTER_LOWER;
     high = DEFAULT_COUNTER_UPPER;
   }
 
   BaseDecl(const string &n, int len, int l, int h) {
+    start_loc=0;
     name = n;
     num = len;
     low = l;
@@ -57,9 +61,7 @@ public:
   void setParent(VarDecl *p) { parent = p; }
   virtual Argument addClock(const std::string &n);
 
-  virtual ~VarDecl(){
-    
-  }
+  virtual ~VarDecl() {}
   virtual int addInt(const BaseDecl &ch);
 
   virtual int addInt(const string &name, int num = 1);
@@ -81,6 +83,8 @@ public:
   virtual int addType(const string &n, const TypeDefArray &type);
 
   virtual vector<string> getKeys(const TYPE_T type) const;
+
+  virtual vector<BaseDecl> getAllVar( const TYPE_T type) const;
 
   virtual vector<BaseDecl> getInts() const;
 

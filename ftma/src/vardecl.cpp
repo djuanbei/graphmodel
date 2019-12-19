@@ -163,6 +163,17 @@ vector<string> VarDecl::getKeys(const TYPE_T type) const {
   return re;
 }
 
+vector<BaseDecl> VarDecl::getAllVar( const TYPE_T type) const{
+  vector<BaseDecl> re;
+  vector<pair<string, vector<void *>>> counters = data.getValue(type);
+  for (vector<pair<string, vector<void *>>>::const_iterator it =
+           counters.begin();
+       it != counters.end(); it++) {
+    re.push_back(*((BaseDecl *)it->second[0]));
+  }
+  return re;
+}
+
 int VarDecl::getLocalKeyID(const TYPE_T type, const string &key) const {
   int re = 0;
   //  if(type==CLOCK_T|| type== CHAN_T){

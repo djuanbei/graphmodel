@@ -98,7 +98,6 @@ public:
       if ((*prop)(manager.get(), convert_C_t)) {
         return TRUE;
       }
-     
     }
     return UNKOWN;
   }
@@ -145,10 +144,26 @@ public:
     fout << "digraph G {" << endl;
 
     int len = compress_state.getCompressionSize();
-    
+    int clock_num=manager->getClockNumber( );
     for (size_t i = 0; i < state_parent.size(); i++) {
-      compress_state.decode(&(process_states[i*len]), cache_state);
-      fout<<i<<" [ label=\""<<i<<" : "<<manager->getDotLabel(cache_state) +"\"];"<<endl;
+      compress_state.decode(&(process_states[i * len]), cache_state);
+      fout << i << " [ label=<";
+      fout << "<table border=\"1\" >" << endl;
+      fout << "<tr><td COLSPAN=\"" << clock_num + 1
+           << "\"> <font color=\"red\">" << i << " : "
+           << manager->getLocDotLabel(cache_state) << "</font></td> </tr> "
+           << endl;
+      vector<string> couter_labels=manager-> getCounterDotLabel( cache_state);
+      for( auto & l: couter_labels){
+        fout << "<tr><td COLSPAN=\"" << clock_num + 1
+             << "\"> <font color=\"blue\">"
+             << l << "</font></td> </tr> "
+             << endl;
+      }
+      
+      manager->getClockManager().dumpDot(fout, manager->getDBM(cache_state));
+      fout << "</table>";
+      fout << ">];" << endl;
     }
 
     for (size_t i = 1; i < state_parent.size(); i++) {

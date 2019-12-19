@@ -57,6 +57,10 @@ public:
 
   int getClockStart() const { return clock_start_loc; }
 
+  int getClockNumber( ) const{
+    return clock_num;
+  }
+
   int getFreezeLocation() const { return freeze_location_index; }
   // check whether this state allow time delay
   bool isFreeze(const State_t *const state) const {
@@ -83,8 +87,6 @@ public:
                              const State_t *const state) const {
     return state[component + component_num] == NO_CHANNEL;
   }
-
-
 
   int *newState() const;
 
@@ -162,7 +164,10 @@ public:
 
   bool hasDiffCons() const;
 
-  string getDotLabel(const  State_t *const state) const;
+  string getLocDotLabel(const State_t *const state) const;
+
+  vector<string> getCounterDotLabel( const State_t *const state) const;
+  
 
   ostream &dump(const State_t *const state, ostream &out) const;
 
@@ -184,6 +189,7 @@ private:
   vector<Parameter> parameters;
   vector<int> node_nums;
   vector<int> link_nums;
+  int clock_num;
   int chan_num;
   bool hasDiff;
   bool hasChannel() const;

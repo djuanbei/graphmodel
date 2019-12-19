@@ -183,6 +183,25 @@ public:
     stateManager->destroyState(state);
   }
 
+
+  virtual vector<BaseDecl> getAllVar( const TYPE_T type) const{
+    vector<BaseDecl> re=VarDecl::getAllVar( type);
+    int id_start=0;
+    for( auto &e: re){
+      e.start_loc=id_start;
+      id_start+=e.num;
+    }
+    for(auto &e :agents ){
+      vector<BaseDecl> dummy=e->agent_tempate->getAllVar( type);
+      for( auto &ee: dummy){
+        ee.start_loc=id_start;
+        id_start+=ee.num;
+        re.push_back( ee);
+      }
+    }
+    return re;
+  }
+
   int getTypeStart(const TYPE_T type) const {
     // clock and channel id start with 1
     if (CLOCK_T == type || CHAN_T == type) {
@@ -230,7 +249,6 @@ public:
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
   }
-
 
 private:
   void transfrom(shared_ptr<Agent_t> &agent) {

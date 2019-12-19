@@ -74,10 +74,40 @@ int *DBMFactory::randomFeasiableDBM() {
   return dbm;
 }
 
+ostream &DBMFactory::dumpDot(ostream &out, const int *const dbm,
+                             const int clock_num) {
+
+  int MAX_INT = getMAX_INT<int>();
+  for (int i = 0; i < clock_num; i++) {
+    out << "<tr> ";
+    for (int j = 0; j < clock_num; j++) {
+      out << "<td>";
+      int v = dbm[LOC_N(i, j, clock_num)];
+      out << setw(3);
+      if (isStrict<int>(v)) {
+        out << "&lt;";
+      } else {
+        out << "&lt;=";
+      }
+      out << setw(4);
+      int right = getRight(v);
+      if (right >= MAX_INT / 2) {
+        out << std::left <<"&#8734;";
+      } else {
+        out << std::left << (int)right;
+      }
+      out << "</td>";
+    }
+    out << "</tr>" << endl;
+  }
+
+  return out;
+}
+
 ostream &DBMFactory::dump(ostream &out, const int *const dbm,
                           const int clock_num) {
   int MAX_INT = getMAX_INT<int>();
-  ;
+
   for (int i = 0; i < clock_num; i++) {
     out << "[ ";
     for (int j = 0; j < clock_num; j++) {

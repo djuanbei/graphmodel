@@ -209,12 +209,16 @@ public:
       return *this;
     }
     bool operator==(const const_iterator &other) const {
-   
-      return (data == other.data) && (it == other.it) && (first_index == other.first_index) &&(second_index==other.second_index);
+
+      return (data == other.data) && (it == other.it) &&
+             (first_index == other.first_index) &&
+             (second_index == other.second_index);
     }
 
     bool operator!=(const const_iterator &other) const {
-        return (data != other.data) || (it != other.it) || (first_index != other.first_index) ||(second_index!=other.second_index);
+      return (data != other.data) || (it != other.it) ||
+             (first_index != other.first_index) ||
+             (second_index != other.second_index);
     }
 
     const T *operator*() const {

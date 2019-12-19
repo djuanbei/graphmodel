@@ -4,21 +4,21 @@
 
 namespace graphsat {
 TMStateManager::TMStateManager(const INT_TAS_t &s,
-                               const vector<Counter> &ecounters, int clock_num,
+                               const vector<Counter> &ecounters, int out_clock_num,
                                const vector<int> &oclock_upper_bounds,
                                const vector<int> &nodes,
                                const vector<int> &links)
     : sys(s) {
-
+  clock_num=out_clock_num;
   assert((int)oclock_upper_bounds.size() == 2 * clock_num + 2);
+  
   state_length = 0;
   component_num = s.getComponentNumber();
 
   clock_upper_bounds = oclock_upper_bounds;
   node_nums = nodes;
   link_nums = links;
-  chan_num=sys.getChanNum( );
-  
+  chan_num = sys.getChanNum();
 
   if (chan_num > 0) {
     counter_start_loc = 2 * component_num;
@@ -33,7 +33,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   clock_start_loc = state_length;
 
   state_length += (clock_num + 1) * (clock_num + 1);
-  hasDiff=!sys.getDiffCons().empty( );
+  hasDiff = !sys.getDiffCons().empty();
   dbm_manager = DBMFactory(clock_num, clock_upper_bounds, sys.getDiffCons());
   counters = ecounters;
 }
@@ -68,8 +68,7 @@ Compression<int> TMStateManager::getHeadCompression() const {
 
   if (chan_num > 0) {
     for (int component_id = 0; component_id < component_num; component_id++) {
-      re_comp.setBound(component_id + component_num, -chan_num,
-                       chan_num);
+      re_comp.setBound(component_id + component_num, -chan_num, chan_num);
     }
   }
   int k = 0;
@@ -175,18 +174,43 @@ void TMStateManager::constructState(const int component_id, const int target,
     setCommitState(component_id, re_state);
   }
 }
-string TMStateManager::getDotLabel(const  State_t *const state) const{
+string TMStateManager::getLocDotLabel(const State_t *const state) const {
   string re="";
-  for( int i=0; i< component_num; i++){
-    int loc=getLocationID(i, state );
-    if( i!=0){
-      re+=","+getLocationName( i, loc);
-    }else{
-      re+=getLocationName( i, loc);
+  for (int i = 0; i < component_num; i++) {
+    int loc = getLocationID(i, state);
+    if (i != 0) {
+      re += ", " + getLocationName(i, loc);
+    } else {
+      re += getLocationName(i, loc);
     }
   }
   return re;
 }
+
+vector<string> TMStateManager::getCounterDotLabel( const State_t *const state) const{
+
+  vector<string> re;
+  const State_t *counter_value=getCounterValue(const_cast<int*>(state) );
+  vector<BaseDecl>  vars=sys.getAllVar( INT_T);
+  for( auto &e: vars ){
+    string item=e.name;
+    if( e.num==1){
+      item+=" = "+to_string(counter_value[ e.start_loc]);
+    }else{
+      item+=" = [";
+      for(int i=0; i< e.num; i++ ){
+        if( i>0){
+          item+=",";
+        }
+        item+=to_string(counter_value[ e.start_loc+i])+" ";
+      }
+      item+="]";
+    }
+    re.push_back( item);
+  }
+  return re;
+}
+
 
 void TMStateManager::constructState(const int component_id, const int target,
                                     bool isCommit, State_t *state) const {

@@ -40,8 +40,6 @@ extern int yy_flex_debug;
 using std::vector;
 using namespace graphsat;
 
-
-
 void test() {
 
   TrainGate TG;
@@ -56,11 +54,12 @@ void test() {
 }
 
 int main(int argc, const char *argv[]) {
-  fisher(3);
+  train_gate( 2);
+  //fisher(2);
   return 0;
-  
- // test();
- // return 0;
+
+  // test();
+  // return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
   logSet();

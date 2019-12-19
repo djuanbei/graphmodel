@@ -47,6 +47,9 @@ using namespace std;
   FUN##Impl(new##dbm);                                                         \
   return new##dbm;
 
+static const string DBM_DOT_TABLE_HEADER =
+    "<table border=\"1\"  bgcolor=\"#00FF00\" >";
+
 class DBMFactory {
 
 public:
@@ -108,7 +111,14 @@ public:
 
   int getSize() const { return matrix_size; }
 
+  static ostream &dumpDot(ostream &out, const int *const dbm,
+                          const int clock_num);
+
   static ostream &dump(ostream &out, const int *const dbm, const int clock_num);
+
+  ostream &dumpDot(ostream &out, const int *const dbm) const {
+    return DBMFactory::dumpDot(out, dbm, clock_num);
+  }
 
   ostream &dump(ostream &out, const int *const dbm) const {
     return DBMFactory::dump(out, dbm, clock_num);

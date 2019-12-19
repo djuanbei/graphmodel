@@ -36,6 +36,8 @@ void testOP();
 
 void testcompression();
 
+void train_gate( const int n);
+
 } // namespace graphsat
 
 #endif
