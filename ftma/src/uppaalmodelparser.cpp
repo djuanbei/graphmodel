@@ -122,9 +122,8 @@ int UppaalParser::parseSystem(XML_P system) {
      * System declaration the corresponding  automation without parameter.
      */
     if (formal_parameter_list.empty()) {
-      shared_ptr<Agent_t> tma(
-          new Agent_t(template_map[component->tmt_name].tat, parameter));
-      sys += tma;
+      shared_ptr<Agent_t> tma=sys.createAgent(template_map[component->tmt_name].tat, parameter);
+      //sys += tma;
     } else if (component->has_parameter) {
       int para_id = 0;
       for (auto formal_p : formal_parameter_list) {
@@ -148,10 +147,9 @@ int UppaalParser::parseSystem(XML_P system) {
         }
         para_id++;
       }
-      shared_ptr<typename INT_TAS_t::Agent_t> tma(
-          new Agent_t(template_map[component->tmt_name].tat, parameter));
+      shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(template_map[component->tmt_name].tat, parameter);
 
-      sys += tma;
+    //sys += tma;
 
     } else {
       // If template has paramters, then the number of parameters is exactly
@@ -163,9 +161,8 @@ int UppaalParser::parseSystem(XML_P system) {
               ->type_name);
       for (auto e : iarray) {
         parameter.setParameterMap(0, e);
-        shared_ptr<typename INT_TAS_t::Agent_t> tma(
-            new Agent_t(template_map[component->tmt_name].tat, parameter));
-        sys += tma;
+        shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(template_map[component->tmt_name].tat, parameter);
+        //sys += tma;
       }
     }
   }

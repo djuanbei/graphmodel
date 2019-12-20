@@ -77,16 +77,14 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
 
   int n = sys["N"];
   Parameter param = gate_tmt->getParameter();
-  shared_ptr<typename INT_TAS_t::Agent_t> tma(
-      new INT_TAS_t::Agent_t(gate_tmt, param));
-  sys += tma;
+  shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(gate_tmt, param);
+  //sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma(
-        new INT_TAS_t::Agent_t(train_tmt, param));
-    sys += tma;
+    shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(train_tmt, param);
+   // sys += tma;
   }
   sys.build();
 
@@ -136,16 +134,14 @@ TEST_F(GraphModelTest, constraint) {
   sys.removeAgent();
   int n = sys["N"];
   Parameter param = gate_tmt->getParameter();
-  shared_ptr<typename INT_TAS_t::Agent_t> tma(
-      new INT_TAS_t::Agent_t(gate_tmt, param));
-  sys += tma;
+  shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(gate_tmt, param);
+  //sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma(
-        new INT_TAS_t::Agent_t(train_tmt, param));
-    sys += tma;
+    shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(train_tmt, param);
+   // sys += tma;
   }
   sys.build();
 
@@ -198,16 +194,14 @@ TEST_F(GraphModelTest, Channel) {
   sys.removeAgent();
   int n = sys["N"];
   Parameter param = gate_tmt->getParameter();
-  shared_ptr<typename INT_TAS_t::Agent_t> tma(
-      new INT_TAS_t::Agent_t(gate_tmt, param));
-  sys += tma;
+  shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(gate_tmt, param);
+ // sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma(
-        new INT_TAS_t::Agent_t(train_tmt, param));
-    sys += tma;
+    shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(train_tmt, param);
+    //sys += tma;
   }
   sys.build();
 
@@ -257,16 +251,14 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   sys.removeAgent();
   int n = sys["N"];
   Parameter param = gate_tmt->getParameter();
-  shared_ptr<typename INT_TAS_t::Agent_t> tma(
-      new INT_TAS_t::Agent_t(gate_tmt, param));
-  sys += tma;
+  shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(gate_tmt, param);
+  //sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma(
-        new INT_TAS_t::Agent_t(train_tmt, param));
-    sys += tma;
+    shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(train_tmt, param);
+  //  sys += tma;
   }
   sys.build();
 

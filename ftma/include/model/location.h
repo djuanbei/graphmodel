@@ -32,17 +32,21 @@ public:
     location_id = loc_id;
     type = NORMOAL_LOC;
     name = LOC_NAME_PRE + to_string(loc_id);
+        
+    hasOutUrgentChan=hasOutBreakcastChan=false;
   }
 
   explicit Location(int loc_id, Location_Type etype) {
     location_id = loc_id;
     type = etype;
     name = LOC_NAME_PRE + to_string(loc_id);
+    hasOutUrgentChan=hasOutBreakcastChan=false;
   }
   explicit Location(int loc_id, const string &n) {
     location_id = loc_id;
     type = NORMOAL_LOC;
     name = n;
+    hasOutUrgentChan=hasOutBreakcastChan=false;
   }
   int getId() const { return location_id; }
 
@@ -115,6 +119,23 @@ public:
   bool operator()(const DBMFactory &dbm_manager, const int *const dbm,
                   vector<int *> &re_vec) const;
 
+  void setHasOutUrgentCh( bool b){
+    hasOutUrgentChan=b;
+  }
+  
+  bool hasOutUrgentCh( ) const{
+    return hasOutUrgentChan;    
+  }
+
+
+  void setHasOutBreakcastCh( bool b){
+    hasOutBreakcastChan=b;
+  }
+  bool hasOutBreakcastCh( ) const{
+    return hasOutBreakcastChan;
+  }
+
+
   /**
    * Add one invariant to this location
    *
@@ -142,6 +163,8 @@ private:
   int location_id;
   string name;
   Location_Type type;
+  bool  hasOutUrgentChan, hasOutBreakcastChan;
+  
 };
 } // namespace graphsat
 

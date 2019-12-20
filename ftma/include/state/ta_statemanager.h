@@ -60,88 +60,97 @@ public:
   int getClockNumber() const { return clock_num; }
 
   int getFreezeLocation() const { return freeze_location_index; }
+  
   // check whether this state allow time delay
-  bool isFreeze(const State_t *const state) const {
+  bool isFreeze(const int *const state) const {
     return state[freeze_location_index] > 0;
   }
+  
 
-  void unBlock(const int comp_id, State_t *state) const {
+
+  void unBlock(const int comp_id, int *state) const {
     state[comp_id + component_num] = NO_CHANNEL;
   }
 
-  bool isBlock(const int comp_id, const State_t *const state) const {
+  bool isBlock(const int comp_id, const int *const state) const {
     return hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
   }
+
+    // check wether there is a pair out transion with pair urgent channels
+  bool hasMatchOutUrgentChan(const int *const state) const;
+
+  //check wether there is a out transition with  breakcast send channel
+  bool hasOutBreakcastChan(const int * const state) const;
 
   Compression<int> getHeadCompression() const;
 
   Compression<int> getBodyCompression() const;
 
-  int getLocationID(const int component, const State_t *const state) const;
+  int getLocationID(const int component, const int *const state) const;
 
   string getLocationName(const int component, const int loc_ID) const;
 
   inline bool withoutChannel(const int component,
-                             const State_t *const state) const {
+                             const int *const state) const {
     return state[component + component_num] == NO_CHANNEL;
   }
 
   int *newState() const;
 
-  void copy(State_t *des_state, const State_t *const source_state) const {
+  void copy(int *des_state, const int *const source_state) const {
     memcpy(des_state, source_state, state_length * sizeof(int));
   }
 
-  int *newState(const State_t *const state) const {
+  int *newState(const int *const state) const {
     int *re = new int[state_length];
     memcpy(re, state, state_length * sizeof(int));
     return re;
   }
 
-  void destroyState(State_t *state) const { delete[] state; }
+  void destroyState(int *state) const { delete[] state; }
 
   int getComponentNum() const { return component_num; }
   inline const DBMFactory &getClockManager() const { return dbm_manager; }
 
-  void norm(const State_t *const dbm, vector<State_t *> &re_vec) const {
+  void norm(const int *const dbm, vector<int *> &re_vec) const {
     int *newDBM = dbm_manager.createDBM(dbm);
     dbm_manager.norm(newDBM, re_vec);
   }
 
   void norm(int *dbm) const { dbm_manager.norm(dbm); }
 
-  inline int *getDBM(State_t *state) const { return state + clock_start_loc; }
+  inline int *getDBM(int *state) const { return state + clock_start_loc; }
 
-  inline const int *getDBM(const State_t *const state) const {
+  inline const int *getDBM(const int *const state) const {
     return state + clock_start_loc;
   }
 
-  inline int *getCounterValue(State_t *state) const {
+  inline int *getCounterValue(int *state) const {
     return state + counter_start_loc;
   }
 
-  inline const int *getCounterValue(const State_t *const state) const {
+  inline const int *getCounterValue(const int *const state) const {
     return state + counter_start_loc;
   }
 
-  inline void andImpl(const ClockConstraint &cs, State_t *state) const {
+  inline void andImpl(const ClockConstraint &cs, int *state) const {
     return dbm_manager.andImpl(getDBM(state), cs);
   }
-  inline bool isConsistent(State_t *state) const {
+  inline bool isConsistent(int *state) const {
     return dbm_manager.isConsistent(getDBM(state));
   }
 
-  vector<int> blockComponents(const int chid, const State_t *const state) const;
+  vector<int> blockComponents(const int chid, const int *const state) const;
 
   void constructState(const int component_id, const int target,
-                      const State_t *const state, State_t *dbm, bool isCommit,
-                      State_t *re_state) const;
+                      const int *const state, int *dbm, bool isCommit,
+                      int *re_state) const;
 
   void constructState(const int component_id, const int target, bool isCommit,
-                      State_t *state) const;
+                      int *state) const;
 
   inline bool isCommitComp(const int component_id,
-                           const State_t *const state) const {
+                           const int *const state) const {
     return state[component_id] < 0;
   }
 
@@ -151,24 +160,24 @@ public:
    * @param component_id component id
    * @param state set state
    */
-  inline void setCommitState(const int component_id, State_t *state) const {
+  inline void setCommitState(const int component_id, int *state) const {
     state[component_id] = -1 - state[component_id];
   }
 
   inline int getCommitLoc(const int component_id,
-                          const State_t *const state) const {
+                          const int *const state) const {
     return -(state[component_id]) - 1;
   }
 
   bool hasDiffCons() const;
 
-  string getLocDotLabel(const State_t *const state) const;
+  string getLocDotLabel(const int *const state) const;
 
-  vector<string> getCounterDotLabel(const State_t *const state) const;
+  vector<string> getCounterDotLabel(const int *const state) const;
 
-  ostream &dump(const State_t *const state, ostream &out) const;
+  ostream &dump(const int *const state, ostream &out) const;
 
-  void dump(const State_t *const state) const { dump(state, cout); }
+  void dump(const int *const state) const { dump(state, cout); }
 
 private:
   const INT_TAS_t &sys;

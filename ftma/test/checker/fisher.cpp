@@ -73,9 +73,9 @@ TEST(TA, UNREACH) {
 
   Parameter param = tmt1->getParameter();
 
-  shared_ptr<INT_TAS_t::Agent_t> tma1(new INT_TAS_t::Agent_t(tmt1, param));
+  shared_ptr<INT_TAS_t::Agent_t> tma1=sys.createAgent(tmt1, param);
 
-  sys += tma1;
+ // sys += tma1;
   sys.build();
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
@@ -145,9 +145,9 @@ TEST(REACHSET, TERIMINAL) {
   tmt1->initial(ls, es, 0);
   Parameter param = tmt1->getParameter();
 
-  shared_ptr<INT_TAS_t::Agent_t> tma1(new INT_TAS_t::Agent_t(tmt1, param));
+  shared_ptr<INT_TAS_t::Agent_t> tma1=sys.createAgent(tmt1, param);
 
-  sys += tma1;
+  //sys += tma1;
   sys.build();
 
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
@@ -251,10 +251,9 @@ TEST(REACHSET, FISHER) {
 
     param.setParameterMap("pid",
                           i); // add relation between local id and global id
-    shared_ptr<typename INT_TAS_t::Agent_t> tma1(
-        new INT_TAS_t::Agent_t(tmt1, param));
+    shared_ptr<typename INT_TAS_t::Agent_t> tma1=sys.createAgent(tmt1, param);
 
-    sys += tma1;
+   // sys += tma1;
   }
   sys.build();
   EXPECT_EQ(sys.getChanNum(), 0);

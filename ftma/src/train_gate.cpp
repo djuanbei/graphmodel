@@ -219,14 +219,14 @@ INT_TAS_t TrainGate::generate(int n) const {
   gate_tmt->initial(gls, ges, 0);
 
   Parameter param = gate_tmt->getParameter();
-  shared_ptr<typename INT_TAS_t::Agent_t> tma(new Agent_t(gate_tmt, param));
-  sys += tma;
+  shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(gate_tmt, param);
+  //  sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma(new Agent_t(train_tmt, param));
-    sys += tma;
+    shared_ptr<typename INT_TAS_t::Agent_t> tma=sys.createAgent(train_tmt, param);
+    //sys += tma;
   }
   sys.build();
 

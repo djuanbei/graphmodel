@@ -50,6 +50,7 @@ public:
   AgentSystem() {
     clock_max_value[0] = 0;
     counter_num = chan_num = 0;
+    hasUrgentChan=hasBroadcaseChan=false;
   }
   virtual ~AgentSystem() {}
 
@@ -60,12 +61,10 @@ public:
     templates.push_back(re);
     return re;
   }
-
-  AgentSystem &operator+=(shared_ptr<Agent_t> &agent) {
-
-    agents.push_back(agent);
-
-    return *this;
+  shared_ptr<Agent_t> createAgent(const shared_ptr<AgentTemplate_t> &template_arg, const Parameter &param ){
+    shared_ptr<Agent_t> re( new Agent_t(template_arg, param ));
+    agents.push_back(re);
+    return re;
   }
 
   void removeAgent() {
@@ -78,6 +77,38 @@ public:
   int getComponentNumber() const { return (int)agents.size(); }
 
   int getChanNum() const { return chan_num; }
+  
+  bool hasUrgentCh( const int component, const int  loc  )const{
+    return agents[ component]->locations[ loc].hasOutUrgentCh( );
+  }
+  
+  vector<int> getOutUrgent(const int component, const int  loc, State_t * state )const{
+    vector<int> re;
+    vector<int> outs=agents[ component]->graph.getAdj( loc);
+    for(auto link: outs ){
+      if(agents[ component]->transitions[ link].hasChannel( ) ){
+        if(agents[ component]->transitions[ link].getChannel( ).getType( )==URGENT_CH ){
+          int chid=agents[ component]->transitions[ link].getChannel( ).getGlobalId( state);
+          if(agents[ component]->transitions[ link].getChannel( ).isSend( )){
+            re.push_back( chid);
+          }else{
+            re.push_back( -chid);
+          }
+        }
+      }
+    }
+    return re;
+    
+  }
+  
+  bool hasUrgentCh( ) const{
+    return hasUrgentChan;
+  }
+  
+  bool hasBroadcaseCh( ) const{
+    return hasBroadcaseChan;
+  }
+
 
   const vector<ClockConstraint> &getDiffCons() const { return difference_cons; }
 
@@ -279,6 +310,13 @@ private:
 
     agent->initial();
 
+    if( agent->hasUrgentChan){
+      hasUrgentChan=true;
+    }
+    if( agent->hasBroadcaseChan){
+      hasBroadcaseChan=true;
+    }
+
     chan_num += agent->getChannelNumber();
 
     initial_loc.push_back(agent->getInitialLoc());
@@ -311,6 +349,9 @@ private:
   vector<ClockConstraint> difference_cons;
 
   shared_ptr<StateManager_t> stateManager;
+
+  bool hasUrgentChan;
+  bool hasBroadcaseChan;
   template <typename TT> friend class Reachability;
 };
 

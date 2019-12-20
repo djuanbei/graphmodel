@@ -107,6 +107,7 @@ public:
   }
 
   const Channel &getChannel() const { return channel; }
+  
 
   bool hasChannel() const { return has_channel; }
 

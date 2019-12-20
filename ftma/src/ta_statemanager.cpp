@@ -50,6 +50,25 @@ int *TMStateManager::newState() const {
   return re_state;
 }
 
+bool TMStateManager::hasMatchOutUrgentChan( const int *const state) const{
+  if(sys.hasUrgentCh( ) ){
+    const int * counter_value=getCounterValue( state);
+    vector<vector<int> > chids(component_num );
+    for( int comp=0; comp<component_num; comp++ ){
+      int loc=getLocationID( comp, state);
+      if( sys.hasUrgentCh( comp, loc)){
+        chids[ comp]=sys.getOutUrgent(comp, loc, const_cast<int*>(counter_value)  );
+      }
+    }
+  }
+  return false;
+}
+
+bool TMStateManager::hasOutBreakcastChan( const int *const state) const{
+  return false;
+}
+
+
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);
   if (chan_num > 0) {
@@ -116,15 +135,12 @@ Compression<int> TMStateManager::getBodyCompression() const {
   return re_comp;
 }
 
-// bool TMStateManager::transitionReady(const int component, const int link,
-//                                      const State_t *const state) const {
-//   return sys.transitionReady(component, link, state);
-// }
+
 
 bool TMStateManager::hasDiffCons() const { return hasDiff; }
 
 int TMStateManager::getLocationID(const int component,
-                                  const State_t *const state) const {
+                                  const int *const state) const {
   int re = state[component];
 
   if (isCommitComp(component, state)) { // commit location
@@ -146,7 +162,7 @@ string TMStateManager::getLocationName(const int component,
 bool TMStateManager::hasChannel() const { return sys.getChanNum() > 0; }
 
 vector<int> TMStateManager::blockComponents(const int chid,
-                                            const State_t *const state) const {
+                                            const int *const state) const {
   vector<int> re_block_components;
   for (int i = 0; i < component_num; i++) {
 
@@ -163,8 +179,8 @@ vector<int> TMStateManager::blockComponents(const int chid,
 }
 
 void TMStateManager::constructState(const int component_id, const int target,
-                                    const State_t *const state, State_t *dbm,
-                                    bool isCommit, State_t *re_state) const {
+                                    const int *const state, int *dbm,
+                                    bool isCommit, int *re_state) const {
 
   memcpy(re_state, state, clock_start_loc * sizeof(int));
 
@@ -175,7 +191,7 @@ void TMStateManager::constructState(const int component_id, const int target,
     setCommitState(component_id, re_state);
   }
 }
-string TMStateManager::getLocDotLabel(const State_t *const state) const {
+string TMStateManager::getLocDotLabel(const int *const state) const {
   string re = "";
   for (int i = 0; i < component_num; i++) {
     int loc = getLocationID(i, state);
@@ -189,10 +205,10 @@ string TMStateManager::getLocDotLabel(const State_t *const state) const {
 }
 
 vector<string>
-TMStateManager::getCounterDotLabel(const State_t *const state) const {
+TMStateManager::getCounterDotLabel(const int *const state) const {
 
   vector<string> re;
-  const State_t *counter_value = getCounterValue(const_cast<int *>(state));
+  const int *counter_value = getCounterValue(const_cast<int *>(state));
   vector<BaseDecl> vars = sys.getAllVar(INT_T);
   for (auto &e : vars) {
     string item = e.name;
@@ -214,14 +230,14 @@ TMStateManager::getCounterDotLabel(const State_t *const state) const {
 }
 
 void TMStateManager::constructState(const int component_id, const int target,
-                                    bool isCommit, State_t *state) const {
+                                    bool isCommit, int *state) const {
   state[component_id] = target;
   if (isCommit) {
     setCommitState(component_id, state);
   }
 }
 
-ostream &TMStateManager::dump(const State_t *const state, ostream &out) const {
+ostream &TMStateManager::dump(const int *const state, ostream &out) const {
 
   for (int i = 0; i < component_num; i++) {
 

@@ -221,10 +221,9 @@ void example2(void) {
   tmt1->initial(ls, es, 0);
 
   Parameter param = tmt1->getParameter();
-  shared_ptr<typename INT_TAS_t::Agent_t> tma1(
-      new typename INT_TAS_t::Agent_t(tmt1, param));
+  shared_ptr<typename INT_TAS_t::Agent_t> tma1=sys.createAgent(tmt1, param);
 
-  sys += tma1;
+  //sys += tma1;
   sys.build();
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
@@ -382,9 +381,9 @@ void fisher(int n) {
     Parameter param = tmt1->getParameter();
 
     param.setParameterMap("pid", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
+    shared_ptr<typename INT_TAS_t::Agent_t> tma1=sys.createAgent(tmt1, param);
 
-    sys += tma1;
+    //sys += tma1;
   }
   sys.build();
 
@@ -528,9 +527,9 @@ void incrementalTest() {
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt1->getParameter();
     param.setParameterMap("pid", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
+    shared_ptr<typename INT_TAS_t::Agent_t> tma1=sys.createAgent(tmt1, param);
 
-    sys += tma1;
+    //sys += tma1;
   }
 
   // Counter counter( 0, 100 );
@@ -560,9 +559,9 @@ void incrementalTest() {
   for (int i = 1; i <= 2; i++) {
     Parameter param = tmt1->getParameter();
     param.setParameterMap("pid", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma1(new Agent_t(tmt1, param));
+    shared_ptr<typename INT_TAS_t::Agent_t> tma1=sys1.createAgent(tmt1, param);
 
-    sys1 += tma1;
+    //sys1 += tma1;
   }
   // sys1.setCounterNum( 1 );
   // sys1.setCounter( 0, counter );
