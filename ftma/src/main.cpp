@@ -55,7 +55,7 @@ void test() {
 
 int main(int argc, const char *argv[]) {
   train_gate(2);
-  //fisher(2);
+  // fisher(2);
   return 0;
 
   // test();

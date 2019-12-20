@@ -114,7 +114,8 @@ private:
    One discrete step
    */
   template <typename D>
-  bool oneDiscreteStep(D &data, const Property *prop, const State_t *const state) {
+  bool oneDiscreteStep(D &data, const Property *prop,
+                       const State_t *const state) {
 #ifdef DRAW_GRAPH
     data.incCurrentParent();
 
@@ -122,17 +123,17 @@ private:
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
-    
-    // If  there has two out transition with match send and recive urgent channel
-    if(manager->hasMatchOutUrgentChan(state)){
-      //TODO:
+
+    // If  there has two out transition with match send and recive urgent
+    // channel
+    if (manager->hasMatchOutUrgentChan(state)) {
+      // TODO:
     }
-    //If there has at less one out transition with breakcast sene channel
-    if(manager->hasOutBreakcastChan(state)){
-      //TODO:
+    // If there has at less one out transition with breakcast sene channel
+    if (manager->hasOutBreakcastChan(state)) {
+      // TODO:
     }
-    
-    
+
     /**
      freeze state the time can not delay
      */
@@ -223,8 +224,9 @@ private:
    */
   template <typename D>
   bool unBlockOne(D &data, const int current_component,
-                  const int block_component_id, const int link, const State_t * const state,
-                  const Property *prop, bool is_send) {
+                  const int block_component_id, const int link,
+                  const State_t *const state, const Property *prop,
+                  bool is_send) {
 
     manager->copy(next_state, state);
     manager->unBlock(block_component_id, next_state);
@@ -326,11 +328,13 @@ private:
    */
   template <typename D>
   bool doSynchronize(D &data, int component, const Property *prop,
-                     const State_t *const state, int link, const Channel &channel) {
+                     const State_t *const state, int link,
+                     const Channel &channel) {
 
     vector<int> wait_components;
     bool is_send = true;
-    State_t *counter_value = const_cast<State_t*>(manager->getCounterValue(state));
+    State_t *counter_value =
+        const_cast<State_t *>(manager->getCounterValue(state));
     if (channel.isSend()) {
 
       wait_components =
@@ -342,19 +346,18 @@ private:
     }
     if (!wait_components.empty()) {
       // TODO: check all the channel type
-      if (channel.getType() == ONE2ONE_CH ) {
+      if (channel.getType() == ONE2ONE_CH) {
         std::uniform_int_distribution<int> distribution(
             0, (int)wait_components.size() - 1);
         int id = distribution(generator);
         int block_component_id = wait_components[id];
         return unBlockOne(data, component, block_component_id, link, state,
                           prop, is_send);
-      }else if(channel.getType() == URGENT_CH){
-        //TODO:URGENT_CH
+      } else if (channel.getType() == URGENT_CH) {
+        // TODO:URGENT_CH
         assert(false && "Deal with urgent channel.");
         return true;
-      }
-      else if (channel.getType() == BROADCAST_CH) {
+      } else if (channel.getType() == BROADCAST_CH) {
         for (auto id : wait_components) {
           int block_component_id = wait_components[id];
           if (unBlockOne(data, component, block_component_id, link, state, prop,
@@ -366,7 +369,8 @@ private:
 
     } else {
       manager->copy(cache_state, state);
-      State_t *counter_value = const_cast<State_t*>(manager->getCounterValue(state));
+      State_t *counter_value =
+          const_cast<State_t *>(manager->getCounterValue(state));
       assert(channel.getGlobalId(counter_value) > 0); // chan it starts with 1
       if (channel.isSend()) {
         cache_state[component + component_num] =
@@ -428,7 +432,7 @@ private:
 
     if (!sys.agents[component]->locations[target].isReachable(
             manager->getClockManager(), manager->getDBM(state))) {
-      //TODO: undefine state
+      // TODO: undefine state
       return false;
     }
     state[component] = target;
@@ -512,10 +516,11 @@ private:
     return (*prop)(manager.get(), state);
   }
 #endif
+  const SYS &sys;
 
   shared_ptr<const typename SYS::StateManager_t> manager;
   int component_num;
-  const SYS &sys;
+
   State_t *cache_state;
   State_t *next_state;
   std::default_random_engine generator;

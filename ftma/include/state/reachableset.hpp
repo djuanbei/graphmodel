@@ -151,8 +151,7 @@ public:
       compress_state.decode(&(process_states[i * len]), cache_state);
       fout << i << " [ shape=none, label=<";
       fout << "<table border=\"1\" >" << endl;
-      fout << "<tr><td COLSPAN=\"" << clock_num + 1
-           << "\"> <b>" << i << " : "
+      fout << "<tr><td COLSPAN=\"" << clock_num + 1 << "\"> <b>" << i << " : "
            << manager->getLocDotLabel(cache_state) << "</b></td> </tr> "
            << endl;
       vector<string> couter_labels = manager->getCounterDotLabel(cache_state);

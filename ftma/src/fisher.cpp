@@ -97,8 +97,8 @@ INT_TAS_t FisherGenerator::generate(int n) const {
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt->getParameter();
     param.setParameterMap("pid", i);
-    shared_ptr<typename INT_TAS_t::Agent_t> tma =re.createAgent(tmt, param);
-    //re += tma;
+    shared_ptr<typename INT_TAS_t::Agent_t> tma = re.createAgent(tmt, param);
+    // re += tma;
   }
   re.build();
 

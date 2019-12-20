@@ -50,24 +50,48 @@ int *TMStateManager::newState() const {
   return re_state;
 }
 
-bool TMStateManager::hasMatchOutUrgentChan( const int *const state) const{
-  if(sys.hasUrgentCh( ) ){
-    const int * counter_value=getCounterValue( state);
-    vector<vector<int> > chids(component_num );
-    for( int comp=0; comp<component_num; comp++ ){
-      int loc=getLocationID( comp, state);
-      if( sys.hasUrgentCh( comp, loc)){
-        chids[ comp]=sys.getOutUrgent(comp, loc, const_cast<int*>(counter_value)  );
+bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
+  if (sys.hasUrgentCh()) {
+    const int *counter_value = getCounterValue(state);
+    set<int> send_part, receive_part;
+    for (int comp = 0; comp < component_num; comp++) {
+      int loc = getLocationID(comp, state);
+      if (sys.hasUrgentCh(comp, loc)) {
+        vector<int> dummy =
+            sys.getOutUrgent(comp, loc, const_cast<int *>(counter_value));
+        for (auto e : dummy) {
+          if (e > 0) {
+            if (receive_part.find(e) != receive_part.end()) {
+              return true;
+            }
+
+          } else {
+            if (send_part.find(e) != send_part.end()) {
+              return true;
+            }
+          }
+        }
+        for (auto e : dummy) {
+          if (e > 0) {
+            send_part.insert(e);
+          } else {
+            receive_part.insert(e);
+          }
+        }
       }
     }
   }
   return false;
 }
 
-bool TMStateManager::hasOutBreakcastChan( const int *const state) const{
+bool TMStateManager::hasOutBreakcastChan(const int *const state) const {
+
+  for (int comp = 0; comp < component_num; comp++) {
+    int loc = getLocationID(comp, state);
+  }
+
   return false;
 }
-
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);
@@ -134,8 +158,6 @@ Compression<int> TMStateManager::getBodyCompression() const {
   }
   return re_comp;
 }
-
-
 
 bool TMStateManager::hasDiffCons() const { return hasDiff; }
 

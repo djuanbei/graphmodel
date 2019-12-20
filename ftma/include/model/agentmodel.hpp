@@ -24,12 +24,11 @@ template <typename L, typename T> class AgentSystem;
 template <typename L, typename T>
 class Agent : public VariableMap, public TOReal {
 
- private:
+private:
   typedef Agent<L, T> Agent_t;
   typedef AgentTemplate<L, T> AgentTemplate_t;
 
- public:
-
+public:
   virtual ~Agent() {}
 
   void findRhs(const int link, const int lhs, int &rhs) const {
@@ -103,27 +102,27 @@ class Agent : public VariableMap, public TOReal {
     RealArgument re;
     re.type = arg.type;
     switch (re.type) {
-      case CONST_ARG:
-        re.value = arg.value;
-        break;
-      case NORMAL_VAR_ARG:
-        re.value = getKeyID(type, arg.name);
-        break;
+    case CONST_ARG:
+      re.value = arg.value;
+      break;
+    case NORMAL_VAR_ARG:
+      re.value = getKeyID(type, arg.name);
+      break;
 
-      case PARAMETER_ARG:
-        re.value = parameter.getParameter(arg.name);
-        break;
-      case REF_PARAMETER_ARG:
-        re.value = parameter.getCounter(arg.name);
-        break;
-      case FUN_POINTER_ARG:
-        loadFun(FUN_POINTER_ARG, arg.name, re);
-        break;
-      case SELECT_VAR_ARG:
-        re.value = parameter.getSelect();
-        break;
-      case EMPTY_ARG:
-        break;
+    case PARAMETER_ARG:
+      re.value = parameter.getParameter(arg.name);
+      break;
+    case REF_PARAMETER_ARG:
+      re.value = parameter.getCounter(arg.name);
+      break;
+    case FUN_POINTER_ARG:
+      loadFun(FUN_POINTER_ARG, arg.name, re);
+      break;
+    case SELECT_VAR_ARG:
+      re.value = parameter.getSelect();
+      break;
+    case EMPTY_ARG:
+      break;
     }
     if (arg.index != nullptr) {
       re.index.reset(new RealArgument(to_real(type, *arg.index)));
@@ -143,14 +142,10 @@ class Agent : public VariableMap, public TOReal {
     return agent_tempate->getSYSFun(fun_name);
   }
 
-  bool hasUrgentCh( ) const{
-    return hasUrgentChan;
-  }
-  
-  bool hasBroadcaseCh( ) const{
-    return hasBroadcaseChan;
-  }
-  
+  bool hasUrgentCh() const { return hasUrgentChan; }
+
+  bool hasBroadcaseCh() const { return hasBroadcaseChan; }
+
   // void toDot(ostream &out ) const{
   //   out<<"digraph G { "<<endl;
 
@@ -160,7 +155,7 @@ class Agent : public VariableMap, public TOReal {
 
   // }
 
- private:
+private:
   void initFuns() {
     const map<string, shared_ptr<Function>> &funs = agent_tempate->getFuns();
     for (auto &e : funs) {
@@ -231,22 +226,23 @@ class Agent : public VariableMap, public TOReal {
       for (auto &cs : gurads) {
         updateUpperAndDiff(cs);
       }
-      if( t.hasChannel( )){
-        if( t.getChannel( ).getType( )==URGENT_CH ){
-          hasUrgentChan=true;
-        }else if( t.getChannel( ).getType( )==BROADCAST_CH){
-          hasBroadcaseChan=true;
+      if (t.hasChannel()) {
+        if (t.getChannel().getType() == URGENT_CH) {
+          hasUrgentChan = true;
+        } else if (t.getChannel().getType() == BROADCAST_CH) {
+          hasBroadcaseChan = true;
         }
       }
     }
-    for(size_t i=0; i< locations.size( ); i++ ){
-      vector<int> outs=graph.getAdj( i);
-      for( auto link: outs){
-        if( transitions[ link].hasChannel( )) {
-          if( transitions[ link].getChannel( ).getType( )==URGENT_CH){
-            locations[ i].setHasOutUrgentCh(true);
-          }else if(  transitions[ link].getChannel( ).getType( )==BROADCAST_CH){
-            locations[ i].setHasOutBreakcastCh(true);
+    for (size_t i = 0; i < locations.size(); i++) {
+      vector<int> outs = graph.getAdj(i);
+      for (auto link : outs) {
+        if (transitions[link].hasChannel()) {
+          if (transitions[link].getChannel().getType() == URGENT_CH) {
+            locations[i].setHasOutUrgentCh(true);
+          } else if (transitions[link].getChannel().getType() == BROADCAST_CH &&
+                     transitions[link].getChannel().isSend()) {
+            locations[i].setHasOutBreakcastSendCh(true);
           }
         }
       }
@@ -276,13 +272,13 @@ class Agent : public VariableMap, public TOReal {
   map<string, shared_ptr<Function>> fun_map;
   Parameter parameter;
   int id; // the interbal of instance of ta_tempate
- public:
+public:
   Graph_t<int> graph; // topology
 
   vector<L> locations;
   vector<T> transitions;
 
- private:
+private:
   vector<ClockConstraint> difference_cons;
 
   int initial_loc;
@@ -290,7 +286,7 @@ class Agent : public VariableMap, public TOReal {
 
   bool hasUrgentChan;
   bool hasBroadcaseChan;
-  
+
   template <typename R1> friend class Reachability;
 
   template <typename L1, typename T1> friend class AgentSystem;
@@ -301,8 +297,8 @@ class Agent : public VariableMap, public TOReal {
     initial_loc = template_arg->initial_loc;
     id = template_arg->agents.size();
     template_arg->agents.push_back(this);
-    hasUrgentChan=false;
-    hasBroadcaseChan=true;
+    hasUrgentChan = false;
+    hasBroadcaseChan = true;
   }
 };
 

@@ -60,13 +60,11 @@ public:
   int getClockNumber() const { return clock_num; }
 
   int getFreezeLocation() const { return freeze_location_index; }
-  
+
   // check whether this state allow time delay
   bool isFreeze(const int *const state) const {
     return state[freeze_location_index] > 0;
   }
-  
-
 
   void unBlock(const int comp_id, int *state) const {
     state[comp_id + component_num] = NO_CHANNEL;
@@ -76,11 +74,11 @@ public:
     return hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
   }
 
-    // check wether there is a pair out transion with pair urgent channels
+  // check wether there is a pair out transion with pair urgent channels
   bool hasMatchOutUrgentChan(const int *const state) const;
 
-  //check wether there is a out transition with  breakcast send channel
-  bool hasOutBreakcastChan(const int * const state) const;
+  // check wether there is a out transition with  breakcast send channel
+  bool hasOutBreakcastChan(const int *const state) const;
 
   Compression<int> getHeadCompression() const;
 
