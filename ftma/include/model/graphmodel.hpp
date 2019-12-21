@@ -454,13 +454,25 @@ public:
                            const int chid, int *counter_value) const {
     vector<int> re;
     vector<int> outs = agents[component]->graph.getAdj(source);
-    for (auto link : outs) {
-      if (agents[component]->transitions[link].hasChannel() &&
-          agents[component]->transitions[link].getChannel().getGlobalId(
-              counter_value) == chid) {
-        re.push_back(link);
+    if(chid>0){
+      for (auto link : outs) {
+        if (agents[component]->transitions[link].hasChannel() &&agents[component]->transitions[link].getChannel().isSend()&&
+            agents[component]->transitions[link].getChannel().getGlobalId(
+                                                                          counter_value) == chid) {
+              re.push_back(link);
+            }
       }
+    }else{
+      for (auto link : outs) {
+        if (agents[component]->transitions[link].hasChannel() &&agents[component]->transitions[link].getChannel().isRecive()&&
+            agents[component]->transitions[link].getChannel().getGlobalId(
+                                                                          counter_value) == -chid) {
+              re.push_back(link);
+            }
+      }
+      
     }
+   
     return re;
   }
 

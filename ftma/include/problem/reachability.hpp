@@ -24,6 +24,8 @@
 #include "model/channel.h"
 #include "property/property.h"
 
+#include "alg/ta_next_step.h"
+
 namespace graphsat {
 
 using std::map;
@@ -38,7 +40,7 @@ template <typename SYS> class Reachability {
   typedef typename SYS::State_t State_t;
 
 public:
-  Reachability(const SYS &s) : sys(s) {
+  Reachability(const SYS &s) : sys(s), nextS( s) {
     component_num = sys.getComponentNumber();
     manager = sys.getStateManager();
 
@@ -127,6 +129,8 @@ private:
     // If  there has two out transition with match send and recive urgent
     // channel
     if (manager->hasMatchOutUrgentChan(state)) {
+      vector<OneStep> re;
+      nextS.doUrgant(const_cast<int*>(state), re);
 
       // TODO:
     }
@@ -199,10 +203,16 @@ private:
             sys.agents[component]->transitions[link].getChannel();
         // channel.id start from 1
 
-        if (doSynchronize(data, component, prop, state, link, channel)) {
-          return true;
+        if(channel.getType()!=URGENT_CH){
+          if (  doSynchronize(data, component, prop, state, link, channel)) {
+            return true;
+          }
+        }else{//URGENT channel
+         
+          if (oneTranision(data, component, link, prop, state)) {
+            return true;
+          }
         }
-
       } else {
         if (oneTranision(data, component, link, prop, state)) {
           return true;
@@ -439,9 +449,11 @@ private:
     state[component] = target;
 
     /**
+     * First check there is no match  urgent channel
      Whether there is some component in freeze location
      */
-    if (!manager->isFreeze(state)) {
+    
+    if (!manager->hasMatchOutUrgentChan(state)&& !manager->isFreeze(state)) {
 
       sys.agents[component]->locations[target](manager->getClockManager(),
                                                manager->getDBM(state));
@@ -518,7 +530,8 @@ private:
   }
 #endif
   const SYS &sys;
-
+  TANextStep nextS;
+  
   shared_ptr<const typename SYS::StateManager_t> manager;
   int component_num;
 

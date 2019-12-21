@@ -64,12 +64,12 @@ bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
             sys.getOutUrgent(comp, loc, const_cast<int *>(counter_value));
         for (auto e : dummy) {
           if (e > 0) {
-            if (receive_part.find(e) != receive_part.end()) {
+            if (receive_part.find(-e) != receive_part.end()) {
               return true;
             }
 
           } else {
-            if (send_part.find(e) != send_part.end()) {
+            if (send_part.find(-e) != send_part.end()) {
               return true;
             }
           }
