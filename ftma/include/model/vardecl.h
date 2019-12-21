@@ -101,6 +101,16 @@ public:
 
   virtual TypeDefArray getType(const string &n) const;
 
+  virtual int getStartLoc(const TYPE_T type, const int template_id) const {
+    assert(false);
+    return 0;
+  }
+
+  virtual int getTypeStart(const TYPE_T type) const {
+    assert(false);
+    return 0;
+  }
+
   bool contain(const string &n) const;
 
   int operator[](const string &k) const;

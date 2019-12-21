@@ -1,6 +1,6 @@
+#include <cassert>
 
 #include "model/transition.h"
-#include <cassert>
 
 namespace graphsat {
 

@@ -17,15 +17,17 @@
 #include "state/componentstate.h"
 #include "util/datacompression.h"
 
-#include "model/graphmodel.hpp"
+//#include "model/graphmodel.hpp"
 #include "model/location.h"
-#include "model/transition.h"
+//#include "model/transition.h"
+
+#include "model/counter.h"
 
 namespace graphsat {
 
 using std::vector;
-
 class Transition;
+template <typename L, typename T> class AgentSystem;
 
 class TMStateManager : public ComponentInfo {
 

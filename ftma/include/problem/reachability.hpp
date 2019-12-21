@@ -127,6 +127,7 @@ private:
     // If  there has two out transition with match send and recive urgent
     // channel
     if (manager->hasMatchOutUrgentChan(state)) {
+
       // TODO:
     }
     // If there has at less one out transition with breakcast sene channel
@@ -346,7 +347,7 @@ private:
     }
     if (!wait_components.empty()) {
       // TODO: check all the channel type
-      if (channel.getType() == ONE2ONE_CH) {
+      if (channel.getType() == ONE2ONE_CH || channel.getType() == URGENT_CH) {
         std::uniform_int_distribution<int> distribution(
             0, (int)wait_components.size() - 1);
         int id = distribution(generator);

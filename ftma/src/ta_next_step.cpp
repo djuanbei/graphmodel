@@ -9,7 +9,7 @@ std::vector<OneStep> TANextStep::getNextStep(void *s) const {
   if (manager->isFreeze(state)) {
     doFreeze(state, re);
   }
-  if( !re.empty( )){
+  if (!re.empty()) {
     if (manager->hasMatchOutUrgentChan(state)) {
       doUrgant(state, re);
     } else if (manager->hasOutBreakcastChan(state)) {
@@ -88,7 +88,7 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
               }
             }
 
-          } else {//a is send part
+          } else { // a is send part
             for (auto l_b : links_b) {
               for (auto l_a : links_a) {
                 OneStep dummy;
@@ -107,9 +107,6 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
   }
 }
 
-void TANextStep::doBreakcast(int *state, std::vector<OneStep> &re) const {
-
-  
-}
+void TANextStep::doBreakcast(int *state, std::vector<OneStep> &re) const {}
 
 } // namespace graphsat

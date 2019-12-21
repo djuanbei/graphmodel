@@ -7,8 +7,17 @@
  *
  *
  */
+
+#ifndef COMPONENT_STATE_H
+#define COMPONENT_STATE_H
+namespace graphsat {
+
 class ComponentInfo {
 
 public:
   virtual int getComponentNum() const { return 0; }
 };
+
+} // namespace graphsat
+
+#endif

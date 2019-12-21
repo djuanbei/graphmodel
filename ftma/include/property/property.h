@@ -11,6 +11,8 @@
 #define _PROPERTY_H
 #include <vector>
 
+#include "state/componentstate.h"
+
 namespace graphsat {
 using std::vector;
 

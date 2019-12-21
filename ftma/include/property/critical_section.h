@@ -11,6 +11,8 @@
 #ifndef CRITICAL_SECTION_PROPERTY_H
 #define CRITICAL_SECTION_PROPERTY_H
 #include "property/property.h"
+#include "state/componentstate.h"
+
 namespace graphsat {
 
 class CriticalSection : public Property {

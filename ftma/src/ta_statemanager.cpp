@@ -1,6 +1,9 @@
 
-#include "state/ta_statemanager.h"
 #include <cassert>
+
+#include "state/ta_statemanager.h"
+
+#include "model/graphmodel.hpp"
 
 namespace graphsat {
 TMStateManager::TMStateManager(const INT_TAS_t &s,

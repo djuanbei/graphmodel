@@ -21,13 +21,15 @@
 #include "state/ta_statemanager.h"
 
 #include "action/clockreset.h"
+#include "action/counteraction.h"
+
 #include "constraint/clockdiffcons.h"
 
 namespace graphsat {
 
 using std::vector;
 class Location;
-class TMStateManager;
+// class TMStateManager;
 
 class Transition {
 
