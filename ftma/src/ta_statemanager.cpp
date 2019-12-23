@@ -53,6 +53,17 @@ int *TMStateManager::newState() const {
   return re_state;
 }
 
+bool TMStateManager::transitionReady(const int component, const int link,
+                                     const int *const state) const {
+  return sys.agents[component]->transitions[link].ready(component, this, state);
+}
+bool TMStateManager::isReachable(const int component, const int loc,
+                                 int *state) const {
+  return sys.agents[component]->locations[loc].isReachable(getClockManager(),
+                                                           getDBM(state));
+  // return  false;
+}
+
 bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
   if (sys.hasUrgentCh()) {
     const int *counter_value = getCounterValue(state);
@@ -215,6 +226,23 @@ void TMStateManager::constructState(const int component_id, const int target,
   if (isCommit) {
     setCommitState(component_id, re_state);
   }
+}
+
+void TMStateManager::employLocInvariants(const int component,
+                                         int *state) const {
+  sys.agents[component]
+      ->locations[getLocationID(component, state)]
+      .employInvariants(getClockManager(), getDBM(state));
+}
+
+void TMStateManager::discretRun(const int component, const int link,
+                                int *state) const {
+  sys.agents[component]->transitions[link](component, this, state);
+}
+
+void TMStateManager::evolution(const int component, const int loc,
+                               int *state) const {
+  sys.agents[component]->locations[loc](getClockManager(), getDBM(state));
 }
 string TMStateManager::getLocDotLabel(const int *const state) const {
   string re = "";

@@ -91,7 +91,7 @@ INT_TAS_t FisherGenerator::generate(int n) const {
   re.addType("id_t", 0, n);
   re.addInt("id", 1, 0, n);
 
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt = re.createTemplate();
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt = re.createTemplate("P");
   initial(tmt);
 
   for (int i = 1; i <= n; i++) {

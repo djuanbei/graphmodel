@@ -7,9 +7,9 @@ INT_TAS_t TrainGate::generate(int n) const {
   INT_TAS_t sys;
 
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> train_tmt =
-      sys.createTemplate();
+      sys.createTemplate("Train");
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> gate_tmt =
-      sys.createTemplate();
+      sys.createTemplate("Gate");
 
   sys.addConstant("N", n); // const N=n;
 

@@ -29,8 +29,8 @@ class GraphModelTest : public ::testing::Test {
 protected:
   GraphModelTest() {
     int n = 6; // 6 train
-    train_tmt = sys.createTemplate();
-    gate_tmt = sys.createTemplate();
+    train_tmt = sys.createTemplate("Train");
+    gate_tmt = sys.createTemplate("Gate");
     train_tmt->addPara("id");
     sys.addConstant("N", n);                    // const N=n;
     sys.addType("id_t", 0, sys["N"] - 1);       // typedef int[ 0,N-1] id_t;

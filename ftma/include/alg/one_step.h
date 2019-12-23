@@ -11,6 +11,8 @@
 #define _ONE_STEP_H
 #include <vector>
 
+#include "property/property.h"
+
 namespace graphsat {
 
 class OneStep {
@@ -37,6 +39,35 @@ public:
 private:
   std::vector<Action> actions;
 };
+
+template <typename D, typename M, typename State_t>
+bool doOneStep(D &data, const std::shared_ptr<const M> &manager,
+               const Property *prop, const State_t *const state,
+               vector<OneStep> &steps) {
+
+  for (auto &e : steps) {
+    State_t *cache_state = manager->newState(state);
+    const std::vector<OneStep::Action> &actions = e.getAction();
+    for (auto &a : actions) {
+      switch (a.action) {
+      case OneStep::DISCRETE_JUMP:
+
+        break;
+      case OneStep::CONTINUED_EVOLUTION:
+        break;
+      }
+    }
+    manager->destroyState(cache_state);
+  }
+  return false;
+}
+
+template <typename M, typename State_t>
+void doDiscreteJump(const std::shared_ptr<const M> &manager, State_t *state,
+                    const OneStep::Action &action) {
+  int component = action.component;
+  int link = action.transition;
+}
 
 } // namespace graphsat
 

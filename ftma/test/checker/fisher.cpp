@@ -29,7 +29,7 @@ typedef AgentSystem<Location, Transition> INT_TAS_t;
 // ref:  GRAZ1.pdf  example
 TEST(TA, UNREACH) {
   INT_TAS_t sys;
-  shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate("P");
   ADD_CLOCK((*tmt1), x);
   ADD_CLOCK((*tmt1), y);
 
@@ -92,7 +92,7 @@ TEST(TA, UNREACH) {
 // ref:  paper    "Timed Automata: Semantics, Algorithms and Tools"  Fig. 4
 TEST(REACHSET, TERIMINAL) {
   INT_TAS_t sys;
-  shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate("P");
   ADD_CLOCK((*tmt1), x);
   ADD_CLOCK((*tmt1), y);
 
@@ -166,7 +166,7 @@ TEST(REACHSET, FISHER) {
   sys.addType("id_t", 0, n);
   sys.addInt("id", 1, 0, n);
 
-  shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  shared_ptr<INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate("P");
   tmt1->addPara("pid");
 
   ADD_CLOCK((*tmt1), x);

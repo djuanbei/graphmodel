@@ -42,7 +42,7 @@ int UppaalParser::parseTemplate(child_type templates) {
   for (child_iterator it = templates->begin(); it != templates->end(); it++) {
 
     UppaalData template_data;
-    template_data.tat = sys.createTemplate();
+    template_data.tat = sys.createTemplate("P");
 
     template_data.parent = &system_data;
 

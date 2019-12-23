@@ -137,6 +137,8 @@ public:
   void operator()(const int component,
                   const shared_ptr<const TMStateManager> &manager,
                   int *re_state) const;
+  void operator()(const int component, const TMStateManager *const manager,
+                  int *re_state) const;
 
   void to_real(const shared_ptr<TOReal> &convertor);
 

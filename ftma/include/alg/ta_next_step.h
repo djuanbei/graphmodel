@@ -18,7 +18,7 @@ namespace graphsat {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 class TANextStep : public NextStep {
- public:
+public:
   TANextStep(const INT_TAS_t &s) : sys(s) {
     manager = sys.getStateManager();
     component_num = manager->getComponentNum();
@@ -31,7 +31,8 @@ private:
   int component_num;
 
   void doFreeze(int *state, std::vector<OneStep> &re) const;
- public:
+
+public:
   /**
    * @brief  Urgent channels are similar to regular channels, except that it is
    * not possible to delay in the source state if it is possible to trigger a
@@ -42,7 +43,8 @@ private:
    * @param re
    */
   void doUrgant(int *state, std::vector<OneStep> &re) const;
- private:
+
+private:
   /**
    * @brief Broadcast channels allow 1-to-many synchronisations. The intuition
    * is that an edge with synchronisation label e! emits a broadcast on the

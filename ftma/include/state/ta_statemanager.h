@@ -76,6 +76,11 @@ public:
     return hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
   }
 
+  bool transitionReady(const int component, const int link,
+                       const int *const state) const;
+
+  bool isReachable(const int component, const int loc, int *state) const;
+
   // check wether there is a pair out transion with pair urgent channels
   bool hasMatchOutUrgentChan(const int *const state) const;
 
@@ -170,6 +175,12 @@ public:
   }
 
   bool hasDiffCons() const;
+
+  void employLocInvariants(const int component, int *state) const;
+
+  void discretRun(const int component, const int link, int *state) const;
+
+  void evolution(const int component, const int loc, int *state) const;
 
   string getLocDotLabel(const int *const state) const;
 

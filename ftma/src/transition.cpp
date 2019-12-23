@@ -102,6 +102,40 @@ void Transition::operator()(const int component,
   }
 }
 
+void Transition::operator()(const int component,
+                            const TMStateManager *const manager,
+                            int *re_state) const {
+
+  assert(ready(component, manager, re_state));
+
+  const DBMFactory &dbm_manager = manager->getClockManager();
+
+  int *source_DBM = manager->getDBM(re_state);
+
+  /**
+   * the state which statisfied the guards can jump this transition
+   *
+   */
+  for (auto cs : guards) {
+    dbm_manager.andImpl(source_DBM, cs);
+  }
+
+  for (auto reset : resets) {
+    assert(reset.first > 0);   // clock id start from 1
+    assert(reset.second >= 0); // clock value must positive
+    dbm_manager.resetImpl(source_DBM, reset.first, reset.second);
+  }
+
+  if (!actions.empty()) {
+
+    int *counterValue = manager->getCounterValue(re_state);
+
+    for (auto action : actions) {
+      action(counterValue);
+    }
+  }
+}
+
 void Transition::to_real(const shared_ptr<TOReal> &convertor) {
   if (has_channel) {
     channel.to_real(convertor);

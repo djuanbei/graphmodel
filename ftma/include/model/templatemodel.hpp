@@ -87,7 +87,9 @@ public:
   }
 
 private:
-  AgentTemplate(const VarDecl *s) : sys(s) { initial_loc = 0; }
+  AgentTemplate(const string &n, const VarDecl *s) : name(n), sys(s) {
+    initial_loc = 0;
+  }
   AgentTemplate(const AgentTemplate &other) : sys(nullptr) { assert(false); }
 
   AgentTemplate &operator=(const AgentTemplate &other) {
@@ -121,6 +123,7 @@ private:
     // // There are no edges connect with  initial location
     assert(initial_loc >= 0 && initial_loc < vertex_num);
   }
+  string name;
   const VarDecl *sys;
   int id;
   int number_children;
@@ -197,7 +200,9 @@ public:
   }
 
 private:
-  AgentTemplate(const VarDecl *s) : sys(s) { initial_loc = 0; }
+  AgentTemplate(const string &n, const VarDecl *s) : name(n), sys(s) {
+    initial_loc = 0;
+  }
   AgentTemplate(const AgentTemplate &other) : sys(nullptr) { assert(false); }
 
   AgentTemplate &operator=(const AgentTemplate &other) {
@@ -231,8 +236,11 @@ private:
     // // There are no edges connect with  initial location
     assert(initial_loc >= 0 && initial_loc < vertex_num);
   }
+  string name;
+
   const VarDecl *sys;
   int id;
+
   int number_children;
 
   vector<Location> template_locations;

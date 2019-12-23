@@ -10,6 +10,7 @@
 
 #ifndef __GRAPH_MODEL_
 #define __GRAPH_MODEL_
+#include <functional>
 #include <vector>
 
 #include "action/counteraction.h"
@@ -78,6 +79,18 @@ public:
   }
 
   int getComponentNumber() const { return (int)agents.size(); }
+
+  bool hasChannel(const int component, const int link) const {
+    return agents[component]->transitions[link].hasChannel();
+  }
+
+  bool isCommit(const int component, const int loc) const {
+    return agents[component]->locations[loc].isCommit();
+  }
+
+  const Channel &getChannel(const int component, const int link) const {
+    return agents[component]->transitions[link].getChannel();
+  }
 
   int getChanNum() const { return chan_num; }
 
@@ -278,6 +291,12 @@ public:
     return re;
   }
 
+  int getSnk(const int component, const int link) const {
+    int re = 0;
+    agents[component]->graph.findSnk(link, re);
+    return re;
+  }
+
   string getLocationName(const int component, const int loc_ID) const {
     return agents[component]->getLocationName(loc_ID);
   }
@@ -286,11 +305,12 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-  bool transitionReady(const int component, const int link,
-                       const int *const state) const {
-    return agents[component]->transitions[link].ready(component, stateManager,
-                                                      state);
-  }
+  // bool transitionReady(const int component, const int link,
+  //                      const int *const state) const {
+  //   return agents[component]->transitions[link].ready(component,
+  //   stateManager,
+  //                                                     state);
+  // }
 
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
@@ -368,7 +388,7 @@ private:
 
   bool hasUrgentChan;
   bool hasBroadcaseChan;
-  template <typename TT> friend class Reachability;
+  // template <typename TT> friend class Reachability;
 };
 
 template <> class AgentSystem<Location, Transition> : public VarDecl {
@@ -395,8 +415,8 @@ public:
   }
   virtual ~AgentSystem() {}
 
-  shared_ptr<AgentTemplate_t> createTemplate() {
-    shared_ptr<AgentTemplate_t> re(new AgentTemplate_t(this));
+  shared_ptr<AgentTemplate_t> createTemplate(const string &n) {
+    shared_ptr<AgentTemplate_t> re(new AgentTemplate_t(n, this));
     re->setParent(this);
     re->id = templates.size();
     templates.push_back(re);
@@ -419,6 +439,19 @@ public:
 
   int getComponentNumber() const { return (int)agents.size(); }
 
+  bool hasChannel(const int component, const int link) const {
+    return agents[component]->transitions[link].hasChannel();
+  }
+  bool isCommit(const int component, const int loc) const {
+    return agents[component]->locations[loc].isCommit();
+  }
+  bool isFreezeLocation(const int component, const int loc) const {
+    return agents[component]->locations[loc].isFreezeLocation();
+  }
+  const Channel &getChannel(const int component, const int link) const {
+    return agents[component]->transitions[link].getChannel();
+  }
+
   int getChanNum() const { return chan_num; }
 
   bool hasUrgentCh(const int component, const int loc) const {
@@ -435,13 +468,16 @@ public:
       if (agents[component]->transitions[link].hasChannel()) {
         if (agents[component]->transitions[link].getChannel().getType() ==
             URGENT_CH) {
-          int chid =
-              agents[component]->transitions[link].getChannel().getGlobalId(
-                  state);
-          if (agents[component]->transitions[link].getChannel().isSend()) {
-            re.push_back(chid);
-          } else {
-            re.push_back(-chid);
+          if (agents[component]->transitions[link].ready(component,
+                                                         stateManager, state)) {
+            int chid =
+                agents[component]->transitions[link].getChannel().getGlobalId(
+                    state);
+            if (agents[component]->transitions[link].getChannel().isSend()) {
+              re.push_back(chid);
+            } else {
+              re.push_back(-chid);
+            }
           }
         }
       }
@@ -454,25 +490,26 @@ public:
                            const int chid, int *counter_value) const {
     vector<int> re;
     vector<int> outs = agents[component]->graph.getAdj(source);
-    if(chid>0){
+    if (chid > 0) {
       for (auto link : outs) {
-        if (agents[component]->transitions[link].hasChannel() &&agents[component]->transitions[link].getChannel().isSend()&&
+        if (agents[component]->transitions[link].hasChannel() &&
+            agents[component]->transitions[link].getChannel().isSend() &&
             agents[component]->transitions[link].getChannel().getGlobalId(
-                                                                          counter_value) == chid) {
-              re.push_back(link);
-            }
+                counter_value) == chid) {
+          re.push_back(link);
+        }
       }
-    }else{
+    } else {
       for (auto link : outs) {
-        if (agents[component]->transitions[link].hasChannel() &&agents[component]->transitions[link].getChannel().isRecive()&&
+        if (agents[component]->transitions[link].hasChannel() &&
+            agents[component]->transitions[link].getChannel().isRecive() &&
             agents[component]->transitions[link].getChannel().getGlobalId(
-                                                                          counter_value) == -chid) {
-              re.push_back(link);
-            }
+                counter_value) == -chid) {
+          re.push_back(link);
+        }
       }
-      
     }
-   
+
     return re;
   }
 
@@ -630,6 +667,12 @@ public:
     return re;
   }
 
+  int getSnk(const int component, const int link) const {
+    int re = 0;
+    agents[component]->graph.findSnk(link, re);
+    return re;
+  }
+
   string getLocationName(const int component, const int loc_ID) const {
     return agents[component]->getLocationName(loc_ID);
   }
@@ -638,11 +681,12 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-  bool transitionReady(const int component, const int link,
-                       const int *const state) const {
-    return agents[component]->transitions[link].ready(component, stateManager,
-                                                      state);
-  }
+  // bool transitionReady(const int component, const int link,
+  //                      const int *const state) const {
+  //   return agents[component]->transitions[link].ready(component,
+  //   stateManager,
+  //                                                     state);
+  // }
 
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
@@ -720,7 +764,8 @@ private:
 
   bool hasUrgentChan;
   bool hasBroadcaseChan;
-  template <typename TT> friend class Reachability;
+  friend class TMStateManager;
+  // template <typename TT> friend class Reachability;
 };
 
 } // namespace graphsat

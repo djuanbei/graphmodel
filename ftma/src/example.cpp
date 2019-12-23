@@ -180,7 +180,8 @@ std::uniform_int_distribution<int> distribution(0, 1000);
 
 void example2(void) {
   INT_TAS_t sys;
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 =
+      sys.createTemplate("P");
   Argument x = tmt1->addClock("x");
   Argument y = tmt1->addClock("y");
   vector<typename INT_TAS_t::T_t> es;
@@ -296,7 +297,8 @@ void fisher(int n) {
   sys.addType("id_t", 0, n);
   sys.addInt("id", 1, 0, n);
 
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 =
+      sys.createTemplate("P");
   tmt1->addPara("pid");
 
   Argument x = tmt1->addClock("x");
@@ -442,7 +444,8 @@ void incrementalTest() {
   sys.addType("id_t", 0, n);
   sys.addInt("id", 1, 0, n);
 
-  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 = sys.createTemplate();
+  shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 =
+      sys.createTemplate("P");
   tmt1->addPara("pid");
 
   ADD_CLOCK((*tmt1), x);
