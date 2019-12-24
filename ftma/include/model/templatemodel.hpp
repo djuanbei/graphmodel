@@ -29,8 +29,6 @@ using namespace raptor;
 
 template <typename L, typename T> class Agent;
 
-// template <typename L, typename T> class AgentSystem;
-
 template <typename L, typename T> class AgentTemplate : public VarDecl {
 
 private:
@@ -96,6 +94,7 @@ private:
     assert(false);
     return *this;
   }
+  string getName() const { return name; }
 
   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
 
@@ -126,7 +125,6 @@ private:
   string name;
   const VarDecl *sys;
   int id;
-  int number_children;
 
   vector<L> template_locations;
   vector<T> template_transitions;
@@ -144,120 +142,126 @@ private:
   template <typename L1, typename T1> friend class AgentSystem;
 };
 
-template <> class AgentTemplate<Location, Transition> : public VarDecl {
+// template <> class AgentTemplate<Location, Transition> : public VarDecl {
 
-private:
-  typedef ClockConstraint CS_t;
+// private:
+//   typedef ClockConstraint CS_t;
 
-  typedef Agent<Location, Transition> Agent_t;
+//   typedef Agent<Location, Transition> Agent_t;
 
-public:
-  virtual ~AgentTemplate() {}
-  void initial(vector<Location> &locs, vector<Transition> &es, int init) {
-    template_locations = locs;
+// public:
+//   virtual ~AgentTemplate() {}
+//   void initial(vector<Location> &locs, vector<Transition> &es, int init) {
 
-    template_transitions = es;
+//     template_locations = locs;
 
-    initial_loc = init;
-    initial();
-  }
+//     template_transitions = es;
 
-  void findRhs(const int link, const int lhs, int &rhs) const {
-    graph.findRhs(link, lhs, rhs);
-  }
+//     initial_loc = init;
+//     initial();
+//   }
 
-  int getClockNumber() const { return data.getTypeNum(CLOCK_T); }
+//   void findRhs(const int link, const int lhs, int &rhs) const {
+//     graph.findRhs(link, lhs, rhs);
+//   }
 
-  int getChannelNumber() const { return data.getTypeNum(CHAN_T); }
+//   int getClockNumber() const { return data.getTypeNum(CLOCK_T); }
 
-  void setInitialLoc(int loc) { initial_loc = loc; }
+//   int getChannelNumber() const { return data.getTypeNum(CHAN_T); }
 
-  int getInitialLoc() const { return initial_loc; }
+//   void setInitialLoc(int loc) { initial_loc = loc; }
 
-  int addPara(const string &p) {
-    int re = parameters.size();
-    parameters.push_back(p);
-    return re;
-  }
-  Parameter getParameter() const {
-    Parameter re(parameters);
-    return re;
-  }
+//   int getInitialLoc() const { return initial_loc; }
 
-  int getParaId(const string &p) const {
-    for (size_t i = 0; i < parameters.size(); i++) {
-      if (p == parameters[i]) {
-        return i;
-      }
-    }
-    return NOT_FOUND;
-  }
-  void reset() { agents.clear(); }
-  virtual Argument addClock(const string &n) {
-    Argument dummy = VarDecl::addClock(n);
-    dummy.type = NORMAL_VAR_ARG;
-    return dummy;
-  }
+//   int addPara(const string &p) {
+//     int re = parameters.size();
+//     parameters.push_back(p);
+//     return re;
+//   }
+//   Parameter getParameter() const {
+//     Parameter re(parameters);
+//     return re;
+//   }
 
-private:
-  AgentTemplate(const string &n, const VarDecl *s) : name(n), sys(s) {
-    initial_loc = 0;
-  }
-  AgentTemplate(const AgentTemplate &other) : sys(nullptr) { assert(false); }
+//   int getParaId(const string &p) const {
+//     for (size_t i = 0; i < parameters.size(); i++) {
+//       if (p == parameters[i]) {
+//         return i;
+//       }
+//     }
+//     return NOT_FOUND;
+//   }
+//   void reset() { agents.clear(); }
+//   virtual Argument addClock(const string &n) {
+//     Argument dummy = VarDecl::addClock(n);
+//     dummy.type = NORMAL_VAR_ARG;
+//     return dummy;
+//   }
 
-  AgentTemplate &operator=(const AgentTemplate &other) {
-    assert(false);
-    return *this;
-  }
+// private:
+//   AgentTemplate(const string &n, const VarDecl *s) : name(n), sys(s) {
+//     initial_loc =number_children= 0;
+//   }
+//   AgentTemplate(const AgentTemplate &other) : sys(nullptr) { assert(false); }
 
-  int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
+//   AgentTemplate &operator=(const AgentTemplate &other) {
+//     assert(false);
+//     return *this;
+//   }
 
-  int getParentKeyID(const TYPE_T type, const string &key) const {
-    return sys->getLocalKeyID(type, key) + sys->getTypeStart(type);
-  }
-  shared_ptr<Function> getSYSFun(const string &name) const {
-    return sys->getFun(name);
-  }
+//   string getName( ) const{
+//     return name;
+//   }
 
-  void initial() {
+//   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id);
+//   }
 
-    vector<int> srcs;
-    vector<int> snks;
+//   int getParentKeyID(const TYPE_T type, const string &key) const {
+//     return sys->getLocalKeyID(type, key) + sys->getTypeStart(type);
+//   }
+//   shared_ptr<Function> getSYSFun(const string &name) const {
+//     return sys->getFun(name);
+//   }
 
-    for (auto t : template_transitions) {
-      srcs.push_back(t.getSource());
-      snks.push_back(t.getTarget());
-    }
+//   void initial() {
 
-    graph.initial(srcs, snks);
+//     vector<int> srcs;
+//     vector<int> snks;
 
-    int vertex_num = graph.getVertex_num();
+//     for (auto t : template_transitions) {
+//       srcs.push_back(t.getSource());
+//       snks.push_back(t.getTarget());
+//     }
 
-    // // There are no edges connect with  initial location
-    assert(initial_loc >= 0 && initial_loc < vertex_num);
-  }
-  string name;
+//     graph.initial(srcs, snks);
 
-  const VarDecl *sys;
-  int id;
+//     int vertex_num = graph.getVertex_num();
 
-  int number_children;
+//     // // There are no edges connect with  initial location
+//     assert(initial_loc >= 0 && initial_loc < vertex_num);
+//   }
+//   string name;
 
-  vector<Location> template_locations;
-  vector<Transition> template_transitions;
-  int initial_loc;
+//   const VarDecl *sys;
+//   int id;
 
-  Graph_t<int> graph;
+//   int number_children;
 
-  vector<string> parameters;
-  vector<Agent<Location, Transition> *> agents;
-  map<string, shared_ptr<Function>> fun_map;
+//   vector<Location> template_locations;
+//   vector<Transition> template_transitions;
+//   int initial_loc;
 
-  template <typename R1> friend class Reachability;
+//   Graph_t<int> graph;
 
-  friend class Agent<Location, Transition>;
-  template <typename L1, typename T1> friend class AgentSystem;
-};
+//   vector<string> parameters;
+//   vector<Agent<Location, Transition> *> agents;
+//   map<string, shared_ptr<Function>> fun_map;
+
+//   template <typename R1> friend class Reachability;
+
+//   friend class Agent<Location, Transition>;
+//   template <typename L1, typename T1> friend class AgentSystem;
+// };
 
 } // namespace graphsat
 

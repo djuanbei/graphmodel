@@ -33,21 +33,22 @@ public:
     type = NORMOAL_LOC;
     name = LOC_NAME_PRE + to_string(loc_id);
 
-    hasOutUrgentChan = hasOutBreakcastSendChan = false;
+    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
   }
 
   explicit Location(int loc_id, Location_Type etype) {
     location_id = loc_id;
     type = etype;
     name = LOC_NAME_PRE + to_string(loc_id);
-    hasOutUrgentChan = hasOutBreakcastSendChan = false;
+    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
   }
   explicit Location(int loc_id, const string &n) {
     location_id = loc_id;
     type = NORMOAL_LOC;
     name = n;
-    hasOutUrgentChan = hasOutBreakcastSendChan = false;
+    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
   }
+
   int getId() const { return location_id; }
 
   void setName(const string &n) { name = n; }
@@ -126,6 +127,10 @@ public:
   void setHasOutBreakcastSendCh(bool b) { hasOutBreakcastSendChan = b; }
   bool hasOutBreakcastSendCh() const { return hasOutBreakcastSendChan; }
 
+  void setHasNormalCh(bool b) { hasNormalChannel = b; }
+
+  bool hasNormalCh() const { return hasNormalChannel; }
+
   /**
    * Add one invariant to this location
    *
@@ -153,7 +158,7 @@ private:
   int location_id;
   string name;
   Location_Type type;
-  bool hasOutUrgentChan, hasOutBreakcastSendChan;
+  bool hasOutUrgentChan, hasOutBreakcastSendChan, hasNormalChannel;
 };
 } // namespace graphsat
 

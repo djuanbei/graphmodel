@@ -71,7 +71,7 @@ bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
       int loc = getLocationID(comp, state);
       if (sys.hasUrgentCh(comp, loc)) {
         vector<int> dummy =
-            getOutUrgent(comp, loc, const_cast<int *>(counter_value));
+            getEnableOutUrgent(comp, loc, const_cast<int *>(counter_value));
         for (auto e : dummy) {
           if (e > 0) {
             if (receive_part.find(-e) != receive_part.end()) {
@@ -172,8 +172,9 @@ Compression<int> TMStateManager::getBodyCompression() const {
   return re_comp;
 }
 
-vector<int> TMStateManager::getOutUrgent(const int component, const int loc,
-                                         State_t *state) const {
+vector<int> TMStateManager::getEnableOutUrgent(const int component,
+                                               const int loc,
+                                               State_t *state) const {
 
   vector<int> re;
   vector<int> outs = sys.getOutTransition(component, loc);
@@ -181,6 +182,31 @@ vector<int> TMStateManager::getOutUrgent(const int component, const int loc,
     if (sys.hasChannel(component, link)) {
       if (sys.agents[component]->transitions[link].getChannel().getType() ==
           URGENT_CH) {
+        if (transitionReady(component, link, state)) {
+          int chid =
+              sys.agents[component]->transitions[link].getChannel().getGlobalId(
+                  state);
+          if (sys.agents[component]->transitions[link].getChannel().isSend()) {
+            re.push_back(chid);
+          } else {
+            re.push_back(-chid);
+          }
+        }
+      }
+    }
+  }
+  return re;
+}
+
+vector<int> TMStateManager::getEnableOutNormalChan(const int component,
+                                                   const int loc,
+                                                   int *state) const {
+  vector<int> re;
+  vector<int> outs = sys.getOutTransition(component, loc);
+  for (auto link : outs) {
+    if (sys.hasChannel(component, link)) {
+      if (sys.agents[component]->transitions[link].getChannel().getType() ==
+          ONE2ONE_CH) {
         if (transitionReady(component, link, state)) {
           int chid =
               sys.agents[component]->transitions[link].getChannel().getGlobalId(

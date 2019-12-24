@@ -171,8 +171,11 @@ public:
     return -(state[component_id]) - 1;
   }
 
-  vector<int> getOutUrgent(const int component, const int loc,
-                           State_t *state) const;
+  vector<int> getEnableOutUrgent(const int component, const int loc,
+                                 int *state) const;
+
+  vector<int> getEnableOutNormalChan(const int component, const int loc,
+                                     int *state) const;
 
   bool hasDiffCons() const;
 

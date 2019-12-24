@@ -63,7 +63,7 @@ Check_State doOneStep(D *data, const M *manager, const State_t *const state,
     }
     if (b) {
       Check_State re = data->add(cache_state);
-      if (re != UNKOWN) {
+      if (re == TRUE) {
         return re;
       }
     }
@@ -98,8 +98,10 @@ bool doEvolution(const M *manager, const int component, int loc,
                  State_t *state) {
   if (manager->isReachable(component, loc, state)) {
     state[component] = loc;
-    if (!manager->isFreeze(state)) {
-      manager->evolution(component, loc, state);
+    manager->evolution(component, loc, state);
+    for (int component_id = 0; component_id < manager->getComponentNum();
+         component_id++) {
+      manager->employLocInvariants(component_id, state);
     }
     return true;
   }

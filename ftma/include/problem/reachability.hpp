@@ -122,10 +122,14 @@ private:
     manager->dump(state);
 #endif
 
+    std::vector<OneStep> re = nextS.getNextStep(const_cast<int *>(state));
+    return doOneStep(data, manager.get(), state, re) == TRUE;
+
     /**
      freeze state the time can not delay
      */
     if (manager->isFreeze(state)) {
+
       for (int component = 0; component < component_num; component++) {
         // component is at  freeze location and component does not wait another
         // components. commit location go first.
@@ -142,7 +146,7 @@ private:
 
       vector<OneStep> re;
       nextS.doUrgant(const_cast<int *>(state), re);
-      return doOneStep(data, manager.get(), state, re);
+      return doOneStep(data, manager.get(), state, re) == TRUE;
     }
     // If there has at less one out transition with breakcast sene channel
     if (manager->hasOutBreakcastChan(state)) {

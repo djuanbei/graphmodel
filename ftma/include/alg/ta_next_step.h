@@ -30,9 +30,16 @@ private:
   shared_ptr<const typename INT_TAS_t::StateManager_t> manager;
   int component_num;
 
-  void doFreeze(int *state, std::vector<OneStep> &re) const;
+  void doCommit(int *state, std::vector<OneStep> &re) const;
+
+  void discret(int *state, std::vector<pair<int, int>> &paths,
+               std::vector<OneStep> &re) const;
+
+  void updateState(const int component, const int link, int *state) const;
 
 public:
+  void doNormal(int *state, std::vector<OneStep> &re) const;
+
   /**
    * @brief  Urgent channels are similar to regular channels, except that it is
    * not possible to delay in the source state if it is possible to trigger a
