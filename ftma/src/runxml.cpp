@@ -16,7 +16,7 @@ void runxml(const std::string &file_name) {
 
   Reachability<INT_TAS_t> reacher(sys);
 
-  reacher.computeAllReachableSet(data);
+  reacher.computeAllReachableSet(&data);
   cout << "reach data size: " << data.size() << endl;
   data.generatorDot("test.gv");
 }

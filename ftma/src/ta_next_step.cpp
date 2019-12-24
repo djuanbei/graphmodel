@@ -71,7 +71,8 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
       const set<int> temp(dummy_a.begin(), dummy_a.end());
       for (int j = i + 1; j < component_num; j++) {
         const int loc_b = manager->getLocationID(j, state);
-        const vector<int> dummy2 = manager->getOutUrgent(j, loc_b, counter_value);
+        const vector<int> dummy2 =
+            manager->getOutUrgent(j, loc_b, counter_value);
         for (auto e : dummy2) {
           if (temp.find(-e) != temp.end()) {
             vector<int> links_a = sys.getChanLinks(i, loc_a, -e, counter_value);
@@ -85,6 +86,9 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
                   dummy.addAction(send_action);
                   OneStep::Action recive_action(i, loc_a, l_a);
                   dummy.addAction(recive_action);
+                  OneStep::Action delay_action(i, loc_a, l_a);
+                  delay_action.action = OneStep::CONTINUED_EVOLUTION;
+                  dummy.addAction(delay_action);
                   re.push_back(dummy);
                 }
               }
@@ -98,6 +102,10 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
 
                   OneStep::Action recive_action(j, loc_b, l_b);
                   dummy.addAction(recive_action);
+
+                  OneStep::Action delay_action(i, loc_a, l_a);
+                  delay_action.action = OneStep::CONTINUED_EVOLUTION;
+                  dummy.addAction(delay_action);
                   re.push_back(dummy);
                 }
               }

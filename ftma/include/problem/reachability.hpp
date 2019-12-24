@@ -32,10 +32,6 @@ using std::map;
 using std::set;
 using std::vector;
 
-#ifdef ONLINE_CHECK
-#define isReach(P, S) false
-#endif
-
 template <typename SYS> class Reachability {
   typedef typename SYS::State_t State_t;
 
@@ -58,7 +54,7 @@ public:
       next_state = nullptr;
     }
   }
-  template <typename D> void computeAllReachableSet(D &data) {
+  template <typename D> void computeAllReachableSet(D *data) {
     Property prop;
 
     run(data, &prop);
@@ -73,7 +69,7 @@ public:
    * false otherwise.
    */
 
-  template <typename D> bool satisfy(D &data, const Property *prop) {
+  template <typename D> bool satisfy(D *data, const Property *prop) {
     return run(data, prop);
   }
 
@@ -83,9 +79,9 @@ public:
    * @return true if ther is a reachable state which make prop ture,
    * false otherwise.
    */
-  template <typename D> bool run(D &data, const Property *prop) {
+  template <typename D> bool run(D *data, const Property *prop) {
 
-    Check_State re = data.search(prop);
+    Check_State re = data->search(prop);
 
     if (re != UNKOWN) {
       if (TRUE == re) {
@@ -94,14 +90,15 @@ public:
         return false;
       }
     }
+    data->setProperty(prop);
 
     // For given target find the source which change in last step
 
-    while (!data.waitEmpty()) {
+    while (!data->waitEmpty()) {
 
-      typename SYS::State_t *state = data.next();
+      typename SYS::State_t *state = data->next();
 
-      if (oneDiscreteStep(data, prop, state)) {
+      if (oneDiscreteStep(data, state)) {
         manager->destroyState(state);
         return true;
       }
@@ -116,29 +113,14 @@ private:
    One discrete step
    */
   template <typename D>
-  bool oneDiscreteStep(D &data, const Property *prop,
-                       const State_t *const state) {
+  bool oneDiscreteStep(D *data, const State_t *const state) {
 #ifdef DRAW_GRAPH
-    data.incCurrentParent();
+    data->incCurrentParent();
 
 #endif
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
-
-    // If  there has two out transition with match send and recive urgent
-    // channel
-    if (manager->hasMatchOutUrgentChan(state)) {
-
-      // vector<OneStep> re;
-      // nextS.doUrgant(const_cast<int *>(state), re);
-      // return doOneStep(data, manager, prop, state, re);
-      // TODO:
-    }
-    // If there has at less one out transition with breakcast sene channel
-    if (manager->hasOutBreakcastChan(state)) {
-      // TODO:
-    }
 
     /**
      freeze state the time can not delay
@@ -146,12 +128,25 @@ private:
     if (manager->isFreeze(state)) {
       for (int component = 0; component < component_num; component++) {
         // component is at  freeze location and component does not wait another
-        // components.
+        // components. commit location go first.
         if (manager->isCommitComp(component, state) &&
             !manager->isBlock(component, state)) {
-          return oneComponent(data, component, prop, state);
+          return oneComponent(data, component, state);
         }
       }
+    }
+
+    // If  there has two out transition with match send and recive urgent
+    // channel
+    if (manager->hasMatchOutUrgentChan(state)) {
+
+      vector<OneStep> re;
+      nextS.doUrgant(const_cast<int *>(state), re);
+      return doOneStep(data, manager.get(), state, re);
+    }
+    // If there has at less one out transition with breakcast sene channel
+    if (manager->hasOutBreakcastChan(state)) {
+      // TODO:
     }
 
     for (int component = 0; component < component_num; component++) {
@@ -163,7 +158,7 @@ private:
          */
         continue;
       }
-      if (oneComponent(data, component, prop, state)) {
+      if (oneComponent(data, component, state)) {
 
         return true;
       }
@@ -180,8 +175,7 @@ private:
    * @return ture if prop satisfied by child state of state
    */
   template <typename D>
-  bool oneComponent(D &data, int component, const Property *prop,
-                    const State_t *const state) {
+  bool oneComponent(D *data, int component, const State_t *const state) {
 
     const int source = manager->getLocationID(component, state);
 
@@ -204,19 +198,19 @@ private:
         // channel.id start from 1
 
         // TODO: URGENT_CH
-        //  if (channel.getType() != URGENT_CH) {
-        if (doSynchronize(data, component, prop, state, link, channel)) {
-          return true;
+        if (channel.getType() != URGENT_CH) {
+          if (doSynchronize(data, component, state, link, channel)) {
+            return true;
+          }
+          // TODO: URGENT_CH
+        } else { // URGENT channel
+
+          if (oneTranision(data, component, link, state)) {
+            return true;
+          }
         }
-        // TODO: URGENT_CH
-        //        } else { // URGENT channel
-        //
-        //          if (oneTranision(data, component, link, prop, state)) {
-        //            return true;
-        //          }
-        //        }
       } else {
-        if (oneTranision(data, component, link, prop, state)) {
+        if (oneTranision(data, component, link, state)) {
           return true;
         }
       }
@@ -236,10 +230,9 @@ private:
    * @return  true the next state make prop true, false otherwise.
    */
   template <typename D>
-  bool unBlockOne(D &data, const int current_component,
+  bool unBlockOne(D *data, const int current_component,
                   const int block_component_id, const int link,
-                  const State_t *const state, const Property *prop,
-                  bool is_send) {
+                  const State_t *const state, bool is_send) {
 
     manager->copy(next_state, state);
     manager->unBlock(block_component_id, next_state);
@@ -251,8 +244,7 @@ private:
     assert(block_link >= 0);
 
     int block_source = sys.getSrc(block_component_id, block_link);
-    //    sys.agents[block_component_id]->graph.findSrc(block_link,
-    //    block_source);
+
     next_state[block_component_id] = block_source;
     int send_component_id = current_component;
     int send_link = link;
@@ -270,77 +262,55 @@ private:
     /**
      *  TDOO: has some problems
      */
-    manager->discretRun(send_component_id, send_link, next_state);
-    // sys.agents[send_component_id]->transitions[send_link](
-    //     send_component_id, manager,
-    //     next_state); // send part firstly update state
+    manager->discretRun(send_component_id, send_link,
+                        next_state); // send part firstly update state
 
     manager->discretRun(receive_component_id, receive_link, next_state);
-    // sys.agents[receive_component_id]->transitions[receive_link](
-    //     receive_component_id, manager, next_state);
 
     int send_target = sys.getSnk(send_component_id, send_link);
 
-    // sys.agents[send_component_id]->graph.findSnk(send_link, send_target);
     next_state[send_component_id] = send_target;
 
     bool is_send_commit = sys.isCommit(send_component_id, send_target);
-    // sys.agents[send_component_id]->locations[send_target].isCommit();
 
     if (is_send_commit) {
       manager->setCommitState(send_component_id, next_state);
     }
     int receive_target = sys.getSnk(receive_component_id, receive_link);
 
-    // sys.agents[receive_component_id]->graph.findSnk(receive_link,
-    //                                                 receive_target);
     next_state[receive_component_id] = receive_target;
 
     bool is_receive_commit = sys.isCommit(receive_component_id, receive_target);
-    // sys.agents[receive_component_id]->locations[receive_target].isCommit();
 
     if (is_receive_commit) {
       manager->setCommitState(receive_component_id, next_state);
     }
 
     int source, target;
-    source = target = 0;
     source = sys.getSrc(send_component_id, send_link);
     target = sys.getSnk(send_component_id, send_link);
-    // sys.agents[send_component_id]->graph.findSrcSnk(send_link, source,
-    // target);
+
     if (sys.isFreezeLocation(send_component_id, source)) {
-      // if
-      // (sys.agents[send_component_id]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
     if (sys.isFreezeLocation(send_component_id, target)) {
-      //    if
-      //    (sys.agents[send_component_id]->locations[target].isFreezeLocation())
-      //    {
+
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
 
     source = sys.getSrc(receive_component_id, receive_link);
     target = sys.getSnk(receive_component_id, receive_link);
-    // sys.agents[receive_component_id]->graph.findSrcSnk(receive_link, source,
-    //                                                    target);
 
     if (sys.isFreezeLocation(receive_component_id, source)) {
-      // if (sys.agents[receive_component_id]
-      //         ->locations[source]
-      //         .isFreezeLocation()) {
+
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
 
     if (sys.isFreezeLocation(receive_component_id, target)) {
-      // }
-      // if (sys.agents[receive_component_id]
-      //         ->locations[target]
-      //         .isFreezeLocation()) {
+
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
@@ -348,7 +318,7 @@ private:
     // can not stay on current_target and block_target locations when
     // send_target or receive_target is a commit or urgent location.
 
-    return delay(data, send_component_id, send_target, prop, next_state);
+    return delay(data, send_component_id, send_target, next_state);
   }
 
   /**
@@ -356,9 +326,8 @@ private:
    *
    */
   template <typename D>
-  bool doSynchronize(D &data, int component, const Property *prop,
-                     const State_t *const state, int link,
-                     const Channel &channel) {
+  bool doSynchronize(D *data, int component, const State_t *const state,
+                     int link, const Channel &channel) {
 
     vector<int> wait_components;
     bool is_send = true;
@@ -381,7 +350,7 @@ private:
         int id = distribution(generator);
         int block_component_id = wait_components[id];
         return unBlockOne(data, component, block_component_id, link, state,
-                          prop, is_send);
+                          is_send);
       } else if (channel.getType() == URGENT_CH) {
         // TODO:URGENT_CH
         assert(false && "Deal with urgent channel.");
@@ -389,7 +358,7 @@ private:
       } else if (channel.getType() == BROADCAST_CH) {
         for (auto id : wait_components) {
           int block_component_id = wait_components[id];
-          if (unBlockOne(data, component, block_component_id, link, state, prop,
+          if (unBlockOne(data, component, block_component_id, link, state,
                          is_send)) {
             return true;
           }
@@ -415,7 +384,7 @@ private:
                                 cache_state); // save  commit property
       }
 
-      data.add(cache_state);
+      data->add(cache_state);
     }
     return false;
   }
@@ -432,38 +401,31 @@ private:
    * @return  true if find a state makes prop true, false otherwise.
    */
   template <typename D>
-  bool oneTranision(D &data, const int component, const int link,
-                    const Property *prop, const State_t *const state) {
+  bool oneTranision(D *data, const int component, const int link,
+                    const State_t *const state) {
 
     manager->copy(next_state, state);
     int source = sys.getSrc(component, link);
     int target = sys.getSnk(component, link);
 
-    //    sys.agents[component]->graph.findSrcSnk(link, source, target);
     if (sys.isFreezeLocation(component, source)) {
-      //    if (sys.agents[component]->locations[source].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]--;
       assert(next_state[manager->getFreezeLocation()] >= 0);
     }
     if (sys.isFreezeLocation(component, target)) {
-      //    if (sys.agents[component]->locations[target].isFreezeLocation()) {
       next_state[manager->getFreezeLocation()]++;
       assert(next_state[manager->getFreezeLocation()] <= component_num);
     }
-    manager->discretRun(component, link, next_state);
-    //    sys.agents[component]->transitions[link](
-    //        component, manager,
-    //        next_state); // update counter state and reset clock state
+    manager->discretRun(
+        component, link,
+        next_state); // update counter state and reset clock state
 
-    return delay(data, component, target, prop, next_state);
+    return delay(data, component, target, next_state);
   }
 
   template <typename D>
-  bool delay(D &data, const int component, const int target,
-             const Property *prop, State_t *state) {
-    if (!manager->isReachable(component, target, state)) {
-      //    if (!sys.agents[component]->locations[target].isReachable(
-      //            manager->getClockManager(), manager->getDBM(state))) {
+  bool delay(D *data, const int component, const int target, State_t *state) {
+    if (!manager->isReachable(component, target, state)) { // undefine state
       // TODO: undefine state
       return false;
     }
@@ -473,48 +435,25 @@ private:
      * First check there is no match  urgent channel
      Whether there is some component in freeze location
      */
-
-    // if (!manager->hasMatchOutUrgentChan(state) && !manager->isFreeze(state))
-    // {
-    if (!manager->isFreeze(state)) {
+    // TODO: Urgment chann
+    if (!manager->hasMatchOutUrgentChan(state) && !manager->isFreeze(state)) {
+      // if (!manager->isFreeze(state)) {
       manager->evolution(component, target, state);
-      //      sys.agents[component]->locations[target](manager->getClockManager(),
-      //                                               manager->getDBM(state));
     }
 
-    return postDelay(data, component, target, prop, state);
+    return postDelay(data, component, target, state);
   }
 
   template <typename D>
-  bool postDelay(D &data, const int component, const int target,
-                 const Property *prop, State_t *state) {
+  bool postDelay(D *data, const int component, const int target,
+                 State_t *state) {
 
-    bool is_commit = sys.isCommit(
-        component,
-        target); // sys.agents[component]->locations[target].isCommit();
+    bool is_commit = sys.isCommit(component, target);
 
     bool re_bool = false;
     if (!manager->isFreeze(state)) {
       for (int component_id = 0; component_id < component_num; component_id++) {
-
-        if (manager->withoutChannel(component_id, state)) {
-          manager->employLocInvariants(component_id, state);
-          //          sys.agents[component_id]
-          //              ->locations[manager->getLocationID(component_id,
-          //              state)] .employInvariants(manager->getClockManager(),
-          //                                manager->getDBM(state));
-        } else {
-          //          int link=state[component_id];
-          //          if (manager->isCommitComp(component_id, state)){
-          //            link = manager->getCommitLoc(component_id, state);
-          //          }
-          //          int block_source=sys.getSrc(component_id, link );
-          // sys.agents[component_id]->graph.findSrc(state[component_id],
-          //                                         block_source);
-          manager->employLocInvariants(component_id, state);
-          //          sys.agents[component_id]->locations[block_source].employInvariants(
-          //              manager->getClockManager(), manager->getDBM(state));
-        }
+        manager->employLocInvariants(component_id, state);
       }
     }
     if (manager->hasDiffCons()) {
@@ -525,11 +464,9 @@ private:
       for (auto dbm : next_dbms) {
         manager->constructState(component, target, state, dbm, is_commit,
                                 cache_state);
-        if (data.add(cache_state)) {
-          if (isReach(prop, cache_state)) {
-            re_bool = true;
-            break;
-          }
+        if (data->add(cache_state) == TRUE) {
+          re_bool = true;
+          break;
         }
       }
       for (auto dbm : next_dbms) {
@@ -538,28 +475,13 @@ private:
     } else {
       manager->norm(manager->getDBM(state));
       manager->constructState(component, target, is_commit, state);
-      if (data.add(state)) {
-        if (isReach(prop, state)) {
-          return true;
-        }
+      if (data->add(state) == TRUE) {
+        return true;
       }
     }
     return re_bool;
   }
 
-  /**
-   *
-   *
-   * @param prop  verifies property
-   * @param state one reachable state
-   *
-   * @return ture if prop is true under state, false otherwise.
-   */
-#ifndef ONLINE_CHECK
-  inline bool isReach(const Property *prop, const State_t *const state) const {
-    return (*prop)(manager.get(), state);
-  }
-#endif
   const SYS &sys;
   TANextStep nextS;
 

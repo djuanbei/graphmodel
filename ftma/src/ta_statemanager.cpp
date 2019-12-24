@@ -171,32 +171,31 @@ Compression<int> TMStateManager::getBodyCompression() const {
   }
   return re_comp;
 }
-  
-  vector<int> TMStateManager::getOutUrgent(const int component, const int loc,
-                                           State_t *state) const{
-    
-    vector<int> re;
-    vector<int> outs = sys.getOutTransition(component, loc);
-    for (auto link : outs) {
-      if (sys.hasChannel(component,link)) {
-        if (sys.agents[component]->transitions[link].getChannel().getType() ==
-            URGENT_CH) {
-          if (transitionReady(component, link, state)){
-            int chid =
-            sys.agents[component]->transitions[link].getChannel().getGlobalId(
-                                                                              state);
-            if (sys.agents[component]->transitions[link].getChannel().isSend()) {
-              re.push_back(chid);
-            } else {
-              re.push_back(-chid);
-            }
+
+vector<int> TMStateManager::getOutUrgent(const int component, const int loc,
+                                         State_t *state) const {
+
+  vector<int> re;
+  vector<int> outs = sys.getOutTransition(component, loc);
+  for (auto link : outs) {
+    if (sys.hasChannel(component, link)) {
+      if (sys.agents[component]->transitions[link].getChannel().getType() ==
+          URGENT_CH) {
+        if (transitionReady(component, link, state)) {
+          int chid =
+              sys.agents[component]->transitions[link].getChannel().getGlobalId(
+                  state);
+          if (sys.agents[component]->transitions[link].getChannel().isSend()) {
+            re.push_back(chid);
+          } else {
+            re.push_back(-chid);
           }
         }
       }
     }
-    return re;
-    
   }
+  return re;
+}
 
 bool TMStateManager::hasDiffCons() const { return hasDiff; }
 

@@ -86,7 +86,7 @@ TEST(TA, UNREACH) {
   loc.push_back(1);
   LocReachProperty prop(loc);
 
-  EXPECT_TRUE(reacher.satisfy(data, &prop));
+  EXPECT_TRUE(reacher.satisfy(&data, &prop));
 }
 
 // ref:  paper    "Timed Automata: Semantics, Algorithms and Tools"  Fig. 4
@@ -157,7 +157,7 @@ TEST(REACHSET, TERIMINAL) {
   Reachability<INT_TAS_t> reacher(sys);
 
   Property prop;
-  EXPECT_FALSE(reacher.satisfy(data, &prop));
+  EXPECT_FALSE(reacher.satisfy(&data, &prop));
 }
 
 TEST(REACHSET, FISHER) {
@@ -265,7 +265,7 @@ TEST(REACHSET, FISHER) {
 
   FischerMutual prop;
 
-  EXPECT_FALSE(reacher.satisfy(data, &prop));
+  EXPECT_FALSE(reacher.satisfy(&data, &prop));
 }
 
 TEST(PMCP, FISHER) {

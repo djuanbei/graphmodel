@@ -3,7 +3,8 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:25:54 2019
  *
- * @brief  a model for timed automata. Corresponding support API to obtain static information of system
+ * @brief  a model for timed automata. Corresponding support API to obtain
+ * static information of system
  *
  *
  */
@@ -100,7 +101,6 @@ public:
   bool hasBroadcaseSendCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutBreakcastSendCh();
   }
-  
 
   bool hasUrgentCh() const { return hasUrgentChan; }
   vector<int> getChanLinks(const int component, const int source,
@@ -285,8 +285,6 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-
-
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
   }
@@ -435,7 +433,6 @@ public:
   bool hasBroadcaseSendCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutBreakcastSendCh();
   }
-
 
   bool hasUrgentCh() const { return hasUrgentChan; }
   vector<int> getChanLinks(const int component, const int source,
@@ -633,8 +630,6 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-
-
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
   }
@@ -712,7 +707,6 @@ private:
   bool hasUrgentChan;
   bool hasBroadcaseChan;
   friend class TMStateManager;
-
 };
 
 } // namespace graphsat

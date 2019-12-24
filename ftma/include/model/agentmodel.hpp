@@ -56,16 +56,6 @@ public:
 
   bool isCommit(int id) const { return locations[id].isCommit(); }
 
-  // void updateCounterId(const map<int, int> &id_map) {
-  //   for (auto e : transitions) {
-  //     for (auto ee : e.counter_cons) {
-  //       ee->counterIpMap(id_map);
-  //     }
-  //     for (auto aa : e.actions) {
-  //       aa->counterIpMap(id_map);
-  //     }
-  //   }
-  // }
   string getLocationName(int node_id) const {
     return locations[node_id].getName();
   }

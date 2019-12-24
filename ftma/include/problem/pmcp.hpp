@@ -33,7 +33,7 @@ public:
 
     dummy.addInitState(pre_data);
     Reachability<SYS> reacher(dummy);
-    if (reacher.satisfy(pre_data, prop)) {
+    if (reacher.satisfy(&pre_data, prop)) {
       return false;
     }
     vector<vector<int>> pre_project;
@@ -51,7 +51,7 @@ public:
 
       dummy.addInitState(data);
       Reachability<SYS> reacher(dummy);
-      if (reacher.satisfy(data, prop)) {
+      if (reacher.satisfy(&data, prop)) {
         return false;
       }
       vector<vector<int>> project;

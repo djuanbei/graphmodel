@@ -340,7 +340,7 @@ TEST(TRAIN_GATE_H, generate) {
   TrainGatePro prop(n);
   prop.setCS(4);
 
-  EXPECT_FALSE(reacher.satisfy(data, &prop));
+  EXPECT_FALSE(reacher.satisfy(&data, &prop));
 }
 
 TEST(PMCP, train_gate) {

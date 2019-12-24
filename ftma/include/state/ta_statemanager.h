@@ -13,11 +13,11 @@
 #include <vector>
 
 #include "discretestate.hpp"
+#include "domain/dbm.h"
+#include "model/counter.h"
 #include "model/parameter.h"
 #include "state/componentstate.h"
 #include "util/datacompression.h"
-#include "domain/dbm.h"
-#include "model/counter.h"
 
 namespace graphsat {
 
@@ -99,18 +99,16 @@ public:
 
   int *newState() const;
 
- 
-
   int *newState(const int *const state) const {
     int *re = new int[state_length];
     memcpy(re, state, state_length * sizeof(int));
     return re;
   }
-  
+
   void copy(int *des_state, const int *const source_state) const {
     memcpy(des_state, source_state, state_length * sizeof(int));
   }
-  
+
   void destroyState(int *state) const { delete[] state; }
 
   int getComponentNum() const { return component_num; }
@@ -172,10 +170,9 @@ public:
                           const int *const state) const {
     return -(state[component_id]) - 1;
   }
-  
+
   vector<int> getOutUrgent(const int component, const int loc,
                            State_t *state) const;
-  
 
   bool hasDiffCons() const;
 

@@ -9,9 +9,10 @@
  */
 #ifndef _ONE_STEP_H
 #define _ONE_STEP_H
+#include <cassert>
 #include <vector>
 
-#include "property/property.h"
+#include "util/typedef.h"
 
 namespace graphsat {
 
@@ -41,32 +42,68 @@ private:
 };
 
 template <typename D, typename M, typename State_t>
-bool doOneStep(D &data, const std::shared_ptr<const M> &manager,
-               const Property *prop, const State_t *const state,
-               vector<OneStep> &steps) {
+Check_State doOneStep(D *data, const M *manager, const State_t *const state,
+                      std::vector<OneStep> &steps) {
 
   for (auto &e : steps) {
     State_t *cache_state = manager->newState(state);
+    bool b = true;
     const std::vector<OneStep::Action> &actions = e.getAction();
-    for (auto &a : actions) {
-      switch (a.action) {
+    assert(!actions.empty() && "At least contain one step.");
+    for (std::vector<OneStep::Action>::const_iterator it = actions.begin();
+         b && (it != actions.end()); it++) {
+      switch (it->action) {
       case OneStep::DISCRETE_JUMP:
-
+        b = doDiscreteJump(manager, it->component, it->transition, cache_state);
         break;
       case OneStep::CONTINUED_EVOLUTION:
+        b = doEvolution(manager, it->component, it->location, cache_state);
         break;
+      }
+    }
+    if (b) {
+      Check_State re = data->add(cache_state);
+      if (re != UNKOWN) {
+        return re;
       }
     }
     manager->destroyState(cache_state);
   }
+  return UNKOWN;
+}
+
+/**
+ *
+ *
+ * @param manager
+ * @param state
+ * @param action
+ *
+ * @return  True if this action is defined, False otherwise.
+ */
+template <typename M, typename State_t>
+bool doDiscreteJump(const M *manager, int component, int link, State_t *state) {
+
+  if (manager->transitionReady(component, link, state)) {
+
+    manager->discretRun(component, link, state);
+    return true;
+  }
+
   return false;
 }
 
 template <typename M, typename State_t>
-void doDiscreteJump(const std::shared_ptr<const M> &manager, State_t *state,
-                    const OneStep::Action &action) {
-  int component = action.component;
-  int link = action.transition;
+bool doEvolution(const M *manager, const int component, int loc,
+                 State_t *state) {
+  if (manager->isReachable(component, loc, state)) {
+    state[component] = loc;
+    if (!manager->isFreeze(state)) {
+      manager->evolution(component, loc, state);
+    }
+    return true;
+  }
+  return false;
 }
 
 } // namespace graphsat

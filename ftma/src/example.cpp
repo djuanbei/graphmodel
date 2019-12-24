@@ -233,7 +233,7 @@ void example2(void) {
   Reachability<INT_TAS_t> reacher(sys);
   Property prop;
 
-  if (reacher.satisfy(data, &prop)) {
+  if (reacher.satisfy(&data, &prop)) {
 
     cout << "right" << endl;
   } else {
@@ -396,7 +396,7 @@ void fisher(int n) {
   Reachability<INT_TAS_t> reacher(sys);
   FischerMutual prop;
 
-  if (reacher.satisfy(data, &prop)) {
+  if (reacher.satisfy(&data, &prop)) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -547,7 +547,7 @@ void incrementalTest() {
   Reachability<INT_TAS_t> reacher(sys);
   FischerMutual prop;
 
-  if (reacher.satisfy(data, &prop)) {
+  if (reacher.satisfy(&data, &prop)) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -578,7 +578,7 @@ void incrementalTest() {
   Reachability<INT_TAS_t> reacher1(sys1);
   FischerMutual prop1;
 
-  if (reacher1.satisfy(data1, &prop1)) {
+  if (reacher1.satisfy(&data1, &prop1)) {
     cout << "There is something wrong" << endl;
   } else {
     cout << "fisher mutual exclusion property check right" << endl;
@@ -639,7 +639,7 @@ void fisher1() {
 
   //   cout << "fisher mutual exclusion property check right" << endl;
   // }
-  reacher.computeAllReachableSet(data);
+  reacher.computeAllReachableSet(&data);
   //  cout << "reach data size: " << data.size() << endl;
   data.generatorDot("test.gv");
 }
@@ -708,7 +708,7 @@ void train_gate(const int n) {
   TrainGatePro prop(n);
   prop.setCS(4);
 
-  if (reacher.satisfy(data, &prop)) {
+  if (reacher.satisfy(&data, &prop)) {
     cout << "some thing is wrong!" << endl;
   }
   data.generatorDot("test.gv");

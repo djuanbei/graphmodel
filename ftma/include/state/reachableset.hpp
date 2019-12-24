@@ -29,6 +29,10 @@ using std::fill;
 using std::ofstream;
 using std::vector;
 
+#ifdef ONLINE_CHECK
+#define isReach(P, S) false
+#endif
+
 template <typename M> class ReachableSet {
 public:
   typedef typename M::State_t State_t;
@@ -37,7 +41,7 @@ public:
 #ifdef DRAW_GRAPH
     current_parent = -1;
 #endif
-
+    prop = nullptr;
     component_num = manager->getComponentNum();
 
     cache_state = manager->newState();
@@ -70,6 +74,8 @@ public:
     }
   }
 
+  void setProperty(const Property *p) { prop = p; }
+
   /**
    * BFS
    * @return next state by order given order
@@ -81,6 +87,7 @@ public:
     // wait_set.pop_back();
     return state;
   }
+
   /**
     where there is no wait state
    */
@@ -104,12 +111,29 @@ public:
     return UNKOWN;
   }
 
-  bool add(const State_t *const state) {
+  /**
+   *
+   *
+   * @param prop  verifies property
+   * @param state one reachable state
+   *
+   * @return ture if prop is true under state, false otherwise.
+   */
+#ifndef ONLINE_CHECK
+  inline bool isReach(const State_t *const state) const {
+    return (prop != nullptr) && ((*prop)(manager.get(), state));
+  }
+#endif
+
+  Check_State add(const State_t *const state) {
     if (addToReachableSet(state)) {
       addToWait(state);
-      return true;
+      if (isReach(state)) {
+        return TRUE;
+      }
+      return UNKOWN;
     }
-    return false;
+    return FALSE;
   }
 
   size_t size() const { return reach_set.size(); }
@@ -275,6 +299,7 @@ private:
   StateConvert<State_t> compress_state;
   UINT *convert_UINT;
   State_t *convert_C_t;
+  const Property *prop;
 
 #ifdef DRAW_GRAPH
   vector<UINT> process_states;
