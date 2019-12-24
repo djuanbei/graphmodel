@@ -61,7 +61,6 @@ bool TMStateManager::isReachable(const int component, const int loc,
                                  int *state) const {
   return sys.agents[component]->locations[loc].isReachable(getClockManager(),
                                                            getDBM(state));
-  // return  false;
 }
 
 bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
@@ -72,7 +71,7 @@ bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
       int loc = getLocationID(comp, state);
       if (sys.hasUrgentCh(comp, loc)) {
         vector<int> dummy =
-            sys.getOutUrgent(comp, loc, const_cast<int *>(counter_value));
+            getOutUrgent(comp, loc, const_cast<int *>(counter_value));
         for (auto e : dummy) {
           if (e > 0) {
             if (receive_part.find(-e) != receive_part.end()) {
@@ -172,6 +171,32 @@ Compression<int> TMStateManager::getBodyCompression() const {
   }
   return re_comp;
 }
+  
+  vector<int> TMStateManager::getOutUrgent(const int component, const int loc,
+                                           State_t *state) const{
+    
+    vector<int> re;
+    vector<int> outs = sys.getOutTransition(component, loc);
+    for (auto link : outs) {
+      if (sys.hasChannel(component,link)) {
+        if (sys.agents[component]->transitions[link].getChannel().getType() ==
+            URGENT_CH) {
+          if (transitionReady(component, link, state)){
+            int chid =
+            sys.agents[component]->transitions[link].getChannel().getGlobalId(
+                                                                              state);
+            if (sys.agents[component]->transitions[link].getChannel().isSend()) {
+              re.push_back(chid);
+            } else {
+              re.push_back(-chid);
+            }
+          }
+        }
+      }
+    }
+    return re;
+    
+  }
 
 bool TMStateManager::hasDiffCons() const { return hasDiff; }
 

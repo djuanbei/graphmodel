@@ -3,7 +3,7 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sat May 18 09:28:22 2019
  *
- * @brief  state
+ * @brief  state  Corresponding all the API about state
  *
  *
  */
@@ -16,16 +16,13 @@
 #include "model/parameter.h"
 #include "state/componentstate.h"
 #include "util/datacompression.h"
-
-//#include "model/graphmodel.hpp"
-#include "model/location.h"
-//#include "model/transition.h"
-
+#include "domain/dbm.h"
 #include "model/counter.h"
 
 namespace graphsat {
 
 using std::vector;
+class Location;
 class Transition;
 template <typename L, typename T> class AgentSystem;
 
@@ -102,16 +99,18 @@ public:
 
   int *newState() const;
 
-  void copy(int *des_state, const int *const source_state) const {
-    memcpy(des_state, source_state, state_length * sizeof(int));
-  }
+ 
 
   int *newState(const int *const state) const {
     int *re = new int[state_length];
     memcpy(re, state, state_length * sizeof(int));
     return re;
   }
-
+  
+  void copy(int *des_state, const int *const source_state) const {
+    memcpy(des_state, source_state, state_length * sizeof(int));
+  }
+  
   void destroyState(int *state) const { delete[] state; }
 
   int getComponentNum() const { return component_num; }
@@ -173,6 +172,10 @@ public:
                           const int *const state) const {
     return -(state[component_id]) - 1;
   }
+  
+  vector<int> getOutUrgent(const int component, const int loc,
+                           State_t *state) const;
+  
 
   bool hasDiffCons() const;
 

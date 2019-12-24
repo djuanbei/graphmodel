@@ -66,12 +66,12 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
   int *counter_value = manager->getCounterValue(state);
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
-    vector<int> dummy_a = sys.getOutUrgent(i, loc_a, counter_value);
+    vector<int> dummy_a = manager->getOutUrgent(i, loc_a, counter_value);
     if (!dummy_a.empty()) {
       const set<int> temp(dummy_a.begin(), dummy_a.end());
       for (int j = i + 1; j < component_num; j++) {
         const int loc_b = manager->getLocationID(j, state);
-        const vector<int> dummy2 = sys.getOutUrgent(j, loc_b, counter_value);
+        const vector<int> dummy2 = manager->getOutUrgent(j, loc_b, counter_value);
         for (auto e : dummy2) {
           if (temp.find(-e) != temp.end()) {
             vector<int> links_a = sys.getChanLinks(i, loc_a, -e, counter_value);

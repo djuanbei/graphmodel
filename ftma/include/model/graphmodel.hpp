@@ -3,7 +3,7 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Sun Mar 31 21:25:54 2019
  *
- * @brief  a model for timed automata
+ * @brief  a model for timed automata. Corresponding support API to obtain static information of system
  *
  *
  */
@@ -100,27 +100,7 @@ public:
   bool hasBroadcaseSendCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutBreakcastSendCh();
   }
-  vector<int> getOutUrgent(const int component, const int loc,
-                           State_t *state) const {
-    vector<int> re;
-    vector<int> outs = agents[component]->graph.getAdj(loc);
-    for (auto link : outs) {
-      if (agents[component]->transitions[link].hasChannel()) {
-        if (agents[component]->transitions[link].getChannel().getType() ==
-            URGENT_CH) {
-          int chid =
-              agents[component]->transitions[link].getChannel().getGlobalId(
-                  state);
-          if (agents[component]->transitions[link].getChannel().isSend()) {
-            re.push_back(chid);
-          } else {
-            re.push_back(-chid);
-          }
-        }
-      }
-    }
-    return re;
-  }
+  
 
   bool hasUrgentCh() const { return hasUrgentChan; }
   vector<int> getChanLinks(const int component, const int source,
@@ -305,12 +285,7 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-  // bool transitionReady(const int component, const int link,
-  //                      const int *const state) const {
-  //   return agents[component]->transitions[link].ready(component,
-  //   stateManager,
-  //                                                     state);
-  // }
+
 
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
@@ -460,30 +435,7 @@ public:
   bool hasBroadcaseSendCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutBreakcastSendCh();
   }
-  vector<int> getOutUrgent(const int component, const int loc,
-                           State_t *state) const {
-    vector<int> re;
-    vector<int> outs = agents[component]->graph.getAdj(loc);
-    for (auto link : outs) {
-      if (agents[component]->transitions[link].hasChannel()) {
-        if (agents[component]->transitions[link].getChannel().getType() ==
-            URGENT_CH) {
-          if (agents[component]->transitions[link].ready(component,
-                                                         stateManager, state)) {
-            int chid =
-                agents[component]->transitions[link].getChannel().getGlobalId(
-                    state);
-            if (agents[component]->transitions[link].getChannel().isSend()) {
-              re.push_back(chid);
-            } else {
-              re.push_back(-chid);
-            }
-          }
-        }
-      }
-    }
-    return re;
-  }
+
 
   bool hasUrgentCh() const { return hasUrgentChan; }
   vector<int> getChanLinks(const int component, const int source,
@@ -681,12 +633,7 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-  // bool transitionReady(const int component, const int link,
-  //                      const int *const state) const {
-  //   return agents[component]->transitions[link].ready(component,
-  //   stateManager,
-  //                                                     state);
-  // }
+
 
   const Channel &getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
@@ -765,7 +712,7 @@ private:
   bool hasUrgentChan;
   bool hasBroadcaseChan;
   friend class TMStateManager;
-  // template <typename TT> friend class Reachability;
+
 };
 
 } // namespace graphsat
