@@ -69,9 +69,7 @@ public:
     state[comp_id + component_num] = NO_CHANNEL;
   }
 
-  bool isBlock(const int comp_id, const int *const state) const {
-    return hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
-  }
+  bool isBlock(const int comp_id, const int *const state) const;
 
   bool transitionReady(const int component, const int link,
                        const int *const state) const;
@@ -96,6 +94,9 @@ public:
                              const int *const state) const {
     return state[component + component_num] == NO_CHANNEL;
   }
+
+  vector<int> getChanLinks(const int component, const int source, int chid,
+                           int *state) const;
 
   int *newState() const;
 
@@ -148,13 +149,17 @@ public:
                       const int *const state, int *dbm, bool isCommit,
                       int *re_state) const;
 
+  void constructState(const int *const state, const int *const dbm,
+                      int *re_state) const;
+
   void constructState(const int component_id, const int target, bool isCommit,
                       int *state) const;
 
-  inline bool isCommitComp(const int component_id,
-                           const int *const state) const {
-    return state[component_id] < 0;
-  }
+  // inline bool isCommitComp(const int component_id,
+  //                          const int *const state) const {
+
+  //   return state[component_id] < 0;
+  // }
 
   /**
    * @brief  comonent_id in a commit location
@@ -183,7 +188,7 @@ public:
 
   void discretRun(const int component, const int link, int *state) const;
 
-  void evolution(const int component, const int loc, int *state) const;
+  vector<int *> evolution(const int component, const int loc, int *state) const;
 
   string getLocDotLabel(const int *const state) const;
 
@@ -212,7 +217,7 @@ private:
   int clock_num;
   int chan_num;
   bool hasDiff;
-  bool hasChannel() const;
+  //  bool hasChannel() const;
 };
 } // namespace graphsat
 #endif

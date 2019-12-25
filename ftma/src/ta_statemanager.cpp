@@ -55,7 +55,7 @@ int *TMStateManager::newState() const {
 
 bool TMStateManager::transitionReady(const int component, const int link,
                                      const int *const state) const {
-  return sys.agents[component]->transitions[link].ready(component, this, state);
+  return sys.agents[component]->transitions[link].ready(this, state);
 }
 bool TMStateManager::isReachable(const int component, const int loc,
                                  int *state) const {
@@ -65,19 +65,17 @@ bool TMStateManager::isReachable(const int component, const int loc,
 
 bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
   if (sys.hasUrgentCh()) {
-    const int *counter_value = getCounterValue(state);
     set<int> send_part, receive_part;
     for (int comp = 0; comp < component_num; comp++) {
       int loc = getLocationID(comp, state);
       if (sys.hasUrgentCh(comp, loc)) {
         vector<int> dummy =
-            getEnableOutUrgent(comp, loc, const_cast<int *>(counter_value));
+            getEnableOutUrgent(comp, loc, const_cast<int *>(state));
         for (auto e : dummy) {
           if (e > 0) {
             if (receive_part.find(-e) != receive_part.end()) {
               return true;
             }
-
           } else {
             if (send_part.find(-e) != send_part.end()) {
               return true;
@@ -100,7 +98,7 @@ bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
 bool TMStateManager::hasOutBreakcastChan(const int *const state) const {
 
   for (int comp = 0; comp < component_num; comp++) {
-    int loc = getLocationID(comp, state);
+    //  int loc = getLocationID(comp, state);
   }
 
   return false;
@@ -177,6 +175,7 @@ vector<int> TMStateManager::getEnableOutUrgent(const int component,
                                                State_t *state) const {
 
   vector<int> re;
+  int *counter_value = getCounterValue(state);
   vector<int> outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
@@ -185,7 +184,7 @@ vector<int> TMStateManager::getEnableOutUrgent(const int component,
         if (transitionReady(component, link, state)) {
           int chid =
               sys.agents[component]->transitions[link].getChannel().getGlobalId(
-                  state);
+                  counter_value);
           if (sys.agents[component]->transitions[link].getChannel().isSend()) {
             re.push_back(chid);
           } else {
@@ -203,6 +202,7 @@ vector<int> TMStateManager::getEnableOutNormalChan(const int component,
                                                    int *state) const {
   vector<int> re;
   vector<int> outs = sys.getOutTransition(component, loc);
+  int *counter_value = getCounterValue(state);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
       if (sys.agents[component]->transitions[link].getChannel().getType() ==
@@ -210,7 +210,7 @@ vector<int> TMStateManager::getEnableOutNormalChan(const int component,
         if (transitionReady(component, link, state)) {
           int chid =
               sys.agents[component]->transitions[link].getChannel().getGlobalId(
-                  state);
+                  counter_value);
           if (sys.agents[component]->transitions[link].getChannel().isSend()) {
             re.push_back(chid);
           } else {
@@ -227,17 +227,18 @@ bool TMStateManager::hasDiffCons() const { return hasDiff; }
 
 int TMStateManager::getLocationID(const int component,
                                   const int *const state) const {
-  int re = state[component];
-
-  if (isCommitComp(component, state)) { // commit location
-    re = getCommitLoc(component, state);
-  }
-
-  if (isBlock(component, state)) {
-    re = sys.getSrc(component, re);
-  }
-  assert(re >= 0 && "The location id must greater or equal to then 0.");
-  return re;
+  return state[component];
+//  int re = state[component];
+//
+//  if (isCommitComp(component, state)) { // commit location
+//    re = getCommitLoc(component, state);
+//  }
+//
+//  if (isBlock(component, state)) {
+//    re = sys.getSrc(component, re);
+//  }
+//  assert(re >= 0 && "The location id must greater or equal to then 0.");
+//  return re;
 }
 
 string TMStateManager::getLocationName(const int component,
@@ -245,7 +246,37 @@ string TMStateManager::getLocationName(const int component,
   return sys.getLocationName(component, loc_ID);
 }
 
-bool TMStateManager::hasChannel() const { return sys.getChanNum() > 0; }
+vector<int> TMStateManager::getChanLinks(const int component, const int source, int chid,
+                                         int *state) const {
+  vector<int> re;
+  vector<int> outs = sys.agents[component]->graph.getAdj(source);
+  int *counter_value=getCounterValue(state);
+  if (chid > 0) {
+    for (auto link : outs) {
+      if (sys.hasChannel( component, link)&& sys.getChannel( component, link ).isSend() &&
+          sys.getChannel(component, link).getGlobalId(
+              counter_value) == chid) {
+        re.push_back(link);
+      }
+    }
+  } else {
+    chid *= -1;
+    for (auto link : outs) {
+      if (sys.hasChannel( component, link) &&
+          sys.getChannel( component, link ).isRecive() &&
+          sys.getChannel( component, link ).getGlobalId(
+              counter_value) == chid) {
+        re.push_back(link);
+      }
+    }
+  }
+  return re;
+}
+
+bool TMStateManager::isBlock(const int comp_id, const int *const state) const {
+  return sys.hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
+}
+//bool TMStateManager::hasChannel() const { return sys.getChanNum() > 0; }
 
 vector<int> TMStateManager::blockComponents(const int chid,
                                             const int *const state) const {
@@ -278,6 +309,13 @@ void TMStateManager::constructState(const int component_id, const int target,
   }
 }
 
+void TMStateManager::constructState(const int *const state,
+                                    const int *const dbm, int *re_state) const {
+  memcpy(re_state, state, clock_start_loc * sizeof(int));
+  memcpy(re_state + clock_start_loc, dbm,
+         (state_length - clock_start_loc) * sizeof(int));
+}
+
 void TMStateManager::employLocInvariants(const int component,
                                          int *state) const {
   sys.agents[component]
@@ -287,12 +325,48 @@ void TMStateManager::employLocInvariants(const int component,
 
 void TMStateManager::discretRun(const int component, const int link,
                                 int *state) const {
-  sys.agents[component]->transitions[link](component, this, state);
+  sys.agents[component]->transitions[link](this, state);
+  int source=sys.getSrc(component, link);
+  int target=sys.getSnk(component, link);
+  if(sys.isFreezeLocation( component, source) ){
+    state[getFreezeLocation( ) ]--;
+    assert(state[getFreezeLocation( ) ]>=0 );
+  }
+  if( sys.isFreezeLocation( component, target)){
+    state[getFreezeLocation( ) ]++;
+    assert(state[getFreezeLocation( ) ]<=component_num );
+  }
+  
+  state[component] = target;
 }
 
-void TMStateManager::evolution(const int component, const int loc,
-                               int *state) const {
+vector<int *> TMStateManager::evolution(const int component, const int loc,
+                                        int *state) const {
+  vector<int *> re;
+  state[component] = loc;
   sys.agents[component]->locations[loc](getClockManager(), getDBM(state));
+  if (hasDiffCons()) {
+    vector<int *> next_dbms;
+    norm(getDBM(state), next_dbms);
+    if (1 == next_dbms.size()) {
+      re.push_back(state);
+    } else {
+      for (auto dbm : next_dbms) {
+        int *dummy = newState();
+        constructState(state, dbm, dummy);
+
+        re.push_back(dummy);
+      }
+    }
+
+    for (auto dbm : next_dbms) {
+      getClockManager().destroyDBM(dbm);
+    }
+
+  } else {
+    re.push_back(state);
+  }
+  return re;
 }
 string TMStateManager::getLocDotLabel(const int *const state) const {
   string re = "";
@@ -320,10 +394,11 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
     } else {
       item += " = [";
       for (int i = 0; i < e.num; i++) {
-        if (i > 0) {
-          item += ",";
+        if (i +1< e.num) {
+          item += to_string(counter_value[e.start_loc + i])+", ";
+        }else{
+          item += to_string(counter_value[e.start_loc + i]);
         }
-        item += to_string(counter_value[e.start_loc + i]) + " ";
       }
       item += "]";
     }

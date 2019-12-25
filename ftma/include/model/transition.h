@@ -122,11 +122,9 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  bool ready(const int component,
-             const shared_ptr<const TMStateManager> &manager,
-             const int *const state) const;
-  bool ready(const int component, const TMStateManager *manager,
-             const int *const state) const;
+//  bool ready(const shared_ptr<const TMStateManager> &manager,
+//             const int *const state) const;
+  bool ready(const TMStateManager *manager, const int *const state) const;
 
   /**
    *
@@ -134,13 +132,11 @@ public:
    *
    */
 
-  void operator()(const int component,
-                  const shared_ptr<const TMStateManager> &manager,
-                  int *re_state) const;
-  void operator()(const int component, const TMStateManager *const manager,
-                  int *re_state) const;
+//  void operator()(const shared_ptr<const TMStateManager> &manager,
+//                  int *re_state) const;
+  void operator()(const TMStateManager *const manager, int *re_state) const;
 
-  void to_real(const shared_ptr<TOReal> &convertor);
+  void to_real(const TOReal* convertor);
 
   void setSelectVar(const string &n) { select_var = n; }
   string getSelectVar(void) const { return select_var; }

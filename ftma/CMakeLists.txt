@@ -9,7 +9,7 @@ option(test "Build all tests." OFF) # Makes boolean 'test' available.
 set(PROJECT_NAME gmodel)
 project(${PROJECT_NAME})
 
-set(CMAKE_CXX_FLAGS "-Wall -g -std=c++11 -fdiagnostics-absolute-paths -Wno-deprecated-register")
+set(CMAKE_CXX_FLAGS "-Werror -g -std=c++11 -fdiagnostics-absolute-paths -Wno-deprecated-register")
 #link_directories(/usr/local/lib/)
 
 # force static runtime libraries for msvc builds

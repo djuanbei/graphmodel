@@ -121,7 +121,7 @@ private:
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
-
+    
     std::vector<OneStep> re = nextS.getNextStep(const_cast<int *>(state));
     return doOneStep(data, manager.get(), state, re) == TRUE;
 
@@ -133,7 +133,8 @@ private:
       for (int component = 0; component < component_num; component++) {
         // component is at  freeze location and component does not wait another
         // components. commit location go first.
-        if (manager->isCommitComp(component, state) &&
+
+        if (sys.isCommit( component, manager->getLocationID( component, state))  &&
             !manager->isBlock(component, state)) {
           return oneComponent(data, component, state);
         }
@@ -242,9 +243,9 @@ private:
     manager->unBlock(block_component_id, next_state);
 
     int block_link = next_state[block_component_id];
-    if (manager->isCommitComp(block_component_id, next_state)) {
-      block_link = manager->getCommitLoc(block_component_id, next_state);
-    }
+    // if (manager->isCommitComp(block_component_id, next_state)) {
+    //   block_link = manager->getCommitLoc(block_component_id, next_state);
+    // }
     assert(block_link >= 0);
 
     int block_source = sys.getSrc(block_component_id, block_link);
@@ -383,10 +384,11 @@ private:
       }
       // TODO: add commit property
       cache_state[component] = link; // block link
-      if (manager->isCommitComp(component, state)) {
-        manager->setCommitState(component,
-                                cache_state); // save  commit property
-      }
+      
+      // if (manager->isCommitComp(component, state)) {
+      //   manager->setCommitState(component,
+      //                           cache_state); // save  commit property
+      // }
 
       data->add(cache_state);
     }

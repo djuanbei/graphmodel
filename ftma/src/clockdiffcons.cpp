@@ -33,7 +33,7 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1,
   assert(false && "At now the program has not supprt other cases.");
 }
 
-void ClockConstraint::to_real(const shared_ptr<TOReal> &convertor) {
+void ClockConstraint::to_real(const TOReal* convertor) {
   real_clock_x_arg = convertor->to_real(CLOCK_T, clock_x_arg);
   real_clock_y_arg = convertor->to_real(CLOCK_T, clock_y_arg);
   real_rhs_arg = convertor->to_real(CLOCK_T, rhs_arg);

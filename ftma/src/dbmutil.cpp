@@ -42,8 +42,6 @@ int getValue(const RealArgument &arg, int *counter_value) {
     return arg.value + shift;
   case NORMAL_VAR_ARG:
     return counter_value[arg.value + shift];
-    //  case SYSTEM_VAR_ARG:
-    //    return counter_value[arg.value + shift];
   case PARAMETER_ARG:
     return arg.value + shift;
   case REF_PARAMETER_ARG:

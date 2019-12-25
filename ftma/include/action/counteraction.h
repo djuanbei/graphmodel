@@ -86,7 +86,7 @@ public:
                 const Argument &out_rhs)
       : lhs(out_lhs), action(ee), rhs(out_rhs) {}
 
-  void to_real(const shared_ptr<TOReal> &convertor) {
+  void to_real(const TOReal * convertor) {
     real_lhs = convertor->to_real(INT_T, lhs);
     real_rhs = convertor->to_real(INT_T, rhs);
   }

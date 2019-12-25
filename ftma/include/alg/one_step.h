@@ -44,8 +44,9 @@ private:
 template <typename D, typename M, typename State_t>
 Check_State doOneStep(D *data, const M *manager, const State_t *const state,
                       std::vector<OneStep> &steps) {
-
+  
   for (auto &e : steps) {
+  
     State_t *cache_state = manager->newState(state);
     bool b = true;
     const std::vector<OneStep::Action> &actions = e.getAction();
@@ -57,13 +58,16 @@ Check_State doOneStep(D *data, const M *manager, const State_t *const state,
         b = doDiscreteJump(manager, it->component, it->transition, cache_state);
         break;
       case OneStep::CONTINUED_EVOLUTION:
-        b = doEvolution(manager, it->component, it->location, cache_state);
+        if( it != actions.begin() &&!manager->hasMatchOutUrgentChan( cache_state)){
+          b = doEvolution(manager, it->component, it->location, cache_state);
+        }
         break;
       }
     }
     if (b) {
       Check_State re = data->add(cache_state);
       if (re == TRUE) {
+        manager->destroyState(cache_state);
         return re;
       }
     }
@@ -96,6 +100,7 @@ bool doDiscreteJump(const M *manager, int component, int link, State_t *state) {
 template <typename M, typename State_t>
 bool doEvolution(const M *manager, const int component, int loc,
                  State_t *state) {
+
   if (manager->isReachable(component, loc, state)) {
     state[component] = loc;
     manager->evolution(component, loc, state);

@@ -310,6 +310,8 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
 
           for (auto e : normol_chan_actions1) {
             assert(false && "API has change.");
+            if (e > 0) {
+            }
             // transition.setChannel(new Channel(e));
           }
           vector<int> ref_chan_actions =
@@ -317,6 +319,8 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData &template_data,
 
           for (auto e : ref_chan_actions) {
             assert(false && "API has change.");
+            if (e > 0) {
+            }
             // transition.setChannel(new Channel(e, true));
           }
           assert(normol_chan_actions1.size() + ref_chan_actions.size() < 2);

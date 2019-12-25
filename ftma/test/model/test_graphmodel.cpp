@@ -176,7 +176,7 @@ TEST_F(GraphModelTest, constraint) {
   Argument rhs1(CONST_ARG, 0);
   CounterConstraint *ccs1 =
       new CounterConstraint(len_arg, second1, GT, rhs1); // len >0
-  ccs1->to_real(tma);
+  ccs1->to_real(tma.get( ));
 
   EXPECT_FALSE((*ccs1)(counters));
 
@@ -227,7 +227,7 @@ TEST_F(GraphModelTest, Channel) {
 
   Channel ch1(ch1_arg);
   ch1.setAction(CHANNEL_SEND);
-  ch1.to_real(tma);
+  ch1.to_real(tma.get( ));
 
   shared_ptr<Function> enqueue_c = tma->getFun("enqueue");
   shared_ptr<Function> dequeue_c = tma->getFun("dequeue");
@@ -294,7 +294,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
-    ch1.to_real(tma);
+    ch1.to_real(tma.get( ));
     int ffid = ch1(counters);
     EXPECT_EQ(i + 1, ffid);
   }
@@ -305,7 +305,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
-    caction2.to_real(tma);
+    caction2.to_real(tma.get( ));
     caction2(counters);
     EXPECT_EQ((*tail_c)(counters), i);
   }
@@ -319,7 +319,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
     (*enqueue_c)(counters, i);
-    ccs1.to_real(tma);
+    ccs1.to_real(tma.get( ));
     EXPECT_TRUE(ccs1(counters));
     (*dequeue_c)(counters);
   }

@@ -102,6 +102,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   es.push_back(Safe_Appr);
   es.push_back(Appr_Stop);
   es.push_back(Stop_Start);
+  es.push_back(Start_Cross);
   es.push_back(Cross_Safe);
   es.push_back(Appr_Cross);
   train_tmt->initial(ls, es, 0);

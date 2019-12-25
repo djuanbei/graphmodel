@@ -35,7 +35,9 @@ private:
   void discret(int *state, std::vector<pair<int, int>> &paths,
                std::vector<OneStep> &re) const;
 
-  void updateState(const int component, const int link, int *state) const;
+  int getCommitCount(const int component, const int link, int count) const;
+  
+  void doCommitComponent(int *state, int component, std::vector<OneStep> &re) const;
 
 public:
   void doNormal(int *state, std::vector<OneStep> &re) const;

@@ -81,6 +81,9 @@ public:
 
   int getComponentNumber() const { return (int)agents.size(); }
 
+  bool hasChannel( ) const{
+    return getChanNum() > 0; 
+  }
   bool hasChannel(const int component, const int link) const {
     return agents[component]->transitions[link].hasChannel();
   }
@@ -110,32 +113,8 @@ public:
   }
 
   bool hasUrgentCh() const { return hasUrgentChan; }
-  vector<int> getChanLinks(const int component, const int source, int chid,
-                           int *counter_value) const {
-    vector<int> re;
-    vector<int> outs = agents[component]->graph.getAdj(source);
-    if (chid > 0) {
-      for (auto link : outs) {
-        if (agents[component]->transitions[link].hasChannel() &&
-            agents[component]->transitions[link].getChannel().isSend() &&
-            agents[component]->transitions[link].getChannel().getGlobalId(
-                counter_value) == chid) {
-          re.push_back(link);
-        }
-      }
-    } else {
-      chid *= -1;
-      for (auto link : outs) {
-        if (agents[component]->transitions[link].hasChannel() &&
-            agents[component]->transitions[link].getChannel().isRecive() &&
-            agents[component]->transitions[link].getChannel().getGlobalId(
-                counter_value) == chid) {
-          re.push_back(link);
-        }
-      }
-    }
-    return re;
-  }
+  
+
 
   bool hasBroadcaseCh() const { return hasBroadcaseChan; }
 
@@ -164,7 +143,7 @@ public:
     difference_cons.clear();
 
     for (auto &e : agents) {
-      transfrom(e);
+      transfrom(e.get());
     }
     int clock_num = 1;
     for (auto &e : clock_max_value) {
@@ -311,7 +290,7 @@ public:
   }
 
 private:
-  void transfrom(shared_ptr<Agent_t> &agent) {
+  void transfrom(Agent_t * agent) {
 
     agent->initFuns();
     agent->locations = agent->agent_tempate->template_locations;

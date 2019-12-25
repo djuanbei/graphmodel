@@ -2,7 +2,7 @@
 
 namespace graphsat {
 
-void CounterConstraint::to_real(const shared_ptr<TOReal> &convertor) {
+void CounterConstraint::to_real(const TOReal *convertor) {
   first_value = convertor->to_real(INT_T, first);
   second_value = convertor->to_real(INT_T, second);
   rhs_value = convertor->to_real(INT_T, rhs);

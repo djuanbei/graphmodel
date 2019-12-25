@@ -140,7 +140,7 @@ public:
    */
   Location &operator+=(const ClockConstraint &cs);
 
-  void to_real(const shared_ptr<TOReal> &convertor);
+  void to_real(const TOReal *convertor);
 
   // string to_string( ) const{
   //   string re_str="name: "+name;
