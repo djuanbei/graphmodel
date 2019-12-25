@@ -422,9 +422,14 @@ ostream &TMStateManager::dump(const int *const state, ostream &out) const {
     int loc = getLocationID(i, state);
 
     out << setw(LOC_OUT_WIDTH)
-        << getLocationName(i, loc); // agents[i]->getLocationName(loc);
+        << getLocationName(i, loc); 
   }
   out << endl;
+  vector<string> couter_labels = getCounterDotLabel(state);
+  for (auto &l : couter_labels) {
+    out<<l<<endl;
+  }
+  
   return getClockManager().dump(out, getDBM(state)) << endl;
 }
 
