@@ -81,9 +81,7 @@ public:
 
   int getComponentNumber() const { return (int)agents.size(); }
 
-  bool hasChannel( ) const{
-    return getChanNum() > 0; 
-  }
+  bool hasChannel() const { return getChanNum() > 0; }
   bool hasChannel(const int component, const int link) const {
     return agents[component]->transitions[link].hasChannel();
   }
@@ -113,8 +111,6 @@ public:
   }
 
   bool hasUrgentCh() const { return hasUrgentChan; }
-  
-
 
   bool hasBroadcaseCh() const { return hasBroadcaseChan; }
 
@@ -290,7 +286,7 @@ public:
   }
 
 private:
-  void transfrom(Agent_t * agent) {
+  void transfrom(Agent_t *agent) {
 
     agent->initFuns();
     agent->locations = agent->agent_tempate->template_locations;

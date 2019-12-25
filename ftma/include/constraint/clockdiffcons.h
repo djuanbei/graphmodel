@@ -38,7 +38,7 @@ public:
   ClockConstraint(const Argument &clock_id1, const Argument &clock_id2,
                   COMP_OPERATOR eop, const Argument &rhs);
 
-  void to_real(const TOReal* convertor);
+  void to_real(const TOReal *convertor);
 
   // void globalUpdate(const vector<int> &parameter_value);
   // void clockShift(int shift);

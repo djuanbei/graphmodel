@@ -16,7 +16,7 @@ class ClockReset {
 public:
   ClockReset(const Argument &clock_arg, const Argument &rhs_arg)
       : clock(clock_arg), rhs(rhs_arg) {}
-  void to_real(const TOReal* convertor) {
+  void to_real(const TOReal *convertor) {
     clock_value = convertor->to_real(CLOCK_T, clock);
     rhs_value = convertor->to_real(INT_T, rhs);
   }

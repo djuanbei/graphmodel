@@ -36,8 +36,9 @@ private:
                std::vector<OneStep> &re) const;
 
   int getCommitCount(const int component, const int link, int count) const;
-  
-  void doCommitComponent(int *state, int component, std::vector<OneStep> &re) const;
+
+  void doCommitComponent(int *state, int component,
+                         std::vector<OneStep> &re) const;
 
 public:
   void doNormal(int *state, std::vector<OneStep> &re) const;

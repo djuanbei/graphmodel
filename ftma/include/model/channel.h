@@ -36,7 +36,7 @@ public:
   int getGlobalId(int *counter_value) const { return (*this)(counter_value); }
   void setAction(const CHANNEL_ACTION &a) { action = a; }
 
-  void to_real(const TOReal* convertor) {
+  void to_real(const TOReal *convertor) {
     real_chan_id = convertor->to_real(CHAN_T, chan_id);
     real_chan_id.type = CONST_ARG;
     type = convertor->getChanType(chan_id.name);

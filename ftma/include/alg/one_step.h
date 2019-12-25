@@ -44,35 +44,92 @@ private:
 template <typename D, typename M, typename State_t>
 Check_State doOneStep(D *data, const M *manager, const State_t *const state,
                       std::vector<OneStep> &steps) {
-  
-  for (auto &e : steps) {
-  
-    State_t *cache_state = manager->newState(state);
-    bool b = true;
-    const std::vector<OneStep::Action> &actions = e.getAction();
-    assert(!actions.empty() && "At least contain one step.");
-    for (std::vector<OneStep::Action>::const_iterator it = actions.begin();
-         b && (it != actions.end()); it++) {
-      switch (it->action) {
-      case OneStep::DISCRETE_JUMP:
-        b = doDiscreteJump(manager, it->component, it->transition, cache_state);
-        break;
-      case OneStep::CONTINUED_EVOLUTION:
-        if( it != actions.begin() &&!manager->hasMatchOutUrgentChan( cache_state)){
-          b = doEvolution(manager, it->component, it->location, cache_state);
+
+  if (manager->hasDiffCons()) {
+
+    for (auto &e : steps) {
+      State_t *cache_state = manager->newState(state);
+      vector<State_t *> waitS;
+      vector<State_t *> tempSet;
+      waitS.push_back(cache_state);
+
+      bool b = true;
+      const std::vector<OneStep::Action> &actions = e.getAction();
+      assert(!actions.empty() && "At least contain one step.");
+      for (std::vector<OneStep::Action>::const_iterator it = actions.begin();
+           b && (it != actions.end()); it++) {
+        switch (it->action) {
+        case OneStep::DISCRETE_JUMP:
+          for (typename std::vector<State_t *>::iterator iit = waitS.begin();
+               b && iit != waitS.end(); iit++) {
+            b = doDiscreteJump(manager, it->component, it->transition, *iit);
+          }
+          break;
+        case OneStep::CONTINUED_EVOLUTION:
+          tempSet.clear();
+          for (typename std::vector<State_t *>::iterator iit = waitS.begin();
+               b && iit != waitS.end(); iit++) {
+            if (it != actions.begin() &&
+                !manager->hasMatchOutUrgentChan(cache_state)) {
+              std::vector<State_t *> dummy =
+                  doEvolution(manager, it->component, it->location, *iit);
+              tempSet.insert(tempSet.end(), dummy.begin(), dummy.end());
+            }
+          }
+          waitS.swap(tempSet);
+          break;
         }
-        break;
+      }
+      if (b) {
+        for (auto e : waitS) {
+          Check_State re = data->add(e);
+          if (re == TRUE) {
+            for (auto ee : waitS) {
+              manager->destroyState(ee);
+            }
+            return re;
+          }
+        }
+      }
+      for (auto ee : waitS) {
+        manager->destroyState(ee);
       }
     }
-    if (b) {
-      Check_State re = data->add(cache_state);
-      if (re == TRUE) {
-        manager->destroyState(cache_state);
-        return re;
+
+  } else {
+    for (auto &e : steps) {
+
+      State_t *cache_state = manager->newState(state);
+
+      bool b = true;
+      const std::vector<OneStep::Action> &actions = e.getAction();
+      assert(!actions.empty() && "At least contain one step.");
+      for (std::vector<OneStep::Action>::const_iterator it = actions.begin();
+           b && (it != actions.end()); it++) {
+        switch (it->action) {
+        case OneStep::DISCRETE_JUMP:
+          b = doDiscreteJump(manager, it->component, it->transition,
+                             cache_state);
+          break;
+        case OneStep::CONTINUED_EVOLUTION:
+          if (it != actions.begin() &&
+              !manager->hasMatchOutUrgentChan(cache_state)) {
+            doEvolution(manager, it->component, it->location, cache_state);
+          }
+          break;
+        }
       }
+      if (b) {
+        Check_State re = data->add(cache_state);
+        if (re == TRUE) {
+          manager->destroyState(cache_state);
+          return re;
+        }
+      }
+      manager->destroyState(cache_state);
     }
-    manager->destroyState(cache_state);
   }
+
   return UNKOWN;
 }
 
@@ -98,19 +155,26 @@ bool doDiscreteJump(const M *manager, int component, int link, State_t *state) {
 }
 
 template <typename M, typename State_t>
-bool doEvolution(const M *manager, const int component, int loc,
-                 State_t *state) {
-
-  if (manager->isReachable(component, loc, state)) {
-    state[component] = loc;
-    manager->evolution(component, loc, state);
+vector<State_t *> doEvolution(const M *manager, const int component, int loc,
+                              State_t *state) {
+  assert(manager->isReachable(component, loc, state));
+  assert(state[component] == loc);
+  vector<State_t *> re = manager->evolution(component, loc, state);
+  if (manager->hasDiffCons()) {
+    for (auto &e : re) {
+      for (int component_id = 0; component_id < manager->getComponentNum();
+           component_id++) {
+        manager->employLocInvariants(component_id, e);
+      }
+    }
+  } else {
     for (int component_id = 0; component_id < manager->getComponentNum();
          component_id++) {
       manager->employLocInvariants(component_id, state);
     }
-    return true;
   }
-  return false;
+
+  return re;
 }
 
 } // namespace graphsat

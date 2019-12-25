@@ -134,7 +134,7 @@ private:
         // component is at  freeze location and component does not wait another
         // components. commit location go first.
 
-        if (sys.isCommit( component, manager->getLocationID( component, state))  &&
+        if (sys.isCommit(component, manager->getLocationID(component, state)) &&
             !manager->isBlock(component, state)) {
           return oneComponent(data, component, state);
         }
@@ -384,7 +384,7 @@ private:
       }
       // TODO: add commit property
       cache_state[component] = link; // block link
-      
+
       // if (manager->isCommitComp(component, state)) {
       //   manager->setCommitState(component,
       //                           cache_state); // save  commit property

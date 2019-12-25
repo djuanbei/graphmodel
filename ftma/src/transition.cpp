@@ -4,7 +4,7 @@
 
 namespace graphsat {
 
-//bool Transition::ready(const shared_ptr<const TMStateManager> &manager,
+// bool Transition::ready(const shared_ptr<const TMStateManager> &manager,
 //                       const int *const state) const {
 //  if (!guards.empty()) {
 //
@@ -68,7 +68,7 @@ bool Transition::ready(const TMStateManager *manager,
   return true;
 }
 
-//void Transition::operator()(const shared_ptr<const TMStateManager> &manager,
+// void Transition::operator()(const shared_ptr<const TMStateManager> &manager,
 //                            int *re_state) const {
 //  assert(ready(manager, re_state));
 //
@@ -131,7 +131,6 @@ void Transition::operator()(const TMStateManager *const manager,
       action(counterValue);
     }
   }
-  
 }
 
 void Transition::to_real(const TOReal *convertor) {

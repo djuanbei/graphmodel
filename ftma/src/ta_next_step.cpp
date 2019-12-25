@@ -42,7 +42,8 @@ void TANextStep::doNormal(int *state, std::vector<OneStep> &re) const {
                 manager->getEnableOutNormalChan(j, loc_b, state);
             for (auto e : dummy2) {
               if (temp.find(-e) != temp.end()) {
-                vector<int> links_a = manager->getChanLinks(i, loc_a, -e, state);
+                vector<int> links_a =
+                    manager->getChanLinks(i, loc_a, -e, state);
                 vector<int> links_b = manager->getChanLinks(j, loc_b, e, state);
                 // b is send part
                 if (e > 0) {
@@ -90,63 +91,62 @@ void TANextStep::doNormal(int *state, std::vector<OneStep> &re) const {
 }
 
 void TANextStep::doCommit(int *state, std::vector<OneStep> &re) const {
-  int * counter_value=manager->getCounterValue( state);
+  int *counter_value = manager->getCounterValue(state);
   for (int component = 0; component < component_num; component++) {
     const int source = manager->getLocationID(component, state);
-    if(sys.isCommit(component, source)){
+    if (sys.isCommit(component, source)) {
       const vector<int> out_ts = sys.getOutTransition(component, source);
       for (auto link : out_ts) {
         if (!manager->transitionReady(component, link, state)) {
           continue;
         }
-        if( sys.hasChannel( component, link )){
-          const Channel& ch= sys.getChannel( component, link);
-          int chid=ch.getGlobalId(counter_value );
+        if (sys.hasChannel(component, link)) {
+          const Channel &ch = sys.getChannel(component, link);
+          int chid = ch.getGlobalId(counter_value);
 
-          if( ch.getType( )==BROADCAST_CH){
-            
-          }else{
-            for(int i=0; i< component_num; i++){
-              int loc=state[ i];
-              if(i==component){
+          if (ch.getType() == BROADCAST_CH) {
+
+          } else {
+            for (int i = 0; i < component_num; i++) {
+              int loc = state[i];
+              if (i == component) {
                 continue;
               }
 
-              if( ch.isSend( )){
-                vector<int> links=manager->getChanLinks( i, loc, -chid, state  );
-                for(int link_b : links){
-                  if( !manager->transitionReady( i, link_b, state)){
+              if (ch.isSend()) {
+                vector<int> links = manager->getChanLinks(i, loc, -chid, state);
+                for (int link_b : links) {
+                  if (!manager->transitionReady(i, link_b, state)) {
                     continue;
                   }
-                  vector<pair<int, int> > path;
-                  path.push_back( make_pair(component, link ));
-                  path.push_back( make_pair( i, link_b));
+                  vector<pair<int, int>> path;
+                  path.push_back(make_pair(component, link));
+                  path.push_back(make_pair(i, link_b));
                   discret(state, path, re);
                 }
-              }else{
-               vector<int> links=manager->getChanLinks( i, loc, chid, state  );
+              } else {
+                vector<int> links = manager->getChanLinks(i, loc, chid, state);
 
-               for( int link_b : links){
-                 if( !manager->transitionReady( i, link_b, state)){
-                   continue;
-                 }
-                 vector<pair<int, int> > path;
-                 path.push_back( make_pair( i, link_b));
-                 path.push_back( make_pair(component, link ));
-                 discret(state, path, re);
-               }
+                for (int link_b : links) {
+                  if (!manager->transitionReady(i, link_b, state)) {
+                    continue;
+                  }
+                  vector<pair<int, int>> path;
+                  path.push_back(make_pair(i, link_b));
+                  path.push_back(make_pair(component, link));
+                  discret(state, path, re);
+                }
               }
             }
           }
-          
-        }else{
+
+        } else {
           vector<pair<int, int>> path;
           path.push_back(make_pair(component, link));
           discret(state, path, re);
         }
       }
     }
-
   }
 }
 
@@ -204,12 +204,12 @@ void TANextStep::discret(int *state, std::vector<pair<int, int>> &path,
   for (auto &p : path) {
     OneStep::Action action(p.first, -1, p.second);
     dummy.addAction(action);
-    int source=sys.getSrc(p.first, p.second);
-    int target=sys.getSnk(p.first, p.second);
-    if(sys.isCommit(p.first, source)){
+    int source = sys.getSrc(p.first, p.second);
+    int target = sys.getSnk(p.first, p.second);
+    if (sys.isCommit(p.first, source)) {
       commit_num--;
     }
-    if(sys.isCommit(p.first, target)){
+    if (sys.isCommit(p.first, target)) {
       commit_num++;
     }
   }
@@ -241,9 +241,8 @@ int TANextStep::getCommitCount(const int component, const int link,
   }
   return count;
 }
-  
-void TANextStep::doCommitComponent(int *state, int component, std::vector<OneStep> &re) const{
 
-}
+void TANextStep::doCommitComponent(int *state, int component,
+                                   std::vector<OneStep> &re) const {}
 
 } // namespace graphsat
