@@ -6,11 +6,11 @@ namespace graphsat {
 
 bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
                           const ReachableSet<TMStateManager> &reachSet,
-                          const TMStateManager &manager) const {
+                          const TMStateManager *manager) const {
 
   vector<int> dummy(len);
   vector<int>  index( len);
-  int *temp = manager.newState();
+  int *temp = manager->newState();
   UINT *comTemp=new UINT[ reachSet.getCompressionSize( )];
   for (int i = 0; i < len; i++) {
     dummy[i] = i;
@@ -23,27 +23,32 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
       for (int i = 0; i < len; i++) {
         index[i] = i;
       }
-
+ 
       reachSet.decode(e, temp);
+      manager->dump(temp);
 
       for (int i = 0; i < len; i++) {
         if (dummy[i] != index[i]) {
-          int j=0;
+          int j=i;
           for(;j< len; j++){
             if( dummy[ j]==index[ i]){
               break;
             }
           }
           assert( j<len);
-          manager.swap(j , i, temp);
+          manager->swap(j , i, temp);
           int tt=index[ i];
           index[ i]=index[ j];
           index[ j]=tt;
         }
       }
+      cout<<"==========="<<endl;
+       manager->dump(temp);
+       cout<<"==========="<<endl;
       reachSet.encode(temp, comTemp );
 
       if (!sets.contain(comTemp )){
+        assert(false);
         re=false;
         break;
       }
@@ -53,7 +58,7 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
       break;
     }
   }
-  manager.destroyState(temp);
+  manager->destroyState(temp);
   delete[ ] comTemp;
   return re;
 }

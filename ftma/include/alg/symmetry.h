@@ -25,7 +25,7 @@ public:
 
   virtual bool isSymmetry(const StateSet<UINT> &sets,
                           const ReachableSet<TMStateManager> &reachSet,
-                          const TMStateManager &manager) const;
+                          const TMStateManager *manager) const;
 
 private:
   int len;

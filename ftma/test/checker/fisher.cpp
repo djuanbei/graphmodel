@@ -20,6 +20,8 @@
 
 #include "problem/pmcp.hpp"
 
+#include "alg/symmetry.h"
+
 using namespace graphsat;
 using namespace std;
 typedef AgentSystem<Location, Transition> INT_TAS_t;
@@ -269,7 +271,19 @@ TEST(PMCP, FISHER) {
   EXPECT_TRUE(check.check(F, &prop));
 }
 
-// int main( int argc, char *argv[] ) {
-//  testing::InitGoogleTest( &argc, argv );
-//  return RUN_ALL_TESTS();
-//}
+TEST(FISHER, SYMMETRY){
+  int n=2;
+  FisherGenerator F;
+  INT_TAS_t sys=F.generate(n);
+  Symmetry symm(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+  sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+  
+  EXPECT_TRUE(symm.isSymmetry(data.getStates(), data, manager.get()));
+  
+  
+}

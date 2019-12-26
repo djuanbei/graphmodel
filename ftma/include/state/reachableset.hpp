@@ -144,6 +144,9 @@ public:
   int getCompressionSize( )const{
     return compress_state.getCompressionSize();
   }
+  const StateSet<UINT> & getStates()const{
+    return reach_set;
+  }
 
   void encode( int * original, UINT *now) const {
     manager->getClockManager().encode(manager->getDBM(original));
