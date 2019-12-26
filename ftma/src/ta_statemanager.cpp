@@ -22,15 +22,10 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   clock_upper_bounds = oclock_upper_bounds;
   node_nums = nodes;
   link_nums = links;
-  chan_num = sys.getChanNum();
 
-  if (chan_num > 0) {
-    counter_start_loc = 2 * component_num;
-    state_length = 2 * component_num + (int)ecounters.size();
-  } else {
-    counter_start_loc = component_num;
-    state_length = component_num + (int)ecounters.size();
-  }
+  counter_start_loc = component_num;
+  state_length = component_num + (int)ecounters.size();
+
   freeze_location_index = state_length;
 
   state_length++;
@@ -106,26 +101,12 @@ bool TMStateManager::hasOutBreakcastChan(const int *const state) const {
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);
-  if (chan_num > 0) {
-    for (int component_id = 0; component_id < component_num; component_id++) {
 
-      // the value contain link id
-      // TODO:
-      int m = max(node_nums[component_id], link_nums[component_id]);
-      re_comp.setBound(component_id, -m, m);
-    }
-  } else {
-    for (int component_id = 0; component_id < component_num; component_id++) {
-      re_comp.setBound(component_id, -node_nums[component_id],
-                       node_nums[component_id]);
-    }
+  for (int component_id = 0; component_id < component_num; component_id++) {
+    re_comp.setBound(component_id, -node_nums[component_id],
+                     node_nums[component_id]);
   }
 
-  if (chan_num > 0) {
-    for (int component_id = 0; component_id < component_num; component_id++) {
-      re_comp.setBound(component_id + component_num, -chan_num, chan_num);
-    }
-  }
   int k = 0;
   for (int i = counter_start_loc; i < freeze_location_index; i++) {
     re_comp.setBound(i, counters[k].getLB(), counters[k].getUP());
@@ -272,9 +253,10 @@ vector<int> TMStateManager::getChanLinks(const int component, const int source,
   return re;
 }
 
-bool TMStateManager::isBlock(const int comp_id, const int *const state) const {
-  return sys.hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
-}
+//  bool TMStateManager::isBlock(const int comp_id, const int *const state)
+//  const {
+//    return sys.hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
+//  }
 // bool TMStateManager::hasChannel() const { return sys.getChanNum() > 0; }
 
 vector<int> TMStateManager::blockComponents(const int chid,
@@ -294,19 +276,20 @@ vector<int> TMStateManager::blockComponents(const int chid,
   return re_block_components;
 }
 
-void TMStateManager::constructState(const int component_id, const int target,
-                                    const int *const state, int *dbm,
-                                    bool isCommit, int *re_state) const {
-
-  memcpy(re_state, state, clock_start_loc * sizeof(int));
-
-  re_state[component_id] = target;
-  memcpy(re_state + clock_start_loc, dbm,
-         (state_length - clock_start_loc) * sizeof(int));
-  if (isCommit) {
-    setCommitState(component_id, re_state);
-  }
-}
+//  void TMStateManager::constructState(const int component_id, const int
+//  target,
+//                                      const int *const state, int *dbm,
+//                                      bool isCommit, int *re_state) const {
+//
+//    memcpy(re_state, state, clock_start_loc * sizeof(int));
+//
+//    re_state[component_id] = target;
+//    memcpy(re_state + clock_start_loc, dbm,
+//           (state_length - clock_start_loc) * sizeof(int));
+//    if (isCommit) {
+//      setCommitState(component_id, re_state);
+//    }
+//  }
 
 void TMStateManager::constructState(const int *const state,
                                     const int *const dbm, int *re_state) const {
@@ -361,6 +344,7 @@ vector<int *> TMStateManager::evolution(const int component, const int loc,
       getClockManager().destroyDBM(dbm);
     }
   } else {
+    norm(getDBM(state));
     re.push_back(state);
   }
   return re;
@@ -404,13 +388,14 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
   return re;
 }
 
-void TMStateManager::constructState(const int component_id, const int target,
-                                    bool isCommit, int *state) const {
-  state[component_id] = target;
-  if (isCommit) {
-    setCommitState(component_id, state);
-  }
-}
+//  void TMStateManager::constructState(const int component_id, const int
+//  target,
+//                                      bool isCommit, int *state) const {
+//    state[component_id] = target;
+//    if (isCommit) {
+//      setCommitState(component_id, state);
+//    }
+//  }
 
 ostream &TMStateManager::dump(const int *const state, ostream &out) const {
 

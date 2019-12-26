@@ -192,7 +192,8 @@ public:
     for (int component = 0; component < component_num; component++) {
       state[component] = initial_loc[component];
       if (agents[component]->isCommit(state[component])) {
-        stateManager->setCommitState(component, state);
+        state[stateManager->getFreezeLocation()]++;
+        // stateManager->setCommitState(component, state);
         withoutCommit = false;
       }
     }

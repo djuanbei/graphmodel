@@ -98,13 +98,13 @@ TEST(REACHSET, TERIMINAL) {
   vector<INT_TAS_t::T_t> es;
   vector<INT_TAS_t::L_t> ls;
 
-  INT_TAS_t::L_t start(0);
+  INT_TAS_t::L_t start(0, "start");
 
-  INT_TAS_t::L_t loop(1);
+  INT_TAS_t::L_t loop(1, "loop");
   INT_TAS_t::CS_t cs1(x, LE, Argument(10)); // x <= 10
   loop += cs1;
 
-  INT_TAS_t::L_t end(2);
+  INT_TAS_t::L_t end(2, "end");
 
   INT_TAS_t::T_t start_loop(start, loop);
 
@@ -112,7 +112,6 @@ TEST(REACHSET, TERIMINAL) {
   start_loop += reset3;
   ClockReset reset4(y, Argument(0));
   start_loop += reset4; // y-->0
- 
 
   INT_TAS_t::T_t loop_loop(loop, loop);
   INT_TAS_t::CS_t cs2(x, LE, Argument(10)); // x <= 10
@@ -130,7 +129,6 @@ TEST(REACHSET, TERIMINAL) {
   loop_end += ClockReset(x, Argument(0)); // x-->0
   loop_end += ClockReset(y, Argument(0)); // y--> 0
 
- 
   ls.push_back(start);
   ls.push_back(loop);
   ls.push_back(end);

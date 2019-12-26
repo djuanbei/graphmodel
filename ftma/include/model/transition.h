@@ -122,8 +122,7 @@ public:
    * @return true if the gurad on this tranisition is true under state, false
    * otherwise.
    */
-  //  bool ready(const shared_ptr<const TMStateManager> &manager,
-  //             const int *const state) const;
+
   bool ready(const TMStateManager *manager, const int *const state) const;
 
   /**
@@ -132,8 +131,6 @@ public:
    *
    */
 
-  //  void operator()(const shared_ptr<const TMStateManager> &manager,
-  //                  int *re_state) const;
   void operator()(const TMStateManager *const manager, int *re_state) const;
 
   void to_real(const TOReal *convertor);

@@ -65,12 +65,6 @@ public:
     return state[freeze_location_index] > 0;
   }
 
-  void unBlock(const int comp_id, int *state) const {
-    state[comp_id + component_num] = NO_CHANNEL;
-  }
-
-  bool isBlock(const int comp_id, const int *const state) const;
-
   bool transitionReady(const int component, const int link,
                        const int *const state) const;
 
@@ -145,21 +139,8 @@ public:
 
   vector<int> blockComponents(const int chid, const int *const state) const;
 
-  void constructState(const int component_id, const int target,
-                      const int *const state, int *dbm, bool isCommit,
-                      int *re_state) const;
-
   void constructState(const int *const state, const int *const dbm,
                       int *re_state) const;
-
-  void constructState(const int component_id, const int target, bool isCommit,
-                      int *state) const;
-
-  // inline bool isCommitComp(const int component_id,
-  //                          const int *const state) const {
-
-  //   return state[component_id] < 0;
-  // }
 
   /**
    * @brief  comonent_id in a commit location
@@ -167,14 +148,14 @@ public:
    * @param component_id component id
    * @param state set state
    */
-  inline void setCommitState(const int component_id, int *state) const {
-    state[component_id] = -1 - state[component_id];
-  }
+  //  inline void setCommitState(const int component_id, int *state) const {
+  //    state[component_id] = -1 - state[component_id];
+  //  }
 
-  inline int getCommitLoc(const int component_id,
-                          const int *const state) const {
-    return -(state[component_id]) - 1;
-  }
+  //  inline int getCommitLoc(const int component_id,
+  //                          const int *const state) const {
+  //    return -(state[component_id]) - 1;
+  //  }
 
   vector<int> getEnableOutUrgent(const int component, const int loc,
                                  int *state) const;
@@ -215,7 +196,6 @@ private:
   vector<int> node_nums;
   vector<int> link_nums;
   int clock_num;
-  int chan_num;
   bool hasDiff;
   //  bool hasChannel() const;
 };

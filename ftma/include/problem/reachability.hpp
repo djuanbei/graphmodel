@@ -121,7 +121,7 @@ private:
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
-
+    manager->dump(state);
     std::vector<OneStep> re = nextS.getNextStep(const_cast<int *>(state));
     return doOneStep(data, manager.get(), state, re) == TRUE;
 
@@ -134,10 +134,11 @@ private:
         // component is at  freeze location and component does not wait another
         // components. commit location go first.
 
-        if (sys.isCommit(component, manager->getLocationID(component, state)) &&
-            !manager->isBlock(component, state)) {
-          return oneComponent(data, component, state);
-        }
+        //        if (sys.isCommit(component, manager->getLocationID(component,
+        //        state)) &&
+        //            !manager->isBlock(component, state)) {
+        //          return oneComponent(data, component, state);
+        //        }
       }
     }
 
@@ -156,13 +157,13 @@ private:
 
     for (int component = 0; component < component_num; component++) {
 
-      if (manager->isBlock(component, state)) {
-        /**
-         * Waiting for synchronize signal
-         *
-         */
-        continue;
-      }
+      //      if (manager->isBlock(component, state)) {
+      //        /**
+      //         * Waiting for synchronize signal
+      //         *
+      //         */
+      //        continue;
+      //      }
       if (oneComponent(data, component, state)) {
 
         return true;
@@ -240,7 +241,7 @@ private:
                   const State_t *const state, bool is_send) {
 
     manager->copy(next_state, state);
-    manager->unBlock(block_component_id, next_state);
+    // manager->unBlock(block_component_id, next_state);
 
     int block_link = next_state[block_component_id];
     // if (manager->isCommitComp(block_component_id, next_state)) {
@@ -279,7 +280,7 @@ private:
     bool is_send_commit = sys.isCommit(send_component_id, send_target);
 
     if (is_send_commit) {
-      manager->setCommitState(send_component_id, next_state);
+      next_state[manager->getFreezeLocation()]++;
     }
     int receive_target = sys.getSnk(receive_component_id, receive_link);
 
@@ -288,7 +289,7 @@ private:
     bool is_receive_commit = sys.isCommit(receive_component_id, receive_target);
 
     if (is_receive_commit) {
-      manager->setCommitState(receive_component_id, next_state);
+      next_state[manager->getFreezeLocation()]++;
     }
 
     int source, target;
@@ -454,7 +455,7 @@ private:
   bool postDelay(D *data, const int component, const int target,
                  State_t *state) {
 
-    bool is_commit = sys.isCommit(component, target);
+    // bool is_commit = sys.isCommit(component, target);
 
     bool re_bool = false;
     if (!manager->isFreeze(state)) {
@@ -468,8 +469,7 @@ private:
       manager->norm(manager->getDBM(state), next_dbms);
 
       for (auto dbm : next_dbms) {
-        manager->constructState(component, target, state, dbm, is_commit,
-                                cache_state);
+        manager->constructState(state, dbm, cache_state);
         if (data->add(cache_state) == TRUE) {
           re_bool = true;
           break;
@@ -480,7 +480,7 @@ private:
       }
     } else {
       manager->norm(manager->getDBM(state));
-      manager->constructState(component, target, is_commit, state);
+
       if (data->add(state) == TRUE) {
         return true;
       }
