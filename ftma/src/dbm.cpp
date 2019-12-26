@@ -315,6 +315,8 @@ void DBMFactory::encode(int *dbm) const {
         }
         else if (dbm[row_index + j] > LTEQ_ZERO) {
           dbm[row_index + j] = LTEQ_ZERO;
+        }else if(dbm[row_index + j] < clock_upper_bounds[j+ clock_num ]){
+          dbm[row_index + j]=clock_upper_bounds[j+ clock_num ];
         }
       }
     } else {

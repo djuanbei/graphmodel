@@ -54,15 +54,15 @@ void test() {
 }
 
 int main(int argc, const char *argv[]) {
-  train_gate(2);
+ // train_gate(2);
   // fisher(2);
-  return 0;
+ // return 0;
 
   // test();
   // return 0;
 
   // google::InitGoogleLogging( argv[ 0 ] );
-  logSet();
+ // logSet();
   // TrainGate tg;
   // tg.generate( 2);
   // return 0;
