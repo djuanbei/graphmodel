@@ -13,21 +13,22 @@
 #include <algorithm>
 #include <vector>
 
+#include "state/discretestate.hpp"
+#include "state/reachableset.hpp"
+#include "state/ta_statemanager.h"
+
 namespace graphsat {
 using namespace std;
 class Symmetry {
 public:
-  Symmetry(int n) : len(n), swap(n) {
-    for (int i = 0; i < n; i++) {
-      swap[i] = i;
-    }
-    random_shuffle(swap.begin(), swap.end());
-  }
-  bool next(vector<int> &row);
+  Symmetry(int n) : len(n) {}
+
+  virtual bool isSymmetry(const StateSet<UINT> &sets,
+                          const ReachableSet<TMStateManager> &reachSet,
+                          const TMStateManager &manager) const;
 
 private:
   int len;
-  vector<int> swap;
 };
 
 } // namespace graphsat

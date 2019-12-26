@@ -20,6 +20,7 @@
 
 #include "state/discretestate.hpp"
 
+#include "property/property.h"
 #include "util/datacompression.h"
 
 namespace graphsat {
@@ -104,7 +105,8 @@ public:
   Check_State search(const Property *prop) {
 
     for (auto state : reach_set) {
-      compress_state.decode(state, convert_C_t);
+      decode(state, convert_C_t);
+
       if ((*prop)(manager.get(), convert_C_t)) {
         return TRUE;
       }
@@ -139,6 +141,19 @@ public:
   }
 
   size_t size() const { return reach_set.size(); }
+  int getCompressionSize( )const{
+    return compress_state.getCompressionSize();
+  }
+
+  void encode( int * original, UINT *now) const {
+    manager->getClockManager().encode(manager->getDBM(original));
+    compress_state.encode(original, now);
+  }
+
+  void decode(const UINT *const original, int *now) const {
+    compress_state.decode(original, now);
+    manager->getClockManager().decode(manager->getDBM(now));
+  }
 
   /**
    * For one template  system, this function projection
@@ -150,9 +165,8 @@ public:
     re.clear();
 
     for (auto state : reach_set) {
+      decode(state, convert_C_t);
 
-      compress_state.decode(state, convert_C_t);
-      manager->getClockManager().decode(manager->getDBM(convert_C_t));
       vector<State_t> dummy;
       proj(convert_C_t, dummy);
 
@@ -175,7 +189,8 @@ public:
     int len = compress_state.getCompressionSize();
     int clock_num = manager->getClockNumber();
     for (size_t i = 0; i < state_parent.size(); i++) {
-      compress_state.decode(&(process_states[i * len]), cache_state);
+
+      decode(&(process_states[i * len]), cache_state);
       fout << i << " [ shape=none, label=<";
       fout << "<table border=\"1\" >" << endl;
       fout << "<tr><td COLSPAN=\"" << clock_num + 1 << "\"> <b>" << i << " : "
@@ -187,7 +202,6 @@ public:
              << "\"> <font color=\"blue\">" << l << "</font></td> </tr> "
              << endl;
       }
-      manager->getClockManager().decode(manager->getDBM(cache_state));
       manager->getClockManager().dumpDot(fout, manager->getDBM(cache_state));
       fout << "</table>";
       fout << ">];" << endl;

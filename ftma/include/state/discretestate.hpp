@@ -172,7 +172,7 @@ public:
 
   public:
     const_iterator(const StateSet_t *out_data) : data(out_data) {
-      it = out_data->headPartElements.begin();
+      it = out_data->head_part_elements.begin();
       first_index = 0;
       second_index = 0;
     }
@@ -198,7 +198,7 @@ public:
       second_index += data->body_part_len; // +body_part_len simply using
       int secondId = it->second.second[first_index];
 
-      if (second_index >= data->bodyPartElements[secondId].size()) {
+      if (second_index >= data->body_part_elements[secondId].size()) {
         second_index = 0;
         first_index++;
         if (first_index >= it->second.second.size()) {
@@ -206,7 +206,6 @@ public:
           it++;
         }
       }
-
       return *this;
     }
     bool operator==(const const_iterator &other) const {
@@ -222,18 +221,19 @@ public:
              (second_index != other.second_index);
     }
 
-    const T *operator*() const {
+    T *operator*() {
 
       int secondId = it->second.second[first_index];
+      temp_vec.clear();
       temp_vec.insert(
           temp_vec.begin(),
           it->second.first.begin() + first_index * (data->head_part_len),
           it->second.first.begin() + (first_index + 1) * (data->head_part_len));
 
       temp_vec.insert(temp_vec.begin() + data->head_part_len,
-                      data->bodyPartElements[secondId].begin() + second_index,
-                      data->bodyPartElements[secondId].begin() + second_index +
-                          data->body_part_len);
+                      data->body_part_elements[secondId].begin() + second_index,
+                      data->body_part_elements[secondId].begin() +
+                          second_index + data->body_part_len);
 
       return &(temp_vec[0]);
     }
@@ -299,6 +299,7 @@ public:
     T *operator*() {
 
       int secondId = it->second.second[first_index];
+      temp_vec.clear();
       temp_vec.insert(
           temp_vec.begin(),
           it->second.first.begin() + first_index * (data->head_part_len),

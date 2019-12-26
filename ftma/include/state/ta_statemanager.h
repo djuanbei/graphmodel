@@ -53,6 +53,11 @@ public:
   virtual ~TMStateManager() {}
 
   int getStateLen() const { return state_length; }
+  // TODO
+  int getCompressionSize() const {
+    assert(false);
+    return 0;
+  }
 
   int getClockStart() const { return clock_start_loc; }
 
