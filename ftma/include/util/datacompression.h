@@ -24,9 +24,9 @@ using std::pair;
 using std::vector;
 template <typename T> class Compression {
 public:
-  Compression() { row_len = 0; }
+  Compression() { original_data_len = 0; }
   Compression(int len)
-      : row_len(len), bounds(len), domain(len, numeric_limits<UINT>::max()),
+      : original_data_len(len), bounds(len), domain(len, numeric_limits<UINT>::max()),
         shift(len, true) {
     for (int i = 0; i < len; i++) {
       bounds[i].first = numeric_limits<int>::min();
@@ -47,10 +47,10 @@ public:
   int getCompressionSize() const { return compressionSize; }
 
   void encode(const T *const data, UINT *out) const {
-    fill(out, out + row_len, 0);
+    fill(out, out + compressionSize, 0);
     int j = 0;
     UINT base = 1;
-    for (int i = 0; i < row_len; i++) {
+    for (int i = 0; i < original_data_len; i++) {
       T temp = data[i];
       // if(temp<bounds[ i ].first  ){
       //   temp=bounds[ i ].first  ;
@@ -73,7 +73,7 @@ public:
   void decode(const UINT *const data, T *out) const {
     int j = 0;
     UINT dummy = data[0];
-    for (int i = 0; i < row_len; i++) {
+    for (int i = 0; i < original_data_len; i++) {
       if (shift[i]) {
         j++;
         dummy = data[j];
@@ -84,7 +84,7 @@ public:
   }
 
 private:
-  int row_len;
+  int original_data_len;
   /**
    * bounds[ i].frist  <= value[ i] <= bounds[ i].second
    *
@@ -100,7 +100,7 @@ private:
     fill(shift.begin(), shift.end(), false);
     compressionSize = 1;
     UINT dummy = numeric_limits<UINT>::max();
-    for (int i = 0; i < row_len; i++) {
+    for (int i = 0; i < original_data_len; i++) {
       if (dummy < domain[i]) {
         shift[i] = true;
         dummy = numeric_limits<UINT>::max();
