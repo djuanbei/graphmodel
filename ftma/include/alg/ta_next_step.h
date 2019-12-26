@@ -74,4 +74,4 @@ private:
   void doBreakcast(int *state, std::vector<OneStep> &re) const;
 };
 
-}; // namespace graphsat
+} // namespace graphsat
