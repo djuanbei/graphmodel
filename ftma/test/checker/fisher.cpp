@@ -250,7 +250,7 @@ TEST(REACHSET, FISHER) {
     // sys += tma1;
   }
   sys.build();
-  EXPECT_EQ(sys.getChanNum(), 0);
+  EXPECT_EQ(sys.getTotalChanNumber(), 0);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);

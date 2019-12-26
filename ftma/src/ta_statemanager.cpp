@@ -48,6 +48,25 @@ int *TMStateManager::newState() const {
   return re_state;
 }
 
+int *TMStateManager::rand() const {
+
+  int *re = newState();
+  for (int i = 0; i < component_num; i++) {
+    re[i] = ::rand() % sys.getLocationNumber(i);
+  }
+
+  for (int i = component_num; i < clock_start_loc; i++) {
+    re[i] = ::rand() % 100;
+  }
+
+  int *dbm = getClockManager().randomFeasiableDBM();
+  memcpy(re + clock_start_loc, dbm,
+         (state_length - clock_start_loc) * sizeof(int));
+  getClockManager().destroyDBM(dbm);
+
+  return re;
+}
+
 bool TMStateManager::transitionReady(const int component, const int link,
                                      const int *const state) const {
   return sys.agents[component]->transitions[link].ready(this, state);
@@ -125,7 +144,7 @@ Compression<int> TMStateManager::getHeadCompression() const {
 Compression<int> TMStateManager::getBodyCompression() const {
   int body_len = state_length - clock_start_loc;
   Compression<int> re_comp(body_len);
-  //return re_comp;
+  // return re_comp;
   /**
    * set the minimum and maximum for DBM matrix element
    * TODO: compress by the upper bound of clock constaint
@@ -209,17 +228,6 @@ bool TMStateManager::hasDiffCons() const { return hasDiff; }
 int TMStateManager::getLocationID(const int component,
                                   const int *const state) const {
   return state[component];
-  //  int re = state[component];
-  //
-  //  if (isCommitComp(component, state)) { // commit location
-  //    re = getCommitLoc(component, state);
-  //  }
-  //
-  //  if (isBlock(component, state)) {
-  //    re = sys.getSrc(component, re);
-  //  }
-  //  assert(re >= 0 && "The location id must greater or equal to then 0.");
-  //  return re;
 }
 
 string TMStateManager::getLocationName(const int component,
@@ -253,12 +261,6 @@ vector<int> TMStateManager::getChanLinks(const int component, const int source,
   return re;
 }
 
-//  bool TMStateManager::isBlock(const int comp_id, const int *const state)
-//  const {
-//    return sys.hasChannel() && state[comp_id + component_num] != NO_CHANNEL;
-//  }
-// bool TMStateManager::hasChannel() const { return sys.getChanNum() > 0; }
-
 vector<int> TMStateManager::blockComponents(const int chid,
                                             const int *const state) const {
   vector<int> re_block_components;
@@ -276,20 +278,59 @@ vector<int> TMStateManager::blockComponents(const int chid,
   return re_block_components;
 }
 
-//  void TMStateManager::constructState(const int component_id, const int
-//  target,
-//                                      const int *const state, int *dbm,
-//                                      bool isCommit, int *re_state) const {
-//
-//    memcpy(re_state, state, clock_start_loc * sizeof(int));
-//
-//    re_state[component_id] = target;
-//    memcpy(re_state + clock_start_loc, dbm,
-//           (state_length - clock_start_loc) * sizeof(int));
-//    if (isCommit) {
-//      setCommitState(component_id, re_state);
-//    }
-//  }
+int TMStateManager::getCounterStartLoc(const int id) const {
+  int re = counter_start_loc;
+  for (int i = 0; i < id; i++) {
+    re += sys.getCounterNumber(i);
+  }
+  return re;
+}
+
+int TMStateManager::getClockStartLoc(const int id) const {
+  int re = clock_start_loc;
+  for (int i = 0; i < id; i++) {
+    re += sys.getClockNumber(i);
+  }
+  return re;
+}
+
+int TMStateManager::getClockStartID(const int id) const {
+  int re = 1;
+  for (int i = 0; i < id; i++) {
+    re += sys.getClockNumber(i);
+  }
+  return re;
+}
+
+void TMStateManager::swap(const int i, const int j, int *state) const {
+  if (i == j) {
+    return;
+  }
+  assert((sys.agents[i]->getTemplate()->getName() ==
+          sys.agents[j]->getTemplate()->getName()) &&
+         "Agent i and agent j must come from sane template.");
+  int temp;
+  temp = state[i];
+  state[i] = state[j];
+  state[j] = temp;
+  int counter_a_loc = getCounterStartLoc(i);
+  int counter_b_loc = getCounterStartLoc(j);
+  int counter_num = sys.getCounterNumber(i);
+  for (int k = 0; k < counter_num; k++) {
+    temp = state[counter_a_loc + k];
+    state[counter_a_loc + k] = state[counter_b_loc + k];
+    state[counter_b_loc + k] = temp;
+  }
+  int *dbm = getDBM(state);
+
+  int clock_a_start = getClockStartID(i);
+  int clock_b_start = getClockStartID(j);
+  int clock_num = sys.getClockNumber(i);
+
+  for (int k = 0; k < clock_num; k++) {
+    getClockManager().swap(dbm, clock_a_start + k, clock_b_start + k);
+  }
+}
 
 void TMStateManager::constructState(const int *const state,
                                     const int *const dbm, int *re_state) const {
@@ -387,8 +428,6 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
   }
   return re;
 }
-
-
 
 ostream &TMStateManager::dump(const int *const state, ostream &out) const {
 

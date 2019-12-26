@@ -59,6 +59,8 @@ public:
 
   int getInitialLoc() const { return initial_loc; }
 
+  string getName() const { return name; }
+
   int addPara(const string &p) {
     int re = parameters.size();
     parameters.push_back(p);
@@ -94,7 +96,6 @@ private:
     assert(false);
     return *this;
   }
-  string getName() const { return name; }
 
   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
 

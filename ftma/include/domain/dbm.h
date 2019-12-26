@@ -22,15 +22,14 @@
 #include <sstream>
 #include <vector>
 
+#include <cassert>
 #include <random>
 #include <utility>
-#include <cassert>
 
 #include "util/fastHash.h"
 
 #include "constraint/clockdiffcons.h"
 #include "util/dbmutil.hpp"
-
 
 namespace graphsat {
 using namespace std;
@@ -108,7 +107,7 @@ public:
     return newD;
   }
 
-  int *randomFeasiableDBM();
+  int *randomFeasiableDBM() const;
 
   int getSize() const { return matrix_size; }
 
@@ -285,7 +284,8 @@ public:
 
   /**
    * For a timed automaton and safty prperty to be checked, that contain no
-   * difference constraints. assert(maximum.matrix_size()==2*clock_num) maximum[ i ]:=
+   * difference constraints. assert(maximum.matrix_size()==2*clock_num) maximum[
+   * i ]:=
    * <= k_i maximum[i+clock_num]:= < -k_i
    * @param maximums maximums[i] is the maximum upper for x_i
    */
@@ -300,13 +300,14 @@ public:
   void norm(int *dbm, vector<int *> &re_vec) const;
 
   void norm(int *dbm) const { norm(dbm, clock_upper_bounds); }
-  
+
   /**
-   * @brief For compress the state data, we reduce the data size. The result dbm does not protect canonicalForm.
-   * The result matrix element guarantee that     for x-y< c, c <= clock_upper_bounds[ x]+1, and c >= clock_upper_bounds[ y]
+   * @brief For compress the state data, we reduce the data size. The result dbm
+   * does not protect canonicalForm. The result matrix element guarantee that
+   * for x-y< c, c <= clock_upper_bounds[ x]+1, and c >= clock_upper_bounds[ y]
    * @param dbm
    */
-  
+
   void encode(int *dbm) const;
 
   void decode(int *dbm) const;
@@ -316,8 +317,10 @@ public:
 
   ClockConstraint getCons(const int *const dbm, const int i, const int j) const;
 
-  int at(const int * const dbm, const int i, const int j) const{
-    return dbm[ LOC( i,j)];
+  void swap(int *dbm, int clock_x, int clock_y) const;
+
+  int at(const int *const dbm, const int i, const int j) const {
+    return dbm[LOC(i, j)];
   }
 
 private:

@@ -100,8 +100,14 @@ public:
     return re;
   }
 
+  int *rand() const;
+
   void copy(int *des_state, const int *const source_state) const {
     memcpy(des_state, source_state, state_length * sizeof(int));
+  }
+
+  bool equal(const int *const lhs, const int *const rhs) const {
+    return memcmp(lhs, rhs, state_length * sizeof(int)) == 0;
   }
 
   void destroyState(int *state) const { delete[] state; }
@@ -143,19 +149,27 @@ public:
                       int *re_state) const;
 
   /**
-   * @brief  comonent_id in a commit location
+   * @brief Get the start location of counter in state
    *
-   * @param component_id component id
-   * @param state set state
+   * @param i   component id
+   *
+   * @return
    */
-  //  inline void setCommitState(const int component_id, int *state) const {
-  //    state[component_id] = -1 - state[component_id];
-  //  }
+  int getCounterStartLoc(const int id) const;
 
-  //  inline int getCommitLoc(const int component_id,
-  //                          const int *const state) const {
-  //    return -(state[component_id]) - 1;
-  //  }
+  int getClockStartLoc(const int id) const;
+
+  int getClockStartID(const int id) const;
+
+  /**
+   * @brief swap component i and component j local state. The component i and j
+   * must from a same template
+   *
+   * @param i component id
+   * @param j component id
+   * @param state  original state
+   */
+  void swap(const int i, const int j, int *state) const;
 
   vector<int> getEnableOutUrgent(const int component, const int loc,
                                  int *state) const;

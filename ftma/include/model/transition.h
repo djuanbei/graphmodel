@@ -30,7 +30,6 @@ namespace graphsat {
 using std::vector;
 class Location;
 
-
 class Transition {
 
 public:

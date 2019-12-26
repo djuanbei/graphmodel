@@ -17,14 +17,14 @@ DBMFactory::DBMFactory(const int n) : clock_num(n + 1) {
   }
 }
 
-  DBMFactory::DBMFactory(int n, const vector<int> &oclockUppuerBound,
-                         const vector<ClockConstraint> &odifferenceCons)
-  : clock_num(n + 1) {
-    assert((int)oclockUppuerBound.size()==2*clock_num);
-    for(int i=0; i< clock_num; i++){
-      assert(oclockUppuerBound[i]>=oclockUppuerBound[i+clock_num]);
-    }
-    
+DBMFactory::DBMFactory(int n, const vector<int> &oclockUppuerBound,
+                       const vector<ClockConstraint> &odifferenceCons)
+    : clock_num(n + 1) {
+  assert((int)oclockUppuerBound.size() == 2 * clock_num);
+  for (int i = 0; i < clock_num; i++) {
+    assert(oclockUppuerBound[i] >= oclockUppuerBound[i + clock_num]);
+  }
+
   matrix_size = clock_num * clock_num;
 
   MAX_INT = getMAX_INT<int>();
@@ -34,9 +34,12 @@ DBMFactory::DBMFactory(const int n) : clock_num(n + 1) {
   difference_cons = odifferenceCons;
 }
 
-int *DBMFactory::randomFeasiableDBM() {
+int *DBMFactory::randomFeasiableDBM() const {
   int num_cons = sqrt(clock_num) + 2;
   int *dbm = createDBM();
+  std::default_random_engine generator;
+  std::uniform_int_distribution<int> distribution;
+  distribution = std::uniform_int_distribution<int>(-100, 100);
   while (num_cons >= 0) {
     init(dbm); // x-y<=0
     upImpl(dbm);
@@ -305,18 +308,17 @@ void DBMFactory::norm(int *dbm, vector<int *> &re_vec) const {
 }
 
 void DBMFactory::encode(int *dbm) const {
-  assert(isConsistent( dbm) );
+  assert(isConsistent(dbm));
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
     if (i == 0) {
       for (int j = 0; j < clock_num; j++) {
-        if( i==j){
+        if (i == j) {
           dbm[row_index + j] = LTEQ_ZERO;
-        }
-        else if (dbm[row_index + j] > LTEQ_ZERO) {
+        } else if (dbm[row_index + j] > LTEQ_ZERO) {
           dbm[row_index + j] = LTEQ_ZERO;
-        }else if(dbm[row_index + j] < clock_upper_bounds[j+ clock_num ]){
-          dbm[row_index + j]=clock_upper_bounds[j+ clock_num ];
+        } else if (dbm[row_index + j] < clock_upper_bounds[j + clock_num]) {
+          dbm[row_index + j] = clock_upper_bounds[j + clock_num];
         }
       }
     } else {
@@ -326,8 +328,8 @@ void DBMFactory::encode(int *dbm) const {
           dbm[index] = LTEQ_ZERO;
         } else if (dbm[index] > clock_upper_bounds[i]) {
           dbm[index] = clock_upper_bounds[i] + 1;
-        }else if(dbm[index] < clock_upper_bounds[j+ clock_num ] ){
-          dbm[index]=clock_upper_bounds[j+ clock_num ];
+        } else if (dbm[index] < clock_upper_bounds[j + clock_num]) {
+          dbm[index] = clock_upper_bounds[j + clock_num];
         }
       }
     }
@@ -344,7 +346,7 @@ void DBMFactory::decode(int *dbm) const {
       }
     }
   }
-  
+
   canonicalForm(dbm);
 }
 
@@ -361,6 +363,23 @@ ClockConstraint DBMFactory::getCons(const int *const dbm, const int i,
     return ClockConstraint(Argument(NORMAL_VAR_ARG, i),
                            Argument(NORMAL_VAR_ARG, j), LE,
                            Argument(getRight(dbm[LOC(i, j)])));
+  }
+}
+
+void DBMFactory::swap(int *dbm, int clock_x, int clock_y) const {
+  if (clock_x == clock_y) {
+    return;
+  }
+
+  for (int i = 0; i < clock_num; i++) {
+    int temp = dbm[LOC(clock_x, i)];
+    dbm[LOC(clock_x, i)] = dbm[LOC(clock_y, i)];
+    dbm[LOC(clock_y, i)] = temp;
+  }
+  for (int i = 0; i < clock_num; i++) {
+    int temp = dbm[LOC(i, clock_x)];
+    dbm[LOC(i, clock_x)] = dbm[LOC(i, clock_y)];
+    dbm[LOC(i, clock_y)] = temp;
   }
 }
 

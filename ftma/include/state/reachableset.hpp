@@ -126,7 +126,7 @@ public:
   }
 #endif
 
-  Check_State add( State_t * state) {
+  Check_State add(State_t *state) {
     manager->getClockManager().encode(manager->getDBM(state));
     if (addToReachableSet(state)) {
       addToWait(state);
@@ -148,16 +148,17 @@ public:
   template <typename PROJ>
   void project(const PROJ &proj, vector<vector<State_t>> &re) {
     re.clear();
-    // int clock_start_loc = manager->getClockStart();
 
     for (auto state : reach_set) {
 
       compress_state.decode(state, convert_C_t);
+      manager->getClockManager().decode(manager->getDBM(convert_C_t));
       vector<State_t> dummy;
       proj(convert_C_t, dummy);
 
       re.push_back(dummy);
     }
+    assert(re.size() == reach_set.size());
   }
 
   void incCurrentParent() {
@@ -186,7 +187,7 @@ public:
              << "\"> <font color=\"blue\">" << l << "</font></td> </tr> "
              << endl;
       }
-
+      manager->getClockManager().decode(manager->getDBM(cache_state));
       manager->getClockManager().dumpDot(fout, manager->getDBM(cache_state));
       fout << "</table>";
       fout << ">];" << endl;

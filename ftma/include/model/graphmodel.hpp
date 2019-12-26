@@ -81,7 +81,7 @@ public:
 
   int getComponentNumber() const { return (int)agents.size(); }
 
-  bool hasChannel() const { return getChanNum() > 0; }
+  bool hasChannel() const { return getTotalChanNumber() > 0; }
   bool hasChannel(const int component, const int link) const {
     return agents[component]->transitions[link].hasChannel();
   }
@@ -98,7 +98,15 @@ public:
     return agents[component]->transitions[link].getChannel();
   }
 
-  int getChanNum() const { return chan_num; }
+  int getTotalChanNumber() const { return chan_num; }
+
+  int getCounterNumber(const int id) const {
+    return agents[id]->getTemplate()->getCounterNumber();
+  }
+
+  int getClockNumber(const int id) const {
+    return agents[id]->getTemplate()->getClockNumber();
+  }
 
   bool hasUrgentCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutUrgentCh();
@@ -214,7 +222,7 @@ public:
     if (stateManager->getClockManager().isConsistent(
             stateManager->getDBM(state))) {
       stateManager->norm(stateManager->getDBM(state));
-      
+
       data.add(state);
     }
     stateManager->destroyState(state);
@@ -277,6 +285,13 @@ public:
 
   string getLocationName(const int component, const int loc_ID) const {
     return agents[component]->getLocationName(loc_ID);
+  }
+  int getLocationNumber(const int component) const {
+    return agents[component]->locations.size();
+  }
+
+  int getTransitionNumber(const int component) const {
+    return agents[component]->transitions.size();
   }
 
   vector<int> getOutTransition(const int component, const int src) const {

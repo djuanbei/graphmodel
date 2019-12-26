@@ -26,8 +26,8 @@ template <typename T> class Compression {
 public:
   Compression() { original_data_len = 0; }
   Compression(int len)
-      : original_data_len(len), bounds(len), domain(len, numeric_limits<UINT>::max()),
-        shift(len, true) {
+      : original_data_len(len), bounds(len),
+        domain(len, numeric_limits<UINT>::max()), shift(len, true) {
     for (int i = 0; i < len; i++) {
       bounds[i].first = numeric_limits<int>::min();
       bounds[i].second = numeric_limits<int>::max();

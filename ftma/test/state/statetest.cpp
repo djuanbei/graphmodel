@@ -13,9 +13,9 @@ using namespace graphsat;
 using namespace std;
 
 std::default_random_engine generator;
-std::uniform_int_distribution<int> distribution(0, 1000);
+std::uniform_int_distribution<int> distribution(0, 10000);
 
-int *randV(int n, int s) {
+int *randV(int n) {
 
   int *v = new int[n];
 
@@ -35,15 +35,19 @@ TEST(StateSet1, add_contain) {
   int num = 1000;
   sets.setParam(n, s);
   for (int i = 0; i < num; i++) {
-    int *temp = randV(n, s);
+    int *temp = randV(n);
     if (sets.add(temp)) {
       vecs.push_back(temp);
     } else {
-      delete temp;
+      delete[] temp;
     }
   }
   for (auto e : vecs) {
     EXPECT_TRUE(sets.contain(e));
+  }
+
+  for (auto e : vecs) {
+    delete[] e;
   }
 }
 
@@ -90,7 +94,42 @@ TEST(DBM1, include) {
   }
 }
 
-// int main( int argc, char *argv[] ) {
-//  testing::InitGoogleTest( &argc, argv );
-//  return RUN_ALL_TESTS();
-//}
+bool cmp(const vector<int> &a, const vector<int> &b) {
+  for (size_t i = 0; i < a.size(); i++) {
+    if (a[i] < b[i]) {
+      return true;
+    } else if (a[i] > b[i]) {
+      return false;
+    }
+  }
+  return false;
+}
+TEST(StateSet1, equal) {
+
+  StateSet<int> sets;
+
+  vector<vector<int>> vecs;
+  int n = 11;
+  int s = 4;
+  int num = 10000;
+  sets.setParam(n, s);
+  for (int i = 0; i < num; i++) {
+    int *temp = randV(n);
+    if (sets.add(temp)) {
+      vector<int> dummy(temp, temp + n);
+      vecs.push_back(dummy);
+    }
+    delete[] temp;
+  }
+  vector<vector<int>> getRe;
+  for (auto state : sets) {
+    vector<int> dummy(state, state + n);
+    getRe.push_back(dummy);
+  }
+  EXPECT_TRUE(getRe.size() == vecs.size());
+  sort(getRe.begin(), getRe.end(), cmp);
+  sort(vecs.begin(), vecs.end(), cmp);
+  for (size_t i = 0; i < vecs.size(); i++) {
+    EXPECT_EQ(vecs[i], getRe[i]);
+  }
+}

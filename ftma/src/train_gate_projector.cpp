@@ -21,10 +21,10 @@ void TrainGateProjector::operator()(const int *original_state,
     proj.push_back(loc);
   }
   vector<int> locs(pro_dim, -1);
-  int len = original_state[3 * component_num]; // gate is a component
+  int len = original_state[2 * component_num]; // gate is a component
   assert((len >= 0 && len <= component_num) &&
          "len variable is a bounded in [0, component_num].");
-  int N = 2 * component_num;
+  int N = component_num;
 
   for (int i = 0; i < len; i++) {
     assert((original_state[i + N] >= 0 &&
@@ -83,12 +83,9 @@ bool TrainGateProjector::include(const vector<vector<int>> &lhs,
     size_t j = 0;
     for (; j < rhs.size(); j++) {
       size_t k = 0;
-      for (; k < equal_size; k++) {
-        if (lhs[i][k] != rhs[j][k]) {
-          break;
-        }
+      if (0 == memcmp(&(lhs[i][0]), &(rhs[j][0]), equal_size * sizeof(int))) {
+        k = equal_size;
       }
-
       if (k == equal_size) {
         for (; k < n; k++) {
           if (lhs[i][k] > rhs[j][k]) {
