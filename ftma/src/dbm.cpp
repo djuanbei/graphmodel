@@ -300,7 +300,7 @@ void DBMFactory::norm(int *dbm, vector<int *> &re_vec) const {
 }
 
 void DBMFactory::encode(int *dbm) const {
-
+  assert(isConsistent( dbm) );
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
     if (i == 0) {
@@ -311,10 +311,13 @@ void DBMFactory::encode(int *dbm) const {
       }
     } else {
       for (int j = 0; j < clock_num; j++) {
+        int index = row_index + j;
         if (j == i) {
-          dbm[row_index + j] = LTEQ_ZERO;
-        } else if (dbm[row_index + j] > clock_upper_bounds[i]) {
-          dbm[row_index + j] = clock_upper_bounds[i] + 1;
+          dbm[index] = LTEQ_ZERO;
+        } else if (dbm[index] > clock_upper_bounds[i]) {
+          dbm[index] = clock_upper_bounds[i] + 1;
+        }else if(dbm[index] < clock_upper_bounds[j+ clock_num ] ){
+          dbm[index]=clock_upper_bounds[j+ clock_num ];
         }
       }
     }
@@ -331,6 +334,8 @@ void DBMFactory::decode(int *dbm) const {
       }
     }
   }
+  
+  canonicalForm(dbm);
 }
 
 ClockConstraint DBMFactory::getCons(const int *const dbm, const int i,

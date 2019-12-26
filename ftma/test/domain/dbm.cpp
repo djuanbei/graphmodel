@@ -12,6 +12,8 @@
 using namespace graphsat;
 using namespace std;
 
+
+
 TEST(DBMFactory, createDBM) {
   int n = 10;
   int len = (n + 1) * (n + 1);
@@ -116,7 +118,81 @@ TEST(DBM, getIncludeFeature) {
   }
 }
 
-// int main( int argc, char *argv[] ) {
-//  testing::InitGoogleTest( &argc, argv );
-//  return RUN_ALL_TESTS();
-//}
+TEST(DBM, norm ){
+  int n = 5;
+  std::default_random_engine generator;
+  std::uniform_int_distribution<int> distribution(0, 1000);
+  vector<int> clock_bounds( n+1, 0);
+  for( int j=1; j< n+1; j++ ){
+    clock_bounds[j ]=distribution(generator);
+  }
+    
+  vector<int> bounds( 2*n+2, 0);
+  for(int j=0; j< n+1; j++ ){
+    bounds[j ]=getMatrixValue( clock_bounds[ j], false);
+  }
+  for( int j=0; j< n+1; j++){
+    bounds[ j+ n+1]=getMatrixValue( -clock_bounds[ j], true);
+  }
+  DBMFactory df(n);
+  for (int i = 0; i < 10; i++) {
+    int *d = df.randomFeasiableDBM();
+    int *d1 = df.createDBM(d);
+    df.norm(d,  bounds );
+    for( int k=0; k< 3; k++ ){
+      df.norm( d1, bounds);
+      EXPECT_TRUE( df.equal( d, d1) );
+    }
+    df.destroyDBM( d);
+    df.destroyDBM( d1);
+    
+  }
+}
+TEST( DBM, encode){
+  int n = 7;
+  std::default_random_engine generator;
+  std::uniform_int_distribution<int> distribution(0, 1000);
+
+
+  for (int i = 0; i < 1000; i++) {
+
+    vector<int> clock_bounds( n+1, 0);
+    for( int j=1; j< n+1; j++ ){
+      clock_bounds[j ]=distribution(generator);
+    }
+    
+    vector<int> bounds( 2*n+2, 0);
+    for(int j=0; j< n+1; j++ ){
+      bounds[j ]=getMatrixValue( clock_bounds[ j], false);
+    }
+    for( int j=0; j< n+1; j++){
+      bounds[ j+ n+1]=getMatrixValue( -clock_bounds[ j], true);
+    }
+    vector<ClockConstraint> ss;
+    DBMFactory df(n, bounds, ss);
+    
+    int *d = df.randomFeasiableDBM();
+    int *d1 = df.createDBM(d);
+    df.norm(d,  bounds );
+    df.norm(d1, bounds );
+    df.encode(d1 );
+    for( int j=0; j<n+1; j++){
+      for( int k=0; k< n+1; k++){
+        EXPECT_LE(df.at( d1, j, k), bounds[ j]+1 );
+        EXPECT_GE(df.at( d1, j, k), bounds[ k+ n+1] );
+      }
+    }
+    df.decode( d1);
+    EXPECT_TRUE( df.equal( d, d1));
+
+
+    df.destroyDBM( d);
+    df.destroyDBM( d1);
+    
+  }
+}
+
+
+
+
+

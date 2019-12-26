@@ -29,7 +29,7 @@ namespace graphsat {
 
 using std::vector;
 class Location;
-// class TMStateManager;
+
 
 class Transition {
 
