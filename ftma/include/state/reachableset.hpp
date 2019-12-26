@@ -85,6 +85,7 @@ public:
     wait_set.pop_front();
     // State_t *state = wait_set.back( ); //DFS
     // wait_set.pop_back();
+    manager->getClockManager().decode(manager->getDBM(state));
     return state;
   }
 
@@ -125,7 +126,8 @@ public:
   }
 #endif
 
-  Check_State add(const State_t *const state) {
+  Check_State add( State_t * state) {
+    manager->getClockManager().encode(manager->getDBM(state));
     if (addToReachableSet(state)) {
       addToWait(state);
       if (isReach(state)) {

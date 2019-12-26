@@ -125,7 +125,7 @@ Compression<int> TMStateManager::getHeadCompression() const {
 Compression<int> TMStateManager::getBodyCompression() const {
   int body_len = state_length - clock_start_loc;
   Compression<int> re_comp(body_len);
-  return re_comp;
+  //return re_comp;
   /**
    * set the minimum and maximum for DBM matrix element
    * TODO: compress by the upper bound of clock constaint
@@ -388,14 +388,7 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
   return re;
 }
 
-//  void TMStateManager::constructState(const int component_id, const int
-//  target,
-//                                      bool isCommit, int *state) const {
-//    state[component_id] = target;
-//    if (isCommit) {
-//      setCommitState(component_id, state);
-//    }
-//  }
+
 
 ostream &TMStateManager::dump(const int *const state, ostream &out) const {
 

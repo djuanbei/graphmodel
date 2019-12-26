@@ -17,9 +17,14 @@ DBMFactory::DBMFactory(const int n) : clock_num(n + 1) {
   }
 }
 
-DBMFactory::DBMFactory(int n, const vector<int> &oclockUppuerBound,
-                       const vector<ClockConstraint> &odifferenceCons)
-    : clock_num(n + 1) {
+  DBMFactory::DBMFactory(int n, const vector<int> &oclockUppuerBound,
+                         const vector<ClockConstraint> &odifferenceCons)
+  : clock_num(n + 1) {
+    assert((int)oclockUppuerBound.size()==2*clock_num);
+    for(int i=0; i< clock_num; i++){
+      assert(oclockUppuerBound[i]>=oclockUppuerBound[i+clock_num]);
+    }
+    
   matrix_size = clock_num * clock_num;
 
   MAX_INT = getMAX_INT<int>();
@@ -305,7 +310,10 @@ void DBMFactory::encode(int *dbm) const {
     int row_index = LOC(i, 0);
     if (i == 0) {
       for (int j = 0; j < clock_num; j++) {
-        if (dbm[row_index + j] > LTEQ_ZERO) {
+        if( i==j){
+          dbm[row_index + j] = LTEQ_ZERO;
+        }
+        else if (dbm[row_index + j] > LTEQ_ZERO) {
           dbm[row_index + j] = LTEQ_ZERO;
         }
       }

@@ -121,6 +121,7 @@ private:
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
+
     std::vector<OneStep> re = nextS.getNextStep(const_cast<int *>(state));
     return doOneStep(data, manager.get(), state, re) == TRUE;
 

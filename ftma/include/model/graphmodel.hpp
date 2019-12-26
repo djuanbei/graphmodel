@@ -214,6 +214,7 @@ public:
     if (stateManager->getClockManager().isConsistent(
             stateManager->getDBM(state))) {
       stateManager->norm(stateManager->getDBM(state));
+      
       data.add(state);
     }
     stateManager->destroyState(state);
