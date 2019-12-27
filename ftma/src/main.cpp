@@ -33,6 +33,11 @@
 
 #include "problem/pmcp.hpp"
 
+#include "benchmark/fisher.h"
+#include "benchmark/fisher_projector.h"
+
+#include "alg/symmetry.h"
+
 #include <iostream>
 
 extern int yy_flex_debug;
@@ -52,12 +57,26 @@ void test() {
     cout << "no" << endl;
   }
 }
+void test1() {
+  int n = 3;
+  FisherGenerator F;
+  INT_TAS_t sys = F.generate(n);
+  Symmetry symm(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+
+  symm.isSymmetry(data.getStates(), data, manager.get());
+}
 
 int main(int argc, const char *argv[]) {
-  test();
+  test1();
   return 0;
-  train_gate(3);
-  // fisher(2);
+  // train_gate(3);
+  fisher(3);
   return 0;
 
   // test();

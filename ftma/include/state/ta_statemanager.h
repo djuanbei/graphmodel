@@ -114,6 +114,16 @@ public:
   bool equal(const int *const lhs, const int *const rhs) const {
     return memcmp(lhs, rhs, state_length * sizeof(int)) == 0;
   }
+  /**
+   * @brief As the state is  abstract symbolic state. A symbolic state
+   * represention a set of concrete states.
+   *
+   * @param lhs
+   * @param rhs
+   *
+   * @return  lhs >= rhs
+   */
+  bool contain(const int *const lhs, const int *const rhs) const;
 
   void destroyState(int *state) const { delete[] state; }
 

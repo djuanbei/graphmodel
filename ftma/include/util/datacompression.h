@@ -46,7 +46,7 @@ public:
   }
   int getCompressionSize() const { return compressionSize; }
 
-  void encode(const T *const data, UINT *out) const {
+  void encode(UINT *out, const T *const data) const {
     fill(out, out + compressionSize, 0);
     int j = 0;
     UINT base = 1;
@@ -70,7 +70,7 @@ public:
     }
   }
 
-  void decode(const UINT *const data, T *out) const {
+  void decode(T *out, const UINT *const data) const {
     int j = 0;
     UINT dummy = data[0];
     for (int i = 0; i < original_data_len; i++) {
@@ -129,14 +129,14 @@ public:
     body_comp = bCom;
   }
 
-  void encode(const C *data, UINT *out) const {
-    head_comp.encode(data, out);
-    body_comp.encode(data + head_length, out + com_head_length);
+  void encode(UINT *out, const C *data) const {
+    head_comp.encode(out, data);
+    body_comp.encode(out + com_head_length, data + head_length);
   }
 
-  void decode(const UINT *data, C *out) const {
-    head_comp.decode(data, out);
-    body_comp.decode(data + com_head_length, out + head_length);
+  void decode( C *out, const UINT *data) const {
+    head_comp.decode(out, data);
+    body_comp.decode(out + head_length, data + com_head_length);
   }
   int getCompressionSize() const { return compression_size; }
 

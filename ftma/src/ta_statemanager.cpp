@@ -67,6 +67,14 @@ int *TMStateManager::rand() const {
   return re;
 }
 
+bool TMStateManager::contain(const int *const lhs, const int *const rhs) const {
+
+  if (memcmp(lhs, rhs, clock_start_loc * sizeof(int)) == 0) {
+    return getClockManager().include(getDBM(lhs), getDBM(rhs));
+  }
+  return false;
+}
+
 bool TMStateManager::transitionReady(const int component, const int link,
                                      const int *const state) const {
   return sys.agents[component]->transitions[link].ready(this, state);
@@ -320,6 +328,12 @@ void TMStateManager::swap(const int i, const int j, int *state) const {
     temp = state[counter_a_loc + k];
     state[counter_a_loc + k] = state[counter_b_loc + k];
     state[counter_b_loc + k] = temp;
+  }
+  // TODO: scaler variable
+  if (state[component_num] == i + 1) {
+    state[component_num] = j + 1;
+  } else if (state[component_num] == j + 1) {
+    state[component_num] = i + 1;
   }
   int *dbm = getDBM(state);
 

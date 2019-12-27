@@ -65,3 +65,59 @@ TEST(STATE_MANAGER_H, swap) {
     manager->destroyState(state);
   }
 }
+TEST(STATE_MANAGER_H, CONTAIN) {
+  int n = 3;
+  FisherGenerator F;
+  INT_TAS_t sys = F.generate(n);
+  // Symmetry symm(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+  StateSet<UINT> states = data.getStates();
+  int *s = manager->newState();
+  for (auto e : states) {
+    data.decode( s, e);
+    EXPECT_TRUE(data.contain(s));
+  }
+  vector<UINT> ss = data.getProcess_states();
+  int len = data.getCompressionSize();
+  for (size_t i = 0; i < data.size(); i++) {
+    EXPECT_TRUE(states.exists(&(ss[i * len])));
+  }
+
+  manager->destroyState(s);
+}
+TEST(STATE_MANAGER_H, ENCODE) {
+
+  int n = 3;
+  FisherGenerator F;
+  INT_TAS_t sys = F.generate(n);
+
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+  StateSet<UINT> states = data.getStates();
+  int len = data.getCompressionSize();
+  UINT *cs1 = new UINT[len];
+  int *s = manager->newState();
+  int *s1 = manager->newState();
+  for (auto e : states) {
+    data.decode(s, e);
+    manager->copy(s1, s);
+
+    data.encode(cs1, s );
+    data.decode(s,cs1);
+    EXPECT_TRUE(memcmp(cs1, e, len * sizeof(UINT)) == 0);
+    EXPECT_TRUE(memcmp(s1, s, manager->getStateLen()*sizeof(int))==0);
+  }
+
+  delete[] cs1;
+  manager->destroyState(s);
+  manager->destroyState(s1);
+}

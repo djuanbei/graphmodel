@@ -688,8 +688,8 @@ void testcompression() {
     for (int j = 0; j < len; j++) {
       d[j] = distribution(generator);
     }
-    data.encode(d, cd);
-    data.decode(cd, dd);
+    data.encode(cd, d );
+    data.decode( dd, cd);
     for (int j = 0; j < len; j++) {
       assert(dd[j] == d[j]);
     }

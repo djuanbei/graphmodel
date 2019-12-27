@@ -150,6 +150,21 @@ public:
     }
     return false;
   }
+  bool exists(const T *const one) const {
+
+    int id = containHead(one);
+    if (id > -1) { // find
+      const T *bodyPart = one + head_part_len;
+
+      for (size_t i = 0; i < body_part_elements[id].size();
+           i += body_part_len) {
+        if (existsBody(&(body_part_elements[id][i]), bodyPart)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   iterator begin() { return iterator(this); }
 
@@ -403,6 +418,9 @@ private:
       }
     }
     return true;
+  }
+  inline bool existsBody(const T *const lhs, const T *const rhs) const {
+    return memcmp(lhs, rhs, body_part_len * sizeof(T)) == 0;
   }
 };
 

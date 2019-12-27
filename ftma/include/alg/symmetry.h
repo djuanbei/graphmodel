@@ -27,6 +27,10 @@ public:
                           const ReachableSet<TMStateManager> &reachSet,
                           const TMStateManager *manager) const;
 
+protected:
+  void swap(int *source, const vector<int> &swap_map,
+            const TMStateManager *manager) const;
+
 private:
   int len;
 };

@@ -3,7 +3,7 @@
 
 namespace graphsat {
 typedef typename INT_TAS_t::Agent_t Agent_t;
-FisherGenerator::FisherGenerator() : k(2) {}
+FisherGenerator::FisherGenerator() : k(3) {}
 void FisherGenerator::initial(
     shared_ptr<typename INT_TAS_t::AgentTemplate_t> &tmt) const {
 
