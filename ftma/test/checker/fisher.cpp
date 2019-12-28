@@ -383,12 +383,12 @@ TEST(FISHER, equal3) {
     EXPECT_EQ(vecs1[i], vecs2[i]);
   }
 
-  vector<vector<int>> vecs3 = data.getTest();
-  std::sort(vecs3.begin(), vecs3.end(), vect_cmp<int>);
+  // vector<vector<int>> vecs3 = data.getTest();
+  // std::sort(vecs3.begin(), vecs3.end(), vect_cmp<int>);
 
-  EXPECT_EQ(vecs1.size(), vecs3.size());
+  // EXPECT_EQ(vecs1.size(), vecs3.size());
 
-  for (size_t i = 0; i < vecs1.size(); i++) {
-    EXPECT_EQ(vecs1[i], vecs3[i]);
-  }
+  // for (size_t i = 0; i < vecs1.size(); i++) {
+  //   EXPECT_EQ(vecs1[i], vecs3[i]);
+  // }
 }
