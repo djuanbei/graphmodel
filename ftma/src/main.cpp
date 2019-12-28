@@ -69,14 +69,18 @@ void test1() {
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 
-  symm.isSymmetry(data.getStates(), data, manager.get());
+  if (symm.isSymmetry(data.getStates(), data, manager.get())) {
+    cout << "ok" << endl;
+  } else {
+    cout << "error" << endl;
+  }
 }
 
 int main(int argc, const char *argv[]) {
-  test1();
-  return 0;
+  // test1();
+  // return 0;
   // train_gate(3);
-  fisher(3);
+  fisher(2);
   return 0;
 
   // test();

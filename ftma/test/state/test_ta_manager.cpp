@@ -79,11 +79,11 @@ TEST(STATE_MANAGER_H, CONTAIN) {
   StateSet<UINT> states = data.getStates();
   int *s = manager->newState();
   for (auto e : states) {
-    data.decode( s, e);
+    manager->decode(s, e);
     EXPECT_TRUE(data.contain(s));
   }
   vector<UINT> ss = data.getProcess_states();
-  int len = data.getCompressionSize();
+  int len = manager->getCompressionSize();
   for (size_t i = 0; i < data.size(); i++) {
     EXPECT_TRUE(states.exists(&(ss[i * len])));
   }
@@ -103,18 +103,18 @@ TEST(STATE_MANAGER_H, ENCODE) {
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
   StateSet<UINT> states = data.getStates();
-  int len = data.getCompressionSize();
+  int len = manager->getCompressionSize();
   UINT *cs1 = new UINT[len];
   int *s = manager->newState();
   int *s1 = manager->newState();
   for (auto e : states) {
-    data.decode(s, e);
+    manager->decode(s, e);
     manager->copy(s1, s);
 
-    data.encode(cs1, s );
-    data.decode(s,cs1);
+    manager->encode(cs1, s);
+    manager->decode(s, cs1);
     EXPECT_TRUE(memcmp(cs1, e, len * sizeof(UINT)) == 0);
-    EXPECT_TRUE(memcmp(s1, s, manager->getStateLen()*sizeof(int))==0);
+    EXPECT_TRUE(memcmp(s1, s, manager->getStateLen() * sizeof(int)) == 0);
   }
 
   delete[] cs1;

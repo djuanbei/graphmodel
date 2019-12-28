@@ -22,6 +22,8 @@
 
 #include "alg/symmetry.h"
 
+#include "alg/util.h"
+
 using namespace graphsat;
 using namespace std;
 typedef AgentSystem<Location, Transition> INT_TAS_t;
@@ -283,5 +285,110 @@ TEST(FISHER, SYMMETRY) {
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 
-  //EXPECT_TRUE(symm.isSymmetry(data.getStates(), data, manager.get()));
+  // EXPECT_TRUE(symm.isSymmetry(data.getStates(), data, manager.get()));
+}
+
+TEST(FISHER, equal2) {
+  int n = 3;
+  FisherGenerator F;
+  INT_TAS_t sys = F.generate(n);
+  Symmetry symm(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+
+  StateSet<UINT> states = data.getStates();
+  int len = manager->getCompressionSize();
+  // UINT *cs1 = new UINT[len];
+  int *s = manager->newState();
+
+  vector<UINT> ss = data.getProcess_states();
+  vector<vector<int>> vecs1, vecs2;
+  int slen = manager->getStateLen();
+
+  for (size_t i = 0; i < data.size(); i++) {
+    manager->decode(s, &(ss[i * len]));
+    vector<int> dummy(s, s + slen);
+    vecs1.push_back(dummy);
+    EXPECT_TRUE(data.contain(s));
+    EXPECT_TRUE(states.exists(&(ss[i * len])));
+  }
+
+  for (auto e : states) {
+
+    manager->decode(s, e);
+    vector<int> dummy(s, s + slen);
+    vecs2.push_back(dummy);
+    EXPECT_TRUE(data.contain(s));
+  }
+  manager->destroyState(s);
+
+  std::sort(vecs2.begin(), vecs2.end(), vect_cmp<int>);
+  std::sort(vecs1.begin(), vecs1.end(), vect_cmp<int>);
+
+  EXPECT_EQ(vecs1.size(), vecs2.size());
+
+  for (size_t i = 0; i < vecs1.size(); i++) {
+    EXPECT_EQ(vecs1[i], vecs2[i]);
+  }
+}
+
+TEST(FISHER, equal3) {
+  int n = 3;
+  FisherGenerator F;
+  INT_TAS_t sys = F.generate(n);
+  Symmetry symm(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+
+  StateSet<UINT> states = data.getStates();
+  int len = manager->getCompressionSize();
+  // UINT *cs1 = new UINT[len];
+  int *s = manager->newState();
+
+  vector<UINT> ss = data.getProcess_states();
+  vector<vector<int>> vecs1, vecs2;
+  int slen = manager->getStateLen();
+
+  for (size_t i = 0; i < data.size(); i++) {
+    manager->decode(s, &(ss[i * len]));
+    vector<int> dummy(s, s + slen);
+    vecs1.push_back(dummy);
+    EXPECT_TRUE(data.contain(s));
+    EXPECT_TRUE(states.exists(&(ss[i * len])));
+  }
+
+  for (auto e : states) {
+
+    manager->decode(s, e);
+    vector<int> dummy(s, s + slen);
+    vecs2.push_back(dummy);
+    EXPECT_TRUE(data.contain(s));
+  }
+  manager->destroyState(s);
+
+  std::sort(vecs2.begin(), vecs2.end(), vect_cmp<int>);
+  std::sort(vecs1.begin(), vecs1.end(), vect_cmp<int>);
+
+  EXPECT_EQ(vecs1.size(), vecs2.size());
+
+  for (size_t i = 0; i < vecs1.size(); i++) {
+    EXPECT_EQ(vecs1[i], vecs2[i]);
+  }
+
+  vector<vector<int>> vecs3 = data.getTest();
+  std::sort(vecs3.begin(), vecs3.end(), vect_cmp<int>);
+
+  EXPECT_EQ(vecs1.size(), vecs3.size());
+
+  for (size_t i = 0; i < vecs1.size(); i++) {
+    EXPECT_EQ(vecs1[i], vecs3[i]);
+  }
 }

@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "util/datacompression.h"
 #include "util/fastHash.h"
 #include "util/typedef.h"
 
@@ -91,18 +92,15 @@ public:
   StateSet() {
     add_element_num = 0;
     element_len = head_part_len = body_part_len = 0;
+    lhs_data = rhs_data = nullptr;
   }
-  StateSet(int id, int n, int s) {
+
+  void setParam(const int n, int head_len, const Compression<int> &d) {
     add_element_num = 0;
     element_len = n;
-    head_part_len = s;
-    body_part_len = n - s;
-  }
-  void setParam(const int n, int s) {
-    add_element_num = 0;
-    element_len = n;
-    head_part_len = s;
-    body_part_len = n - s;
+    head_part_len = head_len;
+    body_part_len = n - head_len;
+    decoder = d;
   }
   ~StateSet() { deleteAll(); }
   void deleteAll() { clear(); }
@@ -165,6 +163,10 @@ public:
     }
     return false;
   }
+  //TODO:
+  // get   state by id
+  const UINT *getStateAt(const int id) const;
+  
 
   iterator begin() { return iterator(this); }
 
@@ -344,6 +346,9 @@ private:
 
   int head_part_len;
   int body_part_len;
+  int *lhs_data;
+  int *rhs_data;
+  Compression<int> decoder;
 
   int addHead(const T *const head) {
 
@@ -411,13 +416,27 @@ private:
     return memcmp(lhs, rhs, element_len * sizeof(T)) == 0;
   }
   inline bool containBody(const T *const lhs, const T *const rhs) const {
-
-    for (int i = 0; i < body_part_len; i++) {
-      if (lhs[i] < rhs[i]) {
-        return false;
+    int len = decoder.getDataLen();
+    int *data1 = new int[len];
+    int *data2 = new int[len];
+    decoder.decode(data1, lhs);
+    decoder.decode(data2, rhs);
+    int i = 0;
+    for (; i < len; i++) {
+      if (data1[i] < data2[i]) {
+        break;
       }
     }
-    return true;
+    delete[] data1;
+    delete[] data2;
+    return i == len;
+
+    // for (int i = 0; i < body_part_len; i++) {
+    //   if (lhs[i] < rhs[i]) {
+    //     return false;
+    //   }
+    // }
+    // return true;
   }
   inline bool existsBody(const T *const lhs, const T *const rhs) const {
     return memcmp(lhs, rhs, body_part_len * sizeof(T)) == 0;

@@ -35,6 +35,9 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   hasDiff = !sys.getDiffCons().empty();
   dbm_manager = DBMFactory(clock_num, clock_upper_bounds, sys.getDiffCons());
   counters = ecounters;
+  compress_state =
+      StateConvert<int>(getClockStart(), getStateLen() - getClockStart(),
+                        getHeadCompression(), getBodyCompression());
 }
 
 int *TMStateManager::newState() const {
@@ -441,6 +444,18 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
     re.push_back(item);
   }
   return re;
+}
+
+void TMStateManager::encode(UINT *now, const int *const original) const {
+  int *temp = newState();
+  copy(temp, original);
+  getClockManager().encode(getDBM(temp));
+  compress_state.encode(now, temp);
+}
+
+void TMStateManager::decode(int *now, const UINT *const original) const {
+  compress_state.decode(now, original);
+  getClockManager().decode(getDBM(now));
 }
 
 ostream &TMStateManager::dump(const int *const state, ostream &out) const {

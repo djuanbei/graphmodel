@@ -1,42 +1,32 @@
 
-#include <random>
-
-#include "example.h"
-
-#include "action/counteraction.h"
-#include "constraint/clockdiffcons.h"
-#include "log/logset.h"
-#include "model/graphmodel.hpp"
-#include "model/location.h"
-#include "model/transition.h"
-#include "problem/reachability.hpp"
-
-#include "util/dbmutil.hpp"
-
-#include "domain/dbm.h"
-#include "domain/dbmset.hpp"
-#include "io/uppaalmodelparser.h"
-#include "state/reachableset.hpp"
-
-#include "state/discretestate.hpp"
-
-#include "util/datacompression.h"
-
-#include "property/locreachprop.h"
-
-#include "property/fisherprop.h"
-
-#include "benchmark/fisher.h"
-#include "benchmark/fisher_projector.h"
-
-#include "problem/pmcp.hpp"
-
-#include "benchmark/train_gate.h"
-
 #include <cassert>
 #include <cstdint>
 #include <iostream>
 #include <limits>
+#include <random>
+
+#include "action/counteraction.h"
+#include "benchmark/fisher.h"
+#include "benchmark/fisher_projector.h"
+#include "benchmark/train_gate.h"
+#include "constraint/clockdiffcons.h"
+#include "domain/dbm.h"
+#include "domain/dbmset.hpp"
+#include "example.h"
+#include "io/stateout.h"
+#include "io/uppaalmodelparser.h"
+#include "log/logset.h"
+#include "model/graphmodel.hpp"
+#include "model/location.h"
+#include "model/transition.h"
+#include "problem/pmcp.hpp"
+#include "problem/reachability.hpp"
+#include "property/fisherprop.h"
+#include "property/locreachprop.h"
+#include "state/discretestate.hpp"
+#include "state/reachableset.hpp"
+#include "util/datacompression.h"
+#include "util/dbmutil.hpp"
 
 using std::vector;
 using namespace graphsat;
@@ -252,24 +242,24 @@ int *randV(int n, int s) {
   return v;
 }
 
-void example5(void) {
-  StateSet<int> sets;
-  vector<int *> vecs;
-  int n = 20;
-  int s = 4;
-  int num = 1000;
-  for (int i = 0; i < num; i++) {
-    int *temp = randV(n, s);
-    if (sets.add(temp)) {
-      vecs.push_back(temp);
-    } else {
-      delete temp;
-    }
-  }
-  for (auto e : vecs) {
-    sets.contain(e);
-  }
-}
+// void example5(void) {
+//   StateSet<UINT> sets;
+//   vector<UINT *> vecs;
+//   int n = 20;
+//   int s = 4;
+//   int num = 1000;
+//   for (int i = 0; i < num; i++) {
+//     int *temp = randV(n, s);
+//     if (sets.add(temp)) {
+//       vecs.push_back(temp);
+//     } else {
+//       delete temp;
+//     }
+//   }
+//   for (auto e : vecs) {
+//     sets.contain(e);
+//   }
+// }
 
 void example6() {
 
@@ -403,7 +393,8 @@ void fisher(int n) {
   }
 
   cout << "reach data size: " << data.size() << endl;
-  data.generatorDot("test.gv");
+  StateOutput::generatorDot(data, "test.gv");
+  // data.generatorDot("test.gv");
 }
 
 void testIsConsistent() {
@@ -641,7 +632,8 @@ void fisher1() {
   // }
   reacher.computeAllReachableSet(&data);
   //  cout << "reach data size: " << data.size() << endl;
-  data.generatorDot("test.gv");
+  StateOutput::generatorDot(data, "test.gv");
+  // data.generatorDot("test.gv");
 }
 
 // void runxml( const string &file_name ) {
@@ -688,8 +680,8 @@ void testcompression() {
     for (int j = 0; j < len; j++) {
       d[j] = distribution(generator);
     }
-    data.encode(cd, d );
-    data.decode( dd, cd);
+    data.encode(cd, d);
+    data.decode(dd, cd);
     for (int j = 0; j < len; j++) {
       assert(dd[j] == d[j]);
     }
@@ -711,7 +703,8 @@ void train_gate(const int n) {
   if (reacher.satisfy(&data, &prop)) {
     cout << "some thing is wrong!" << endl;
   }
-  data.generatorDot("test.gv");
+  StateOutput::generatorDot(data, "test.gv");
+  // data.generatorDot("test.gv");
 }
 
 } // namespace graphsat

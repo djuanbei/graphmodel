@@ -3,6 +3,8 @@
 
 #include "alg/symmetry.h"
 
+#include "io/stateout.h"
+
 namespace graphsat {
 
 bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
@@ -12,7 +14,7 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
   vector<int> dummy(len);
 
   int *temp = manager->newState();
-  UINT *comTemp = new UINT[reachSet.getCompressionSize()];
+  UINT *comTemp = new UINT[manager->getCompressionSize()];
   for (int i = 0; i < len; i++) {
     dummy[i] = i;
   }
@@ -22,37 +24,41 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
 
     while (next_permutation(dummy.begin(), dummy.end())) {
 
-      reachSet.decode( temp, e);
+      manager->decode(temp, e);
       cout << "original:" << endl;
       manager->dump(temp);
       swap(temp, dummy, manager);
       cout << "===========" << endl;
       manager->dump(temp);
       cout << "===========" << endl;
-      reachSet.encode( comTemp, temp);
+      manager->encode(comTemp, temp);
 
       if (!sets.contain(comTemp)) {
-        reachSet.decode( temp, e);
-        reachSet.generatePath("onepath.gv", temp);
+        manager->decode(temp, e);
+        StateOutput::generatePath(reachSet, "onepath.gv", temp);
         vector<vector<int>> path_state = reachSet.getPath(temp);
         size_t i = 0;
         for (; i < path_state.size(); i++) {
           swap(&(path_state[i][0]), dummy, manager);
           cout << "************************" << endl;
           manager->dump(&(path_state[i][0]));
-          reachSet.encode(comTemp, &(path_state[i][0]));
-          
+          manager->encode(comTemp, &(path_state[i][0]));
+
           // manager->getClockManager().decode(manager->getDBM(&(path_state[ i][
           // 0])));
           if (!sets.contain(comTemp)) {
             break;
           }
           manager->dump(&(path_state[i][0]));
+          manager->decode(temp, comTemp);
+          manager->dump(temp);
+          assert(reachSet.contain(temp));
           assert(reachSet.contain(&(path_state[i][0])));
         }
         if (i > 0) {
           manager->dump(&(path_state[i - 1][0]));
-          reachSet.generatePath("onepath1.gv", &(path_state[i - 1][0]));
+          
+          StateOutput::generatePath(reachSet, "onepath1.gv", &(path_state[i - 1][0]));
         }
 
         assert(false);

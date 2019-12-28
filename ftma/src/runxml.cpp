@@ -1,4 +1,5 @@
 #include "io/runxml.h"
+#include "io/stateout.h"
 #include "io/uppaalmodelparser.h"
 #include "state/reachableset.hpp"
 
@@ -18,7 +19,8 @@ void runxml(const std::string &file_name) {
 
   reacher.computeAllReachableSet(&data);
   cout << "reach data size: " << data.size() << endl;
-  data.generatorDot("test.gv");
+  StateOutput::generatorDot(data, "test.gv");
+  // data.generatorDot("test.gv");
 }
 
 } // namespace graphsat

@@ -44,6 +44,9 @@ public:
     domain[id] = bound;
     update();
   }
+
+  int getDataLen() const { return original_data_len; }
+
   int getCompressionSize() const { return compressionSize; }
 
   void encode(UINT *out, const T *const data) const {
@@ -134,7 +137,7 @@ public:
     body_comp.encode(out + com_head_length, data + head_length);
   }
 
-  void decode( C *out, const UINT *data) const {
+  void decode(C *out, const UINT *data) const {
     head_comp.decode(out, data);
     body_comp.decode(out + head_length, data + com_head_length);
   }

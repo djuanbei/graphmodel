@@ -53,10 +53,10 @@ public:
   virtual ~TMStateManager() {}
 
   int getStateLen() const { return state_length; }
-  // TODO
-  int getCompressionSize() const {
-    assert(false);
-    return 0;
+
+  int getCompressionSize() const { return compress_state.getCompressionSize(); }
+  int getCompressionHeadSize() const {
+    return compress_state.getCompressionHeadSize();
   }
 
   int getClockStart() const { return clock_start_loc; }
@@ -204,6 +204,10 @@ public:
 
   vector<string> getCounterDotLabel(const int *const state) const;
 
+  void encode(UINT *now, const int *const original) const;
+
+  void decode(int *now, const UINT *const original) const;
+
   ostream &dump(const int *const state, ostream &out) const;
 
   void dump(const int *const state) const { dump(state, cout); }
@@ -226,7 +230,7 @@ private:
   vector<int> link_nums;
   int clock_num;
   bool hasDiff;
-  //  bool hasChannel() const;
+  StateConvert<State_t> compress_state;
 };
 } // namespace graphsat
 #endif
