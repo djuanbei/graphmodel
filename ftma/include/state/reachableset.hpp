@@ -48,7 +48,7 @@ public:
 
     convert_C_t = manager->newState();
 
-    int body_length = manager->getStateLen() - manager->getClockStart();
+   // int body_length = manager->getStateLen() - manager->getClockStart();
     compression_size = manager->getCompressionSize();
 
     convert_UINT = new UINT[compression_size]();
@@ -217,7 +217,7 @@ public:
     int target_id = NOT_FOUND;
     for (size_t i = 0; i < state_parent.size(); i++) {
       getStateAt(cache_state, i);
-  
+
       if (manager->equal(target, cache_state)) {
         target_id = i;
         break;
@@ -243,14 +243,13 @@ public:
 
     for (size_t i = 0; i < state_parent.size(); i++) {
       getStateAt(cache_state, i);
-  
+
       if (manager->contain(cache_state, target)) {
         return true;
       }
     }
     return false;
   }
-
 
 private:
   void addToWait(const State_t *const state) {
@@ -284,7 +283,7 @@ private:
   int findPassEd(const UINT *state) const {
 
     int head_part_len = manager->getCompressionHeadSize();
-    int bodySize = compression_size - head_part_len;
+    //int bodySize = compression_size - head_part_len;
 
     for (size_t i = 0; i < state_parent.size(); i++) {
       if (0 == memcmp(state, getCompressionStateAt(i),

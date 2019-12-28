@@ -90,13 +90,13 @@ public:
   class const_iterator;
   class iterator;
   StateSet() {
-    add_element_num = 0;
+
     element_len = head_part_len = body_part_len = 0;
     lhs_data = rhs_data = nullptr;
   }
 
   void setParam(const int n, int head_len, const Compression<int> &d) {
-    add_element_num = 0;
+
     element_len = n;
     head_part_len = head_len;
     body_part_len = n - head_len;
@@ -107,16 +107,23 @@ public:
   void clear() {
     head_part_elements.clear();
     body_part_elements.clear();
-    add_element_num = 0;
   }
 
-  int size() const { return add_element_num; }
+  int size() const { return index.size() / 3; }
 
   bool empty() const { return 0 == size(); }
 
+  /**
+   *
+   *
+   * @param one
+   *
+   * @return  NOT_FOUND if  one is contain in this set; otherwise the id this
+   * the set.
+   */
   int add(const T *const one) {
-
-    int head_id = addHead(one);
+    int hashV = 0;
+    int head_id = addHead(one, hashV);
     const T *body_part = one + head_part_len;
 
     /**
@@ -130,7 +137,7 @@ public:
       }
     }
 
-    return addBodyValue(head_id, body_part);
+    return addBodyValue(hashV, head_id, body_part);
   }
 
   bool contain(const T *const one) const {
@@ -163,10 +170,18 @@ public:
     }
     return false;
   }
-  //TODO:
+
   // get   state by id
-  const UINT *getStateAt(const int id) const;
-  
+  void getElementAt(T *out, const int id) const {
+    assert(3 * id < (int)index.size());
+    int hashV = index[3 * id];
+    int headId = index[3 * id + 1];
+    int bodyId = index[3 * id + 2];
+    getHead(out, hashV, headId);
+    copy(body_part_elements[headId].begin() + bodyId,
+         body_part_elements[headId].begin() + bodyId + body_part_len,
+         out + head_part_len);
+  }
 
   iterator begin() { return iterator(this); }
 
@@ -334,14 +349,13 @@ public:
 private:
   /** head1, head2,...,headn have same hash_value
    * hash_value(head*) --> ((head1, head2,...,headn),
-   * the corresponding bodyPart location in bodyPartElements)
-   *
+   * the corresponding bodyPart location in body_part_elements)
    */
   unordered_map<int, pair<vector<T>, vector<int>>> head_part_elements;
 
   vector<vector<T>> body_part_elements;
+  vector<int> index; // map it to head_part_elements id and body_part_elements
 
-  int add_element_num;
   int element_len;
 
   int head_part_len;
@@ -350,9 +364,9 @@ private:
   int *rhs_data;
   Compression<int> decoder;
 
-  int addHead(const T *const head) {
+  int addHead(const T *const head, int &hashV) {
 
-    int hashV = hash_value(head);
+    hashV = hash_value(head);
 
     typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
         head_part_elements.find(hashV);
@@ -374,6 +388,24 @@ private:
     body_part_elements.push_back(temp);
 
     return re;
+  }
+
+  bool getHead(UINT *out, const int hashV, const int headId) const {
+    typename unordered_map<int, pair<vector<T>, vector<int>>>::const_iterator
+        ret = head_part_elements.find(hashV);
+
+    if (ret != head_part_elements.end()) {
+      size_t head_size = ret->second.second.size();
+      for (size_t i = 0; i < head_size; i++) {
+        if (headId == ret->second.second[i]) {
+          copy(ret->second.first.begin() + i * head_part_len,
+               ret->second.first.begin() + i * head_part_len + head_part_len,
+               out);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -401,12 +433,16 @@ private:
     return -1;
   }
 
-  inline int addBodyValue(int headId, const T *const body) {
+  inline int addBodyValue(int hashV, int headId, const T *const body) {
+    int re = index.size() / 3;
+    index.push_back(hashV);
+    index.push_back(headId);
+    index.push_back(body_part_elements[headId].size());
 
     body_part_elements[headId].insert(body_part_elements[headId].end(), body,
                                       body + body_part_len);
-    add_element_num++;
-    return add_element_num;
+
+    return re;
   }
 
   inline int hash_value(const T *const head) const {

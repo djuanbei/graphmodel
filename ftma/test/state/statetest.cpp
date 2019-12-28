@@ -50,8 +50,9 @@ TEST(StateSet1, add_contain) {
   sets.setParam(n, s, decoder);
   for (int i = 0; i < num; i++) {
     UINT *temp = randVU(n);
-
-    if (sets.add(temp)) {
+    int re = sets.add(temp);
+    if (re != NOT_FOUND) {
+      EXPECT_EQ(re, vecs.size());
       vecs.push_back(temp);
     } else {
       delete[] temp;
@@ -60,7 +61,22 @@ TEST(StateSet1, add_contain) {
   for (auto e : vecs) {
     EXPECT_TRUE(sets.contain(e));
   }
-
+  EXPECT_EQ(sets.size(), vecs.size());
+  UINT *temp = new UINT[n];
+  for (size_t i = 0; i < vecs.size(); i++) {
+    sets.getElementAt(temp, i);
+    for(int j=0; j< n; j++){
+      EXPECT_EQ(temp[j], vecs[i][j]);
+    
+    }
+//    cout<<endl;
+//    for(int j=0; j< n; j++){
+//      cout<<vecs[i][j]<<" ";
+//    }
+//    cout<<endl;
+//    EXPECT_TRUE(memcmp(temp, vecs[i], n * sizeof(UINT)) == 0);
+  }
+  delete[] temp;
   for (auto e : vecs) {
     delete[] e;
   }

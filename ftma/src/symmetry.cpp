@@ -57,8 +57,9 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
         }
         if (i > 0) {
           manager->dump(&(path_state[i - 1][0]));
-          
-          StateOutput::generatePath(reachSet, "onepath1.gv", &(path_state[i - 1][0]));
+
+          StateOutput::generatePath(reachSet, "onepath1.gv",
+                                    &(path_state[i - 1][0]));
         }
 
         assert(false);
