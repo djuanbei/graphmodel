@@ -23,7 +23,7 @@ class TANextStep : public NextStep {
 public:
   TANextStep(const INT_TAS_t &s) : sys(s) {
     manager = sys.getStateManager();
-    component_num = manager->getComponentNum();
+    component_num = manager->getComponentNumber();
   }
   virtual std::vector<OneStep> getNextStep(void *state) const;
 

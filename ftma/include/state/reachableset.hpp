@@ -44,7 +44,7 @@ public:
     current_state_id = -1;
 
     prop = nullptr;
-    component_num = manager->getComponentNum();
+    component_num = manager->getComponentNumber();
 
     cache_state = manager->newState();
 
@@ -142,12 +142,15 @@ public:
   }
 #endif
 
-  Check_State add(State_t *state) {
+  Check_State add(const State_t *const state) {
+    if (cache_state != state) {
+      manager->copy(cache_state, state);
+    }
+    manager->setParent(cache_state, current_state_id);
 
-    manager->setParent(state, current_state_id);
-    manager->getClockManager().encode(manager->getDBM(state));
-    if (addToReachableSet(state)) {
-      if (isReach(state)) {
+    manager->getClockManager().encode(manager->getDBM(cache_state));
+    if (addToReachableSet(cache_state)) {
+      if (isReach(cache_state)) {
         return TRUE;
       }
       return UNKOWN;
@@ -268,21 +271,23 @@ public:
   }
 
 private:
-  inline bool addToReachableSet(const State_t *const state) {
+  inline bool addToReachableSet(State_t *state) {
 
     manager->encode(convert_UINT, state);
     int re = reach_set.add(convert_UINT);
 
-    assert(reach_set.contain(convert_UINT) &&
+    assert(reach_set.contain(convert_UINT) != NOT_FOUND &&
            "The element resently add the reach set.");
 
-    if (re == NOT_FOUND) {
-      int target = findPassEd(convert_UINT);
-      assert(target != NOT_FOUND);
-      passed_pair.push_back(make_pair(current_state_id, target));
+    if (re != NOT_FOUND) {
+
+      // int target = findPassEd(convert_UINT);
+      // assert(target != NOT_FOUND);
+      // assert(re ==target);
+      passed_pair.push_back(make_pair(current_state_id, re));
     }
 
-    return re != NOT_FOUND;
+    return re == NOT_FOUND;
   }
 
   int findPassEd(const UINT *state) const {

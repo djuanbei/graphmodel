@@ -26,11 +26,30 @@
 using namespace graphsat;
 using namespace std;
 
+TEST(STATE_MANAGER_H, getStateLen) {
+  FisherGenerator F;
+  for (int i = 1; i < 10; i++) {
+    INT_TAS_t fs = F.generate(i);
+    shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+        fs.getStateManager();
+    EXPECT_EQ(manager->getStateLen(), i + 3 + (i + 1) * (i + 1));
+  }
+  TrainGate TG;
+  for (int i = 2; i < 10; i++) {
+    INT_TAS_t tg_sys = TG.generate(i);
+    shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+        tg_sys.getStateManager();
+    EXPECT_EQ(manager->getStateLen(),
+              i + 1 + 2 + i + 1 + 1 + (i + 1) * (i + 1));
+  }
+}
+
 TEST(STATE_MANAGER_H, getCounterNumber) {
   FisherGenerator F;
   int n = 10;
   INT_TAS_t fs = F.generate(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager = fs.getStateManager();
+  EXPECT_EQ(manager->getComponentNumber(), n);
 
   for (int i = 0; i < n; i++) {
     EXPECT_EQ(fs.getCounterNumber(i), 0);
@@ -76,7 +95,7 @@ TEST(STATE_MANAGER_H, CONTAIN) {
   // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
-  StateSet<UINT> states = data.getStates();
+  const StateSet<UINT> &states = data.getStates();
   int *s = manager->newState();
   for (auto e : states) {
     manager->decode(s, e);
@@ -102,7 +121,7 @@ TEST(STATE_MANAGER_H, ENCODE) {
   // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
-  StateSet<UINT> states = data.getStates();
+  const StateSet<UINT> &states = data.getStates();
   int len = manager->getCompressionSize();
   UINT *cs1 = new UINT[len];
   int *s = manager->newState();

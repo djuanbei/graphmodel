@@ -18,7 +18,7 @@ namespace graphsat {
 class CriticalSection : public Property {
 public:
   virtual bool operator()(const void *manager, const int *const state) const {
-    int component_num = ((ComponentInfo *)manager)->getComponentNum();
+    int component_num = ((ComponentInfo *)manager)->getComponentNumber();
     int cs_num = 0;
     for (int i = 0; i < component_num; i++) {
       if (isLookComponent(i) && (state[i] == CS)) {

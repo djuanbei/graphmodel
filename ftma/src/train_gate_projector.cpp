@@ -5,7 +5,7 @@ namespace graphsat {
 TrainGateProjector::TrainGateProjector(
     const shared_ptr<TMStateManager> &out_manager, const int pro_d)
     : manager(out_manager) {
-  component_num = manager->getComponentNum();
+  component_num = manager->getComponentNumber();
   pro_dim = pro_d;
   clock_start = manager->getClockStart();
   pro_clock_start = pro_dim * (pro_dim + 1);

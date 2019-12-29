@@ -4,7 +4,7 @@ namespace graphsat {
 
 FisherProjector::FisherProjector(const shared_ptr<TMStateManager> &manager,
                                  const int pro_d) {
-  component_num = manager->getComponentNum();
+  component_num = manager->getComponentNumber();
   pro_dim = pro_d;
   clock_start = manager->getClockStart();
 }

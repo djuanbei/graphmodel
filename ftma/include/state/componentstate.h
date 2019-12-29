@@ -15,7 +15,7 @@ namespace graphsat {
 class ComponentInfo {
 
 public:
-  virtual int getComponentNum() const { return 0; }
+  virtual int getComponentNumber() const { return 0; }
 };
 
 } // namespace graphsat

@@ -51,15 +51,18 @@ TEST(StateSet1, add_contain) {
   for (int i = 0; i < num; i++) {
     UINT *temp = randVU(n);
     int re = sets.add(temp);
-    if (re != NOT_FOUND) {
-      EXPECT_EQ(re, vecs.size());
+    if (re == NOT_FOUND) {
+
       vecs.push_back(temp);
     } else {
       delete[] temp;
     }
   }
   for (auto e : vecs) {
-    EXPECT_TRUE(sets.contain(e));
+    EXPECT_TRUE(sets.contain(e) != NOT_FOUND);
+  }
+  for (int i = 0; i < (int)vecs.size(); i++) {
+    EXPECT_EQ(i, sets.findId(vecs[i]));
   }
   EXPECT_EQ(sets.size(), vecs.size());
   UINT *temp = new UINT[n];
@@ -136,31 +139,31 @@ bool cmp(const vector<int> &a, const vector<int> &b) {
 }
 TEST(StateSet1, equal) {
 
-  // StateSet<int> sets;
+  StateSet<UINT> sets;
 
-  // vector<vector<int>> vecs;
-  // int n = 11;
-  // int s = 4;
-  // int num = 10000;
-  // Compression<int> decoder(n-s );
-  // sets.setParam(n, s, decoder);
-  // for (int i = 0; i < num; i++) {
-  //   int *temp = randV(n);
-  //   if (sets.add(temp)) {
-  //     vector<int> dummy(temp, temp + n);
-  //     vecs.push_back(dummy);
-  //   }
-  //   delete[] temp;
-  // }
-  // vector<vector<int>> getRe;
-  // for (auto state : sets) {
-  //   vector<int> dummy(state, state + n);
-  //   getRe.push_back(dummy);
-  // }
-  // EXPECT_TRUE(getRe.size() == vecs.size());
-  // sort(getRe.begin(), getRe.end(), vect_cmp<int>);
-  // sort(vecs.begin(), vecs.end(), vect_cmp<int>);
-  // for (size_t i = 0; i < vecs.size(); i++) {
-  //   EXPECT_EQ(vecs[i], getRe[i]);
-  // }
+  vector<vector<UINT>> vecs;
+  int n = 11;
+  int s = 4;
+  int num = 10000;
+  Compression<int> decoder(n - s);
+  sets.setParam(n, s, decoder);
+  for (int i = 0; i < num; i++) {
+    UINT *temp = randVU(n);
+    if (sets.add(temp) == NOT_FOUND) {
+      vector<UINT> dummy(temp, temp + n);
+      vecs.push_back(dummy);
+    }
+    delete[] temp;
+  }
+  vector<vector<UINT>> getRe;
+  for (auto state : sets) {
+    vector<UINT> dummy(state, state + n);
+    getRe.push_back(dummy);
+  }
+  EXPECT_TRUE(getRe.size() == vecs.size());
+  sort(getRe.begin(), getRe.end(), vect_cmp<UINT>);
+  sort(vecs.begin(), vecs.end(), vect_cmp<UINT>);
+  for (size_t i = 0; i < vecs.size(); i++) {
+    EXPECT_EQ(vecs[i], getRe[i]);
+  }
 }

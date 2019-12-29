@@ -91,8 +91,15 @@ public:
   class iterator;
   StateSet() {
 
-    element_len = head_part_len = body_part_len = 0;
+    element_len = head_part_len = body_part_len = inc_body_part = 0;
     lhs_data = rhs_data = nullptr;
+  }
+  StateSet(const StateSet &s) { assert(false); }
+
+  StateSet operator=(const StateSet &s) const {
+
+    assert(false);
+    return *this;
   }
 
   void setParam(const int n, int head_len, const Compression<int> &d) {
@@ -100,13 +107,28 @@ public:
     element_len = n;
     head_part_len = head_len;
     body_part_len = n - head_len;
+    inc_body_part = body_part_len + 1;
     decoder = d;
+    int len = decoder.getDataLen();
+    lhs_data = new int[len];
+    rhs_data = new int[len];
   }
-  ~StateSet() { deleteAll(); }
+  ~StateSet() {
+    deleteAll();
+    if (nullptr != lhs_data) {
+      delete[] lhs_data;
+      lhs_data = nullptr;
+    }
+    if (nullptr != rhs_data) {
+      delete[] rhs_data;
+      rhs_data = nullptr;
+    }
+  }
   void deleteAll() { clear(); }
   void clear() {
     head_part_elements.clear();
     body_part_elements.clear();
+    index.clear();
   }
 
   int size() const { return index.size() / 3; }
@@ -118,7 +140,7 @@ public:
    *
    * @param one
    *
-   * @return  NOT_FOUND if  one is contain in this set; otherwise the id this
+   * @return  NOT_FOUND if  one is contain not in set; otherwise the id this
    * the set.
    */
   int add(const T *const one) {
@@ -131,30 +153,56 @@ public:
      *
      */
     size_t body_size = body_part_elements[head_id].size();
-    for (size_t i = 0; i < body_size; i += body_part_len) {
+
+    for (size_t i = 0; i < body_size; i += inc_body_part) {
       if (containBody(&(body_part_elements[head_id][i]), body_part)) {
-        return NOT_FOUND;
+        return body_part_elements[head_id][i + body_part_len];
       }
     }
 
-    return addBodyValue(hashV, head_id, body_part);
+    addBodyValue(hashV, head_id, body_part);
+    return NOT_FOUND;
   }
 
-  bool contain(const T *const one) const {
+  // return NOT_FOUND if not find, otherwise. nonnegative integer
+  int contain(const T *const one) const {
 
     int id = containHead(one);
     if (id > -1) { // find
       const T *bodyPart = one + head_part_len;
 
       for (size_t i = 0; i < body_part_elements[id].size();
-           i += body_part_len) {
+           i += inc_body_part) {
         if (containBody(&(body_part_elements[id][i]), bodyPart)) {
-          return true;
+          return body_part_elements[id][i + body_part_len];
         }
       }
     }
-    return false;
+    return NOT_FOUND;
   }
+
+  /**
+   * @brief find the id of one in the set,
+   *
+   * @param one
+   *
+   * @return NOT_FOUND if one is not in set
+   */
+  int findId(const T *const one) const {
+    int id = containHead(one);
+    if (id > -1) { // find
+      const T *bodyPart = one + head_part_len;
+
+      for (size_t i = 0; i < body_part_elements[id].size();
+           i += inc_body_part) {
+        if (existsBody(&(body_part_elements[id][i]), bodyPart)) {
+          return body_part_elements[id][i + body_part_len];
+        }
+      }
+    }
+    return NOT_FOUND;
+  }
+
   bool exists(const T *const one) const {
 
     int id = containHead(one);
@@ -162,7 +210,7 @@ public:
       const T *bodyPart = one + head_part_len;
 
       for (size_t i = 0; i < body_part_elements[id].size();
-           i += body_part_len) {
+           i += inc_body_part) {
         if (existsBody(&(body_part_elements[id][i]), bodyPart)) {
           return true;
         }
@@ -227,7 +275,7 @@ public:
 
     const_iterator &operator++() {
 
-      second_index += data->body_part_len; // +body_part_len simply using
+      second_index += data->inc_body_part; //
       int secondId = it->second.second[first_index];
 
       if (second_index >= data->body_part_elements[secondId].size()) {
@@ -303,7 +351,7 @@ public:
       second_index = other.second_index;
     }
     iterator &operator++() {
-      second_index += data->body_part_len; // +body_part_len simply using
+      second_index += data->inc_body_part; //
       int secondId = it->second.second[first_index];
 
       if (second_index >= data->body_part_elements[secondId].size()) {
@@ -360,6 +408,7 @@ private:
 
   int head_part_len;
   int body_part_len;
+  int inc_body_part;
   int *lhs_data;
   int *rhs_data;
   Compression<int> decoder;
@@ -441,6 +490,7 @@ private:
 
     body_part_elements[headId].insert(body_part_elements[headId].end(), body,
                                       body + body_part_len);
+    body_part_elements[headId].push_back(re);
 
     return re;
   }
@@ -453,20 +503,19 @@ private:
   }
   inline bool containBody(const T *const lhs, const T *const rhs) const {
     int len = decoder.getDataLen();
-    int *data1 = new int[len];
-    int *data2 = new int[len];
-    decoder.decode(data1, lhs);
-    decoder.decode(data2, rhs);
+
+    decoder.decode(lhs_data, lhs);
+    decoder.decode(rhs_data, rhs);
 
     len--;
     int i = 0;
+
     for (; i < len; i++) {
-      if (data1[i] < data2[i]) {
+      if (lhs_data[i] < rhs_data[i]) {
         break;
       }
     }
-    delete[] data1;
-    delete[] data2;
+
     return i == len;
   }
   inline bool existsBody(const T *const lhs, const T *const rhs) const {

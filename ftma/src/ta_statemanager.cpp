@@ -59,10 +59,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   } else {
     init_states.push_back(state);
   }
-
-  // init_state.resize(state_length);
-  // ::copy(state, state+state_length, init_state.begin( ));
-  // destroyState( state);
+  cache_state = newState();
 }
 
 int *TMStateManager::newState() const {
@@ -473,11 +470,11 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
   return re;
 }
 
-void TMStateManager::encode(UINT *now, const int *const original) const {
-  int *temp = newState();
-  copy(temp, original);
-  getClockManager().encode(getDBM(temp));
-  compress_state.encode(now, temp);
+void TMStateManager::encode(UINT *now, int *original) const {
+
+  // copy(cache_state, original);
+  getClockManager().encode(getDBM(original));
+  compress_state.encode(now, original);
 }
 
 void TMStateManager::decode(int *now, const UINT *const original) const {

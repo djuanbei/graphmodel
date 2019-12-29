@@ -50,7 +50,13 @@ public:
                  int clock_num, const vector<int> &oclock_upper_bounds,
                  const vector<int> &nodes, const vector<int> &links);
 
-  virtual ~TMStateManager() {}
+  virtual ~TMStateManager() {
+    for (auto e : init_states) {
+      destroyState(e);
+    }
+    init_states.clear();
+    destroyState(cache_state);
+  }
 
   int getStateLen() const { return state_length; }
 
@@ -139,7 +145,7 @@ public:
 
   void destroyState(int *state) const { delete[] state; }
 
-  int getComponentNum() const { return component_num; }
+  int getComponentNumber() const { return component_num; }
   inline const DBMFactory &getClockManager() const { return dbm_manager; }
 
   void norm(const int *const dbm, vector<int *> &re_vec) const {
@@ -218,7 +224,7 @@ public:
 
   vector<string> getCounterDotLabel(const int *const state) const;
 
-  void encode(UINT *now, const int *const original) const;
+  void encode(UINT *now, int *original) const;
 
   void decode(int *now, const UINT *const original) const;
 
@@ -247,7 +253,7 @@ private:
   bool hasDiff;
   StateConvert<int> compress_state;
   vector<int *> init_states;
-  // vector<int> init_state;
+  int *cache_state;
 };
 } // namespace graphsat
 #endif

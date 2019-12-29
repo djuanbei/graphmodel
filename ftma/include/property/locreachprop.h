@@ -20,7 +20,7 @@ public:
   virtual bool operator()(const void *manager, const int *const state) const {
 
     return (0 == memcmp(state, &loc[0],
-                        ((ComponentInfo *)manager)->getComponentNum() *
+                        ((ComponentInfo *)manager)->getComponentNumber() *
                             sizeof(int)));
   }
 

@@ -7,7 +7,7 @@ void StateOutput::generatorDot(const ReachableSet<TMStateManager> &reachSet,
   const TMStateManager *manager = reachSet.getManager();
   int *cache_state = manager->newState();
   int *convert_C_t = manager->newState();
-  int component_num = manager->getComponentNum();
+  int component_num = manager->getComponentNumber();
   ofstream fout(filename);
   fout << "digraph G {" << endl;
 
@@ -82,7 +82,7 @@ bool StateOutput::generatePath(const ReachableSet<TMStateManager> &reachSet,
   const TMStateManager *manager = reachSet.getManager();
   int *cache_state = manager->newState();
   int *convert_C_t = manager->newState();
-  int component_num = manager->getComponentNum();
+  int component_num = manager->getComponentNumber();
 
   int clock_num = manager->getClockNumber();
 

@@ -163,13 +163,13 @@ vector<State_t *> doEvolution(const M *manager, const int component, int loc,
   vector<State_t *> re = manager->evolution(component, loc, state);
   if (manager->hasDiffCons()) {
     for (auto &e : re) {
-      for (int component_id = 0; component_id < manager->getComponentNum();
+      for (int component_id = 0; component_id < manager->getComponentNumber();
            component_id++) {
         manager->employLocInvariants(component_id, e);
       }
     }
   } else {
-    for (int component_id = 0; component_id < manager->getComponentNum();
+    for (int component_id = 0; component_id < manager->getComponentNumber();
          component_id++) {
       manager->employLocInvariants(component_id, state);
     }
