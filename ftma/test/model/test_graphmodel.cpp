@@ -79,14 +79,12 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
   Parameter param = gate_tmt->getParameter();
   shared_ptr<typename INT_TAS_t::Agent_t> tma =
       sys.createAgent(gate_tmt, param);
-  // sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(train_tmt, param);
-    // sys += tma;
   }
   sys.build();
 
@@ -334,7 +332,7 @@ TEST(TRAIN_GATE_H, generate) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       tg_sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  tg_sys.addInitState(data);
+  //  tg_sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(tg_sys);
 
   TrainGatePro prop(n);

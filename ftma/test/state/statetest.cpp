@@ -65,16 +65,15 @@ TEST(StateSet1, add_contain) {
   UINT *temp = new UINT[n];
   for (size_t i = 0; i < vecs.size(); i++) {
     sets.getElementAt(temp, i);
-    for(int j=0; j< n; j++){
+    for (int j = 0; j < n; j++) {
       EXPECT_EQ(temp[j], vecs[i][j]);
-    
     }
-//    cout<<endl;
-//    for(int j=0; j< n; j++){
-//      cout<<vecs[i][j]<<" ";
-//    }
-//    cout<<endl;
-//    EXPECT_TRUE(memcmp(temp, vecs[i], n * sizeof(UINT)) == 0);
+    //    cout<<endl;
+    //    for(int j=0; j< n; j++){
+    //      cout<<vecs[i][j]<<" ";
+    //    }
+    //    cout<<endl;
+    //    EXPECT_TRUE(memcmp(temp, vecs[i], n * sizeof(UINT)) == 0);
   }
   delete[] temp;
   for (auto e : vecs) {

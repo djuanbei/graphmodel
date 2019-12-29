@@ -457,6 +457,8 @@ private:
     int *data2 = new int[len];
     decoder.decode(data1, lhs);
     decoder.decode(data2, rhs);
+
+    len--;
     int i = 0;
     for (; i < len; i++) {
       if (data1[i] < data2[i]) {
@@ -466,13 +468,6 @@ private:
     delete[] data1;
     delete[] data2;
     return i == len;
-
-    // for (int i = 0; i < body_part_len; i++) {
-    //   if (lhs[i] < rhs[i]) {
-    //     return false;
-    //   }
-    // }
-    // return true;
   }
   inline bool existsBody(const T *const lhs, const T *const rhs) const {
     return memcmp(lhs, rhs, body_part_len * sizeof(T)) == 0;

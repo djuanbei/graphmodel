@@ -62,8 +62,18 @@ public:
   int getClockStart() const { return clock_start_loc; }
 
   int getClockNumber() const { return clock_num; }
+  void incFreeze(int *state) const { state[freeze_location_index]++; }
+  void decFreeze(int *state) const { state[freeze_location_index]--; }
+  int getFreezeComponentNumber(const int *const state) const {
+    return state[freeze_location_index];
+  }
 
-  int getFreezeLocation() const { return freeze_location_index; }
+  int getParentId(const int *const state) const {
+    return state[parent_location_index];
+  }
+  void setParent(int *state, int parent) const {
+    state[parent_location_index] = parent;
+  }
 
   // check whether this state allow time delay
   bool isFreeze(const int *const state) const {
@@ -110,9 +120,11 @@ public:
   void copy(int *des_state, const int *const source_state) const {
     memcpy(des_state, source_state, state_length * sizeof(int));
   }
-
+  /**
+   * @brief ignore parent_location_index value
+   */
   bool equal(const int *const lhs, const int *const rhs) const {
-    return memcmp(lhs, rhs, state_length * sizeof(int)) == 0;
+    return memcmp(lhs, rhs, (state_length - 1) * sizeof(int)) == 0;
   }
   /**
    * @brief As the state is  abstract symbolic state. A symbolic state
@@ -159,6 +171,8 @@ public:
   }
 
   vector<int> blockComponents(const int chid, const int *const state) const;
+
+  const vector<int *> &getInitialState() const { return init_states; }
 
   void constructState(const int *const state, const int *const dbm,
                       int *re_state) const;
@@ -217,6 +231,7 @@ private:
 
   int component_num;
   int state_length;
+  int parent_location_index;
   int freeze_location_index;
 
   int counter_start_loc;
@@ -230,7 +245,9 @@ private:
   vector<int> link_nums;
   int clock_num;
   bool hasDiff;
-  StateConvert<State_t> compress_state;
+  StateConvert<int> compress_state;
+  vector<int *> init_states;
+  // vector<int> init_state;
 };
 } // namespace graphsat
 #endif

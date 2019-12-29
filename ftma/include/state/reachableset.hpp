@@ -20,6 +20,8 @@
 
 #include "state/discretestate.hpp"
 
+#include "alg/one_step.h"
+#include "alg/ta_next_step.h"
 #include "property/property.h"
 #include "util/datacompression.h"
 
@@ -39,7 +41,7 @@ public:
   typedef typename M::State_t State_t;
   ReachableSet(const shared_ptr<M> outta) : manager(outta) {
 
-    current_parent = NOT_FOUND;
+    current_state_id = -1;
 
     prop = nullptr;
     component_num = manager->getComponentNum();
@@ -48,13 +50,18 @@ public:
 
     convert_C_t = manager->newState();
 
-
     compression_size = manager->getCompressionSize();
 
     convert_UINT = new UINT[compression_size]();
     reach_set.setParam(manager->getCompressionSize(),
                        manager->getCompressionHeadSize(),
                        manager->getBodyCompression());
+
+    const vector<int *> &states = manager->getInitialState();
+
+    for (auto e : states) {
+      add(e);
+    }
   }
 
   ~ReachableSet() {
@@ -65,20 +72,15 @@ public:
     convert_C_t = nullptr;
     delete[] convert_UINT;
     convert_UINT = nullptr;
-    while (!wait_set.empty()) {
-      State_t *temp_state = wait_set.front();
-      wait_set.pop_front();
-      manager->destroyState(temp_state);
-    }
   }
 
   void setProperty(const Property *p) { prop = p; }
 
   vector<UINT> getProcess_states() const {
     vector<UINT> re;
-    for( size_t i=0; i< size( ); i++){
-      getCompressionStateAt( convert_UINT, i);
-      re.insert( re.end( ), convert_UINT, convert_UINT+compression_size);
+    for (size_t i = 0; i < size(); i++) {
+      getCompressionStateAt(convert_UINT, i);
+      re.insert(re.end(), convert_UINT, convert_UINT + compression_size);
     }
     return re;
   }
@@ -88,22 +90,28 @@ public:
    * @return next state by order given order
    */
   State_t *next() {
-    State_t *state = wait_set.front(); // BFS
-    wait_set.pop_front();
+    // State_t *state = wait_set.front(); // BFS
+    // wait_set.pop_front();
+    current_state_id++;
+
     // State_t *state = wait_set.back( ); //DFS
     // wait_set.pop_back();
-    manager->getClockManager().decode(manager->getDBM(state));
-    return state;
+    //    manager->getClockManager().decode(manager->getDBM(state));
+    int *state1 = manager->newState();
+    getStateAt(state1, current_state_id);
+
+    //    assert( manager->equal( state, state1));
+    return state1;
   }
 
   /**
     where there is no wait state
    */
-  bool waitEmpty() const { return wait_set.empty(); }
+  bool waitEmpty() const { return current_state_id + 1 >= reach_set.size(); }
   /**
    The number of state in the wait set
    */
-  size_t waitSize() const { return wait_set.size(); }
+  //  size_t waitSize() const { return wait_set.size(); }
 
   /**
    Search in the reachable set to check whether the prop satisfy.
@@ -135,11 +143,10 @@ public:
 #endif
 
   Check_State add(State_t *state) {
-    vector<int> dummy(state, state + manager->getStateLen());
+
+    manager->setParent(state, current_state_id);
     manager->getClockManager().encode(manager->getDBM(state));
     if (addToReachableSet(state)) {
-
-      addToWait(state);
       if (isReach(state)) {
         return TRUE;
       }
@@ -148,16 +155,19 @@ public:
     return FALSE;
   }
 
-
-  void getCompressionStateAt( UINT *out, const int id)const{
-    reach_set.getElementAt( out, id);
+  void getCompressionStateAt(UINT *out, const int id) const {
+    reach_set.getElementAt(out, id);
   }
 
   void getStateAt(int *out, const int id) const {
-    getCompressionStateAt( convert_UINT, id);
+    getCompressionStateAt(convert_UINT, id);
     manager->decode(out, convert_UINT);
   }
-  int getParentId(const int id) const { return state_parent[id]; }
+
+  int getParentId(const int id) const {
+    getStateAt(cache_state, id);
+    return manager->getParentId(cache_state);
+  }
 
   int findId(const int *const state) const {
     for (size_t i = 0; i < size(); i++) {
@@ -179,7 +189,7 @@ public:
     }
     path.push_back(sid);
     while (sid > 0) {
-      sid = state_parent[sid];
+      sid = getParentId(sid);
       path.push_back(sid);
     }
     reverse(path.begin(), path.end());
@@ -217,13 +227,11 @@ public:
     assert(re.size() == reach_set.size());
   }
 
-  void incCurrentParent() { current_parent++; }
-
   vector<vector<State_t>> getPath(const State_t *const target) const {
     vector<vector<State_t>> re;
 
     int target_id = NOT_FOUND;
-    for (size_t i = 0; i < state_parent.size(); i++) {
+    for (size_t i = 0; i < size(); i++) {
       getStateAt(cache_state, i);
 
       if (manager->equal(target, cache_state)) {
@@ -237,7 +245,7 @@ public:
     vector<int> path;
     path.push_back(target_id);
     while (target_id > 0) {
-      target_id = state_parent[target_id];
+      target_id = getParentId(target_id);
       path.push_back(target_id);
     }
     for (vector<int>::reverse_iterator it = path.rbegin(); it != path.rend();
@@ -249,7 +257,7 @@ public:
 
   bool contain(const State_t *const target) const {
 
-    for (size_t i = 0; i < state_parent.size(); i++) {
+    for (size_t i = 0; i < size(); i++) {
       getStateAt(cache_state, i);
 
       if (manager->contain(cache_state, target)) {
@@ -260,16 +268,6 @@ public:
   }
 
 private:
-  void addToWait(const State_t *const state) {
-    State_t *newState = manager->newState(state);
-    wait_set.push_back(newState);
-
-    manager->encode(convert_UINT, state);
-
-
-    state_parent.push_back(current_parent);
-  }
-
   inline bool addToReachableSet(const State_t *const state) {
 
     manager->encode(convert_UINT, state);
@@ -281,7 +279,7 @@ private:
     if (re == NOT_FOUND) {
       int target = findPassEd(convert_UINT);
       assert(target != NOT_FOUND);
-      passed_pair.push_back(make_pair(current_parent, target));
+      passed_pair.push_back(make_pair(current_state_id, target));
     }
 
     return re != NOT_FOUND;
@@ -291,10 +289,9 @@ private:
 
     int head_part_len = manager->getCompressionHeadSize();
 
-    for (size_t i = 0; i < state_parent.size(); i++) {
-      getCompressionStateAt( convert_UINT, i);
-      if (0 == memcmp(state, convert_UINT,
-                      head_part_len * sizeof(UINT))) {
+    for (size_t i = 0; i < size(); i++) {
+      getCompressionStateAt(convert_UINT, i);
+      if (0 == memcmp(state, convert_UINT, head_part_len * sizeof(UINT))) {
         manager->decode(cache_state, state);
         getStateAt(convert_C_t, i);
         if (manager->contain(convert_C_t, cache_state)) {
@@ -308,7 +305,6 @@ private:
 private:
   shared_ptr<const M> manager;
   StateSet<UINT> reach_set;
-  deque<State_t *> wait_set;
 
   State_t *cache_state;
 
@@ -321,17 +317,15 @@ private:
 
   int compression_size;
 
-  vector<int> state_parent;
-
-  int current_parent;
+  int current_state_id;
   vector<pair<int, int>> passed_pair;
 
   vector<State_t> getState(const int id) const {
-    reach_set.getElementAt(convert_UINT, id );
+    reach_set.getElementAt(convert_UINT, id);
     manager->decode(cache_state, convert_UINT);
     int state_len = manager->getStateLen();
     vector<State_t> re(cache_state, cache_state + state_len);
-    assert(contain(&(re[0])));
+    // assert(contain(&(re[0])));
     return re;
   }
 };

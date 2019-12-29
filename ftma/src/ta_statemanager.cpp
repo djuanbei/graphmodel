@@ -3,6 +3,7 @@
 
 #include "state/ta_statemanager.h"
 
+#include "alg/one_step.h"
 #include "model/graphmodel.hpp"
 
 namespace graphsat {
@@ -27,17 +28,41 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   state_length = component_num + (int)ecounters.size();
 
   freeze_location_index = state_length;
-
   state_length++;
+
   clock_start_loc = state_length;
 
   state_length += (clock_num + 1) * (clock_num + 1);
+  parent_location_index = state_length;
+
+  state_length++;
+
   hasDiff = !sys.getDiffCons().empty();
   dbm_manager = DBMFactory(clock_num, clock_upper_bounds, sys.getDiffCons());
   counters = ecounters;
   compress_state =
       StateConvert<int>(getClockStart(), getStateLen() - getClockStart(),
                         getHeadCompression(), getBodyCompression());
+  int *state = newState();
+  for (int i = 0; i < component_num; i++) {
+    state[i] = sys.getInitialLoc(i);
+    if (sys.getLocationNumber(i) > 0 && sys.isFreezeLocation(i, state[i])) {
+      incFreeze(state);
+    }
+  }
+
+  state[parent_location_index] = -1; // initial state;
+  if (getFreezeComponentNumber(state) == 0) {
+    if (sys.getLocationNumber(0) > 0) {
+      init_states = doEvolution(this, 0, state[0], state);
+    }
+  } else {
+    init_states.push_back(state);
+  }
+
+  // init_state.resize(state_length);
+  // ::copy(state, state+state_length, init_state.begin( ));
+  // destroyState( state);
 }
 
 int *TMStateManager::newState() const {
@@ -147,7 +172,7 @@ Compression<int> TMStateManager::getHeadCompression() const {
    * At most all the component in freeze location
    *
    */
-  re_comp.setBound(freeze_location_index, 0, component_num - 1);
+  re_comp.setBound(freeze_location_index, 0, component_num);
 
   return re_comp;
 }
@@ -162,9 +187,9 @@ Compression<int> TMStateManager::getBodyCompression() const {
    */
 
   int len = (int)clock_upper_bounds.size() / 2;
-  assert(body_len == len * len);
+  assert(body_len == len * len + 1);
 
-  for (int i = 0; i < body_len; i++) {
+  for (int i = 0; i < body_len - 1; i++) {
     int row = (i) / len;
     int col = (i) % len;
     if (row == col) {
@@ -369,12 +394,14 @@ void TMStateManager::discretRun(const int component, const int link,
   int source = sys.getSrc(component, link);
   int target = sys.getSnk(component, link);
   if (sys.isFreezeLocation(component, source)) {
-    state[getFreezeLocation()]--;
-    assert(state[getFreezeLocation()] >= 0);
+    decFreeze(state);
+    // state[getFreezeLocation()]--;
+    assert(getFreezeComponentNumber(state) >= 0);
   }
   if (sys.isFreezeLocation(component, target)) {
-    state[getFreezeLocation()]++;
-    assert(state[getFreezeLocation()] <= component_num);
+    incFreeze(state);
+    // state[getFreezeLocation()]++;
+    assert(getFreezeComponentNumber(state) <= component_num);
   }
 
   state[component] = target;

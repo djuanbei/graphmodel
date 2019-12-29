@@ -13,7 +13,7 @@ void runxml(const std::string &file_name) {
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
 
-  sys.addInitState(data);
+  // sys.addInitState(data);
 
   Reachability<INT_TAS_t> reacher(sys);
 

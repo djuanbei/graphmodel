@@ -43,131 +43,6 @@ namespace graphsat {
 std::default_random_engine generator;
 std::uniform_int_distribution<int> distribution(0, 1000);
 
-// void example1( void ) {
-//   INT_TAS_t sys;
-//   // x:1 y:2 z:3
-//   vector<typename INT_TAS_t::T_t> es;
-//   vector<typename INT_TAS_t::L_t> ls;
-//   typename INT_TAS_t::L_t         S0( 0 );
-//   typename INT_TAS_t::L_t         S1( 1 );
-//   typename INT_TAS_t::L_t         S2( 2 );
-//   typename INT_TAS_t::L_t         S3( 3 );
-
-//   typename INT_TAS_t::T_t e01( S0, S1 );
-//   pair<int, int>          rest1( 3, 0 );
-//   e01.addReset( rest1 );
-//   // e01.reset.push_back( 3 ); // z -->0
-//   typename INT_TAS_t::T_t e12( S1, S2 );
-
-//   typename INT_TAS_t::CS_t cs1( 0, 2, LT, -2 ); // 0-y < -2
-//   e12 += cs1;
-//   pair<int, int> rest2( 2, 0 );
-//   e12.addReset( rest2 ); // y --> 0
-
-//   typename INT_TAS_t::T_t e23( S2, S3 );
-
-//   typename INT_TAS_t::CS_t cs2( 1, 3, LT, 1 ); // x-z < 1
-//   typename INT_TAS_t::CS_t cs3( 3, 2, LT, 1 ); // z-y < 1
-//   e23 += cs2;
-
-//   e23 += cs3;
-
-//   ls.push_back( S0 );
-//   ls.push_back( S1 );
-//   ls.push_back( S2 );
-//   ls.push_back( S3 );
-
-//   es.push_back( e01 );
-//   es.push_back( e12 );
-//   es.push_back( e23 );
-//   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 =
-//   sys.createTemplate();
-
-//   tmt1->addClock( "x" );
-//   tmt1->addClock( "y" );
-//   tmt1->addClock( "z" );
-
-//   tmt1->initial( ls, es, 0 );
-
-//   Parameter param=tmt1->getParameter( );
-
-//   typename INT_TAS_t::Agent_t tma1( tmt1, param );
-//   sys += tma1;
-//   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-
-//   R_t data( manager );
-//   sys.addInitState( data );
-
-//   RS_t        reacher( sys );
-//   vector<int> loc;
-//   loc.push_back( 3 );
-//   LocReachProperty prop( loc );
-
-//   reacher.satisfy( data, &prop );
-
-//   reacher.computeAllReachableSet( data );
-// }
-
-// void example50() {
-//   INT_TAS_t                       sys;
-//   vector<typename INT_TAS_t::T_t> es;
-//   vector<typename INT_TAS_t::L_t> ls;
-//   typename INT_TAS_t::L_t         L0( 0 );
-//   typename INT_TAS_t::L_t         L1( 1 );
-
-//   typename INT_TAS_t::T_t E00a( L0, L0 );
-//   pair<int, int>          reset1( 2, 0 );
-//   E00a.addReset( reset1 );                     // y-->0
-//   typename INT_TAS_t::CS_t cs1( 2, 0, LE, 2 ); // y<=2
-//   E00a += cs1;
-
-//   typename INT_TAS_t::T_t E00b( L0, L0 );
-//   pair<int, int>          reset2( 1, 0 );
-//   E00b.addReset( reset2 );                     // x-->0
-//   typename INT_TAS_t::CS_t cs2( 1, 0, LE, 2 ); // x<=2
-//   E00b += cs2;
-
-//   typename INT_TAS_t::T_t E01( L0, L1 );
-
-//   typename INT_TAS_t::CS_t cs3( 2, 0, LE, 2 ); // y<=2
-//   // typename INT_TAS_t::CS_t cs4( 0, 1, -4, false ); // x>=4
-//   typename INT_TAS_t::CS_t cs4( 1, 0, GE, 4 ); // x>=4
-
-//   E01 += cs3;
-//   E01 += cs4;
-
-//   ls.push_back( L0 );
-//   ls.push_back( L1 );
-
-//   es.push_back( E00a );
-
-//   es.push_back( E00b );
-//   es.push_back( E01 );
-//   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 =
-//   sys.createTemplate(); tmt1->addClock( "x" ); tmt1->addClock( "y" );
-
-//   tmt1->initial( ls, es, 0 );
-
-//   Parameter param=tmt1->getParameter();
-
-//   typename INT_TAS_t::Agent_t tma1( tmt1, param );
-
-//   sys += tma1;
-
-//   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-
-//   R_t data( manager );
-//   sys.addInitState( data );
-
-//   Reachability<INT_TAS_t> reacher( sys );
-//   vector<int>             loc;
-
-//   loc.push_back( 1 );
-//   LocReachProperty prop( loc );
-
-//   reacher.satisfy( data, &prop );
-// }
-
 void example2(void) {
   INT_TAS_t sys;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt1 =
@@ -219,7 +94,7 @@ void example2(void) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   R_t data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   Property prop;
 
@@ -381,7 +256,7 @@ void fisher(int n) {
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
 
   Reachability<INT_TAS_t> reacher(sys);
   FischerMutual prop;
@@ -533,7 +408,7 @@ void incrementalTest() {
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
 
   Reachability<INT_TAS_t> reacher(sys);
   FischerMutual prop;
@@ -564,7 +439,7 @@ void incrementalTest() {
 
   shared_ptr<INT_TAS_t::StateManager_t> manager1 = sys1.getStateManager();
   R_t data1(manager1);
-  sys.addInitState(data1);
+  // sys.addInitState(data1);
 
   Reachability<INT_TAS_t> reacher1(sys1);
   FischerMutual prop1;
@@ -620,7 +495,7 @@ void fisher1() {
   INT_TAS_t sys = parser.getSYS();
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
 
   Reachability<INT_TAS_t> reacher(sys);
   //  FischerMutual     prop;
@@ -694,7 +569,7 @@ void train_gate(const int n) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       tg_sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  tg_sys.addInitState(data);
+  //  tg_sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(tg_sys);
 
   TrainGatePro prop(n);

@@ -73,7 +73,7 @@ TEST(STATE_MANAGER_H, CONTAIN) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
   StateSet<UINT> states = data.getStates();
@@ -99,7 +99,7 @@ TEST(STATE_MANAGER_H, ENCODE) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
   StateSet<UINT> states = data.getStates();

@@ -114,10 +114,9 @@ private:
    */
   template <typename D>
   bool oneDiscreteStep(D *data, const State_t *const state) {
-#ifdef DRAW_GRAPH
-    data->incCurrentParent();
 
-#endif
+    //  data->incCurrentParent();
+
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
@@ -280,7 +279,8 @@ private:
     bool is_send_commit = sys.isCommit(send_component_id, send_target);
 
     if (is_send_commit) {
-      next_state[manager->getFreezeLocation()]++;
+      manager->incFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]++;
     }
     int receive_target = sys.getSnk(receive_component_id, receive_link);
 
@@ -289,7 +289,8 @@ private:
     bool is_receive_commit = sys.isCommit(receive_component_id, receive_target);
 
     if (is_receive_commit) {
-      next_state[manager->getFreezeLocation()]++;
+      manager->incFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]++;
     }
 
     int source, target;
@@ -297,28 +298,29 @@ private:
     target = sys.getSnk(send_component_id, send_link);
 
     if (sys.isFreezeLocation(send_component_id, source)) {
-      next_state[manager->getFreezeLocation()]--;
-      assert(next_state[manager->getFreezeLocation()] >= 0);
+      manager->decFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]--;
+      assert(manager->getFreezeComponentNumber(next_state) >= 0);
     }
     if (sys.isFreezeLocation(send_component_id, target)) {
-
-      next_state[manager->getFreezeLocation()]++;
-      assert(next_state[manager->getFreezeLocation()] <= component_num);
+      manager->incFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]++;
+      assert(manager->getFreezeComponentNumber(next_state) <= component_num);
     }
 
     source = sys.getSrc(receive_component_id, receive_link);
     target = sys.getSnk(receive_component_id, receive_link);
 
     if (sys.isFreezeLocation(receive_component_id, source)) {
-
-      next_state[manager->getFreezeLocation()]--;
-      assert(next_state[manager->getFreezeLocation()] >= 0);
+      manager->decFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]--;
+      assert(manager->getFreezeComponentNumber(next_state) >= 0);
     }
 
     if (sys.isFreezeLocation(receive_component_id, target)) {
-
-      next_state[manager->getFreezeLocation()]++;
-      assert(next_state[manager->getFreezeLocation()] <= component_num);
+      manager->incFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]++;
+      assert(manager->getFreezeComponentNumber(next_state) <= component_num);
     }
 
     // can not stay on current_target and block_target locations when
@@ -416,12 +418,15 @@ private:
     int target = sys.getSnk(component, link);
 
     if (sys.isFreezeLocation(component, source)) {
-      next_state[manager->getFreezeLocation()]--;
-      assert(next_state[manager->getFreezeLocation()] >= 0);
+      manager->decFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]--;
+
+      assert(manager->getFreezeComponentNumber(next_state) >= 0);
     }
     if (sys.isFreezeLocation(component, target)) {
-      next_state[manager->getFreezeLocation()]++;
-      assert(next_state[manager->getFreezeLocation()] <= component_num);
+      manager->incFreeze(next_state);
+      // next_state[manager->getFreezeLocation()]++;
+      assert(manager->getFreezeComponentNumber(next_state) <= component_num);
     }
     manager->discretRun(
         component, link,

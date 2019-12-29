@@ -8,6 +8,8 @@
  *
  */
 
+#ifndef TA_NEXT_STEP_H
+#define TA_NEXT_STEP_H
 #include "next_step.h"
 
 #include "model/graphmodel.hpp"
@@ -75,3 +77,5 @@ private:
 };
 
 } // namespace graphsat
+
+#endif

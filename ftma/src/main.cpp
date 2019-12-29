@@ -11,7 +11,6 @@
 //#define ONLINE_CHECK
 
 //#define PRINT_STATE
-#define DRAW_GRAPH 1
 
 //#define YYDEBUG 1
 
@@ -65,7 +64,7 @@ void test1() {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 

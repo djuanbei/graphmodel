@@ -83,7 +83,7 @@ TEST(TA, UNREACH) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   vector<int> loc;
   loc.push_back(1);
@@ -151,7 +151,7 @@ TEST(REACHSET, TERIMINAL) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
 
   Property prop;
@@ -250,15 +250,13 @@ TEST(REACHSET, FISHER) {
     param.setParameterMap("pid",
                           i); // add relation between local id and global id
     shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
-
-    // sys += tma1;
   }
   sys.build();
   EXPECT_EQ(sys.getTotalChanNumber(), 0);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
 
   FischerMutual prop;
@@ -281,7 +279,7 @@ TEST(FISHER, SYMMETRY) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 
@@ -296,7 +294,7 @@ TEST(FISHER, equal2) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 
@@ -344,7 +342,7 @@ TEST(FISHER, equal3) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  sys.addInitState(data);
+  // sys.addInitState(data);
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 

@@ -31,7 +31,7 @@ public:
     shared_ptr<typename SYS::StateManager_t> manager = dummy.getStateManager();
     ReachableSet<typename SYS::StateManager_t> pre_data(manager);
 
-    dummy.addInitState(pre_data);
+    // dummy.addInitState(pre_data);
     Reachability<SYS> reacher(dummy);
     if (reacher.satisfy(&pre_data, prop)) {
       return false;
@@ -49,7 +49,7 @@ public:
           dummy.getStateManager();
       ReachableSet<typename SYS::StateManager_t> data(manager);
 
-      dummy.addInitState(data);
+      //  dummy.addInitState(data);
       Reachability<SYS> reacher(dummy);
       if (reacher.satisfy(&data, prop)) {
         return false;

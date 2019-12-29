@@ -200,7 +200,8 @@ void TANextStep::discret(int *state, std::vector<pair<int, int>> &path,
   assert(!path.empty());
 
   OneStep dummy;
-  int commit_num = state[manager->getFreezeLocation()];
+  int commit_num = manager->getFreezeComponentNumber(
+      state); //  state[manager->getFreezeLocation()];
   for (auto &p : path) {
     OneStep::Action action(p.first, -1, p.second);
     dummy.addAction(action);

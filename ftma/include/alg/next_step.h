@@ -7,9 +7,12 @@
  *
  *
  */
+#ifndef NEXT_STEP_H
+#define NEXT_STEP_H
 #include <vector>
 
 #include "one_step.h"
+
 namespace graphsat {
 
 class NextStep {
@@ -18,3 +21,5 @@ public:
 };
 
 } // namespace graphsat
+
+#endif

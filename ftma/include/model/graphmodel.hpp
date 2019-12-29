@@ -81,6 +81,8 @@ public:
 
   int getComponentNumber() const { return (int)agents.size(); }
 
+  int getInitialLoc(const int id) const { return agents[id]->getInitialLoc(); }
+
   bool hasChannel() const { return getTotalChanNumber() > 0; }
   bool hasChannel(const int component, const int link) const {
     return agents[component]->transitions[link].hasChannel();
@@ -124,7 +126,7 @@ public:
 
   const vector<ClockConstraint> &getDiffCons() const { return difference_cons; }
 
-  shared_ptr<StateManager_t> getStateManager() const { return stateManager; }
+  shared_ptr<StateManager_t> getStateManager() const { return manager; }
 
   struct AgentCMP {
     bool operator()(const shared_ptr<Agent_t> &lhs,
@@ -189,43 +191,45 @@ public:
       }
     }
 
-    stateManager.reset(new StateManager_t(
-        *this, counters, clock_num, temp_clock_upperbound, node_n, link_num));
+    manager.reset(new StateManager_t(*this, counters, clock_num,
+                                     temp_clock_upperbound, node_n, link_num));
   }
 
-  template <typename D> void addInitState(D &data) const {
-    State_t *state = stateManager->newState();
+  template <typename D> void addInitState1(D &data) const {
+    State_t *state = manager->newState();
     int component_num = (int)agents.size();
     bool withoutCommit = true;
     for (int component = 0; component < component_num; component++) {
       state[component] = initial_loc[component];
-      if (agents[component]->isCommit(state[component])) {
-        state[stateManager->getFreezeLocation()]++;
-        // stateManager->setCommitState(component, state);
+      if (agents[component]->locations[state[component]].isFreezeLocation()) {
+        manager->incFreeze(state);
         withoutCommit = false;
       }
     }
     if (withoutCommit) {
       for (int component = 0; component < component_num; component++) {
         agents[component]->locationRun(initial_loc[component],
-                                       stateManager->getClockManager(),
-                                       stateManager->getDBM(state));
+                                       manager->getClockManager(),
+                                       manager->getDBM(state));
       }
     }
 
     for (int component = 0; component < component_num; component++) {
       agents[component]
-          ->locations[stateManager->getLocationID(component, state)]
-          .employInvariants(stateManager->getClockManager(),
-                            stateManager->getDBM(state));
+          ->locations[manager->getLocationID(component, state)]
+          .employInvariants(manager->getClockManager(), manager->getDBM(state));
     }
-    if (stateManager->getClockManager().isConsistent(
-            stateManager->getDBM(state))) {
-      stateManager->norm(stateManager->getDBM(state));
-
+    if (manager->getClockManager().isConsistent(manager->getDBM(state))) {
+      manager->norm(manager->getDBM(state));
+      const vector<int *> &states = manager->getInitialState();
+      manager->dump(states[0]);
+      cout << "==========" << endl;
+      manager->dump(state);
+      assert(manager->equal(states[0], state));
       data.add(state);
     }
-    stateManager->destroyState(state);
+
+    manager->destroyState(state);
   }
 
   virtual vector<BaseDecl> getAllVar(const TYPE_T type) const {
@@ -370,7 +374,7 @@ private:
   map<int, int> clock_max_value;
   vector<ClockConstraint> difference_cons;
 
-  shared_ptr<StateManager_t> stateManager;
+  shared_ptr<StateManager_t> manager;
 
   bool hasUrgentChan;
   bool hasBroadcaseChan;
