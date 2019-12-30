@@ -40,12 +40,11 @@ public:
 
   void to_real(const TOReal *convertor);
 
-  // void globalUpdate(const vector<int> &parameter_value);
-  // void clockShift(int shift);
-
   ClockConstraint neg(void) const;
 
   bool isSat(const ClockConstraint &cons) const;
+
+  ostream &dump2Dot(ostream &out) const;
 
   friend std::ostream &operator<<(std::ostream &out,
                                   const ClockConstraint &cons);

@@ -180,6 +180,19 @@ void ClockConstraint::init(const int clock_id1, const int clock_id2,
   }
 }
 
+ostream &ClockConstraint::dump2Dot(ostream &out) const {
+  out << "<tr>";
+  if (clock_x_arg.type != EMPTY_ARG) {
+    out << clock_x_arg.to_string();
+  } else if (clock_y_arg.type != EMPTY_ARG) {
+    out << " - " << clock_y_arg.to_string();
+  }
+  out << getOpStr(op) << " " << rhs_arg.to_string();
+  out << "</tr>";
+
+  return out;
+}
+
 ClockConstraint randConst(const int num, const int low, const int up) {
   std::uniform_int_distribution<int> distribution(0, num);
   std::default_random_engine generator;

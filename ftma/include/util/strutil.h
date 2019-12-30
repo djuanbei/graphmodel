@@ -25,6 +25,8 @@ string getFunName(const string &fun);
  */
 std::string trim(std::string s);
 
+std::string rand_str(int len = 6);
+
 } // namespace graphsat
 
 #endif

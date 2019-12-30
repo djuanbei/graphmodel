@@ -142,6 +142,32 @@ public:
 
   void to_real(const TOReal *convertor);
 
+  ostream &dump2Dot(ostream &out) const {
+    out << name;
+    switch (type) {
+    case NORMOAL_LOC:
+      out << " [ shape = circle, label=<";
+      break;
+    case INIT_LOC:
+      out << " [ shape = doublecircle, label=<";
+      break;
+    case URGENT_LOC:
+      out << " [ shape = octagon, label=<";
+      break;
+    case COMMIT_LOC:
+      out << " [ shape = doubleoctagon, label=<";
+      break;
+    }
+    if (!invariants.empty()) {
+      out << "<table border=\"1\" >" << endl;
+      for (auto cs : invariants) {
+      }
+      out << "</table>";
+    }
+    out << ">];";
+    return out;
+  }
+
   // string to_string( ) const{
   //   string re_str="name: "+name;
   //   if( !invariants.empty( )){

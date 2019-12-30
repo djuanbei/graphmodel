@@ -10,6 +10,8 @@
 
 #ifndef TEMPLATE_MODEL_H
 #define TEMPLATE_MODEL_H
+#include <fstream>
+#include <iostream>
 
 #include "graph/graph.hpp"
 #include "graphmodel.hpp"
@@ -84,6 +86,17 @@ public:
     Argument dummy = VarDecl::addClock(n);
     dummy.type = NORMAL_VAR_ARG;
     return dummy;
+  }
+
+  void dump2Dot(const string &filename) const {
+    ofstream fout(filename);
+    fout << "digraph G {" << endl;
+    for (auto &e : template_locations) {
+      e.dump2Dot(fout);
+    }
+
+    fout << "}" << endl;
+    fout.close();
   }
 
 private:
