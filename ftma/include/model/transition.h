@@ -31,8 +31,7 @@ using std::vector;
 class Location;
 
 class Transition {
-
-public:
+ public:
   typedef int State_t;
   typedef TMStateManager StateManager_t;
 
@@ -41,7 +40,7 @@ public:
     has_channel = false;
   }
 
-  Transition(const Location &lhs, const Location &rhs)
+  Transition(const Location& lhs, const Location& rhs)
       : source(lhs.getId()), target(rhs.getId()), has_channel(false) {}
 
   void setSource(int s) { source = s; }
@@ -52,7 +51,7 @@ public:
 
   int getTarget() const { return target; }
 
-  const vector<ClockConstraint> &getGuards() const { return guards; }
+  const vector<ClockConstraint>& getGuards() const { return guards; }
 
   /**
    * add constraint to Transition
@@ -69,7 +68,7 @@ public:
    * @param cs  constraint
    *
    */
-  Transition &operator+=(const ClockConstraint &cs) {
+  Transition& operator+=(const ClockConstraint& cs) {
     guards.push_back(cs);
     return *this;
   }
@@ -80,7 +79,7 @@ public:
    * @param action Add one counter action
    *
    */
-  Transition &operator+=(const CounterAction action) {
+  Transition& operator+=(const CounterAction action) {
     actions.push_back(action);
     return *this;
   }
@@ -92,22 +91,22 @@ public:
    *
    */
 
-  Transition &operator+=(const ClockReset &reset) {
+  Transition& operator+=(const ClockReset& reset) {
     reset_arg.push_back(reset);
     return *this;
   }
 
-  Transition &operator+=(const CounterConstraint &guard) {
+  Transition& operator+=(const CounterConstraint& guard) {
     counter_cons.push_back(guard);
     return *this;
   }
 
-  void setChannel(const Channel &ch) {
+  void setChannel(const Channel& ch) {
     channel = ch;
     has_channel = true;
   }
 
-  const Channel &getChannel() const { return channel; }
+  const Channel& getChannel() const { return channel; }
 
   bool hasChannel() const { return has_channel; }
 
@@ -122,7 +121,7 @@ public:
    * otherwise.
    */
 
-  bool ready(const TMStateManager *manager, const int *const state) const;
+  bool ready(const TMStateManager* manager, const int* const state) const;
 
   /**
    *
@@ -130,36 +129,38 @@ public:
    *
    */
 
-  void operator()(const TMStateManager *const manager, int *re_state) const;
+  void operator()(const TMStateManager* const manager, int* re_state) const;
 
-  void to_real(const TOReal *convertor);
+  void to_real(const TOReal* convertor);
 
-  void setSelectVar(const string &n) { select_var = n; }
+  void setSelectVar(const string& n) { select_var = n; }
   string getSelectVar(void) const { return select_var; }
-  void setSelectCollect(const string &c) { select_collect = c; }
+  void setSelectCollect(const string& c) { select_collect = c; }
 
   string getSelectCollect(void) const { return select_collect; }
   bool isSelect() const { return (select_var != "") && (select_collect != ""); }
 
-private:
-  int source, target; // source location and target location of this
+  ostream& dump2Dot(ostream& out) const;
+
+ private:
+  int source, target;  // source location and target location of this
   // transitionedge. The index of location in tma.locations
-  vector<ClockConstraint> guards; // set of constraint at this transitionedge
+  vector<ClockConstraint> guards;  // set of constraint at this transitionedge
 
   vector<CounterConstraint>
-      counter_cons; // counter constraint like pid ==id or id==0
-  Channel channel;  // Only one synchronisation channels
+      counter_cons;  // counter constraint like pid ==id or id==0
+  Channel channel;   // Only one synchronisation channels
   bool has_channel;
 
-  vector<CounterAction> actions; // set of actions at this transitionedge
+  vector<CounterAction> actions;  // set of actions at this transitionedge
 
-  vector<pair<int, int>> resets; // set of reset clock variables
+  vector<pair<int, int>> resets;  // set of reset clock variables
 
   vector<ClockReset> reset_arg;
 
   string select_var;
   string select_collect;
 };
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

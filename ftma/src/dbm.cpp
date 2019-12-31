@@ -17,8 +17,8 @@ DBMFactory::DBMFactory(const int n) : clock_num(n + 1) {
   }
 }
 
-DBMFactory::DBMFactory(int n, const vector<int> &oclockUppuerBound,
-                       const vector<ClockConstraint> &odifferenceCons)
+DBMFactory::DBMFactory(int n, const vector<int>& oclockUppuerBound,
+                       const vector<ClockConstraint>& odifferenceCons)
     : clock_num(n + 1) {
   assert((int)oclockUppuerBound.size() == 2 * clock_num);
   for (int i = 0; i < clock_num; i++) {
@@ -34,14 +34,14 @@ DBMFactory::DBMFactory(int n, const vector<int> &oclockUppuerBound,
   difference_cons = odifferenceCons;
 }
 
-int *DBMFactory::randomFeasiableDBM() const {
+int* DBMFactory::randomFeasiableDBM() const {
   int num_cons = sqrt(clock_num) + 2;
-  int *dbm = createDBM();
+  int* dbm = createDBM();
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution;
   distribution = std::uniform_int_distribution<int>(-100, 100);
   while (num_cons >= 0) {
-    init(dbm); // x-y<=0
+    init(dbm);  // x-y<=0
     upImpl(dbm);
     for (int i = 1; i < sqrt(clock_num); i++) {
       int rhs = abs(distribution(generator)) + 50;
@@ -50,8 +50,7 @@ int *DBMFactory::randomFeasiableDBM() const {
     }
     for (int i = 0; i < sqrt(clock_num); i++) {
       int x = abs(distribution(generator)) % (clock_num);
-      if (x > 0)
-        freeImpl(dbm, x);
+      if (x > 0) freeImpl(dbm, x);
     }
     for (int i = 0; i < num_cons; i++) {
       int x = abs(distribution(generator)) % (clock_num);
@@ -62,8 +61,7 @@ int *DBMFactory::randomFeasiableDBM() const {
         andImpl(dbm, cs);
       }
       x = abs(distribution(generator)) % (clock_num);
-      if (x > 0)
-        freeImpl(dbm, x);
+      if (x > 0) freeImpl(dbm, x);
     }
     for (int i = 0; i < matrix_size; i++) {
       if (dbm[i] > MAX_INT / 10) {
@@ -78,13 +76,12 @@ int *DBMFactory::randomFeasiableDBM() const {
     }
     num_cons -= 1;
   }
-  init(dbm); // x-y<=0
+  init(dbm);  // x-y<=0
   return dbm;
 }
 
-ostream &DBMFactory::dumpDot(ostream &out, const int *const dbm,
+ostream& DBMFactory::dumpDot(ostream& out, const int* const dbm,
                              const int clock_num) {
-
   int MAX_INT = getMAX_INT<int>();
   for (int i = 0; i < clock_num; i++) {
     out << "<tr> ";
@@ -112,37 +109,42 @@ ostream &DBMFactory::dumpDot(ostream &out, const int *const dbm,
   return out;
 }
 
-ostream &DBMFactory::dump(ostream &out, const int *const dbm,
+ostream& DBMFactory::dump(ostream& out, const int* const dbm,
                           const int clock_num) {
   int MAX_INT = getMAX_INT<int>();
 
   for (int i = 0; i < clock_num; i++) {
     out << "[ ";
     for (int j = 0; j < clock_num; j++) {
-      out << "(";
-      int v = dbm[LOC_N(i, j, clock_num)];
-      out << setw(3);
-      if (isStrict<int>(v)) {
-        out << "< ";
-      } else {
-        out << "<=";
-      }
-      out << setw(4);
-      int right = getRight(v);
-      if (right >= MAX_INT / 2) {
-        out << std::left << ((char)126);
-      } else {
-        out << std::left << (int)right;
-      }
-
-      out << ") ";
+      dumpElement(out, dbm, i, j, clock_num);
     }
     out << "]\n";
   }
   return out;
 }
+ostream& DBMFactory::dump(ostream& out, const int* const dbm,
+                          const vector<int>& clock_ids) const {
+  int len = clock_ids.size() + 1;
+  for (int i = 0; i < len; i++) {
+    int clock_x = 0;
+    if (i > 0) {
+      clock_x = clock_ids[i - 1];
+    }
 
-void DBMFactory::canonicalForm(int *dbm) const {
+    out << "[ ";
+    for (int j = 0; j < len; j++) {
+      int clock_y = 0;
+      if (j > 0) {
+        clock_y = clock_ids[j - 1];
+      }
+      dumpElement(out, dbm, clock_x, clock_y, clock_num);
+
+    }
+    out << "]\n";
+  }
+  return out;
+}
+void DBMFactory::canonicalForm(int* dbm) const {
   for (int k = 0; k < clock_num; k++) {
     for (int i = 0; i < clock_num; i++) {
       int row_index = LOC(i, 0);
@@ -155,8 +157,7 @@ void DBMFactory::canonicalForm(int *dbm) const {
   }
 }
 
-bool DBMFactory::include(const int *const lhs, const int *const rhs) const {
-
+bool DBMFactory::include(const int* const lhs, const int* const rhs) const {
   for (int i = 0; i < matrix_size; i++) {
     if (lhs[i] < rhs[i]) {
       return false;
@@ -165,28 +166,26 @@ bool DBMFactory::include(const int *const lhs, const int *const rhs) const {
   return true;
 }
 
-DF_T DBMFactory::getIncludeFeature(const int *const dbm) const {
+DF_T DBMFactory::getIncludeFeature(const int* const dbm) const {
   DF_T re = 0;
 
   for (int i = 0; i < clock_num; i++) {
     int k = LOC(i, 0);
     for (int j = 0; j < clock_num; j++) {
-      if (i == j)
-        continue;
+      if (i == j) continue;
       re = (2 * re * MAX_INT + (dbm[k + j] + MAX_INT));
     }
   }
   return re;
 }
 
-bool DBMFactory::isSatisfied(const int *const dbm,
-                             const ClockConstraint &cons) const {
-
+bool DBMFactory::isSatisfied(const int* const dbm,
+                             const ClockConstraint& cons) const {
   return ADD(cons.matrix_value, dbm[LOC(cons.clock_y, cons.clock_x)]) >=
          LTEQ_ZERO;
 }
 
-void DBMFactory::upImpl(int *dbm) const {
+void DBMFactory::upImpl(int* dbm) const {
   int row_index = 0;
   for (int i = 1; i < clock_num; i++) {
     row_index += clock_num;
@@ -194,7 +193,7 @@ void DBMFactory::upImpl(int *dbm) const {
   }
 }
 
-void DBMFactory::downImpl(int *dbm) const {
+void DBMFactory::downImpl(int* dbm) const {
   for (int i = 1; i < clock_num; i++) {
     dbm[i] = LTEQ_ZERO;
     for (int j = 1; j < clock_num; j++) {
@@ -204,7 +203,7 @@ void DBMFactory::downImpl(int *dbm) const {
   }
 }
 
-void DBMFactory::andImpl(int *newD, const ClockConstraint &cons) const {
+void DBMFactory::andImpl(int* newD, const ClockConstraint& cons) const {
   if (newD[0] < LTEQ_ZERO) {
     return;
   }
@@ -226,7 +225,7 @@ void DBMFactory::andImpl(int *newD, const ClockConstraint &cons) const {
     }
   }
 }
-void DBMFactory::freeImpl(int *dbm, const int x) const {
+void DBMFactory::freeImpl(int* dbm, const int x) const {
   for (int i = 0; i < clock_num; i++) {
     dbm[LOC(x, i)] = MAX_INT;
     dbm[LOC(i, x)] = dbm[LOC(i, 0)];
@@ -234,7 +233,7 @@ void DBMFactory::freeImpl(int *dbm, const int x) const {
   dbm[LOC(x, x)] = LTEQ_ZERO;
 }
 
-void DBMFactory::resetImpl(int *dbm, const int x, const int m) const {
+void DBMFactory::resetImpl(int* dbm, const int x, const int m) const {
   // clock id start from 1
   assert(x > 0);
   assert(m >= 0);
@@ -250,7 +249,7 @@ void DBMFactory::resetImpl(int *dbm, const int x, const int m) const {
   dbm[LOC(x, x)] = LTEQ_ZERO;
 }
 
-void DBMFactory::copyImpl(int *dbm, const int x, const int y) const {
+void DBMFactory::copyImpl(int* dbm, const int x, const int y) const {
   for (int i = 0; i < clock_num; i++) {
     dbm[LOC(x, i)] = dbm[LOC(y, i)];
     dbm[LOC(i, x)] = dbm[LOC(i, y)];
@@ -258,8 +257,7 @@ void DBMFactory::copyImpl(int *dbm, const int x, const int y) const {
   dbm[LOC(x, x)] = dbm[LOC(x, y)] = dbm[LOC(y, x)] = LTEQ_ZERO;
 }
 
-int *DBMFactory::shiftImpl(int *dbm, const int x, const int m) const {
-
+int* DBMFactory::shiftImpl(int* dbm, const int x, const int m) const {
   int postM = getMatrixValue(m, false);
   int negM = getMatrixValue(-m, false);
 
@@ -276,7 +274,7 @@ int *DBMFactory::shiftImpl(int *dbm, const int x, const int m) const {
   return dbm;
 }
 
-void DBMFactory::norm(int *dbm, const vector<int> &maximums) const {
+void DBMFactory::norm(int* dbm, const vector<int>& maximums) const {
   bool modify = false;
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
@@ -298,7 +296,7 @@ void DBMFactory::norm(int *dbm, const vector<int> &maximums) const {
   }
 }
 
-void DBMFactory::norm(int *dbm, vector<int *> &re_vec) const {
+void DBMFactory::norm(int* dbm, vector<int*>& re_vec) const {
   if (difference_cons.empty()) {
     norm(dbm, clock_upper_bounds);
     re_vec.push_back(dbm);
@@ -307,7 +305,7 @@ void DBMFactory::norm(int *dbm, vector<int *> &re_vec) const {
   norm(dbm, clock_upper_bounds, difference_cons, re_vec);
 }
 
-void DBMFactory::encode(int *dbm) const {
+void DBMFactory::encode(int* dbm) const {
   assert(isConsistent(dbm));
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
@@ -336,8 +334,7 @@ void DBMFactory::encode(int *dbm) const {
   }
 }
 
-void DBMFactory::decode(int *dbm) const {
-
+void DBMFactory::decode(int* dbm) const {
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
     for (int j = 0; j < clock_num; j++) {
@@ -350,12 +347,11 @@ void DBMFactory::decode(int *dbm) const {
   canonicalForm(dbm);
 }
 
-ClockConstraint DBMFactory::getCons(const int *const dbm, const int i,
+ClockConstraint DBMFactory::getCons(const int* const dbm, const int i,
                                     const int j) const {
   assert(i <= clock_num);
   assert(j <= clock_num);
   if (isStrict(dbm[LOC(i, j)])) {
-
     return ClockConstraint(Argument(NORMAL_VAR_ARG, i),
                            Argument(NORMAL_VAR_ARG, j), LT,
                            Argument(getRight(dbm[LOC(i, j)])));
@@ -366,7 +362,7 @@ ClockConstraint DBMFactory::getCons(const int *const dbm, const int i,
   }
 }
 
-void DBMFactory::swap(int *dbm, int clock_x, int clock_y) const {
+void DBMFactory::swap(int* dbm, int clock_x, int clock_y) const {
   if (clock_x == clock_y) {
     return;
   }
@@ -383,13 +379,33 @@ void DBMFactory::swap(int *dbm, int clock_x, int clock_y) const {
   }
 }
 
-void DBMFactory::norm(int *dbm, const vector<int> &maximums,
-                      const vector<ClockConstraint> &diff_cons,
-                      vector<int *> &re_vec) const {
+int* DBMFactory::project(const int* const dbm,
+                         const vector<int>& clock_ids) const {
+  int len = clock_ids.size();
+  int re_row_len = len + 1;
+  int* re = new int[re_row_len * re_row_len];
+  re[0] = dbm[0];
+  for (int i = 0; i < len; i++) {
+    re[i + 1] = dbm[clock_ids[i]];
+  }
+  for (int i = 0; i < len; i++) {
+    int clock_x = clock_ids[i];
+    assert(clock_x > 0 && "The clock id start with 1.");
+    re[LOC_N(i + 1, 0, re_row_len)] = dbm[LOC(clock_x, 0)];
+    for (int j = 0; j < len; j++) {
+      int clock_y = clock_ids[j];
+      re[LOC_N(i + 1, j + 1, re_row_len)] = dbm[LOC(clock_x, clock_y)];
+    }
+  }
+  return re;
+}
 
+void DBMFactory::norm(int* dbm, const vector<int>& maximums,
+                      const vector<ClockConstraint>& diff_cons,
+                      vector<int*>& re_vec) const {
   assert(re_vec.empty());
 
-  vector<int *> split_domains;
+  vector<int*> split_domains;
   split(dbm, diff_cons, split_domains);
 
   for (auto temp_dbm : split_domains) {
@@ -397,15 +413,13 @@ void DBMFactory::norm(int *dbm, const vector<int> &maximums,
   }
 }
 
-void DBMFactory::split(int *dbm, const vector<ClockConstraint> &diffCons,
-                       vector<int *> &re_vec) const {
-
+void DBMFactory::split(int* dbm, const vector<ClockConstraint>& diffCons,
+                       vector<int*>& re_vec) const {
   assert(re_vec.empty());
-  vector<int *> wait_s;
+  vector<int*> wait_s;
   re_vec.push_back(dbm);
 
   for (auto cs : diffCons) {
-
     vector<bool> addToWaitS(re_vec.size(), false);
 
     for (size_t i = 0; i < re_vec.size(); i++) {
@@ -415,9 +429,8 @@ void DBMFactory::split(int *dbm, const vector<ClockConstraint> &diffCons,
        * into two parts
        */
       if (isSatisfied(re_vec[i], cs) && isSatisfied(re_vec[i], cs.neg())) {
-
-        int *D_and_C = And(re_vec[i], cs);
-        int *D_and_neg_C = And(re_vec[i], cs.neg());
+        int* D_and_C = And(re_vec[i], cs);
+        int* D_and_neg_C = And(re_vec[i], cs.neg());
         if (!contain(wait_s, D_and_C)) {
           wait_s.push_back(D_and_C);
         } else {
@@ -446,10 +459,9 @@ void DBMFactory::split(int *dbm, const vector<ClockConstraint> &diffCons,
   }
 }
 
-int *DBMFactory::corn_norm(
-    int *dbm, const vector<int> &maximums,
-    const vector<ClockConstraint> &difference_cons) const {
-
+int* DBMFactory::corn_norm(
+    int* dbm, const vector<int>& maximums,
+    const vector<ClockConstraint>& difference_cons) const {
   vector<ClockConstraint> G_unsat;
 
   for (size_t i = 0; i < difference_cons.size(); i++) {
@@ -479,5 +491,27 @@ int *DBMFactory::corn_norm(
   }
   return dbm;
 }
+ostream& DBMFactory::dumpElement(ostream& out, const int* const dbm,
+                                 int clock_x, int clock_y, int clock_num) {
+  int MAX_INT = getMAX_INT<int>();
+  out << "(";
+  int v = dbm[LOC_N(clock_x, clock_y, clock_num)];
 
-} // namespace graphsat
+  out << setw(3);
+  if (isStrict<int>(v)) {
+    out << "< ";
+  } else {
+    out << "<=";
+  }
+  out << setw(4);
+  int right = getRight(v);
+  if (right >= MAX_INT / 2) {
+    out << std::left << ((char)126);
+  } else {
+    out << std::left << (int)right;
+  }
+  out << ") ";
+  return out;
+}
+
+}  // namespace graphsat

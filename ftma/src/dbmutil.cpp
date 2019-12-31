@@ -1,82 +1,81 @@
 #include "util/dbmutil.hpp"
-#include "model/function.h"
 #include <cassert>
+#include "model/function.h"
 namespace graphsat {
 extern string trim(std::string s);
 
-int getIndex(const RealArgument &arg, int *counter_value) {
+int getIndex(const RealArgument& arg, int* counter_value) {
   int shift = 0;
   if (nullptr != arg.index) {
     shift = getValue(arg.index, counter_value);
   }
   switch (arg.type) {
-  case CONST_ARG:
-    assert(false && "It needs to return a index.");
-    return arg.value + shift;
-  case NORMAL_VAR_ARG:
-    return arg.value + shift;
+    case CONST_ARG:
+      assert(false && "It needs to return a index.");
+      return arg.value + shift;
+    case NORMAL_VAR_ARG:
+      return arg.value + shift;
 
-  case PARAMETER_ARG:
-    assert(false && "It needs to return a index.");
-    return arg.value + shift;
-  case REF_PARAMETER_ARG:
-    return arg.value + shift;
-  case FUN_POINTER_ARG:
-    assert(false && "It needs to return a index.");
-    return (*((Function *)arg.value))(counter_value);
-  case SELECT_VAR_ARG:
-    assert(false && "It needs to return a index.");
-    return arg.value;
-  case EMPTY_ARG:
-    return 0;
+    case PARAMETER_ARG:
+      assert(false && "It needs to return a index.");
+      return arg.value + shift;
+    case REF_PARAMETER_ARG:
+      return arg.value + shift;
+    case FUN_POINTER_ARG:
+      assert(false && "It needs to return a index.");
+      return (*((Function*)arg.value))(counter_value);
+    case SELECT_VAR_ARG:
+      assert(false && "It needs to return a index.");
+      return arg.value;
+    case EMPTY_ARG:
+      return 0;
   }
 }
 
-int getValue(const RealArgument &arg, int *counter_value) {
+int getValue(const RealArgument& arg, int* counter_value) {
   int shift = 0;
   if (nullptr != arg.index) {
     shift = getValue(arg.index, counter_value);
   }
   switch (arg.type) {
-  case CONST_ARG:
-    return arg.value + shift;
-  case NORMAL_VAR_ARG:
-    return counter_value[arg.value + shift];
-  case PARAMETER_ARG:
-    return arg.value + shift;
-  case REF_PARAMETER_ARG:
-    return counter_value[arg.value + shift];
-  case FUN_POINTER_ARG:
-    return (*((Function *)arg.value))(counter_value, shift);
+    case CONST_ARG:
+      return arg.value + shift;
+    case NORMAL_VAR_ARG:
+      return counter_value[arg.value + shift];
+    case PARAMETER_ARG:
+      return arg.value + shift;
+    case REF_PARAMETER_ARG:
+      return counter_value[arg.value + shift];
+    case FUN_POINTER_ARG:
+      return (*((Function*)arg.value))(counter_value, shift);
 
-  case SELECT_VAR_ARG:
-    return arg.value;
-  case EMPTY_ARG:
-    return 0;
+    case SELECT_VAR_ARG:
+      return arg.value;
+    case EMPTY_ARG:
+      return 0;
   }
 }
 
-int getValue(const shared_ptr<RealArgument> &arg, int *counter_value) {
-
+int getValue(const shared_ptr<RealArgument>& arg, int* counter_value) {
   switch (arg->type) {
-  case CONST_ARG:
-    return arg->value;
-  case NORMAL_VAR_ARG:
-    break;
-    //  case SYSTEM_VAR_ARG:
-    //    break;
-  case PARAMETER_ARG:
-    return arg->value;
-  case REF_PARAMETER_ARG:
-    break;
+    case CONST_ARG:
+      return arg->value;
+    case NORMAL_VAR_ARG:
+      break;
+      //  case SYSTEM_VAR_ARG:
+      //    break;
+    case PARAMETER_ARG:
+      return arg->value;
+    case REF_PARAMETER_ARG:
+      break;
 
-  case FUN_POINTER_ARG:
-    return (*((Function *)arg->value))(counter_value);
+    case FUN_POINTER_ARG:
+      return (*((Function*)arg->value))(counter_value);
 
-  case SELECT_VAR_ARG:
-    return arg->value;
-  case EMPTY_ARG:
-    return 0;
+    case SELECT_VAR_ARG:
+      return arg->value;
+    case EMPTY_ARG:
+      return 0;
   }
   if (nullptr != arg->index) {
     int shift = getValue(arg->index, counter_value);
@@ -86,26 +85,26 @@ int getValue(const shared_ptr<RealArgument> &arg, int *counter_value) {
   return counter_value[arg->value];
 }
 
-int_fast64_t getMapValue(const Argument &arg, const vector<int> &id_map,
-                         const vector<int> &parameter_value) {
+int_fast64_t getMapValue(const Argument& arg, const vector<int>& id_map,
+                         const vector<int>& parameter_value) {
   switch (arg.type) {
-  case CONST_ARG:
-    return arg.value;
-  case NORMAL_VAR_ARG:
-    return arg.value;
-    //  case SYSTEM_VAR_ARG:
-    //    return arg.value;
-  case PARAMETER_ARG:
-    return parameter_value[arg.value];
-  case REF_PARAMETER_ARG:
-    return parameter_value[arg.value];
-  case FUN_POINTER_ARG:
-    return arg.value;
+    case CONST_ARG:
+      return arg.value;
+    case NORMAL_VAR_ARG:
+      return arg.value;
+      //  case SYSTEM_VAR_ARG:
+      //    return arg.value;
+    case PARAMETER_ARG:
+      return parameter_value[arg.value];
+    case REF_PARAMETER_ARG:
+      return parameter_value[arg.value];
+    case FUN_POINTER_ARG:
+      return arg.value;
 
-  case SELECT_VAR_ARG:
-    return parameter_value.back();
-  case EMPTY_ARG:
-    return 0;
+    case SELECT_VAR_ARG:
+      return parameter_value.back();
+    case EMPTY_ARG:
+      return 0;
   }
 }
 
@@ -122,24 +121,24 @@ string getOpStr(COMP_OPERATOR op) {
 
 COMP_OPERATOR negation(COMP_OPERATOR op) {
   switch (op) {
-  case EQ: {
-    return NE;
-  }
-  case LE: {
-    return GT;
-  }
-  case GE: {
-    return LT;
-  }
-  case LT: {
-    return GE;
-  }
-  case GT: {
-    return LE;
-  }
-  case NE: {
-    return EQ;
-  }
+    case EQ: {
+      return NE;
+    }
+    case LE: {
+      return GT;
+    }
+    case GE: {
+      return LT;
+    }
+    case LT: {
+      return GE;
+    }
+    case GT: {
+      return LE;
+    }
+    case NE: {
+      return EQ;
+    }
   }
 }
 
@@ -246,8 +245,8 @@ bool isRefType(const TYPE_T type) {
   return m == 1 || m == 3 || m == 5;
 }
 
-std::vector<string> splitStr(const string &string_to_splitted,
-                             const string &delimeter) {
+std::vector<string> splitStr(const string& string_to_splitted,
+                             const string& delimeter) {
   vector<string> split_string;
   size_t start_index = 0;
   size_t found = string_to_splitted.find(delimeter, start_index);
@@ -268,8 +267,8 @@ std::vector<string> splitStr(const string &string_to_splitted,
   }
   return split_string;
 }
-string deleteChar(const string &value, const size_t start, const char ch) {
-  char *buf = new char[value.length() + 1];
+string deleteChar(const string& value, const size_t start, const char ch) {
+  char* buf = new char[value.length() + 1];
   size_t i = 0;
   size_t k = 0;
   for (; i < start; i++) {
@@ -288,4 +287,4 @@ string deleteChar(const string &value, const size_t start, const char ch) {
 int fromPidToChanId(int id) { return id + 1; }
 
 int chanIdToFromPid(int id) { return id - 1; }
-} // namespace graphsat
+}  // namespace graphsat

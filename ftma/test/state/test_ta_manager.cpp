@@ -10,7 +10,7 @@
 
 #include "property/fisherprop.h"
 
-#include "benchmark/fisher.h"
+#include "benchmark/fischer.h"
 
 #include "model/graphmodel.hpp"
 #include "model/location.h"
@@ -27,7 +27,7 @@ using namespace graphsat;
 using namespace std;
 
 TEST(STATE_MANAGER_H, getStateLen) {
-  FisherGenerator F;
+  FischerGenerator F;
   for (int i = 1; i < 10; i++) {
     INT_TAS_t fs = F.generate(i);
     shared_ptr<typename INT_TAS_t::StateManager_t> manager =
@@ -45,33 +45,33 @@ TEST(STATE_MANAGER_H, getStateLen) {
 }
 
 TEST(STATE_MANAGER_H, getCounterNumber) {
-  FisherGenerator F;
+  FischerGenerator F;
   int n = 10;
   INT_TAS_t fs = F.generate(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager = fs.getStateManager();
   EXPECT_EQ(manager->getComponentNumber(), n);
 
   for (int i = 0; i < n; i++) {
-    EXPECT_EQ(fs.getCounterNumber(i), 0);
-    EXPECT_EQ(fs.getClockNumber(i), 1);
+    EXPECT_EQ(fs.getComponentCounterNumber(i), 0);
+    EXPECT_EQ(fs.getComponentClockNumber(i), 1);
   }
 
   TrainGate TG;
   INT_TAS_t tg_sys = TG.generate(n);
 
   for (int i = 0; i < n; i++) {
-    EXPECT_EQ(tg_sys.getCounterNumber(i), 0);
-    EXPECT_EQ(tg_sys.getClockNumber(i), 1);
+    EXPECT_EQ(tg_sys.getComponentCounterNumber(i), 0);
+    EXPECT_EQ(tg_sys.getComponentClockNumber(i), 1);
   }
 }
 TEST(STATE_MANAGER_H, swap) {
-  FisherGenerator F;
+  FischerGenerator F;
   int n = 10;
   INT_TAS_t fs = F.generate(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager = fs.getStateManager();
   for (int i = 0; i < 1000; i++) {
-    int *state = manager->rand();
-    int *state1 = manager->newState();
+    int* state = manager->rand();
+    int* state1 = manager->newState();
     manager->copy(state1, state);
     int ii = rand() % n;
     int jj = rand() % n;
@@ -86,17 +86,17 @@ TEST(STATE_MANAGER_H, swap) {
 }
 TEST(STATE_MANAGER_H, CONTAIN) {
   int n = 3;
-  FisherGenerator F;
+  FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
-  // Symmetry symm(n);
+
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
-  const StateSet<UINT> &states = data.getStates();
-  int *s = manager->newState();
+  const StateSet<UINT>& states = data.getStates();
+  int* s = manager->newState();
   for (auto e : states) {
     manager->decode(s, e);
     EXPECT_TRUE(data.contain(s));
@@ -110,22 +110,21 @@ TEST(STATE_MANAGER_H, CONTAIN) {
   manager->destroyState(s);
 }
 TEST(STATE_MANAGER_H, ENCODE) {
-
   int n = 3;
-  FisherGenerator F;
+  FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
 
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
-  const StateSet<UINT> &states = data.getStates();
+  const StateSet<UINT>& states = data.getStates();
   int len = manager->getCompressionSize();
-  UINT *cs1 = new UINT[len];
-  int *s = manager->newState();
-  int *s1 = manager->newState();
+  UINT* cs1 = new UINT[len];
+  int* s = manager->newState();
+  int* s1 = manager->newState();
   for (auto e : states) {
     manager->decode(s, e);
     manager->copy(s1, s);
@@ -140,3 +139,36 @@ TEST(STATE_MANAGER_H, ENCODE) {
   manager->destroyState(s);
   manager->destroyState(s1);
 }
+
+TEST(STATE_MANAGER_H, getTypeNumber) {
+  TrainGate TG;
+  int n=rand( )%10+3;
+  INT_TAS_t tg_sys = TG.generate(n);
+  shared_ptr<INT_TAS_t::StateManager_t> manager = tg_sys.getStateManager();
+  EXPECT_EQ( manager->getTypeNumber(INT_T ), n+2);
+  EXPECT_EQ( manager->getTypeNumber(CLOCK_T ), (n+1) *( n+1));
+}
+
+TEST(STATE_MANAGER_H, getValue) {
+
+  TrainGate TG;
+  
+  int n=rand( )%10+3;
+  INT_TAS_t tg_sys = TG.generate(n);
+  tg_sys.addInt( "x", 1);
+  tg_sys.buildManager();
+  shared_ptr<INT_TAS_t::StateManager_t> manager = tg_sys.getStateManager();
+  
+  int * state=manager->newState( );
+  int index=2*( n+1)+1;
+  for( int i=0; i< 10; i++){
+    int v=rand( )%20;
+    state[ index]=v;
+    EXPECT_EQ( manager->getValue(n, state,  "len" ), v);
+  }
+
+  manager->destroyState( state);
+
+
+}
+

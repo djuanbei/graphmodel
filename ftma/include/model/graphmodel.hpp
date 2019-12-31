@@ -33,9 +33,9 @@ namespace graphsat {
 
 using std::vector;
 
-template <typename L, typename T> class AgentSystem : public VarDecl {
-
-public:
+template <typename L, typename T>
+class AgentSystem : public VarDecl {
+ public:
   typedef typename T::State_t State_t;
 
   typedef typename T::StateManager_t StateManager_t;
@@ -57,26 +57,27 @@ public:
   }
   virtual ~AgentSystem() {}
 
-  shared_ptr<AgentTemplate_t> createTemplate(const string &n) {
+  shared_ptr<AgentTemplate_t> createTemplate(const string& n) {
     shared_ptr<AgentTemplate_t> re(new AgentTemplate_t(n, this));
     re->setParent(this);
     re->id = templates.size();
     templates.push_back(re);
     return re;
   }
-  shared_ptr<Agent_t>
-  createAgent(const shared_ptr<AgentTemplate_t> &template_arg,
-              const Parameter &param) {
+  shared_ptr<Agent_t> createAgent(
+      const shared_ptr<AgentTemplate_t>& template_arg, const Parameter& param) {
     shared_ptr<Agent_t> re(new Agent_t(template_arg, param));
     agents.push_back(re);
+    manager=nullptr;//manager need update 
     return re;
   }
 
   void removeAgent() {
     agents.clear();
-    for (auto &e : templates) {
+    for (auto& e : templates) {
       e->reset();
     }
+    manager = nullptr;
   }
 
   int getComponentNumber() const { return (int)agents.size(); }
@@ -96,20 +97,52 @@ public:
     return agents[component]->locations[loc].isFreezeLocation();
   }
 
-  const Channel &getChannel(const int component, const int link) const {
+  const Channel& getChannel(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
+  }
+  int getCompentId(const string& component_name) const {
+    for (size_t i = 0; i < agents.size(); i++) {
+      if (agents[i]->getName() == component_name) {
+        return i;
+      }
+    }
+    return NOT_FOUND;
+  }
+
+  TYPE_T getType(const int component, const string& name) const {
+    TYPE_T re = agents[component]->getType(name);
+    if (re != NO_T) {
+      return re;
+    }
+    return VarDecl::getType(name);
+  }
+  TYPE_T getType(const string& component_name, const string& name) const {
+    int component_id = getCompentId(component_name);
+    return getType(component_id, name);
   }
 
   int getTotalChanNumber() const { return chan_num; }
 
-  int getCounterNumber(const int id) const {
+  int getComponentCounterNumber(const int id) const {
     return agents[id]->getTemplate()->getCounterNumber();
   }
 
-  int getClockNumber(const int id) const {
-    return agents[id]->getTemplate()->getClockNumber();
+  int getComponentClockNumber(const int comp_id) const {
+    return agents[comp_id]->getTemplate()->getClockNumber();
   }
-
+  
+  int getComponentClockStartID(const int id) const{
+    int re = 1;
+    for (int i = 0; i < id; i++) {
+      re += getComponentClockNumber(i);
+    }
+    return re;    
+  }
+  
+  int getKeyID( const int component,  const TYPE_T type,  const string & key) const{
+    return agents[ component]->getKeyID( type, key);
+  }
+      
   bool hasUrgentCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutUrgentCh();
   }
@@ -124,124 +157,25 @@ public:
 
   bool hasBroadcaseCh() const { return hasBroadcaseChan; }
 
-  const vector<ClockConstraint> &getDiffCons() const { return difference_cons; }
+  const vector<ClockConstraint>& getDiffCons() const { return difference_cons; }
 
-  shared_ptr<StateManager_t> getStateManager() const { return manager; }
-
-  struct AgentCMP {
-    bool operator()(const shared_ptr<Agent_t> &lhs,
-                    const shared_ptr<Agent_t> &rhs) const {
-      if (lhs->agent_tempate->id < rhs->agent_tempate->id) {
-        return true;
-      }
-      if (lhs->agent_tempate->id > rhs->agent_tempate->id) {
-        return false;
-      }
-      return (lhs->id < rhs->id);
+  shared_ptr<StateManager_t> getStateManager() {
+    if (nullptr == manager) {
+      build();
     }
-  };
-
-  void build() {
-    AgentCMP cmp;
-    sort(agents.begin(), agents.end(), cmp);
-    counter_num = getTypeNumber(INT_T);
-    chan_num = getTypeNumber(CHAN_T);
-    difference_cons.clear();
-
-    for (auto &e : agents) {
-      transfrom(e.get());
-    }
-    int clock_num = 1;
-    for (auto &e : clock_max_value) {
-      if (e.first > clock_num) {
-        clock_num = e.first;
-      }
-    }
-
-    vector<int> temp_clock_upperbound(2 * clock_num + 2, 0);
-
-    for (int i = 0; i < clock_num + 1; i++) {
-      temp_clock_upperbound[i] = getMatrixValue(clock_max_value[i], false);
-    }
-
-    for (int i = 0; i < clock_num + 1; i++) {
-      temp_clock_upperbound[i + clock_num + 1] =
-          getMatrixValue(-clock_max_value[i], true);
-    }
-    vector<int> node_n;
-    for (size_t i = 0; i < agents.size(); i++) {
-      node_n.push_back(agents[i]->graph.getVertex_num());
-    }
-    vector<int> link_num;
-    for (auto &e : agents) {
-      link_num.push_back(e->graph.getLink_num());
-    }
-    vector<Counter> counters;
-    vector<BaseDecl> sysCounts = getInts();
-    for (auto &e : sysCounts) {
-      Counter counter(e.low, e.high);
-      counters.push_back(counter);
-    }
-
-    for (auto &e : agents) {
-      vector<BaseDecl> counts = e->agent_tempate->getInts();
-      for (auto &ee : counts) {
-        Counter counter(ee.low, ee.high);
-        counters.push_back(counter);
-      }
-    }
-
-    manager.reset(new StateManager_t(*this, counters, clock_num,
-                                     temp_clock_upperbound, node_n, link_num));
+    return manager;
   }
 
-  template <typename D> void addInitState1(D &data) const {
-    State_t *state = manager->newState();
-    int component_num = (int)agents.size();
-    bool withoutCommit = true;
-    for (int component = 0; component < component_num; component++) {
-      state[component] = initial_loc[component];
-      if (agents[component]->locations[state[component]].isFreezeLocation()) {
-        manager->incFreeze(state);
-        withoutCommit = false;
-      }
-    }
-    if (withoutCommit) {
-      for (int component = 0; component < component_num; component++) {
-        agents[component]->locationRun(initial_loc[component],
-                                       manager->getClockManager(),
-                                       manager->getDBM(state));
-      }
-    }
-
-    for (int component = 0; component < component_num; component++) {
-      agents[component]
-          ->locations[manager->getLocationID(component, state)]
-          .employInvariants(manager->getClockManager(), manager->getDBM(state));
-    }
-    if (manager->getClockManager().isConsistent(manager->getDBM(state))) {
-      manager->norm(manager->getDBM(state));
-      const vector<int *> &states = manager->getInitialState();
-      manager->dump(states[0]);
-      cout << "==========" << endl;
-      manager->dump(state);
-      assert(manager->equal(states[0], state));
-      data.add(state);
-    }
-
-    manager->destroyState(state);
-  }
-
-  virtual vector<BaseDecl> getAllVar(const TYPE_T type) const {
+   vector<BaseDecl> getAllVar(const TYPE_T type) const {
     vector<BaseDecl> re = VarDecl::getAllVar(type);
     int id_start = 0;
-    for (auto &e : re) {
+    for (auto& e : re) {
       e.start_loc = id_start;
       id_start += e.num;
     }
-    for (auto &e : agents) {
+    for (auto& e : agents) {
       vector<BaseDecl> dummy = e->agent_tempate->getAllVar(type);
-      for (auto &ee : dummy) {
+      for (auto& ee : dummy) {
         ee.name = e->getName() + "." + ee.name;
         ee.start_loc = id_start;
         id_start += ee.num;
@@ -251,7 +185,8 @@ public:
     return re;
   }
 
-  virtual int getTypeStart(const TYPE_T type) const {
+
+   int getTypeStart(const TYPE_T type) const {
     // clock and channel id start with 1
     if (CLOCK_T == type || CHAN_T == type) {
       return 1;
@@ -259,9 +194,10 @@ public:
     return 0;
   }
 
-  virtual int getStartLoc(const TYPE_T type, const int template_id) const {
-    int re = getTypeStart(type);
-    for (auto &agent : agents) {
+   int getStartLoc(const TYPE_T type, const int template_id) const {
+    int re = getTypeStart(type)+getTypeNumber( type);
+    
+    for (auto& agent : agents) {
       if (agent->getTemplate()->id < template_id) {
         re += agent->getTemplate()->getTypeNumber(type);
       }
@@ -269,7 +205,7 @@ public:
     return re;
   }
 
-  virtual Argument addClock(const string &n) {
+   Argument addClock(const string& n) {
     Argument dummy = VarDecl::addClock(n);
     dummy.type = NORMAL_VAR_ARG;
     return dummy;
@@ -302,16 +238,63 @@ public:
     return agents[component]->graph.getAdj(src);
   }
 
-  const Channel &getChan(const int component, const int link) const {
+  const Channel& getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
   }
+  
+  void buildManager(){
+    int clock_num = 0;
+    for (auto& e : clock_max_value) {
+      if (e.first > clock_num) {
+        clock_num = e.first;
+      }
+    }
+    
+    vector<int> temp_clock_upperbound(2 * clock_num + 2, 0);
+    
+    for (int i = 0; i < clock_num + 1; i++) {
+      temp_clock_upperbound[i] = getMatrixValue(clock_max_value[i], false);
+    }
+    
+    for (int i = 0; i < clock_num + 1; i++) {
+      temp_clock_upperbound[i + clock_num + 1] =
+      getMatrixValue(-clock_max_value[i], true);
+    }
+    vector<int> node_n;
+    for (size_t i = 0; i < agents.size(); i++) {
+      node_n.push_back(agents[i]->graph.getVertex_num());
+    }
+    vector<int> link_num;
+    for (auto& e : agents) {
+      link_num.push_back(e->graph.getLink_num());
+    }
+    vector<Counter> counters;
+    vector<BaseDecl> sysCounts = getInts();
+    for (auto& e : sysCounts) {
+      Counter counter(e.low, e.high);
+      counters.push_back(counter);
+    }
+    
+    for (auto& e : agents) {
+      vector<BaseDecl> counts = e->agent_tempate->getInts();
+      for (auto& ee : counts) {
+        Counter counter(ee.low, ee.high);
+        counters.push_back(counter);
+      }
+    }
+    
+    manager.reset(new StateManager_t(*this, counters, clock_num,
+                                     temp_clock_upperbound, node_n, link_num));
+  }
+  
+  
+  
 
-private:
-  void transfrom(Agent_t *agent) {
-
+ private:
+  void transfrom(Agent_t* agent) {
     agent->initFuns();
     agent->locations = agent->agent_tempate->template_locations;
-    for (auto &e : agent->locations) {
+    for (auto& e : agent->locations) {
       e.to_real(agent);
     }
 
@@ -320,7 +303,8 @@ private:
          i++) {
       if (agent->agent_tempate->template_transitions[i].isSelect()) {
         T dummy(agent->agent_tempate->template_transitions[i]);
-        TypeDefArray select_domain = agent->getType(dummy.getSelectCollect());
+        TypeDefArray select_domain =
+            agent->getTypeDef(dummy.getSelectCollect());
         for (int i = select_domain.getLow(); i <= select_domain.getHigh();
              i++) {
           agent->setSelect(i);
@@ -347,7 +331,7 @@ private:
 
     initial_loc.push_back(agent->getInitialLoc());
     map<int, int> temp_max = agent->getClockMaxValue();
-    for (auto &e : temp_max) {
+    for (auto& e : temp_max) {
       if (clock_max_value[e.first] < e.second) {
         clock_max_value[e.first] = e.second;
       }
@@ -357,6 +341,35 @@ private:
                            agent->difference_cons.begin(),
                            agent->difference_cons.end());
   }
+
+  struct AgentCMP {
+    bool operator()(const shared_ptr<Agent_t>& lhs,
+                    const shared_ptr<Agent_t>& rhs) const {
+      if (lhs->agent_tempate->id < rhs->agent_tempate->id) {
+        return true;
+      }
+      if (lhs->agent_tempate->id > rhs->agent_tempate->id) {
+        return false;
+      }
+      return (lhs->id < rhs->id);
+    }
+  };
+  
+  void build() {
+    AgentCMP cmp;
+    sort(agents.begin(), agents.end(), cmp);
+    counter_num = getTypeNumber(INT_T);
+    chan_num = getTypeNumber(CHAN_T);
+    difference_cons.clear();
+    
+    for (auto& e : agents) {
+      transfrom(e.get());
+    }
+    
+    buildManager();
+  }
+
+ 
 
   /**
    * multi-components
@@ -731,6 +744,6 @@ private:
 //   friend class TMStateManager;
 // };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

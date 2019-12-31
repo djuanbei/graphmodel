@@ -14,7 +14,7 @@
 namespace graphsat {
 
 template <typename T>
-bool vect_cmp(const vector<T> &lhs, const vector<T> &rhs) {
+bool vect_cmp(const vector<T>& lhs, const vector<T>& rhs) {
   for (size_t i = 0; i < lhs.size(); i++) {
     if (lhs[i] < rhs[i]) {
       return true;
@@ -25,6 +25,6 @@ bool vect_cmp(const vector<T> &lhs, const vector<T> &rhs) {
   return false;
 }
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

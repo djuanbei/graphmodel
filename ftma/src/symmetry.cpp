@@ -7,14 +7,13 @@
 
 namespace graphsat {
 
-bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
-                          const ReachableSet<TMStateManager> &reachSet,
-                          const TMStateManager *manager) const {
-
+bool Symmetry::isSymmetry(const StateSet<UINT>& sets,
+                          const ReachableSet<TMStateManager>& reachSet,
+                          const TMStateManager* manager) const {
   vector<int> dummy(len);
 
-  int *temp = manager->newState();
-  UINT *comTemp = new UINT[manager->getCompressionSize()];
+  int* temp = manager->newState();
+  UINT* comTemp = new UINT[manager->getCompressionSize()];
   for (int i = 0; i < len; i++) {
     dummy[i] = i;
   }
@@ -23,7 +22,6 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
     sort(dummy.begin(), dummy.end());
 
     while (next_permutation(dummy.begin(), dummy.end())) {
-
       manager->decode(temp, e);
       cout << "original:" << endl;
       manager->dump(temp);
@@ -75,8 +73,8 @@ bool Symmetry::isSymmetry(const StateSet<UINT> &sets,
   delete[] comTemp;
   return re;
 }
-void Symmetry::swap(int *source, const vector<int> &swap_map,
-                    const TMStateManager *manager) const {
+void Symmetry::swap(int* source, const vector<int>& swap_map,
+                    const TMStateManager* manager) const {
   vector<int> index(len);
   for (int i = 0; i < len; i++) {
     index[i] = i;
@@ -99,4 +97,4 @@ void Symmetry::swap(int *source, const vector<int> &swap_map,
   }
 }
 
-} // namespace graphsat
+}  // namespace graphsat

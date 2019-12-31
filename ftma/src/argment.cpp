@@ -18,4 +18,4 @@ string Argument::to_string() const {
     }
   }
 }
-} // namespace graphsat
+}  // namespace graphsat

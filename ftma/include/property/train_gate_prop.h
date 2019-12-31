@@ -14,18 +14,18 @@
 
 namespace graphsat {
 class TrainGatePro : public CriticalSection {
-public:
+ public:
   TrainGatePro(const int n) : train_num(n) {}
 
-protected:
+ protected:
   virtual bool isLookComponent(const int component) const {
     return component < train_num;
   }
 
-private:
+ private:
   int train_num;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

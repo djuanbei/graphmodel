@@ -18,7 +18,7 @@ TEST(DBMFactory, createDBM) {
   DBMFactory df(n);
 
   for (int i = 0; i < 5; i++) {
-    int *d = df.createDBM();
+    int* d = df.createDBM();
     for (int j = 0; j < len; j++) {
       EXPECT_EQ(d[j], 1);
     }
@@ -30,8 +30,8 @@ TEST(DBM, copy) {
 
   DBMFactory df(n);
   for (int i = 0; i < 10; i++) {
-    int *d = df.randomFeasiableDBM();
-    int *d1 = df.createDBM(d);
+    int* d = df.randomFeasiableDBM();
+    int* d1 = df.createDBM(d);
     EXPECT_TRUE(df.equal(d, d1));
     df.destroyDBM(d);
     df.destroyDBM(d1);
@@ -43,8 +43,8 @@ TEST(DBM, canonicalForm) {
 
   DBMFactory df(n);
   for (int i = 0; i < 10; i++) {
-    int *d = df.randomFeasiableDBM();
-    int *d1 = df.createDBM(d);
+    int* d = df.randomFeasiableDBM();
+    int* d1 = df.createDBM(d);
     df.canonicalForm(d);
     df.canonicalForm(d1);
     df.canonicalForm(d1);
@@ -58,7 +58,7 @@ TEST(DBM, isConsistent) {
 
   DBMFactory df(n);
   for (int i = 0; i < 10; i++) {
-    int *d = df.randomFeasiableDBM();
+    int* d = df.randomFeasiableDBM();
 
     // df.dump( d);
     ClockConstraint cons = df.getCons(d, 1, 2);
@@ -66,7 +66,7 @@ TEST(DBM, isConsistent) {
     // cout<<cons<<endl;
     cons = cons.neg();
     // cout<<cons<<endl;
-    int *d1 = df.And(d, cons);
+    int* d1 = df.And(d, cons);
     // df.dump( d1);
     EXPECT_FALSE(df.isConsistent(d1));
     cons.matrix_value++;
@@ -81,9 +81,9 @@ TEST(DBM, include) {
   // int             len = ( n + 1 ) * ( n + 1 );
   DBMFactory df(n);
   for (int i = 0; i < 10; i++) {
-    int *d = df.randomFeasiableDBM();
+    int* d = df.randomFeasiableDBM();
     ClockConstraint cons = randConst(n, -100, 100);
-    int *d1 = df.And(d, cons);
+    int* d1 = df.And(d, cons);
     EXPECT_TRUE(df.include(d, d1));
     cons = df.getCons(d, 4, 5);
     df.destroyDBM(d1);
@@ -100,8 +100,8 @@ TEST(DBM, getIncludeFeature) {
   // int             len = ( n + 1 ) * ( n + 1 );
   DBMFactory df(n);
   for (int i = 0; i < 10; i++) {
-    int *d = df.randomFeasiableDBM();
-    int *d1 = df.createDBM(d);
+    int* d = df.randomFeasiableDBM();
+    int* d1 = df.createDBM(d);
     for (int j = 0; j < 100; j++) {
       ClockConstraint cons = randConst(n, -100, 100);
       df.andImpl(d1, cons);
@@ -134,8 +134,8 @@ TEST(DBM, norm) {
   }
   DBMFactory df(n);
   for (int i = 0; i < 10; i++) {
-    int *d = df.randomFeasiableDBM();
-    int *d1 = df.createDBM(d);
+    int* d = df.randomFeasiableDBM();
+    int* d1 = df.createDBM(d);
     df.norm(d, bounds);
     for (int k = 0; k < 3; k++) {
       df.norm(d1, bounds);
@@ -151,7 +151,6 @@ TEST(DBM, encode) {
   std::uniform_int_distribution<int> distribution(0, 1000);
 
   for (int i = 0; i < 1000; i++) {
-
     vector<int> clock_bounds(n + 1, 0);
     for (int j = 1; j < n + 1; j++) {
       clock_bounds[j] = distribution(generator);
@@ -167,8 +166,8 @@ TEST(DBM, encode) {
     vector<ClockConstraint> ss;
     DBMFactory df(n, bounds, ss);
 
-    int *d = df.randomFeasiableDBM();
-    int *d1 = df.createDBM(d);
+    int* d = df.randomFeasiableDBM();
+    int* d1 = df.createDBM(d);
     df.norm(d, bounds);
     df.norm(d1, bounds);
     df.encode(d1);
@@ -192,7 +191,6 @@ TEST(DBM, swap) {
   std::uniform_int_distribution<int> distribution(0, 1000);
 
   for (int i = 0; i < 1000; i++) {
-
     vector<int> clock_bounds(n + 1, 0);
     for (int j = 1; j < n + 1; j++) {
       clock_bounds[j] = distribution(generator);
@@ -208,8 +206,8 @@ TEST(DBM, swap) {
     vector<ClockConstraint> ss;
     DBMFactory df(n, bounds, ss);
 
-    int *d = df.randomFeasiableDBM();
-    int *d1 = df.createDBM(d);
+    int* d = df.randomFeasiableDBM();
+    int* d1 = df.createDBM(d);
     int ii = rand() % n;
     int jj = rand() % n;
 

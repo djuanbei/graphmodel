@@ -32,13 +32,14 @@ using std::map;
 using std::set;
 using std::vector;
 
-template <typename SYS> class Reachability {
+template <typename SYS>
+class Reachability {
   typedef typename SYS::State_t State_t;
 
-public:
-  Reachability(const SYS &s) : sys(s), nextS(s) {
+ public:
+  Reachability(SYS& s) : sys(s), nextS(s) {
     component_num = sys.getComponentNumber();
-    manager = sys.getStateManager();
+    manager = s.getStateManager();
 
     cache_state = manager->newState();
     next_state = manager->newState();
@@ -54,7 +55,8 @@ public:
       next_state = nullptr;
     }
   }
-  template <typename D> void computeAllReachableSet(D *data) {
+  template <typename D>
+  void computeAllReachableSet(D* data) {
     Property prop;
 
     run(data, &prop);
@@ -69,7 +71,8 @@ public:
    * false otherwise.
    */
 
-  template <typename D> bool satisfy(D *data, const Property *prop) {
+  template <typename D>
+  bool satisfy(D* data, const Property* prop) {
     return run(data, prop);
   }
 
@@ -79,8 +82,8 @@ public:
    * @return true if ther is a reachable state which make prop ture,
    * false otherwise.
    */
-  template <typename D> bool run(D *data, const Property *prop) {
-
+  template <typename D>
+  bool run(D* data, const Property* prop) {
     Check_State re = data->search(prop);
 
     if (re != UNKOWN) {
@@ -95,8 +98,7 @@ public:
     // For given target find the source which change in last step
 
     while (!data->waitEmpty()) {
-
-      typename SYS::State_t *state = data->next();
+      typename SYS::State_t* state = data->next();
 
       if (oneDiscreteStep(data, state)) {
         manager->destroyState(state);
@@ -108,27 +110,25 @@ public:
     return false;
   }
 
-private:
+ private:
   /**
    One discrete step
    */
   template <typename D>
-  bool oneDiscreteStep(D *data, const State_t *const state) {
-
+  bool oneDiscreteStep(D* data, const State_t* const state) {
     //  data->incCurrentParent();
 
 #ifdef PRINT_STATE
     manager->dump(state);
 #endif
     //   manager->dump(state);
-    std::vector<OneStep> re = nextS.getNextStep(const_cast<int *>(state));
+    std::vector<OneStep> re = nextS.getNextStep(const_cast<int*>(state));
     return doOneStep(data, manager.get(), state, re) == TRUE;
 
     /**
      freeze state the time can not delay
      */
     if (manager->isFreeze(state)) {
-
       for (int component = 0; component < component_num; component++) {
         // component is at  freeze location and component does not wait another
         // components. commit location go first.
@@ -144,9 +144,8 @@ private:
     // If  there has two out transition with match send and recive urgent
     // channel
     if (manager->hasMatchOutUrgentChan(state)) {
-
       vector<OneStep> re;
-      nextS.doUrgant(const_cast<int *>(state), re);
+      nextS.doUrgant(const_cast<int*>(state), re);
       return doOneStep(data, manager.get(), state, re) == TRUE;
     }
     // If there has at less one out transition with breakcast sene channel
@@ -155,7 +154,6 @@ private:
     }
 
     for (int component = 0; component < component_num; component++) {
-
       //      if (manager->isBlock(component, state)) {
       //        /**
       //         * Waiting for synchronize signal
@@ -164,7 +162,6 @@ private:
       //        continue;
       //      }
       if (oneComponent(data, component, state)) {
-
         return true;
       }
     }
@@ -180,13 +177,11 @@ private:
    * @return ture if prop satisfied by child state of state
    */
   template <typename D>
-  bool oneComponent(D *data, int component, const State_t *const state) {
-
+  bool oneComponent(D* data, int component, const State_t* const state) {
     const int source = manager->getLocationID(component, state);
 
     const vector<int> out_ts = sys.getOutTransition(component, source);
     for (auto link : out_ts) {
-
       assert(link >= 0 &&
              "The value of link id requires greater or equal than 1.");
       /**
@@ -199,7 +194,7 @@ private:
       }
 
       if (sys.hasChannel(component, link)) {
-        const Channel &channel = sys.getChannel(component, link);
+        const Channel& channel = sys.getChannel(component, link);
         // channel.id start from 1
 
         // TODO: URGENT_CH
@@ -208,7 +203,7 @@ private:
             return true;
           }
           // TODO: URGENT_CH
-        } else { // URGENT channel
+        } else {  // URGENT channel
 
           if (oneTranision(data, component, link, state)) {
             return true;
@@ -235,10 +230,9 @@ private:
    * @return  true the next state make prop true, false otherwise.
    */
   template <typename D>
-  bool unBlockOne(D *data, const int current_component,
+  bool unBlockOne(D* data, const int current_component,
                   const int block_component_id, const int link,
-                  const State_t *const state, bool is_send) {
-
+                  const State_t* const state, bool is_send) {
     manager->copy(next_state, state);
     // manager->unBlock(block_component_id, next_state);
 
@@ -268,7 +262,7 @@ private:
      *  TDOO: has some problems
      */
     manager->discretRun(send_component_id, send_link,
-                        next_state); // send part firstly update state
+                        next_state);  // send part firstly update state
 
     manager->discretRun(receive_component_id, receive_link, next_state);
 
@@ -334,15 +328,13 @@ private:
    *
    */
   template <typename D>
-  bool doSynchronize(D *data, int component, const State_t *const state,
-                     int link, const Channel &channel) {
-
+  bool doSynchronize(D* data, int component, const State_t* const state,
+                     int link, const Channel& channel) {
     vector<int> wait_components;
     bool is_send = true;
-    State_t *counter_value =
-        const_cast<State_t *>(manager->getCounterValue(state));
+    State_t* counter_value =
+        const_cast<State_t*>(manager->getCounterValue(state));
     if (channel.isSend()) {
-
       wait_components =
           manager->blockComponents(-channel.getGlobalId(counter_value), state);
     } else if (channel.isRecive()) {
@@ -375,18 +367,18 @@ private:
 
     } else {
       manager->copy(cache_state, state);
-      State_t *counter_value =
-          const_cast<State_t *>(manager->getCounterValue(state));
-      assert(channel.getGlobalId(counter_value) > 0); // chan it starts with 1
+      State_t* counter_value =
+          const_cast<State_t*>(manager->getCounterValue(state));
+      assert(channel.getGlobalId(counter_value) > 0);  // chan it starts with 1
       if (channel.isSend()) {
         cache_state[component + component_num] =
-            channel.getGlobalId(counter_value); // send part
+            channel.getGlobalId(counter_value);  // send part
       } else if (channel.isRecive()) {
         cache_state[component + component_num] =
-            -channel.getGlobalId(counter_value); // receive part
+            -channel.getGlobalId(counter_value);  // receive part
       }
       // TODO: add commit property
-      cache_state[component] = link; // block link
+      cache_state[component] = link;  // block link
 
       // if (manager->isCommitComp(component, state)) {
       //   manager->setCommitState(component,
@@ -410,9 +402,8 @@ private:
    * @return  true if find a state makes prop true, false otherwise.
    */
   template <typename D>
-  bool oneTranision(D *data, const int component, const int link,
-                    const State_t *const state) {
-
+  bool oneTranision(D* data, const int component, const int link,
+                    const State_t* const state) {
     manager->copy(next_state, state);
     int source = sys.getSrc(component, link);
     int target = sys.getSnk(component, link);
@@ -430,14 +421,14 @@ private:
     }
     manager->discretRun(
         component, link,
-        next_state); // update counter state and reset clock state
+        next_state);  // update counter state and reset clock state
 
     return delay(data, component, target, next_state);
   }
 
   template <typename D>
-  bool delay(D *data, const int component, const int target, State_t *state) {
-    if (!manager->isReachable(component, target, state)) { // undefine state
+  bool delay(D* data, const int component, const int target, State_t* state) {
+    if (!manager->isReachable(component, target, state)) {  // undefine state
       // TODO: undefine state
       return false;
     }
@@ -457,9 +448,8 @@ private:
   }
 
   template <typename D>
-  bool postDelay(D *data, const int component, const int target,
-                 State_t *state) {
-
+  bool postDelay(D* data, const int component, const int target,
+                 State_t* state) {
     // bool is_commit = sys.isCommit(component, target);
 
     bool re_bool = false;
@@ -469,8 +459,7 @@ private:
       }
     }
     if (manager->hasDiffCons()) {
-
-      vector<int *> next_dbms;
+      vector<int*> next_dbms;
       manager->norm(manager->getDBM(state), next_dbms);
 
       for (auto dbm : next_dbms) {
@@ -493,16 +482,16 @@ private:
     return re_bool;
   }
 
-  const SYS &sys;
+  const SYS& sys;
   TANextStep nextS;
 
   shared_ptr<const typename SYS::StateManager_t> manager;
   int component_num;
 
-  State_t *cache_state;
-  State_t *next_state;
+  State_t* cache_state;
+  State_t* next_state;
   std::default_random_engine generator;
 };
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

@@ -17,9 +17,8 @@ using namespace std;
 std::default_random_engine generator;
 std::uniform_int_distribution<int> distribution(0, 10000);
 
-int *randV(int n) {
-
-  int *v = new int[n];
+int* randV(int n) {
+  int* v = new int[n];
 
   for (int i = 0; i < n; i++) {
     v[i] = distribution(generator);
@@ -28,9 +27,8 @@ int *randV(int n) {
   return v;
 }
 
-UINT *randVU(int n) {
-
-  UINT *v = new UINT[n];
+UINT* randVU(int n) {
+  UINT* v = new UINT[n];
 
   for (int i = 0; i < n; i++) {
     v[i] = distribution(generator);
@@ -42,17 +40,16 @@ UINT *randVU(int n) {
 TEST(StateSet1, add_contain) {
   StateSet<UINT> sets;
 
-  vector<UINT *> vecs;
+  vector<UINT*> vecs;
   int n = 10;
   int s = 4;
   int num = 1000;
   Compression<int> decoder(n - s);
   sets.setParam(n, s, decoder);
   for (int i = 0; i < num; i++) {
-    UINT *temp = randVU(n);
+    UINT* temp = randVU(n);
     int re = sets.add(temp);
     if (re == NOT_FOUND) {
-
       vecs.push_back(temp);
     } else {
       delete[] temp;
@@ -65,7 +62,7 @@ TEST(StateSet1, add_contain) {
     EXPECT_EQ(i, sets.findId(vecs[i]));
   }
   EXPECT_EQ(sets.size(), vecs.size());
-  UINT *temp = new UINT[n];
+  UINT* temp = new UINT[n];
   for (size_t i = 0; i < vecs.size(); i++) {
     sets.getElementAt(temp, i);
     for (int j = 0; j < n; j++) {
@@ -85,15 +82,14 @@ TEST(StateSet1, add_contain) {
 }
 
 TEST(DBMSET1, add) {
-
-  vector<int *> vecs;
+  vector<int*> vecs;
   int n = 10;
   DBMFactory manager(n);
   DBMset<int> sets(manager);
   int num = 10000;
 
   for (int i = 0; i < num; i++) {
-    int *dbm = manager.randomFeasiableDBM();
+    int* dbm = manager.randomFeasiableDBM();
     if (sets.add(dbm))
       vecs.push_back(dbm);
     else
@@ -112,14 +108,14 @@ TEST(DBM1, include) {
   DBMFactory manager(clock_num);
   int num = 100;
   for (int i = 0; i < num; i++) {
-    int *dbm = manager.randomFeasiableDBM();
+    int* dbm = manager.randomFeasiableDBM();
     int x = abs(distribution(generator)) % (clock_num + 1);
     int y = abs(distribution(generator)) % (clock_num + 1);
     if (x != y) {
       int rhs = distribution(generator);
       ClockConstraint cs(Argument(NORMAL_VAR_ARG, x),
                          Argument(NORMAL_VAR_ARG, y), LE, Argument(rhs));
-      int *dbm1 = manager.And(dbm, cs);
+      int* dbm1 = manager.And(dbm, cs);
       EXPECT_TRUE(manager.include(dbm, dbm1));
       manager.destroyDBM(dbm1);
     }
@@ -127,7 +123,7 @@ TEST(DBM1, include) {
   }
 }
 
-bool cmp(const vector<int> &a, const vector<int> &b) {
+bool cmp(const vector<int>& a, const vector<int>& b) {
   for (size_t i = 0; i < a.size(); i++) {
     if (a[i] < b[i]) {
       return true;
@@ -138,7 +134,6 @@ bool cmp(const vector<int> &a, const vector<int> &b) {
   return false;
 }
 TEST(StateSet1, equal) {
-
   StateSet<UINT> sets;
 
   vector<vector<UINT>> vecs;
@@ -148,7 +143,7 @@ TEST(StateSet1, equal) {
   Compression<int> decoder(n - s);
   sets.setParam(n, s, decoder);
   for (int i = 0; i < num; i++) {
-    UINT *temp = randVU(n);
+    UINT* temp = randVU(n);
     if (sets.add(temp) == NOT_FOUND) {
       vector<UINT> dummy(temp, temp + n);
       vecs.push_back(dummy);
@@ -166,4 +161,5 @@ TEST(StateSet1, equal) {
   for (size_t i = 0; i < vecs.size(); i++) {
     EXPECT_EQ(vecs[i], getRe[i]);
   }
+  
 }

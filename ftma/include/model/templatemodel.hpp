@@ -29,18 +29,19 @@ using namespace raptor;
  *
  */
 
-template <typename L, typename T> class Agent;
+template <typename L, typename T>
+class Agent;
 
-template <typename L, typename T> class AgentTemplate : public VarDecl {
-
-private:
+template <typename L, typename T>
+class AgentTemplate : public VarDecl {
+ private:
   typedef ClockConstraint CS_t;
 
   typedef Agent<L, T> Agent_t;
 
-public:
+ public:
   virtual ~AgentTemplate() {}
-  void initial(vector<L> &locs, vector<T> &es, int init) {
+  void initial(vector<L>& locs, vector<T>& es, int init) {
     template_locations = locs;
 
     template_transitions = es;
@@ -49,7 +50,7 @@ public:
     initial();
   }
 
-  void findRhs(const int link, const int lhs, int &rhs) const {
+  void findRhs(const int link, const int lhs, int& rhs) const {
     graph.findRhs(link, lhs, rhs);
   }
 
@@ -63,7 +64,7 @@ public:
 
   string getName() const { return name; }
 
-  int addPara(const string &p) {
+  int addPara(const string& p) {
     int re = parameters.size();
     parameters.push_back(p);
     return re;
@@ -73,7 +74,7 @@ public:
     return re;
   }
 
-  int getParaId(const string &p) const {
+  int getParaId(const string& p) const {
     for (size_t i = 0; i < parameters.size(); i++) {
       if (p == parameters[i]) {
         return i;
@@ -82,16 +83,19 @@ public:
     return NOT_FOUND;
   }
   void reset() { agents.clear(); }
-  virtual Argument addClock(const string &n) {
+  virtual Argument addClock(const string& n) {
     Argument dummy = VarDecl::addClock(n);
     dummy.type = NORMAL_VAR_ARG;
     return dummy;
   }
 
-  void dump2Dot(const string &filename) const {
+  void dump2Dot(const string& filename) const {
     ofstream fout(filename);
     fout << "digraph G {" << endl;
-    for (auto &e : template_locations) {
+    for (auto& e : template_locations) {
+      e.dump2Dot(fout);
+    }
+    for (auto& e : template_transitions) {
       e.dump2Dot(fout);
     }
 
@@ -99,28 +103,27 @@ public:
     fout.close();
   }
 
-private:
-  AgentTemplate(const string &n, const VarDecl *s) : name(n), sys(s) {
+ private:
+  AgentTemplate(const string& n, const VarDecl* s) : name(n), sys(s) {
     initial_loc = 0;
   }
-  AgentTemplate(const AgentTemplate &other) : sys(nullptr) { assert(false); }
+  AgentTemplate(const AgentTemplate& other) : sys(nullptr) { assert(false); }
 
-  AgentTemplate &operator=(const AgentTemplate &other) {
+  AgentTemplate& operator=(const AgentTemplate& other) {
     assert(false);
     return *this;
   }
 
   int getStart(const TYPE_T type) const { return sys->getStartLoc(type, id); }
 
-  int getParentKeyID(const TYPE_T type, const string &key) const {
+  int getParentKeyID(const TYPE_T type, const string& key) const {
     return sys->getLocalKeyID(type, key) + sys->getTypeStart(type);
   }
-  shared_ptr<Function> getSYSFun(const string &name) const {
+  shared_ptr<Function> getSYSFun(const string& name) const {
     return sys->getFun(name);
   }
 
   void initial() {
-
     vector<int> srcs;
     vector<int> snks;
 
@@ -137,7 +140,7 @@ private:
     assert(initial_loc >= 0 && initial_loc < vertex_num);
   }
   string name;
-  const VarDecl *sys;
+  const VarDecl* sys;
   int id;
 
   vector<L> template_locations;
@@ -147,13 +150,15 @@ private:
   Graph_t<int> graph;
 
   vector<string> parameters;
-  vector<Agent<L, T> *> agents;
+  vector<Agent<L, T>*> agents;
   map<string, shared_ptr<Function>> fun_map;
 
-  template <typename R1> friend class Reachability;
+  template <typename R1>
+  friend class Reachability;
 
   friend class Agent<L, T>;
-  template <typename L1, typename T1> friend class AgentSystem;
+  template <typename L1, typename T1>
+  friend class AgentSystem;
 };
 
 // template <> class AgentTemplate<Location, Transition> : public VarDecl {
@@ -277,6 +282,6 @@ private:
 //   template <typename L1, typename T1> friend class AgentSystem;
 // };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

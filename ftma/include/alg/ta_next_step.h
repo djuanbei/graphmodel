@@ -20,30 +20,30 @@ namespace graphsat {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 class TANextStep : public NextStep {
-public:
-  TANextStep(const INT_TAS_t &s) : sys(s) {
-    manager = sys.getStateManager();
+ public:
+  TANextStep(INT_TAS_t& s) : sys(s) {
+    manager = s.getStateManager();
     component_num = manager->getComponentNumber();
   }
-  virtual std::vector<OneStep> getNextStep(void *state) const;
+  virtual std::vector<OneStep> getNextStep(void* state) const;
 
-private:
-  const INT_TAS_t &sys;
+ private:
+  const INT_TAS_t& sys;
   shared_ptr<const typename INT_TAS_t::StateManager_t> manager;
   int component_num;
 
-  void doCommit(int *state, std::vector<OneStep> &re) const;
+  void doCommit(int* state, std::vector<OneStep>& re) const;
 
-  void discret(int *state, std::vector<pair<int, int>> &paths,
-               std::vector<OneStep> &re) const;
+  void discret(int* state, std::vector<pair<int, int>>& paths,
+               std::vector<OneStep>& re) const;
 
   int getCommitCount(const int component, const int link, int count) const;
 
-  void doCommitComponent(int *state, int component,
-                         std::vector<OneStep> &re) const;
+  void doCommitComponent(int* state, int component,
+                         std::vector<OneStep>& re) const;
 
-public:
-  void doNormal(int *state, std::vector<OneStep> &re) const;
+ public:
+  void doNormal(int* state, std::vector<OneStep>& re) const;
 
   /**
    * @brief  Urgent channels are similar to regular channels, except that it is
@@ -54,9 +54,9 @@ public:
    * @param state
    * @param re
    */
-  void doUrgant(int *state, std::vector<OneStep> &re) const;
+  void doUrgant(int* state, std::vector<OneStep>& re) const;
 
-private:
+ private:
   /**
    * @brief Broadcast channels allow 1-to-many synchronisations. The intuition
    * is that an edge with synchronisation label e! emits a broadcast on the
@@ -73,9 +73,9 @@ private:
    * @param state
    * @param re
    */
-  void doBreakcast(int *state, std::vector<OneStep> &re) const;
+  void doBreakcast(int* state, std::vector<OneStep>& re) const;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

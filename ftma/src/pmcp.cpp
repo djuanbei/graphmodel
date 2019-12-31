@@ -2,7 +2,7 @@
 
 namespace graphsat {
 
-bool element_cmp(const vector<int> &lhs, const vector<int> &rhs) {
+bool element_cmp(const vector<int>& lhs, const vector<int>& rhs) {
   for (size_t i = 0; i < lhs.size(); i++) {
     if (lhs[i] < rhs[i]) {
       return true;
@@ -12,4 +12,4 @@ bool element_cmp(const vector<int> &lhs, const vector<int> &rhs) {
   }
   return false;
 }
-} // namespace graphsat
+}  // namespace graphsat

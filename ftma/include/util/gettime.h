@@ -9,10 +9,10 @@
  */
 #ifndef __GET_TIME_H
 #define __GET_TIME_H
-#include <iomanip>
-#include <iostream>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <iomanip>
+#include <iostream>
 
 struct timer {
   double totalTime;
@@ -58,8 +58,7 @@ struct timer {
   }
 
   double next() {
-    if (!on)
-      return 0.0;
+    if (!on) return 0.0;
     double t = getTime();
     double td = t - lastTime;
     totalTime += td;
@@ -100,9 +99,9 @@ struct timer {
 };
 
 static timer _tm;
-#define timeStatement(_A, _string)                                             \
-  _tm.start();                                                                 \
-  _A;                                                                          \
+#define timeStatement(_A, _string) \
+  _tm.start();                     \
+  _A;                              \
   _tm.reportNext(_string);
 #define startTime() _tm.start();
 #define stopTime(_weight, _str) _tm.reportStop(_weight, _str);

@@ -16,7 +16,7 @@
 #include <string>
 namespace graphsat {
 
-void runxml(const std::string &file_name);
+void runxml(const std::string& file_name);
 }
 
 #endif

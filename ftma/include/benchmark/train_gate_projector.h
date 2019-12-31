@@ -15,18 +15,18 @@
 namespace graphsat {
 
 class TrainGateProjector : public Projector {
-public:
-  TrainGateProjector(const shared_ptr<TMStateManager> &out_manager,
+ public:
+  TrainGateProjector(const shared_ptr<TMStateManager>& out_manager,
                      const int pro_d);
 
-  virtual void operator()(const int *original_state, vector<int> &proj) const;
+  virtual void operator()(const int* original_state, vector<int>& proj) const;
 
-  bool include(const vector<vector<int>> &lhs,
-               const vector<vector<int>> &rhs) const;
+  bool include(const vector<vector<int>>& lhs,
+               const vector<vector<int>>& rhs) const;
 
-  virtual ostream &dump(const vector<int> &proj_e, ostream &out) const;
+  virtual ostream& dump(const vector<int>& proj_e, ostream& out) const;
 
-private:
+ private:
   const shared_ptr<TMStateManager> manager;
   int component_num;
   int pro_dim;
@@ -36,5 +36,5 @@ private:
   enum Order { UNKOWN = 0, EQUAL = 1, FRONTER = 2, LATER = 3 };
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 #endif

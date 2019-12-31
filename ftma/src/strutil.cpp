@@ -3,7 +3,7 @@
 #include "util/strutil.h"
 
 namespace graphsat {
-string getFunArg(const string &fun) {
+string getFunArg(const string& fun) {
   string::size_type start = fun.find("(");
   if (start == string::npos) {
     return "";
@@ -18,7 +18,7 @@ string getFunArg(const string &fun) {
   return "";
 }
 
-string getFunName(const string &fun) {
+string getFunName(const string& fun) {
   string::size_type start = fun.find("(");
   if (start == string::npos) {
     return trim(fun);
@@ -43,9 +43,8 @@ std::string rand_str(int len) {
   std::uniform_int_distribution<int> distribution{'a', 'z'};
 
   string re(len, '\0');
-  for (auto &dis : re)
-    dis = distribution(generator);
+  for (auto& dis : re) dis = distribution(generator);
   return re;
 }
 
-} // namespace graphsat
+}  // namespace graphsat

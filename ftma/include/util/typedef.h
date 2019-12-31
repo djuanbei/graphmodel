@@ -86,13 +86,13 @@ enum Check_State { TRUE, FALSE, UNKOWN };
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
 
 enum ARGUMENT_TYPE {
-  CONST_ARG,         // constant value
-  NORMAL_VAR_ARG,    // template variable id
-  PARAMETER_ARG,     // template argument id (pass value)
-  REF_PARAMETER_ARG, // temmplate argument if (pass reference)
-  FUN_POINTER_ARG,   // template function
-  SELECT_VAR_ARG,    // select variable
-  EMPTY_ARG          // otherwise
+  CONST_ARG,          // constant value
+  NORMAL_VAR_ARG,     // template variable id
+  PARAMETER_ARG,      // template argument id (pass value)
+  REF_PARAMETER_ARG,  // temmplate argument if (pass reference)
+  FUN_POINTER_ARG,    // template function
+  SELECT_VAR_ARG,     // select variable
+  EMPTY_ARG           // otherwise
 };
 
 struct RealArgument {
@@ -113,22 +113,22 @@ struct Argument {
   shared_ptr<Argument> index;
   Argument() : type(EMPTY_ARG), value(0) {}
   explicit Argument(int v) : type(CONST_ARG), value(v) {}
-  Argument(ARGUMENT_TYPE t, const string &n) : type(t), value(0), name(n) {}
-  void setIndex(const shared_ptr<Argument> &out_index) { index = out_index; }
+  Argument(ARGUMENT_TYPE t, const string& n) : type(t), value(0), name(n) {}
+  void setIndex(const shared_ptr<Argument>& out_index) { index = out_index; }
   Argument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
   string to_string() const;
 
-private:
+ private:
   friend class ClockConstraint;
   friend class DBMFactory;
   friend ClockConstraint randConst(const int num, const int low, const int up);
 };
 
 enum Action_e {
-  CALL_ACTION,       // invoke function
-  ASSIGNMENT_ACTION, //=
-  SELF_INC_ACTION,   //+=
-  SELF_DEC_ACTION    //-=
+  CALL_ACTION,        // invoke function
+  ASSIGNMENT_ACTION,  //=
+  SELF_INC_ACTION,    //+=
+  SELF_DEC_ACTION     //-=
 };
 
 enum TYPE_T {
@@ -158,14 +158,14 @@ enum TYPE_T {
 };
 
 class VariableMap {
-public:
-  virtual int getKeyID(const TYPE_T type, const string &key) const = 0;
-  virtual int *getValue(const TYPE_T type, int *state,
-                        const string &key) const = 0;
+ public:
+  virtual int getKeyID(const TYPE_T type, const string& key) const = 0;
+  virtual int* getValue(const TYPE_T type, int* state,
+                        const string& key) const = 0;
 };
 
-typedef int (*IndexFun_t)(int *, ...);
-typedef int (*ConstraintFun_t)(const int *, ...);
+typedef int (*IndexFun_t)(int*, ...);
+typedef int (*ConstraintFun_t)(const int*, ...);
 
 const static int NOT_FOUND = -1;
 
@@ -186,6 +186,6 @@ const static string TRANSITION_NAME_PRE = "Tran_";
 
 const static string CLOCK_NAME_PRE = "c_";
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

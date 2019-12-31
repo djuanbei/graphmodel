@@ -23,6 +23,6 @@ struct Clock {
   const static Clock ZERO;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

@@ -19,14 +19,14 @@
 
 namespace graphsat {
 using namespace std;
-template <typename C> class DBMset {
-
-public:
+template <typename C>
+class DBMset {
+ public:
   class iterator;
 
   class const_iterator;
 
-  DBMset(DBMFactory &manager) { dbm_manager = manager; }
+  DBMset(DBMFactory& manager) { dbm_manager = manager; }
   ~DBMset() { deleteAll(); }
 
   iterator begin() { return iterator(this); }
@@ -34,7 +34,6 @@ public:
   const_iterator begin() const { return const_iterator(this); }
 
   iterator end() {
-
     return iterator(this, map_data.size() + recovery_data.size());
     /**/
   }
@@ -50,7 +49,7 @@ public:
    * @return true if real insert DBMFactory into set
    * false otherwise. DM does not destory in function
    */
-  bool add(C *DM) {
+  bool add(C* DM) {
     uint32_t hashValue = dbm_manager.getHashValue(DM);
     typename std::pair<typename std::map<uint32_t, int>::iterator, bool> ret;
     ret = passed_data.insert(
@@ -58,11 +57,11 @@ public:
     DF_T featrue = dbm_manager.getIncludeFeature(DM);
     if (false == ret.second) {
       // hashValue has in passedD
-      C *D1 = getD(hashValue);
+      C* D1 = getD(hashValue);
 
       if (!dbm_manager.equal(DM, D1)) {
         bool have = false;
-        for (typename vector<C *>::iterator it = recovery_data.begin();
+        for (typename vector<C*>::iterator it = recovery_data.begin();
              it != recovery_data.end(); it++) {
           if (dbm_manager.equal(DM, *it)) {
             have = true;
@@ -87,8 +86,7 @@ public:
 
     return true;
   }
-  bool contain(const C *const DM) const {
-
+  bool contain(const C* const DM) const {
     DF_T featrue = dbm_manager.getIncludeFeature(DM);
     return include(DM, featrue);
   }
@@ -106,27 +104,25 @@ public:
   }
 
   void deleteAll(void) {
-
-    for (typename vector<C *>::const_iterator it = map_data.begin();
+    for (typename vector<C*>::const_iterator it = map_data.begin();
          it != map_data.end(); it++) {
       delete[] * it;
     }
 
-    for (typename vector<C *>::iterator it = recovery_data.begin();
+    for (typename vector<C*>::iterator it = recovery_data.begin();
          it != recovery_data.end(); it++) {
       delete[] * it;
     }
     clear();
   }
 
-  void And(DBMset<C> &other) {
-
-    for (typename vector<C *>::iterator it = other.map_data.begin();
+  void And(DBMset<C>& other) {
+    for (typename vector<C*>::iterator it = other.map_data.begin();
          it != other.map_data.end(); it++) {
       add(dbm_manager, *it);
     }
 
-    for (typename vector<C *>::iterator it = other.recovery_data.begin();
+    for (typename vector<C*>::iterator it = other.recovery_data.begin();
          it != other.recovery_data.end(); it++) {
       add(dbm_manager, *it);
     }
@@ -134,36 +130,35 @@ public:
   }
 
   class const_iterator {
-  protected:
-    const DBMset<C> *data;
+   protected:
+    const DBMset<C>* data;
     size_t index;
 
-  public:
-    const_iterator(const DBMset<C> *odata) : data(odata) { index = 0; }
+   public:
+    const_iterator(const DBMset<C>* odata) : data(odata) { index = 0; }
 
-    const_iterator(const DBMset<C> *odata, size_t oindex) : data(odata) {
+    const_iterator(const DBMset<C>* odata, size_t oindex) : data(odata) {
       index = oindex;
     }
 
-    const_iterator(const const_iterator &other) : data(other.data) {
+    const_iterator(const const_iterator& other) : data(other.data) {
       index = other.index;
     }
 
-    const_iterator &operator++() {
+    const_iterator& operator++() {
       index++;
       return *this;
     }
-    bool operator==(const const_iterator &other) const {
+    bool operator==(const const_iterator& other) const {
       return index == other.index;
     }
-    bool operator!=(const const_iterator &other) const {
+    bool operator!=(const const_iterator& other) const {
       return index != other.index;
     }
 
-    const C *operator*() const {
+    const C* operator*() const {
       size_t dSize = data->mapD.size();
       if (index < dSize) {
-
         return data->mapD[index];
       }
       if (index >= dSize + data->recoveryD.size()) {
@@ -175,33 +170,31 @@ public:
   };
 
   class iterator {
-
-  protected:
-    const DBMset<C> *data;
+   protected:
+    const DBMset<C>* data;
     size_t index;
 
-  public:
-    iterator(DBMset<C> *odata) : data(odata) { index = 0; }
+   public:
+    iterator(DBMset<C>* odata) : data(odata) { index = 0; }
 
-    iterator(DBMset<C> *odata, size_t oindex) : data(odata) { index = oindex; }
+    iterator(DBMset<C>* odata, size_t oindex) : data(odata) { index = oindex; }
 
-    iterator(const iterator &other) : data(other.data) { index = other.index; }
-    iterator &operator++() {
+    iterator(const iterator& other) : data(other.data) { index = other.index; }
+    iterator& operator++() {
       index++;
       return *this;
     }
 
-    bool operator==(const iterator &other) const {
+    bool operator==(const iterator& other) const {
       return index == other.index;
     }
-    bool operator!=(const iterator &other) const {
+    bool operator!=(const iterator& other) const {
       return index != other.index;
     }
 
-    C *operator*() {
+    C* operator*() {
       size_t dSize = data->mapD.size();
       if (index < dSize) {
-
         return data->mapD[index];
       }
       if (index >= dSize + data->recoveryD.size()) {
@@ -212,29 +205,28 @@ public:
     }
   };
 
-private:
+ private:
   DBMFactory dbm_manager;
   map<uint32_t, int> passed_data;
-  vector<C *> map_data;
+  vector<C*> map_data;
   vector<DF_T> map_data_feature;
 
-  vector<C *> recovery_data;
+  vector<C*> recovery_data;
   vector<DF_T> recovery_data_feature;
 
-  C *getD(uint32_t hash_value) { return map_data[passed_data[hash_value]]; }
+  C* getD(uint32_t hash_value) { return map_data[passed_data[hash_value]]; }
 
-  void mapDAdd(C *D, DF_T &value) {
+  void mapDAdd(C* D, DF_T& value) {
     map_data.push_back(D);
     map_data_feature.push_back(value);
   }
 
-  void recoveryDAdd(C *D, DF_T &value) {
+  void recoveryDAdd(C* D, DF_T& value) {
     recovery_data.push_back(D);
     recovery_data_feature.push_back(value);
   }
 
-  bool include(const C *const DM, DF_T &featrue) const {
-
+  bool include(const C* const DM, DF_T& featrue) const {
     for (size_t i = 0; i < map_data.size(); i++) {
       if ((map_data_feature[i] >= featrue) &&
           dbm_manager.include(map_data[i], DM)) {
@@ -251,5 +243,5 @@ private:
     return false;
   }
 };
-} // namespace graphsat
+}  // namespace graphsat
 #endif

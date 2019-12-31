@@ -7,7 +7,7 @@ namespace graphsat {
 
 typedef ReachableSet<INT_TAS_t::StateManager_t> R_t;
 
-void runxml(const std::string &file_name) {
+void runxml(const std::string& file_name) {
   UppaalParser parser(file_name);
   INT_TAS_t sys = parser.getSYS();
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
@@ -23,4 +23,4 @@ void runxml(const std::string &file_name) {
   // data.generatorDot("test.gv");
 }
 
-} // namespace graphsat
+}  // namespace graphsat

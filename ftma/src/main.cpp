@@ -32,10 +32,12 @@
 
 #include "problem/pmcp.hpp"
 
-#include "benchmark/fisher.h"
-#include "benchmark/fisher_projector.h"
+#include "benchmark/fischer.h"
+#include "benchmark/fischer_projector.h"
 
 #include "alg/symmetry.h"
+
+#include "benchmark/liftcustomer.h"
 
 #include <iostream>
 
@@ -45,7 +47,6 @@ using std::vector;
 using namespace graphsat;
 
 void test() {
-
   TrainGate TG;
   IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector> check;
   TrainGatePro prop(2);
@@ -58,7 +59,7 @@ void test() {
 }
 void test1() {
   int n = 3;
-  FisherGenerator F;
+  FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
   Symmetry symm(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
@@ -75,11 +76,34 @@ void test1() {
   }
 }
 
-int main(int argc, const char *argv[]) {
+void lift_customer() {
+  LiftCustomer liftc;
+  INT_TAS_t sys = liftc.generate(2);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  // sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+  int* state = manager->newState();
+  for (size_t i = 0; i < data.size(); i++) {
+    data.getStateAt(state, i);
+    manager->dump(state);
+  }
+  manager->destroyState(state);
+  cout << data.size() << endl;
+}
+
+int main(int argc, const char* argv[]) {
+  //lift_customer();
+  //  return 0;
   // test1();
   // return 0;
   // train_gate(3);
-  fisher(2);
+  fischer(2);
+  fischer(3);
+  fischer(4);
+  fischer(5);
   return 0;
 
   // test();
@@ -103,7 +127,7 @@ int main(int argc, const char *argv[]) {
     runxml(argv[1]);
     return 0;
   }
-  fisher(2);
+  fischer(2);
   return 0;
   testIsConsistent();
 
@@ -118,7 +142,7 @@ int main(int argc, const char *argv[]) {
   //  example2( );
   //  return 0;
 
-  //  fisher( 2 );
+  //  fischer( 2 );
   // return 0;
   //  example5();
   //  return 0;

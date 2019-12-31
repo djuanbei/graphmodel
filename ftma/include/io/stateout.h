@@ -15,16 +15,16 @@
 namespace graphsat {
 
 class StateOutput {
-public:
-  static void generatorDot(const ReachableSet<TMStateManager> &reachSet,
-                           const string &filename);
+ public:
+  static void generatorDot(const ReachableSet<TMStateManager>& reachSet,
+                           const string& filename);
   /**
    * @brief Generate the generate trace from initial state to target
    */
-  static bool generatePath(const ReachableSet<TMStateManager> &reachSet,
-                           const string &filename, const int *const target);
+  static bool generatePath(const ReachableSet<TMStateManager>& reachSet,
+                           const string& filename, const int* const target);
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

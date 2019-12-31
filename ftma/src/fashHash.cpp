@@ -1,12 +1,11 @@
 #include "util/fastHash.h"
 
-uint32_t FastHash(const char *const origData, int len) {
-  const char *data = origData;
+uint32_t FastHash(const char* const origData, int len) {
+  const char* data = origData;
   uint32_t hash = len, tmp;
   int rem;
 
-  if (len <= 0 || 0 == data)
-    return 0;
+  if (len <= 0 || 0 == data) return 0;
 
   rem = len & 3;
   len >>= 2;
@@ -22,21 +21,21 @@ uint32_t FastHash(const char *const origData, int len) {
 
   /* Handle end cases */
   switch (rem) {
-  case 3:
-    hash += get16bits(data);
-    hash ^= hash << 16;
-    hash ^= ((signed char)data[sizeof(uint16_t)]) << 18;
-    hash += hash >> 11;
-    break;
-  case 2:
-    hash += get16bits(data);
-    hash ^= hash << 11;
-    hash += hash >> 17;
-    break;
-  case 1:
-    hash += (signed char)*data;
-    hash ^= hash << 10;
-    hash += hash >> 1;
+    case 3:
+      hash += get16bits(data);
+      hash ^= hash << 16;
+      hash ^= ((signed char)data[sizeof(uint16_t)]) << 18;
+      hash += hash >> 11;
+      break;
+    case 2:
+      hash += get16bits(data);
+      hash ^= hash << 11;
+      hash += hash >> 17;
+      break;
+    case 1:
+      hash += (signed char)*data;
+      hash ^= hash << 10;
+      hash += hash >> 1;
   }
 
   /* Force "avalanching" of final 127 bits */

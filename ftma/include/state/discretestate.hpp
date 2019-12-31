@@ -34,35 +34,34 @@ using std::unordered_map;
 using std::vector;
 
 class StateElem {
-public:
+ public:
   virtual int hash_value() const { return 0; }
-  virtual bool contain(const StateElem *other) const { return false; }
-  virtual bool equal(const StateElem *other) const { return false; }
+  virtual bool contain(const StateElem* other) const { return false; }
+  virtual bool equal(const StateElem* other) const { return false; }
 };
 
 class ComposeState : public StateElem {
-
-public:
+ public:
   int hash_value() const {
     return left->hash_value() * 100 + right->hash_value();
   }
-  virtual bool contain(const StateElem *other) const {
-    const ComposeState *rhs = (const ComposeState *)other;
+  virtual bool contain(const StateElem* other) const {
+    const ComposeState* rhs = (const ComposeState*)other;
     return left->contain(rhs->left) && right->contain(rhs->right);
   }
-  virtual bool equal(const StateElem *other) const {
-    const ComposeState *rhs = (const ComposeState *)other;
+  virtual bool equal(const StateElem* other) const {
+    const ComposeState* rhs = (const ComposeState*)other;
     return left->equal(rhs->left) && right->equal(rhs->right);
   }
 
-private:
-  StateElem *left;
-  StateElem *right;
+ private:
+  StateElem* left;
+  StateElem* right;
 };
 
-template <typename T> class SingleElem {
-
-public:
+template <typename T>
+class SingleElem {
+ public:
   SingleElem() {
     stateId = -1;
     value = nullptr;
@@ -72,38 +71,36 @@ public:
     value = nullptr;
   }
 
-  SingleElem(int id, T *v) {
+  SingleElem(int id, T* v) {
     stateId = id;
     value = v;
   }
-  const T *getValue() const { return value; }
+  const T* getValue() const { return value; }
 
-private:
+ private:
   int stateId;
-  T *value;
+  T* value;
 };
 
-template <typename T> class StateSet {
+template <typename T>
+class StateSet {
   typedef StateSet<T> StateSet_t;
 
-public:
+ public:
   class const_iterator;
   class iterator;
   StateSet() {
-
     element_len = head_part_len = body_part_len = inc_body_part = 0;
     lhs_data = rhs_data = nullptr;
   }
-  StateSet(const StateSet &s) { assert(false); }
+  StateSet(const StateSet& s) { assert(false); }
 
-  StateSet operator=(const StateSet &s) const {
-
+  StateSet operator=(const StateSet& s) const {
     assert(false);
     return *this;
   }
 
-  void setParam(const int n, int head_len, const Compression<int> &d) {
-
+  void setParam(const int n, int head_len, const Compression<int>& d) {
     element_len = n;
     head_part_len = head_len;
     body_part_len = n - head_len;
@@ -143,10 +140,10 @@ public:
    * @return  NOT_FOUND if  one is contain not in set; otherwise the id this
    * the set.
    */
-  int add(const T *const one) {
+  int add(const T* const one) {
     int hashV = 0;
     int head_id = addHead(one, hashV);
-    const T *body_part = one + head_part_len;
+    const T* body_part = one + head_part_len;
 
     /**
      * check whether has element is set has same hash_value
@@ -165,11 +162,10 @@ public:
   }
 
   // return NOT_FOUND if not find, otherwise. nonnegative integer
-  int contain(const T *const one) const {
-
+  int contain(const T* const one) const {
     int id = containHead(one);
-    if (id > -1) { // find
-      const T *bodyPart = one + head_part_len;
+    if (id > -1) {  // find
+      const T* bodyPart = one + head_part_len;
 
       for (size_t i = 0; i < body_part_elements[id].size();
            i += inc_body_part) {
@@ -188,10 +184,10 @@ public:
    *
    * @return NOT_FOUND if one is not in set
    */
-  int findId(const T *const one) const {
+  int findId(const T* const one) const {
     int id = containHead(one);
-    if (id > -1) { // find
-      const T *bodyPart = one + head_part_len;
+    if (id > -1) {  // find
+      const T* bodyPart = one + head_part_len;
 
       for (size_t i = 0; i < body_part_elements[id].size();
            i += inc_body_part) {
@@ -203,11 +199,10 @@ public:
     return NOT_FOUND;
   }
 
-  bool exists(const T *const one) const {
-
+  bool exists(const T* const one) const {
     int id = containHead(one);
-    if (id > -1) { // find
-      const T *bodyPart = one + head_part_len;
+    if (id > -1) {  // find
+      const T* bodyPart = one + head_part_len;
 
       for (size_t i = 0; i < body_part_elements[id].size();
            i += inc_body_part) {
@@ -220,7 +215,7 @@ public:
   }
 
   // get   state by id
-  void getElementAt(T *out, const int id) const {
+  void getElementAt(T* out, const int id) const {
     assert(3 * id < (int)index.size());
     int hashV = index[3 * id];
     int headId = index[3 * id + 1];
@@ -242,22 +237,22 @@ public:
   }
 
   class const_iterator {
-  protected:
-    const StateSet_t *data;
+   protected:
+    const StateSet_t* data;
     typename unordered_map<int, pair<vector<T>, vector<int>>>::const_iterator
         it;
     size_t first_index;
     size_t second_index;
     vector<T> temp_vec;
 
-  public:
-    const_iterator(const StateSet_t *out_data) : data(out_data) {
+   public:
+    const_iterator(const StateSet_t* out_data) : data(out_data) {
       it = out_data->head_part_elements.begin();
       first_index = 0;
       second_index = 0;
     }
 
-    const_iterator(const StateSet_t *out_data,
+    const_iterator(const StateSet_t* out_data,
                    typename unordered_map<int, pair<vector<T>, vector<int>>>::
                        const_iterator out_it,
                    size_t out_first_index, size_t out_second_index)
@@ -267,15 +262,14 @@ public:
       second_index = out_second_index;
     }
 
-    const_iterator(const const_iterator &other) : data(other.data) {
+    const_iterator(const const_iterator& other) : data(other.data) {
       it = other.it;
       first_index = other.first_index;
       second_index = other.second_index;
     }
 
-    const_iterator &operator++() {
-
-      second_index += data->inc_body_part; //
+    const_iterator& operator++() {
+      second_index += data->inc_body_part;  //
       int secondId = it->second.second[first_index];
 
       if (second_index >= data->body_part_elements[secondId].size()) {
@@ -288,21 +282,19 @@ public:
       }
       return *this;
     }
-    bool operator==(const const_iterator &other) const {
-
+    bool operator==(const const_iterator& other) const {
       return (data == other.data) && (it == other.it) &&
              (first_index == other.first_index) &&
              (second_index == other.second_index);
     }
 
-    bool operator!=(const const_iterator &other) const {
+    bool operator!=(const const_iterator& other) const {
       return (data != other.data) || (it != other.it) ||
              (first_index != other.first_index) ||
              (second_index != other.second_index);
     }
 
-    T *operator*() {
-
+    T* operator*() {
       int secondId = it->second.second[first_index];
       temp_vec.clear();
       temp_vec.insert(
@@ -320,22 +312,21 @@ public:
   };
 
   class iterator {
-
-  protected:
-    StateSet_t *data;
+   protected:
+    StateSet_t* data;
     typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator it;
     size_t first_index;
     size_t second_index;
     vector<T> temp_vec;
 
-  public:
-    iterator(StateSet_t *out_data) : data(out_data) {
+   public:
+    iterator(StateSet_t* out_data) : data(out_data) {
       it = out_data->head_part_elements.begin();
       first_index = 0;
       second_index = 0;
     }
 
-    iterator(StateSet_t *out_data,
+    iterator(StateSet_t* out_data,
              typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator
                  out_it,
              size_t out_first_index, size_t out_second_index)
@@ -345,13 +336,13 @@ public:
       second_index = out_second_index;
     }
 
-    iterator(const iterator &other) : data(other.data) {
+    iterator(const iterator& other) : data(other.data) {
       it = other.it;
       first_index = other.first_index;
       second_index = other.second_index;
     }
-    iterator &operator++() {
-      second_index += data->inc_body_part; //
+    iterator& operator++() {
+      second_index += data->inc_body_part;  //
       int secondId = it->second.second[first_index];
 
       if (second_index >= data->body_part_elements[secondId].size()) {
@@ -365,19 +356,18 @@ public:
       return *this;
     }
 
-    bool operator==(const iterator &other) const {
+    bool operator==(const iterator& other) const {
       return (data == other.data) && (it == other.it) &&
              (first_index == other.first_index) &&
              (second_index == other.second_index);
     }
-    bool operator!=(const iterator &other) const {
+    bool operator!=(const iterator& other) const {
       return (data != other.data) || (it != other.it) ||
              (first_index != other.first_index) ||
              (second_index != other.second_index);
     }
 
-    T *operator*() {
-
+    T* operator*() {
       int secondId = it->second.second[first_index];
       temp_vec.clear();
       temp_vec.insert(
@@ -394,7 +384,7 @@ public:
     }
   };
 
-private:
+ private:
   /** head1, head2,...,headn have same hash_value
    * hash_value(head*) --> ((head1, head2,...,headn),
    * the corresponding bodyPart location in body_part_elements)
@@ -402,19 +392,18 @@ private:
   unordered_map<int, pair<vector<T>, vector<int>>> head_part_elements;
 
   vector<vector<T>> body_part_elements;
-  vector<int> index; // map it to head_part_elements id and body_part_elements
+  vector<int> index;  // map it to head_part_elements id and body_part_elements
 
   int element_len;
 
   int head_part_len;
   int body_part_len;
   int inc_body_part;
-  int *lhs_data;
-  int *rhs_data;
+  int* lhs_data;
+  int* rhs_data;
   Compression<int> decoder;
 
-  int addHead(const T *const head, int &hashV) {
-
+  int addHead(const T* const head, int& hashV) {
     hashV = hash_value(head);
 
     typename unordered_map<int, pair<vector<T>, vector<int>>>::iterator ret =
@@ -439,7 +428,7 @@ private:
     return re;
   }
 
-  bool getHead(UINT *out, const int hashV, const int headId) const {
+  bool getHead(UINT* out, const int hashV, const int headId) const {
     typename unordered_map<int, pair<vector<T>, vector<int>>>::const_iterator
         ret = head_part_elements.find(hashV);
 
@@ -465,8 +454,7 @@ private:
    * @return  >=0, if find the head in headPartElements
    * -1, otherwise.
    */
-  int containHead(const T *const head) const {
-
+  int containHead(const T* const head) const {
     int hashV = hash_value(head);
 
     typename unordered_map<int, pair<vector<T>, vector<int>>>::const_iterator
@@ -482,7 +470,7 @@ private:
     return -1;
   }
 
-  inline int addBodyValue(int hashV, int headId, const T *const body) {
+  inline int addBodyValue(int hashV, int headId, const T* const body) {
     int re = index.size() / 3;
     index.push_back(hashV);
     index.push_back(headId);
@@ -495,13 +483,13 @@ private:
     return re;
   }
 
-  inline int hash_value(const T *const head) const {
-    return FastHash((char *)head, head_part_len * sizeof(T));
+  inline int hash_value(const T* const head) const {
+    return FastHash((char*)head, head_part_len * sizeof(T));
   }
-  inline bool equal(const T *const lhs, const T *const rhs) const {
+  inline bool equal(const T* const lhs, const T* const rhs) const {
     return memcmp(lhs, rhs, element_len * sizeof(T)) == 0;
   }
-  inline bool containBody(const T *const lhs, const T *const rhs) const {
+  inline bool containBody(const T* const lhs, const T* const rhs) const {
     int len = decoder.getDataLen();
 
     decoder.decode(lhs_data, lhs);
@@ -518,31 +506,31 @@ private:
 
     return i == len;
   }
-  inline bool existsBody(const T *const lhs, const T *const rhs) const {
+  inline bool existsBody(const T* const lhs, const T* const rhs) const {
     return memcmp(lhs, rhs, body_part_len * sizeof(T)) == 0;
   }
 };
 
-template <typename T> class SingleStateSet {
-
-public:
+template <typename T>
+class SingleStateSet {
+ public:
   SingleStateSet() { stateId = -1; }
   SingleStateSet(int id) { stateId = id; }
   int getStateId() const { return stateId; }
 
-  virtual bool add(const pair<int, T *> &one) { return false; }
+  virtual bool add(const pair<int, T*>& one) { return false; }
 
-  virtual bool contain(const pair<int, T *> &one) const { return false; }
+  virtual bool contain(const pair<int, T*>& one) const { return false; }
 
-protected:
+ protected:
   int stateId;
 };
 
-template <typename T> class ComposeStateSet {
-
-public:
+template <typename T>
+class ComposeStateSet {
+ public:
   ComposeStateSet() { num = 0; }
-  bool addCompent(SingleStateSet<T> &comp) {
+  bool addCompent(SingleStateSet<T>& comp) {
     int id = comp.getStateId();
     if (stateIndexMap.find(id) != stateIndexMap.end()) {
       return false;
@@ -557,41 +545,39 @@ public:
   /*
     pair<int,T> stateID -> State
    */
-  virtual bool add(const vector<pair<int, T *>> &one) { return false; }
+  virtual bool add(const vector<pair<int, T*>>& one) { return false; }
 
-  virtual bool contain(const vector<pair<int, T *>> &one) const {
-    return false;
-  }
+  virtual bool contain(const vector<pair<int, T*>>& one) const { return false; }
 
-  virtual ComposeStateSet<T> &operator+(const ComposeStateSet<T> &other) {
+  virtual ComposeStateSet<T>& operator+(const ComposeStateSet<T>& other) {
     return *this;
   }
 
-protected:
+ protected:
   int num;
-  map<int, int> stateIndexMap; // id -> loc_index
+  map<int, int> stateIndexMap;  // id -> loc_index
 
-  virtual void addCompentImpl(SingleStateSet<T> &comp) {}
+  virtual void addCompentImpl(SingleStateSet<T>& comp) {}
 };
 
-template <typename T> class ExpandComposeStateSet : public ComposeStateSet<T> {
-
-public:
+template <typename T>
+class ExpandComposeStateSet : public ComposeStateSet<T> {
+ public:
   ExpandComposeStateSet() : ComposeStateSet<T>() { len = 0; }
 
   ~ExpandComposeStateSet() { clear(); }
   void clear() {
-    for (typename vector<T *>::iterator it = values.begin(); it != values.end();
+    for (typename vector<T*>::iterator it = values.begin(); it != values.end();
          it++) {
       delete (*it);
     }
     values.clear();
   }
 
-  bool add(const vector<pair<int, T *>> &one) {
+  bool add(const vector<pair<int, T*>>& one) {
     int num = ComposeStateSet<T>::num;
     assert(one.size() == num);
-    vector<T *> dummy(num);
+    vector<T*> dummy(num);
     for (int i = 0; i < num; i++) {
       int id = ComposeStateSet<T>::stateIndexMap.at(one[i].first);
       dummy[id] = one[i].second;
@@ -608,8 +594,8 @@ public:
     return false;
   }
 
-  bool contain(const vector<pair<int, T *>> &one) const {
-    vector<T *> dummy;
+  bool contain(const vector<pair<int, T*>>& one) const {
+    vector<T*> dummy;
     for (int i = 0; i < ComposeStateSet<T>::num; i++) {
       for (int j = 0; j < ComposeStateSet<T>::num; j++) {
         if (i == one[j].first) {
@@ -621,16 +607,16 @@ public:
     return contain(dummy);
   }
 
-private:
-  vector<T *> values;
+ private:
+  vector<T*> values;
   int len;
 
-  ExpandComposeStateSet(const ExpandComposeStateSet<T> &other) {}
-  ExpandComposeStateSet<T> &operator=(const ExpandComposeStateSet<T> &other) {
+  ExpandComposeStateSet(const ExpandComposeStateSet<T>& other) {}
+  ExpandComposeStateSet<T>& operator=(const ExpandComposeStateSet<T>& other) {
     return *this;
   }
 
-  bool contain(const vector<T *> &dummy) const {
+  bool contain(const vector<T*>& dummy) const {
     int num = ComposeStateSet<T>::num;
     for (size_t i = 0; i < len; i++) {
       int j = 0;
@@ -646,7 +632,7 @@ private:
     return false;
   }
 
-protected:
+ protected:
   void addStateIdImpl() { len = 0; }
 
   //  CompactComposeStateSet<T> toCompactCompStateSet( ) const;
@@ -654,18 +640,16 @@ protected:
 
 template <typename T>
 class SingleCompactComposeStateSet : public SingleStateSet<T> {
-
-public:
+ public:
   SingleCompactComposeStateSet(int id) : SingleStateSet<T>(id) {}
-  bool add(const pair<int, T *> &one) {
+  bool add(const pair<int, T*>& one) {
     if (contain(one)) {
       return false;
     }
     singleValue = SingleElem<T>(one.first, one.second);
     return true;
   }
-  bool contain(const pair<int, T *> &one) const {
-
+  bool contain(const pair<int, T*>& one) const {
     if (SingleStateSet<T>::stateId == -1) {
       return false;
     }
@@ -676,27 +660,25 @@ public:
     return false;
   }
 
-protected:
+ protected:
   void addStateIdImpl() {}
 
-private:
+ private:
   SingleElem<T> singleValue;
   bool isInitial;
 };
 
 template <typename T>
 class SingleSetCompactComposeStateSet : public SingleStateSet<T> {
-
-public:
+ public:
   SingleSetCompactComposeStateSet(int id)
       : SingleStateSet<T>(id), setValue(id) {}
-  bool contain(const pair<int, T *> &one) const {
-
+  bool contain(const pair<int, T*>& one) const {
     assert(one.first == SingleStateSet<T>::stateId);
     return setValue.contain(one.second);
   }
 
-  bool add(const pair<int, T *> &one) {
+  bool add(const pair<int, T*>& one) {
     if (contain(one)) {
       return false;
     }
@@ -706,20 +688,18 @@ public:
     return true;
   }
 
-private:
+ private:
   StateSet<T> setValue;
 };
 
 template <typename T>
 class CompleteCompactComposeStateSet : public ComposeStateSet<T> {
-
-public:
+ public:
   /**
    * there is only one compoment which does not contain argument one
    *
    */
-  int leftOneContain(const vector<pair<int, T *>> &one) const {
-
+  int leftOneContain(const vector<pair<int, T*>>& one) const {
     assert(one.size() == ComposeStateSet<T>::num);
     int re = -1;
     for (int i = 0; i < ComposeStateSet<T>::num; i++) {
@@ -736,7 +716,7 @@ public:
     return re;
   }
 
-  bool contain(const vector<pair<int, T *>> &one) const {
+  bool contain(const vector<pair<int, T*>>& one) const {
     assert(one.size() == ComposeStateSet<T>::num);
     int i = 0;
     for (; i < ComposeStateSet<T>::num; i++) {
@@ -753,7 +733,7 @@ public:
     return false;
   }
 
-  bool add(const vector<pair<int, T *>> &one) {
+  bool add(const vector<pair<int, T*>>& one) {
     assert(one.size() == ComposeStateSet<T>::num);
     if (contain(one)) {
       return false;
@@ -772,18 +752,18 @@ public:
     return true;
   }
 
-private:
+ private:
   vector<SingleStateSet<T>> composeValue;
 
-  virtual void addCompentImpl(SingleStateSet<T> &comp) {
+  virtual void addCompentImpl(SingleStateSet<T>& comp) {
     composeValue.push_back(comp);
   }
 };
 
-template <typename T> class CompactComposeStateSet : public ComposeStateSet<T> {
-
-public:
-  bool contain(const vector<pair<int, T *>> &one) const {
+template <typename T>
+class CompactComposeStateSet : public ComposeStateSet<T> {
+ public:
+  bool contain(const vector<pair<int, T*>>& one) const {
     for (typename vector<CompleteCompactComposeStateSet<T>>::const_iterator it =
              composeValue.begin();
          it != composeValue.end(); it++) {
@@ -796,7 +776,7 @@ public:
     }
     return false;
   }
-  bool add(const vector<pair<int, T *>> &one) {
+  bool add(const vector<pair<int, T*>>& one) {
     assert(one.size() == ComposeStateSet<T>::num);
     if (contain(one)) {
       return false;
@@ -811,13 +791,13 @@ public:
     return other.add(one);
   }
 
-protected:
-  void addCompentImpl(SingleStateSet<T> &comp) { other.addCompent(comp); }
+ protected:
+  void addCompentImpl(SingleStateSet<T>& comp) { other.addCompent(comp); }
 
-private:
+ private:
   vector<CompleteCompactComposeStateSet<T>> composeValue;
   ExpandComposeStateSet<T> other;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 #endif

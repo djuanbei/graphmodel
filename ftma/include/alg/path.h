@@ -13,17 +13,17 @@
 namespace graphsat {
 
 class Path {
-public:
+ public:
   /**
    * @return  the next step, null_ptr if reaches the terminal
    */
-  virtual const OneStep *next();
+  virtual const OneStep* next();
   /**
    * reset the next to the first step
    */
   virtual void reset();
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

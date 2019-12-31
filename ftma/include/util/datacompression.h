@@ -22,12 +22,15 @@ using std::make_pair;
 using std::numeric_limits;
 using std::pair;
 using std::vector;
-template <typename T> class Compression {
-public:
+template <typename T>
+class Compression {
+ public:
   Compression() { original_data_len = 0; }
   Compression(int len)
-      : original_data_len(len), bounds(len),
-        domain(len, numeric_limits<UINT>::max()), shift(len, true) {
+      : original_data_len(len),
+        bounds(len),
+        domain(len, numeric_limits<UINT>::max()),
+        shift(len, true) {
     for (int i = 0; i < len; i++) {
       bounds[i].first = numeric_limits<int>::min();
       bounds[i].second = numeric_limits<int>::max();
@@ -49,7 +52,7 @@ public:
 
   int getCompressionSize() const { return compressionSize; }
 
-  void encode(UINT *out, const T *const data) const {
+  void encode(UINT* out, const T* const data) const {
     fill(out, out + compressionSize, 0);
     int j = 0;
     UINT base = 1;
@@ -73,7 +76,7 @@ public:
     }
   }
 
-  void decode(T *out, const UINT *const data) const {
+  void decode(T* out, const UINT* const data) const {
     int j = 0;
     UINT dummy = data[0];
     for (int i = 0; i < original_data_len; i++) {
@@ -86,7 +89,7 @@ public:
     }
   }
 
-private:
+ private:
   int original_data_len;
   /**
    * bounds[ i].frist  <= value[ i] <= bounds[ i].second
@@ -114,9 +117,9 @@ private:
   }
 };
 
-template <typename C> class StateConvert {
-
-public:
+template <typename C>
+class StateConvert {
+ public:
   StateConvert() {
     head_length = 0;
     head_comp = 0;
@@ -132,12 +135,12 @@ public:
     body_comp = bCom;
   }
 
-  void encode(UINT *out, const C *data) const {
+  void encode(UINT* out, const C* data) const {
     head_comp.encode(out, data);
     body_comp.encode(out + com_head_length, data + head_length);
   }
 
-  void decode(C *out, const UINT *data) const {
+  void decode(C* out, const UINT* data) const {
     head_comp.decode(out, data);
     body_comp.decode(out + head_length, data + com_head_length);
   }
@@ -145,7 +148,7 @@ public:
 
   int getCompressionHeadSize() const { return head_comp.getCompressionSize(); }
 
-private:
+ private:
   int head_length;
   int com_head_length;
 
@@ -154,6 +157,6 @@ private:
   Compression<C> body_comp;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

@@ -15,9 +15,9 @@
 namespace graphsat {
 using std::string;
 
-string getFunArg(const string &fun);
+string getFunArg(const string& fun);
 
-string getFunName(const string &fun);
+string getFunName(const string& fun);
 
 /**
  * delete start spaces and  last spaces
@@ -27,6 +27,6 @@ std::string trim(std::string s);
 
 std::string rand_str(int len = 6);
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

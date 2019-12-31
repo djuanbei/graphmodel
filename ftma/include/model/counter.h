@@ -13,10 +13,10 @@ namespace graphsat {
 
 const int MAX_COUNTER_VALUE = 255;
 class Counter {
-private:
+ private:
   int value;
-  int lb, up; // lb<= value<= up
-public:
+  int lb, up;  // lb<= value<= up
+ public:
   Counter() { value = lb = up = 0; }
   Counter(int l, int u) {
     value = l;
@@ -27,6 +27,6 @@ public:
   int getLB() const { return lb; }
   int getUP() const { return up; }
 };
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

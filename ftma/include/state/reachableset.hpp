@@ -36,11 +36,11 @@ using std::vector;
 #define isReach(P, S) false
 #endif
 
-template <typename M> class ReachableSet {
-public:
+template <typename M>
+class ReachableSet {
+ public:
   typedef typename M::State_t State_t;
   ReachableSet(const shared_ptr<M> outta) : manager(outta) {
-
     current_state_id = -1;
 
     prop = nullptr;
@@ -57,7 +57,7 @@ public:
                        manager->getCompressionHeadSize(),
                        manager->getBodyCompression());
 
-    const vector<int *> &states = manager->getInitialState();
+    const vector<int*>& states = manager->getInitialState();
 
     for (auto e : states) {
       add(e);
@@ -74,7 +74,7 @@ public:
     convert_UINT = nullptr;
   }
 
-  void setProperty(const Property *p) { prop = p; }
+  void setProperty(const Property* p) { prop = p; }
 
   vector<UINT> getProcess_states() const {
     vector<UINT> re;
@@ -89,7 +89,7 @@ public:
    * BFS
    * @return next state by order given order
    */
-  State_t *next() {
+  State_t* next() {
     // State_t *state = wait_set.front(); // BFS
     // wait_set.pop_front();
     current_state_id++;
@@ -97,7 +97,7 @@ public:
     // State_t *state = wait_set.back( ); //DFS
     // wait_set.pop_back();
     //    manager->getClockManager().decode(manager->getDBM(state));
-    int *state1 = manager->newState();
+    int* state1 = manager->newState();
     getStateAt(state1, current_state_id);
 
     //    assert( manager->equal( state, state1));
@@ -116,8 +116,7 @@ public:
   /**
    Search in the reachable set to check whether the prop satisfy.
    */
-  Check_State search(const Property *prop) {
-
+  Check_State search(const Property* prop) {
     for (auto state : reach_set) {
       manager->decode(convert_C_t, state);
 
@@ -137,12 +136,12 @@ public:
    * @return ture if prop is true under state, false otherwise.
    */
 #ifndef ONLINE_CHECK
-  inline bool isReach(const State_t *const state) const {
+  inline bool isReach(const State_t* const state) const {
     return (prop != nullptr) && ((*prop)(manager.get(), state));
   }
 #endif
 
-  Check_State add(const State_t *const state) {
+  Check_State add(const State_t* const state) {
     if (cache_state != state) {
       manager->copy(cache_state, state);
     }
@@ -158,11 +157,11 @@ public:
     return FALSE;
   }
 
-  void getCompressionStateAt(UINT *out, const int id) const {
+  void getCompressionStateAt(UINT* out, const int id) const {
     reach_set.getElementAt(out, id);
   }
 
-  void getStateAt(int *out, const int id) const {
+  void getStateAt(int* out, const int id) const {
     getCompressionStateAt(convert_UINT, id);
     manager->decode(out, convert_UINT);
   }
@@ -172,7 +171,7 @@ public:
     return manager->getParentId(cache_state);
   }
 
-  int findId(const int *const state) const {
+  int findId(const int* const state) const {
     for (size_t i = 0; i < size(); i++) {
       getStateAt(cache_state, i);
       if (manager->contain(cache_state, state)) {
@@ -184,7 +183,7 @@ public:
   /**
    * @brief find one execution path from initial to state
    */
-  vector<int> findReachPath(const int *const state) const {
+  vector<int> findReachPath(const int* const state) const {
     vector<int> path;
     int sid = findId(state);
     if (sid == NOT_FOUND) {
@@ -203,12 +202,12 @@ public:
    * which has been  exposured.
    * @return vector (lhs_state, rhs_state)
    */
-  const vector<pair<int, int>> &getFixPoindTail() const { return passed_pair; }
+  const vector<pair<int, int>>& getFixPoindTail() const { return passed_pair; }
 
   size_t size() const { return reach_set.size(); }
 
-  const StateSet<UINT> &getStates() const { return reach_set; }
-  const M *getManager() const { return manager.get(); }
+  const StateSet<UINT>& getStates() const { return reach_set; }
+  const M* getManager() const { return manager.get(); }
 
   /**
    * For one template  system, this function projection
@@ -216,7 +215,7 @@ public:
    *
    */
   template <typename PROJ>
-  void project(const PROJ &proj, vector<vector<State_t>> &re) {
+  void project(const PROJ& proj, vector<vector<State_t>>& re) {
     re.clear();
 
     for (auto state : reach_set) {
@@ -230,7 +229,7 @@ public:
     assert(re.size() == reach_set.size());
   }
 
-  vector<vector<State_t>> getPath(const State_t *const target) const {
+  vector<vector<State_t>> getPath(const State_t* const target) const {
     vector<vector<State_t>> re;
 
     int target_id = NOT_FOUND;
@@ -258,8 +257,7 @@ public:
     return re;
   }
 
-  bool contain(const State_t *const target) const {
-
+  bool contain(const State_t* const target) const {
     for (size_t i = 0; i < size(); i++) {
       getStateAt(cache_state, i);
 
@@ -270,9 +268,8 @@ public:
     return false;
   }
 
-private:
-  inline bool addToReachableSet(State_t *state) {
-
+ private:
+  inline bool addToReachableSet(State_t* state) {
     manager->encode(convert_UINT, state);
     int re = reach_set.add(convert_UINT);
 
@@ -280,7 +277,6 @@ private:
            "The element resently add the reach set.");
 
     if (re != NOT_FOUND) {
-
       // int target = findPassEd(convert_UINT);
       // assert(target != NOT_FOUND);
       // assert(re ==target);
@@ -290,8 +286,7 @@ private:
     return re == NOT_FOUND;
   }
 
-  int findPassEd(const UINT *state) const {
-
+  int findPassEd(const UINT* state) const {
     int head_part_len = manager->getCompressionHeadSize();
 
     for (size_t i = 0; i < size(); i++) {
@@ -307,18 +302,18 @@ private:
     return NOT_FOUND;
   }
 
-private:
+ private:
   shared_ptr<const M> manager;
   StateSet<UINT> reach_set;
 
-  State_t *cache_state;
+  State_t* cache_state;
 
   int component_num;
   std::default_random_engine generator;
 
-  UINT *convert_UINT;
-  State_t *convert_C_t;
-  const Property *prop;
+  UINT* convert_UINT;
+  State_t* convert_C_t;
+  const Property* prop;
 
   int compression_size;
 
@@ -335,6 +330,6 @@ private:
   }
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

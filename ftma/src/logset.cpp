@@ -17,4 +17,4 @@ void logSet() {
   // 设置ERROR级别以上的信息log文件的路径和前缀名
   // google::SetLogDestination(google::GLOG_ERROR, "~/log/ERROR_");
 }
-} // namespace graphsat
+}  // namespace graphsat

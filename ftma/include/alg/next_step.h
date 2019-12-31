@@ -16,10 +16,10 @@
 namespace graphsat {
 
 class NextStep {
-public:
-  virtual std::vector<OneStep> getNextStep(void *state) const = 0;
+ public:
+  virtual std::vector<OneStep> getNextStep(void* state) const = 0;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

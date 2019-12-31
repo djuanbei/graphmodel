@@ -19,14 +19,14 @@
 
 namespace graphsat {
 using namespace std;
-bool element_cmp(const vector<int> &lhs, const vector<int> &rhs);
+bool element_cmp(const vector<int>& lhs, const vector<int>& rhs);
 
-template <typename SYS, typename G, typename PROJ> class IncrementalCheck {
-
-public:
+template <typename SYS, typename G, typename PROJ>
+class IncrementalCheck {
+ public:
   IncrementalCheck() : start(2), end(8), project_dim(2) {}
 
-  bool check(const G &g, const Property *prop) {
+  bool check(const G& g, const Property* prop) {
     SYS dummy = g.generate(start);
     shared_ptr<typename SYS::StateManager_t> manager = dummy.getStateManager();
     ReachableSet<typename SYS::StateManager_t> pre_data(manager);
@@ -69,8 +69,8 @@ public:
     return false;
   }
 
-private:
-  void deleteRepeat(vector<vector<int>> &pre_project) const {
+ private:
+  void deleteRepeat(vector<vector<int>>& pre_project) const {
     std::vector<vector<int>>::iterator it;
     it = std::unique(pre_project.begin(), pre_project.end());
     pre_project.resize(std::distance(pre_project.begin(), it));
@@ -80,6 +80,6 @@ private:
   size_t project_dim;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

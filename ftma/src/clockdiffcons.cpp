@@ -3,8 +3,8 @@
 
 namespace graphsat {
 
-ClockConstraint::ClockConstraint(const Argument &clock_id1, COMP_OPERATOR eop,
-                                 const Argument &rhs) {
+ClockConstraint::ClockConstraint(const Argument& clock_id1, COMP_OPERATOR eop,
+                                 const Argument& rhs) {
   clock_x_arg = clock_id1;
 
   clock_y_arg.type = CONST_ARG;
@@ -18,10 +18,9 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1, COMP_OPERATOR eop,
   assert(false && "At now the program has not supprt other cases.");
 }
 
-ClockConstraint::ClockConstraint(const Argument &clock_id1,
-                                 const Argument &clock_id2, COMP_OPERATOR eop,
-                                 const Argument &rhs) {
-
+ClockConstraint::ClockConstraint(const Argument& clock_id1,
+                                 const Argument& clock_id2, COMP_OPERATOR eop,
+                                 const Argument& rhs) {
   clock_x_arg = clock_id1;
   clock_y_arg = clock_id2;
   rhs_arg = rhs;
@@ -33,7 +32,7 @@ ClockConstraint::ClockConstraint(const Argument &clock_id1,
   assert(false && "At now the program has not supprt other cases.");
 }
 
-void ClockConstraint::to_real(const TOReal *convertor) {
+void ClockConstraint::to_real(const TOReal* convertor) {
   real_clock_x_arg = convertor->to_real(CLOCK_T, clock_x_arg);
   real_clock_y_arg = convertor->to_real(CLOCK_T, clock_y_arg);
   real_rhs_arg = convertor->to_real(CLOCK_T, rhs_arg);
@@ -66,7 +65,7 @@ ClockConstraint ClockConstraint::neg() const {
   return re;
 }
 
-bool ClockConstraint::isSat(const ClockConstraint &cons) const {
+bool ClockConstraint::isSat(const ClockConstraint& cons) const {
   if ((cons.clock_x == clock_x) && (cons.clock_y == clock_y)) {
     return true;
   } else if ((cons.clock_x == clock_y) && (cons.clock_y == clock_x)) {
@@ -98,7 +97,7 @@ bool ClockConstraint::isSat(const ClockConstraint &cons) const {
   return true;
 }
 
-std::ostream &operator<<(std::ostream &out, const ClockConstraint &cons) {
+std::ostream& operator<<(std::ostream& out, const ClockConstraint& cons) {
   if (cons.clock_x >= 0 && cons.clock_y >= 0) {
     if (isStrict<int>(cons.matrix_value)) {
       out << CLOCK_NAME_PRE << cons.clock_x << " - " << CLOCK_NAME_PRE
@@ -172,23 +171,23 @@ void ClockConstraint::init(const int clock_id1, const int clock_id2,
   } else if (GE == op) {
     clock_x = clock_id2;
     clock_y = clock_id1;
-    matrix_value = getMatrixValue(-rhs, false); // clock_y-clock_x <= -rhs
+    matrix_value = getMatrixValue(-rhs, false);  // clock_y-clock_x <= -rhs
   } else if (GT == op) {
     clock_x = clock_id2;
     clock_y = clock_id1;
-    matrix_value = getMatrixValue(-rhs, true); // clock_y-clock_x < -rhs
+    matrix_value = getMatrixValue(-rhs, true);  // clock_y-clock_x < -rhs
   }
 }
 
-ostream &ClockConstraint::dump2Dot(ostream &out) const {
-  out << "<tr>";
+ostream& ClockConstraint::dump2Dot(ostream& out) const {
+  out << "<tr><td>";
   if (clock_x_arg.type != EMPTY_ARG) {
     out << clock_x_arg.to_string();
   } else if (clock_y_arg.type != EMPTY_ARG) {
     out << " - " << clock_y_arg.to_string();
   }
-  out << getOpStr(op) << " " << rhs_arg.to_string();
-  out << "</tr>";
+  out << " " << getOpStr(op) << " " << rhs_arg.to_string();
+  out << "</td></tr>" << endl;
 
   return out;
 }
@@ -214,4 +213,4 @@ ClockConstraint randConst(const int num, const int low, const int up) {
   }
 }
 
-} // namespace graphsat
+}  // namespace graphsat

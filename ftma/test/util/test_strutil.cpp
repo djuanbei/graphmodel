@@ -5,7 +5,6 @@
 using namespace graphsat;
 
 TEST(STR_UTIL, getFunArg) {
-
   string fun = "get( x)";
   string arg = getFunArg(fun);
   EXPECT_EQ(arg, "x");

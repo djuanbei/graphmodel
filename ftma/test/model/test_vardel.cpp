@@ -5,7 +5,6 @@
 using namespace graphsat;
 
 TEST(VAR_DECL_H, VarDecl) {
-
   VarDecl vdel;
   EXPECT_EQ(vdel.getClockNumber(), 0);
   vdel.addClock("x");

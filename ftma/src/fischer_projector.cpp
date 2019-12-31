@@ -1,16 +1,16 @@
-#include "benchmark/fisher_projector.h"
+#include "benchmark/fischer_projector.h"
 
 namespace graphsat {
 
-FisherProjector::FisherProjector(const shared_ptr<TMStateManager> &manager,
-                                 const int pro_d) {
+FischerProjector::FischerProjector(const shared_ptr<TMStateManager>& manager,
+                                   const int pro_d) {
   component_num = manager->getComponentNumber();
   pro_dim = pro_d;
   clock_start = manager->getClockStart();
 }
 
-void FisherProjector::operator()(const int *original_state,
-                                 vector<int> &proj) const {
+void FischerProjector::operator()(const int* original_state,
+                                  vector<int>& proj) const {
   for (int i = 0; i < pro_dim; i++) {
     proj.push_back(original_state[i]);
   }
@@ -21,8 +21,8 @@ void FisherProjector::operator()(const int *original_state,
   }
 }
 
-bool FisherProjector::include(const vector<vector<int>> &lhs,
-                              const vector<vector<int>> &rhs) const {
+bool FischerProjector::include(const vector<vector<int>>& lhs,
+                               const vector<vector<int>>& rhs) const {
   if (lhs.empty()) {
     return rhs.empty();
   }
@@ -61,4 +61,4 @@ bool FisherProjector::include(const vector<vector<int>> &lhs,
   return true;
 }
 
-} // namespace graphsat
+}  // namespace graphsat

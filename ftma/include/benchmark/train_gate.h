@@ -21,37 +21,37 @@
 namespace graphsat {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 class TrainGate {
-public:
+ public:
   TrainGate() {}
   INT_TAS_t generate(int n) const;
 };
 
 class Enqueue_F : public Function {
-public:
-  virtual int operator()(int *state...);
-  virtual Function *copy() const { return new Enqueue_F(); }
+ public:
+  virtual int operator()(int* state...);
+  virtual Function* copy() const { return new Enqueue_F(); }
 };
 
 class Dequeue_F : public Function {
-public:
-  virtual int operator()(int *state...);
-  virtual Function *copy() const { return new Dequeue_F(); }
+ public:
+  virtual int operator()(int* state...);
+  virtual Function* copy() const { return new Dequeue_F(); }
 };
 
 class Front_F : public Function {
-public:
-  virtual int operator()(int *state...);
+ public:
+  virtual int operator()(int* state...);
 
-  virtual Function *copy() const { return new Front_F(); }
+  virtual Function* copy() const { return new Front_F(); }
 };
 
 class Tail_F : public Function {
-public:
-  virtual int operator()(int *state...);
+ public:
+  virtual int operator()(int* state...);
 
-  virtual Function *copy() const { return new Tail_F(); }
+  virtual Function* copy() const { return new Tail_F(); }
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

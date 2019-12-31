@@ -15,8 +15,8 @@
 #include "property/fisherprop.h"
 #include "property/locreachprop.h"
 
-#include "benchmark/fisher.h"
-#include "benchmark/fisher_projector.h"
+#include "benchmark/fischer.h"
+#include "benchmark/fischer_projector.h"
 
 #include "problem/pmcp.hpp"
 
@@ -44,24 +44,24 @@ TEST(TA, UNREACH) {
 
   INT_TAS_t::T_t E00a(L0, L0);
 
-  ClockReset reset(y, Argument(0)); // y-->0
+  ClockReset reset(y, Argument(0));  // y-->0
   E00a += reset;
   // E00a.addReset(y, 0);                     // y-->0
-  INT_TAS_t::CS_t cs1(y, LE, Argument(2)); // y<=2
+  INT_TAS_t::CS_t cs1(y, LE, Argument(2));  // y<=2
   E00a += cs1;
 
   INT_TAS_t::T_t E00b(L0, L0);
 
-  ClockReset reset1(x, Argument(0)); // x-->0
+  ClockReset reset1(x, Argument(0));  // x-->0
   E00b += reset1;
   // E00b.addReset(x, 0);                     // x-->0
-  INT_TAS_t::CS_t cs2(x, LE, Argument(2)); // x<=2
+  INT_TAS_t::CS_t cs2(x, LE, Argument(2));  // x<=2
   E00b += cs2;
 
   INT_TAS_t::T_t E01(L0, L1);
 
-  INT_TAS_t::CS_t cs3(y, LE, Argument(2)); // y<=2
-  INT_TAS_t::CS_t cs4(x, GE, Argument(4)); // x>=4
+  INT_TAS_t::CS_t cs3(y, LE, Argument(2));  // y<=2
+  INT_TAS_t::CS_t cs4(x, GE, Argument(4));  // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -79,7 +79,7 @@ TEST(TA, UNREACH) {
 
   shared_ptr<INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
 
-  sys.build();
+  //  sys.build();
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
@@ -105,33 +105,34 @@ TEST(REACHSET, TERIMINAL) {
   INT_TAS_t::L_t start(0, "start");
 
   INT_TAS_t::L_t loop(1, "loop");
-  INT_TAS_t::CS_t cs1(x, LE, Argument(10)); // x <= 10
+  INT_TAS_t::CS_t cs1(x, LE, Argument(10));  // x <= 10
   loop += cs1;
 
   INT_TAS_t::L_t end(2, "end");
 
   INT_TAS_t::T_t start_loop(start, loop);
 
-  ClockReset reset3(x, Argument(0)); // x-->0
+  ClockReset reset3(x, Argument(0));  // x-->0
   start_loop += reset3;
   ClockReset reset4(y, Argument(0));
-  start_loop += reset4; // y-->0
+  start_loop += reset4;  // y-->0
 
   INT_TAS_t::T_t loop_loop(loop, loop);
-  INT_TAS_t::CS_t cs2(x, LE, Argument(10)); // x <= 10
-  INT_TAS_t::CS_t cs3(x, GE, Argument(10)); // x>=10 === 0-x <= -10
+  INT_TAS_t::CS_t cs2(x, LE, Argument(10));  // x <= 10
+  INT_TAS_t::CS_t cs3(x, GE, Argument(10));  // x>=10 === 0-x <= -10
   loop_loop += cs2;
   loop_loop += cs3;
 
-  loop_loop += ClockReset(x, Argument(0)); // x-->0
-                                           // ClockReset reset5(x,)
-                                           // loop_loop.addReset(x, 0); // x-->0
+  loop_loop +=
+      ClockReset(x, Argument(0));  // x-->0
+                                   // ClockReset reset5(x,)
+                                   // loop_loop.addReset(x, 0); // x-->0
 
   INT_TAS_t::T_t loop_end(loop, end);
-  INT_TAS_t::CS_t cs4(y, GE, Argument(20)); // y>=20=== 0-y <= -20
+  INT_TAS_t::CS_t cs4(y, GE, Argument(20));  // y>=20=== 0-y <= -20
   loop_end += cs4;
-  loop_end += ClockReset(x, Argument(0)); // x-->0
-  loop_end += ClockReset(y, Argument(0)); // y--> 0
+  loop_end += ClockReset(x, Argument(0));  // x-->0
+  loop_end += ClockReset(y, Argument(0));  // y--> 0
 
   ls.push_back(start);
   ls.push_back(loop);
@@ -146,7 +147,7 @@ TEST(REACHSET, TERIMINAL) {
 
   shared_ptr<INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
 
-  sys.build();
+  //  sys.build();
 
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
@@ -175,7 +176,7 @@ TEST(REACHSET, FISHER) {
   typename INT_TAS_t::L_t A(0);
 
   typename INT_TAS_t::L_t req(1);
-  typename INT_TAS_t::CS_t cs1(x, LE, Argument(k)); // x <= k
+  typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait(2);
@@ -187,39 +188,39 @@ TEST(REACHSET, FISHER) {
   Argument second(EMPTY_ARG, 0);
   Argument rhs(CONST_ARG, 0);
 
-  CounterConstraint ccs1(first, second, EQ, rhs); // id==0
+  CounterConstraint ccs1(first, second, EQ, rhs);  // id==0
 
   A_req += ccs1;
 
-  A_req += ClockReset(x, Argument(0)); // x-->0
-                                       //  A_req.addReset(x, 0); // x-->0
+  A_req += ClockReset(x, Argument(0));  // x-->0
+                                        //  A_req.addReset(x, 0); // x-->0
 
   typename INT_TAS_t::T_t req_wait(req, wait);
-  typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
+  typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
   req_wait += cs2;
 
-  req_wait += ClockReset(x, Argument(0)); // x-->0
-                                          // req_wait.addReset(x, 0); // x-->0
+  req_wait += ClockReset(x, Argument(0));  // x-->0
+                                           // req_wait.addReset(x, 0); // x-->0
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs0(PARAMETER_ARG, "pid");
-  CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
+  CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0);  // id=pid
 
   req_wait += action;
 
   typename INT_TAS_t::T_t wait_req(wait, req);
 
-  wait_req += ClockReset(x, Argument(0)); // x-->0
+  wait_req += ClockReset(x, Argument(0));  // x-->0
   //  wait_req.addReset(x, 0);       // x-->0
-  wait_req += ccs1; // id==0
+  wait_req += ccs1;  // id==0
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
   Argument first1(NORMAL_VAR_ARG, "id");
   Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
-  CounterConstraint ccs2(first1, second1, EQ, rhs01); // id==pid
+  CounterConstraint ccs2(first1, second1, EQ, rhs01);  // id==pid
   wait_cs += ccs2;
-  typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
+  typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A(cs, A);
@@ -248,15 +249,16 @@ TEST(REACHSET, FISHER) {
     Parameter param = tmt1->getParameter();
 
     param.setParameterMap("pid",
-                          i); // add relation between local id and global id
+                          i);  // add relation between local id and global id
     shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
   }
-  sys.build();
-  EXPECT_EQ(sys.getTotalChanNumber(), 0);
+
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
+  EXPECT_EQ(sys.getTotalChanNumber(), 0);
+
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(sys);
 
   FischerMutual prop;
@@ -265,15 +267,15 @@ TEST(REACHSET, FISHER) {
 }
 
 TEST(PMCP, FISHER) {
-  FisherGenerator F;
-  IncrementalCheck<INT_TAS_t, FisherGenerator, FisherProjector> check;
+  FischerGenerator F;
+  IncrementalCheck<INT_TAS_t, FischerGenerator, FischerProjector> check;
   FischerMutual prop;
   EXPECT_TRUE(check.check(F, &prop));
 }
 
 TEST(FISHER, SYMMETRY) {
   int n = 3;
-  FisherGenerator F;
+  FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
   Symmetry symm(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
@@ -288,7 +290,7 @@ TEST(FISHER, SYMMETRY) {
 
 TEST(FISHER, equal3) {
   int n = 3;
-  FisherGenerator F;
+  FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
   Symmetry symm(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
@@ -298,10 +300,10 @@ TEST(FISHER, equal3) {
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 
-  const StateSet<UINT> &states = data.getStates();
+  const StateSet<UINT>& states = data.getStates();
   int len = manager->getCompressionSize();
   // UINT *cs1 = new UINT[len];
-  int *s = manager->newState();
+  int* s = manager->newState();
 
   vector<UINT> ss = data.getProcess_states();
   vector<vector<int>> vecs1, vecs2;
@@ -316,7 +318,6 @@ TEST(FISHER, equal3) {
   }
 
   for (auto e : states) {
-
     manager->decode(s, e);
     vector<int> dummy(s, s + slen);
     vecs2.push_back(dummy);

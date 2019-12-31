@@ -20,15 +20,14 @@ namespace graphsat {
 using namespace rapidxml;
 using namespace std;
 
-static int parse(xml_node<> *root, XmlConfig *cfg) {
-  if (root == nullptr)
-    return 1;
+static int parse(xml_node<>* root, XmlConfig* cfg) {
+  if (root == nullptr) return 1;
 
-  for (rapidxml::xml_node<> *node = root->first_node(); node != nullptr;
+  for (rapidxml::xml_node<>* node = root->first_node(); node != nullptr;
        node = node->next_sibling()) {
     string name = trim(string(node->name()));
     if (name.size() > 0) {
-      XmlConfig *subitem = new XmlConfig();
+      XmlConfig* subitem = new XmlConfig();
       parse(node, subitem);
       cfg->addChild(name, subitem);
     }
@@ -38,10 +37,10 @@ static int parse(xml_node<> *root, XmlConfig *cfg) {
   string value = trim(string(root->value()));
   cfg->setValue(value);
 
-  for (rapidxml::xml_attribute<char> *attr = root->first_attribute();
+  for (rapidxml::xml_attribute<char>* attr = root->first_attribute();
        attr != nullptr; attr = attr->next_attribute()) {
-    char *attrname = attr->name();
-    char *attrval = attr->value();
+    char* attrname = attr->name();
+    char* attrval = attr->value();
     cfg->setAttr(trim(string(attrname)), trim(string(attrval)));
   }
 
@@ -49,7 +48,6 @@ static int parse(xml_node<> *root, XmlConfig *cfg) {
 }
 
 XmlConfig::XmlConfig(string input, bool b_fileinput) {
-
   xml_document<> doc;
 
   if (b_fileinput) {
@@ -71,7 +69,7 @@ XmlConfig::XmlConfig(string input, bool b_fileinput) {
     doc.parse<0>(&buffer[0]);
   }
 
-  xml_node<> *pRoot = doc.first_node();
+  xml_node<>* pRoot = doc.first_node();
 
   string name = trim(string(pRoot->name()));
   if (name.size() < 1) {
@@ -96,7 +94,7 @@ int XmlConfig::setValue(const string v) {
   return 0;
 }
 
-int XmlConfig::addChild(string key, const XmlConfig *c) {
+int XmlConfig::addChild(string key, const XmlConfig* c) {
   children[key].push_back(c);
   return 0;
 }
@@ -112,8 +110,8 @@ child_type XmlConfig::getChild(const string s) const {
   return ptr;
 }
 
-const XmlConfig *XmlConfig::getOneChild(string id) const {
-  const XmlConfig *ptr(nullptr);
+const XmlConfig* XmlConfig::getOneChild(string id) const {
+  const XmlConfig* ptr(nullptr);
   XML_NODE::const_iterator it = children.find(id);
   if (it != children.end()) {
     if (!it->second.empty()) {
@@ -123,7 +121,7 @@ const XmlConfig *XmlConfig::getOneChild(string id) const {
   return ptr;
 }
 
-const XML_NODE *XmlConfig::getChildren() const { return &children; }
+const XML_NODE* XmlConfig::getChildren() const { return &children; }
 
 /**
  *
@@ -133,8 +131,7 @@ const XML_NODE *XmlConfig::getChildren() const { return &children; }
  *
  * @return
  */
-int convert(const string str, bool &val) {
-
+int convert(const string str, bool& val) {
   if (str[0] == 'T' || str[0] == 't')
     val = true;
   else
@@ -142,17 +139,17 @@ int convert(const string str, bool &val) {
   return 0;
 }
 
-int convert(const string str, int &val) {
+int convert(const string str, int& val) {
   val = atoi(str.c_str());
   return 0;
 }
 
-int convert(const string str, double &val) {
+int convert(const string str, double& val) {
   val = atof(str.c_str());
   return 0;
 }
 
-int convert(const string str, string &val) {
+int convert(const string str, string& val) {
   val = str;
   return 0;
 }
@@ -166,4 +163,4 @@ int convert(const string str, string &val) {
 //   return s;
 // }
 
-} // namespace graphsat
+}  // namespace graphsat

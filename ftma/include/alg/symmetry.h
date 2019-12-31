@@ -20,21 +20,21 @@
 namespace graphsat {
 using namespace std;
 class Symmetry {
-public:
+ public:
   Symmetry(int n) : len(n) {}
 
-  virtual bool isSymmetry(const StateSet<UINT> &sets,
-                          const ReachableSet<TMStateManager> &reachSet,
-                          const TMStateManager *manager) const;
+  virtual bool isSymmetry(const StateSet<UINT>& sets,
+                          const ReachableSet<TMStateManager>& reachSet,
+                          const TMStateManager* manager) const;
 
-protected:
-  void swap(int *source, const vector<int> &swap_map,
-            const TMStateManager *manager) const;
+ protected:
+  void swap(int* source, const vector<int>& swap_map,
+            const TMStateManager* manager) const;
 
-private:
+ private:
   int len;
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

@@ -26,18 +26,18 @@ typedef AgentSystem<Location, Transition> INT_TAS_t;
  */
 
 class GraphModelTest : public ::testing::Test {
-protected:
+ protected:
   GraphModelTest() {
-    int n = 6; // 6 train
+    n = rand( )%10+2;  // 6 train
     train_tmt = sys.createTemplate("Train");
     gate_tmt = sys.createTemplate("Gate");
     train_tmt->addPara("id");
-    sys.addConstant("N", n);                    // const N=n;
-    sys.addType("id_t", 0, sys["N"] - 1);       // typedef int[ 0,N-1] id_t;
-    sys.addChan("appr", sys["N"], ONE2ONE_CH);  // chan appr[ N]
-    sys.addChan("stop", sys["N"], ONE2ONE_CH);  // chan stop[ N]
-    sys.addChan("leave", sys["N"], ONE2ONE_CH); // chan leave[ N]
-    sys.addChan("go", sys["N"], URGENT_CH);     // urgent chan go[ N]
+    sys.addConstant("N", n);                     // const N=n;
+    sys.addType("id_t", 0, sys["N"] - 1);        // typedef int[ 0,N-1] id_t;
+    sys.addChan("appr", sys["N"], ONE2ONE_CH);   // chan appr[ N]
+    sys.addChan("stop", sys["N"], ONE2ONE_CH);   // chan stop[ N]
+    sys.addChan("leave", sys["N"], ONE2ONE_CH);  // chan leave[ N]
+    sys.addChan("go", sys["N"], URGENT_CH);      // urgent chan go[ N]
 
     ADD_CLOCK((*train_tmt), x);
 
@@ -63,14 +63,91 @@ protected:
     // before the destructor).
   }
   INT_TAS_t sys;
+  int n;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> train_tmt;
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> gate_tmt;
 };
 
 TEST_F(GraphModelTest, getConstant) {
-  EXPECT_EQ(sys["N"], 6);
-  EXPECT_EQ(sys.getChanNumber(), 24);
+  EXPECT_EQ(sys["N"], n);
+  EXPECT_EQ(sys.getChanNumber(), 4 * n);
 }
+
+TEST_F(GraphModelTest, getType) {
+  sys.removeAgent();
+
+  int n = sys["N"];
+  Parameter param = gate_tmt->getParameter();
+  shared_ptr<typename INT_TAS_t::Agent_t> tma =
+      sys.createAgent(gate_tmt, param);
+
+  for (int i = 0; i < n; i++) {
+    Parameter param = train_tmt->getParameter();
+    param.setParameterMap("id", i);
+    shared_ptr<typename INT_TAS_t::Agent_t> tma =
+        sys.createAgent(train_tmt, param);
+  }
+
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
+  for (int i = 0; i < n + 1; i++) {
+    EXPECT_EQ(sys.getType(i, "appr"), CHAN_T);
+    EXPECT_EQ(sys.getType(i, "stop"), CHAN_T);
+    EXPECT_EQ(sys.getType(i, "leave"), CHAN_T);
+    EXPECT_EQ(sys.getType(i, "go"), CHAN_T);
+  }
+  EXPECT_EQ(sys.getType(n, "list"), INT_T);
+  for (int i = 0; i < n; i++) {
+    EXPECT_EQ(sys.getType(i, "list"), NO_T);
+  }
+}
+
+TEST_F(GraphModelTest, getCompentId) {
+  sys.removeAgent();
+
+  int n = sys["N"];
+  Parameter param = gate_tmt->getParameter();
+  shared_ptr<typename INT_TAS_t::Agent_t> tma =
+      sys.createAgent(gate_tmt, param);
+
+  for (int i = 0; i < n; i++) {
+    Parameter param = train_tmt->getParameter();
+    param.setParameterMap("id", i);
+    shared_ptr<typename INT_TAS_t::Agent_t> tma =
+        sys.createAgent(train_tmt, param);
+  }
+
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
+  EXPECT_EQ(sys.getCompentId("Gate"), n);
+  for (int i = 0; i < n; i++) {
+    EXPECT_EQ(sys.getCompentId("Train[" + to_string(i) + "]"), i);
+  }
+}
+TEST_F(GraphModelTest, getTypeStart) {
+
+
+  sys.removeAgent();
+
+  int n = sys["N"];
+  Parameter param = gate_tmt->getParameter();
+  shared_ptr<typename INT_TAS_t::Agent_t> tma =
+      sys.createAgent(gate_tmt, param);
+
+  for (int i = 0; i < n; i++) {
+    Parameter param = train_tmt->getParameter();
+    param.setParameterMap("id", i);
+    shared_ptr<typename INT_TAS_t::Agent_t> tma =
+        sys.createAgent(train_tmt, param);
+  }
+  
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
+  EXPECT_EQ(manager->getTypeStart(INT_T ), n+1);
+  
+  
+  EXPECT_EQ(manager->getTypeStart(CLOCK_T ), 2*(n+1)+2);
+
+}
+
+
 
 TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
   sys.removeAgent();
@@ -86,17 +163,17 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(train_tmt, param);
   }
-  sys.build();
 
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   Argument arg(NORMAL_VAR_ARG, "list");
   shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
   arg.setIndex(dummy);
 
   RealArgument rarg = tma->to_real(INT_T, arg);
-  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-  INT_TAS_t::State_t *state = manager->newState();
 
-  INT_TAS_t::State_t *counters = manager->getCounterValue(state);
+  INT_TAS_t::State_t* state = manager->newState();
+
+  INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
   EXPECT_EQ(getValue(rarg, counters), 0);
 
@@ -136,26 +213,23 @@ TEST_F(GraphModelTest, constraint) {
   Parameter param = gate_tmt->getParameter();
   shared_ptr<typename INT_TAS_t::Agent_t> tma =
       sys.createAgent(gate_tmt, param);
-  // sys += tma;
-
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(train_tmt, param);
-    // sys += tma;
   }
-  sys.build();
 
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   Argument arg(NORMAL_VAR_ARG, "list");
   shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
   arg.setIndex(dummy);
 
   RealArgument rarg = tma->to_real(INT_T, arg);
-  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-  INT_TAS_t::State_t *state = manager->newState();
 
-  INT_TAS_t::State_t *counters = manager->getCounterValue(state);
+  INT_TAS_t::State_t* state = manager->newState();
+
+  INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
   EXPECT_EQ(getValue(rarg, counters), 0);
 
@@ -172,8 +246,8 @@ TEST_F(GraphModelTest, constraint) {
 
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
-  CounterConstraint *ccs1 =
-      new CounterConstraint(len_arg, second1, GT, rhs1); // len >0
+  CounterConstraint* ccs1 =
+      new CounterConstraint(len_arg, second1, GT, rhs1);  // len >0
   ccs1->to_real(tma.get());
 
   EXPECT_FALSE((*ccs1)(counters));
@@ -192,32 +266,29 @@ TEST_F(GraphModelTest, constraint) {
 }
 
 TEST_F(GraphModelTest, Channel) {
-
   sys.removeAgent();
   int n = sys["N"];
   Parameter param = gate_tmt->getParameter();
   shared_ptr<typename INT_TAS_t::Agent_t> tma =
       sys.createAgent(gate_tmt, param);
-  // sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(train_tmt, param);
-    // sys += tma;
   }
-  sys.build();
 
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   Argument arg(NORMAL_VAR_ARG, "list");
   shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
   arg.setIndex(dummy);
 
   RealArgument rarg = tma->to_real(INT_T, arg);
-  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-  INT_TAS_t::State_t *state = manager->newState();
 
-  INT_TAS_t::State_t *counters = manager->getCounterValue(state);
+  INT_TAS_t::State_t* state = manager->newState();
+
+  INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
   Argument ch1_arg(NORMAL_VAR_ARG, "go");
   shared_ptr<Argument> dummy1(new Argument(FUN_POINTER_ARG, "front"));
@@ -234,46 +305,42 @@ TEST_F(GraphModelTest, Channel) {
 
   shared_ptr<Function> tail_c = tma->getFun("tail");
 
-  EXPECT_EQ(19, tma->getKeyID(CHAN_T, "go"));
+  EXPECT_EQ(3*n+1, tma->getKeyID(CHAN_T, "go"));
   for (int i = 0; i < n; i++) {
     (*enqueue_c)(counters, i);
     int ffid = ch1(counters);
-    EXPECT_EQ(19, ffid);
+    EXPECT_EQ(3*n+1, ffid);
   }
 
   for (int i = 0; i < n; i++) {
-
     int ffid = ch1(counters);
-    EXPECT_EQ(19 + i, ffid);
+    EXPECT_EQ(3*n+1 + i, ffid);
     (*dequeue_c)(counters);
   }
   manager->destroyState(state);
 }
 
 TEST_F(GraphModelTest, SELECT_VAR_ARG) {
-
   sys.removeAgent();
   int n = sys["N"];
   Parameter param = gate_tmt->getParameter();
   shared_ptr<typename INT_TAS_t::Agent_t> tma =
       sys.createAgent(gate_tmt, param);
-  // sys += tma;
 
   for (int i = 0; i < n; i++) {
     Parameter param = train_tmt->getParameter();
     param.setParameterMap("id", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(train_tmt, param);
-    //  sys += tma;
   }
-  sys.build();
 
+  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   shared_ptr<Function> enqueue_c = tma->getFun("enqueue");
   shared_ptr<Function> dequeue_c = tma->getFun("dequeue");
   shared_ptr<Function> front_c = tma->getFun("front");
   shared_ptr<Function> tail_c = tma->getFun("tail");
 
-  TypeDefArray tt = tma->getType("id_t");
+  TypeDefArray tt = tma->getTypeDef("id_t");
   EXPECT_EQ(tt.getLow(), 0);
   EXPECT_EQ(tt.getHigh(), n - 1);
 
@@ -284,11 +351,10 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   Channel ch1(ch1_arg);
 
   ch1.setAction(CHANNEL_RECEIVE);
-  EXPECT_EQ(1, tma->getKeyID(CHAN_T, "appr")); // the channel id start with 1
+  EXPECT_EQ(1, tma->getKeyID(CHAN_T, "appr"));  // the channel id start with 1
 
-  shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-  INT_TAS_t::State_t *state = manager->newState();
-  INT_TAS_t::State_t *counters = manager->getCounterValue(state);
+  INT_TAS_t::State_t* state = manager->newState();
+  INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
@@ -299,7 +365,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
   Argument lhs2(FUN_POINTER_ARG, "enqueue(e)");
   Argument rhs2(EMPTY_ARG, 0);
-  CounterAction caction2(lhs2, CALL_ACTION, rhs2); // enqueue( e)
+  CounterAction caction2(lhs2, CALL_ACTION, rhs2);  // enqueue( e)
 
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
@@ -312,7 +378,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
   Argument second1(EMPTY_ARG, 0);
   Argument rhs1(FUN_POINTER_ARG, "front");
-  CounterConstraint ccs1(lhs1, second1, EQ, rhs1); // e==front()
+  CounterConstraint ccs1(lhs1, second1, EQ, rhs1);  // e==front()
 
   for (int i = tt.getLow(); i <= tt.getHigh(); i++) {
     tma->setSelect(i);
@@ -332,7 +398,7 @@ TEST(TRAIN_GATE_H, generate) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       tg_sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  //  tg_sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(tg_sys);
 
   TrainGatePro prop(n);
@@ -348,3 +414,6 @@ TEST(PMCP, train_gate) {
   prop.setCS(4);
   //  EXPECT_TRUE(check.check(TG, &prop));
 }
+
+
+

@@ -11,7 +11,7 @@ UppaalData::UppaalData() {
   parent = nullptr;
 
   next_counter_id = 0;
-  next_channel_id = 1; // the channel starts with 1
+  next_channel_id = 1;  // the channel starts with 1
 
   base_types.push_back(INT_T);
   base_types.push_back(PARAMETER_INT_T);
@@ -37,7 +37,7 @@ UppaalData::UppaalData() {
   base_types.push_back(SELF_DEF_T);
 }
 
-TYPE_T UppaalData::getType(const string &name) const {
+TYPE_T UppaalData::getType(const string& name) const {
   for (vector<TYPE_T>::const_iterator it = base_types.begin();
        it != base_types.end(); it++) {
     if (hasValue(*it, name)) {
@@ -54,7 +54,7 @@ TYPE_T UppaalData::getType(const string &name) const {
 
   return NO_T;
 }
-bool UppaalData::isConstant(const string &name) const {
+bool UppaalData::isConstant(const string& name) const {
   if (IS_SYSTEM_PROCEDURE) {
     return false;
   }
@@ -64,7 +64,7 @@ bool UppaalData::isConstant(const string &name) const {
   for (vector<TYPE_T>::const_iterator it = base_types.begin();
        it != base_types.end(); it++) {
     if (hasValue(*it, name)) {
-      if (*it == CHAN_T) { // every channel  has value as its type
+      if (*it == CHAN_T) {  // every channel  has value as its type
         continue;
       }
 
@@ -80,12 +80,11 @@ bool UppaalData::isConstant(const string &name) const {
   return false;
 }
 
-int UppaalData::getConstant(const string &name) const {
+int UppaalData::getConstant(const string& name) const {
   assert(isConstant(name));
 
   for (vector<TYPE_T>::const_iterator it = base_types.begin();
        it != base_types.end(); it++) {
-
     if (hasValue(*it, name)) {
       int value = getValue(*it, name);
       if (value == UN_DEFINE) {
@@ -107,7 +106,7 @@ int UppaalData::getVarNum(void) const {
   return re;
 }
 
-int UppaalData::getGlobalCounterId(const string &name) {
+int UppaalData::getGlobalCounterId(const string& name) {
   if (counter_id_map.find(name) != counter_id_map.end()) {
     return counter_id_map.at(name);
   }
@@ -124,7 +123,7 @@ int UppaalData::getGlobalCounterId(const string &name) {
   return NOT_FOUND;
 }
 
-int UppaalData::getGlobalChannelId(const string &name) {
+int UppaalData::getGlobalChannelId(const string& name) {
   if (channel_id_map.find(name) != channel_id_map.end()) {
     return channel_id_map.at(name);
   }
@@ -149,24 +148,23 @@ void UppaalData::addClockConstraint(int clock1_id, int clock2_id,
     rhs_a.type = PARAMETER_ARG;
   }
   if (EQ == op) {
-
-    void *cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
+    void* cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
                                    Argument(NORMAL_VAR_ARG, clock2_id), GE,
-                                   rhs_a); // x-y<= c
+                                   rhs_a);  // x-y<= c
 
     addValue(CLOCK_CS_T, STRING(CLOCK_CS_T), cs);
 
     cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
                              Argument(NORMAL_VAR_ARG, clock2_id), LE,
-                             rhs_a); // x-y>= c
+                             rhs_a);  // x-y>= c
     addValue(CLOCK_CS_T, STRING(CLOCK_CS_T), cs);
 
   } else {
-    void *cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
+    void* cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),
                                    Argument(NORMAL_VAR_ARG, clock2_id), op,
-                                   rhs_a); // x op c
+                                   rhs_a);  // x op c
     addValue(CLOCK_CS_T, STRING(CLOCK_CS_T), cs);
   }
 }
 
-} // namespace graphsat
+}  // namespace graphsat

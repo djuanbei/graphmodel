@@ -2,20 +2,20 @@
 
 namespace graphsat {
 
-std::vector<OneStep> TANextStep::getNextStep(void *s) const {
-  int *state = (int *)s;
+std::vector<OneStep> TANextStep::getNextStep(void* s) const {
+  int* state = (int*)s;
   std::vector<OneStep> re;
 
   if (manager->isFreeze(state)) {
     doCommit(state, re);
   }
-  if (re.empty()) { // there is no enable  commit locations
+  if (re.empty()) {  // there is no enable  commit locations
     if (manager->hasMatchOutUrgentChan(state)) {
       doUrgant(state, re);
     }
   }
 
-  if (re.empty()) { // there is no force  locations or transitions
+  if (re.empty()) {  // there is no force  locations or transitions
     if (manager->hasOutBreakcastChan(state)) {
       doBreakcast(state, re);
     } else {
@@ -26,7 +26,7 @@ std::vector<OneStep> TANextStep::getNextStep(void *s) const {
   return re;
 }
 
-void TANextStep::doNormal(int *state, std::vector<OneStep> &re) const {
+void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
   // int *counter_value = manager->getCounterValue(state);
 
   for (int i = 0; i < component_num; i++) {
@@ -56,7 +56,7 @@ void TANextStep::doNormal(int *state, std::vector<OneStep> &re) const {
                     }
                   }
 
-                } else { // a is send part
+                } else {  // a is send part
                   for (auto link_b : links_b) {
                     for (auto link_a : links_a) {
                       vector<pair<int, int>> path;
@@ -90,8 +90,8 @@ void TANextStep::doNormal(int *state, std::vector<OneStep> &re) const {
   }
 }
 
-void TANextStep::doCommit(int *state, std::vector<OneStep> &re) const {
-  int *counter_value = manager->getCounterValue(state);
+void TANextStep::doCommit(int* state, std::vector<OneStep>& re) const {
+  int* counter_value = manager->getCounterValue(state);
   for (int component = 0; component < component_num; component++) {
     const int source = manager->getLocationID(component, state);
     if (sys.isCommit(component, source)) {
@@ -101,11 +101,10 @@ void TANextStep::doCommit(int *state, std::vector<OneStep> &re) const {
           continue;
         }
         if (sys.hasChannel(component, link)) {
-          const Channel &ch = sys.getChannel(component, link);
+          const Channel& ch = sys.getChannel(component, link);
           int chid = ch.getGlobalId(counter_value);
 
           if (ch.getType() == BROADCAST_CH) {
-
           } else {
             for (int i = 0; i < component_num; i++) {
               int loc = state[i];
@@ -150,8 +149,7 @@ void TANextStep::doCommit(int *state, std::vector<OneStep> &re) const {
   }
 }
 
-void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
-
+void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
   //  int *counter_value = manager->getCounterValue(state);
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
@@ -176,7 +174,7 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
                 }
               }
 
-            } else { // a is send part
+            } else {  // a is send part
               for (auto link_b : links_b) {
                 for (auto link_a : links_a) {
                   vector<pair<int, int>> path;
@@ -193,16 +191,16 @@ void TANextStep::doUrgant(int *state, std::vector<OneStep> &re) const {
   }
 }
 
-void TANextStep::doBreakcast(int *state, std::vector<OneStep> &re) const {}
+void TANextStep::doBreakcast(int* state, std::vector<OneStep>& re) const {}
 
-void TANextStep::discret(int *state, std::vector<pair<int, int>> &path,
-                         std::vector<OneStep> &re) const {
+void TANextStep::discret(int* state, std::vector<pair<int, int>>& path,
+                         std::vector<OneStep>& re) const {
   assert(!path.empty());
 
   OneStep dummy;
   int commit_num = manager->getFreezeComponentNumber(
-      state); //  state[manager->getFreezeLocation()];
-  for (auto &p : path) {
+      state);  //  state[manager->getFreezeLocation()];
+  for (auto& p : path) {
     OneStep::Action action(p.first, -1, p.second);
     dummy.addAction(action);
     int source = sys.getSrc(p.first, p.second);
@@ -227,7 +225,6 @@ void TANextStep::discret(int *state, std::vector<pair<int, int>> &path,
 }
 int TANextStep::getCommitCount(const int component, const int link,
                                int count) const {
-
   int source = sys.getSrc(component, link);
   int target = sys.getSnk(component, link);
 
@@ -243,7 +240,7 @@ int TANextStep::getCommitCount(const int component, const int link,
   return count;
 }
 
-void TANextStep::doCommitComponent(int *state, int component,
-                                   std::vector<OneStep> &re) const {}
+void TANextStep::doCommitComponent(int* state, int component,
+                                   std::vector<OneStep>& re) const {}
 
-} // namespace graphsat
+}  // namespace graphsat

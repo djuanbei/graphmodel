@@ -2,9 +2,9 @@
 #include "model/location.h"
 
 namespace graphsat {
-bool Location::operator()(const DBMFactory &dbm_manager, const int *const dbm,
-                          vector<int *> &re_vec) const {
-  int *newDBM = dbm_manager.createDBM(dbm);
+bool Location::operator()(const DBMFactory& dbm_manager, const int* const dbm,
+                          vector<int*>& re_vec) const {
+  int* newDBM = dbm_manager.createDBM(dbm);
   bool re = isReachable(dbm_manager, newDBM);
   if (!re) {
     dbm_manager.destroyDBM(newDBM);
@@ -16,13 +16,42 @@ bool Location::operator()(const DBMFactory &dbm_manager, const int *const dbm,
   return (!re_vec.empty());
 }
 
-Location &Location::operator+=(const ClockConstraint &cs) {
+Location& Location::operator+=(const ClockConstraint& cs) {
   invariants.push_back(cs);
   return *this;
 }
-void Location::to_real(const TOReal *convertor) {
-  for (auto &e : invariants) {
+void Location::to_real(const TOReal* convertor) {
+  for (auto& e : invariants) {
     e.to_real(convertor);
   }
 }
-} // namespace graphsat
+// TODO: add name
+ostream& Location::dump2Dot(ostream& out) const {
+  out << location_id;
+  switch (type) {
+    case NORMOAL_LOC:
+      out << " [ shape = circle, label=<";
+      break;
+    case INIT_LOC:
+      out << " [ shape = doublecircle, label=<";
+      break;
+    case URGENT_LOC:
+      out << " [ shape = octagon, label=<";
+      break;
+    case COMMIT_LOC:
+      out << " [ shape = doubleoctagon, label=<";
+      break;
+  }
+
+  out << "<table border=\"0\" >" << endl;
+  out << "<tr><td>" << name << "</td></tr>" << endl;
+  for (auto cs : invariants) {
+    cs.dump2Dot(out);
+  }
+  out << "</table>";
+
+  out << ">];" << endl;
+  return out;
+}
+
+}  // namespace graphsat

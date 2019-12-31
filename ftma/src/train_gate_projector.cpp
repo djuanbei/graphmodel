@@ -3,7 +3,7 @@
 namespace graphsat {
 
 TrainGateProjector::TrainGateProjector(
-    const shared_ptr<TMStateManager> &out_manager, const int pro_d)
+    const shared_ptr<TMStateManager>& out_manager, const int pro_d)
     : manager(out_manager) {
   component_num = manager->getComponentNumber();
   pro_dim = pro_d;
@@ -11,8 +11,8 @@ TrainGateProjector::TrainGateProjector(
   pro_clock_start = pro_dim * (pro_dim + 1);
 }
 
-void TrainGateProjector::operator()(const int *original_state,
-                                    vector<int> &proj) const {
+void TrainGateProjector::operator()(const int* original_state,
+                                    vector<int>& proj) const {
   proj.clear();
   for (int i = 0; i < pro_dim; i++) {
     int loc = manager->getLocationID(i, original_state);
@@ -21,7 +21,7 @@ void TrainGateProjector::operator()(const int *original_state,
     proj.push_back(loc);
   }
   vector<int> locs(pro_dim, -1);
-  int len = original_state[2 * component_num]; // gate is a component
+  int len = original_state[2 * component_num];  // gate is a component
   assert((len >= 0 && len <= component_num) &&
          "len variable is a bounded in [0, component_num].");
   int N = component_num;
@@ -65,8 +65,8 @@ void TrainGateProjector::operator()(const int *original_state,
   }
 }
 
-bool TrainGateProjector::include(const vector<vector<int>> &lhs,
-                                 const vector<vector<int>> &rhs) const {
+bool TrainGateProjector::include(const vector<vector<int>>& lhs,
+                                 const vector<vector<int>>& rhs) const {
   if (lhs.empty()) {
     return rhs.empty();
   }
@@ -105,8 +105,8 @@ bool TrainGateProjector::include(const vector<vector<int>> &lhs,
   return true;
 }
 
-ostream &TrainGateProjector::dump(const vector<int> &proj_e,
-                                  ostream &out) const {
+ostream& TrainGateProjector::dump(const vector<int>& proj_e,
+                                  ostream& out) const {
   for (int i = 0; i < pro_dim; i++) {
     out << setw(LOC_OUT_WIDTH) << manager->getLocationName(i, proj_e[i]);
   }
@@ -114,4 +114,4 @@ ostream &TrainGateProjector::dump(const vector<int> &proj_e,
   return DBMFactory::dump(out, &(proj_e[0]) + pro_clock_start, pro_dim + 1);
 }
 
-} // namespace graphsat
+}  // namespace graphsat

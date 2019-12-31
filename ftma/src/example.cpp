@@ -6,8 +6,8 @@
 #include <random>
 
 #include "action/counteraction.h"
-#include "benchmark/fisher.h"
-#include "benchmark/fisher_projector.h"
+#include "benchmark/fischer.h"
+#include "benchmark/fischer_projector.h"
 #include "benchmark/train_gate.h"
 #include "constraint/clockdiffcons.h"
 #include "domain/dbm.h"
@@ -56,22 +56,22 @@ void example2(void) {
 
   typename INT_TAS_t::T_t E00a(L0, L0);
   Clock ZERO;
-  E00a += ClockReset(y, Argument(0)); // y-->0
+  E00a += ClockReset(y, Argument(0));  // y-->0
   // E00a.addReset(y, 0);                              // y-->0
-  typename INT_TAS_t::CS_t cs1(y, LE, Argument(2)); // y<=2
+  typename INT_TAS_t::CS_t cs1(y, LE, Argument(2));  // y<=2
   E00a += cs1;
 
   typename INT_TAS_t::T_t E00b(L0, L0);
   // pair<int, int>          reset2( x, 0 );
-  E00b += ClockReset(x, Argument(0)); // x-->0
+  E00b += ClockReset(x, Argument(0));  // x-->0
   // E00b.addReset(x, 0);                              // x-->0
-  typename INT_TAS_t::CS_t cs2(x, LE, Argument(2)); // x<=2
+  typename INT_TAS_t::CS_t cs2(x, LE, Argument(2));  // x<=2
   E00b += cs2;
 
   typename INT_TAS_t::T_t E01(L0, L1);
 
-  typename INT_TAS_t::CS_t cs3(y, LE, Argument(2)); // y<=2
-  typename INT_TAS_t::CS_t cs4(x, GE, Argument(4)); // x>=4
+  typename INT_TAS_t::CS_t cs3(y, LE, Argument(2));  // y<=2
+  typename INT_TAS_t::CS_t cs4(x, GE, Argument(4));  // x>=4
 
   E01 += cs3;
   E01 += cs4;
@@ -90,7 +90,7 @@ void example2(void) {
   shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
 
   // sys += tma1;
-  sys.build();
+  //  sys.build();
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   R_t data(manager);
@@ -99,16 +99,14 @@ void example2(void) {
   Property prop;
 
   if (reacher.satisfy(&data, &prop)) {
-
     cout << "right" << endl;
   } else {
     cout << "there is something wrong" << endl;
   }
 }
 
-int *randV(int n, int s) {
-
-  int *v = new int[n];
+int* randV(int n, int s) {
+  int* v = new int[n];
 
   for (int i = 0; i < n; i++) {
     v[i] = distribution(generator);
@@ -137,15 +135,14 @@ int *randV(int n, int s) {
 // }
 
 void example6() {
-
-  vector<int *> vecs;
+  vector<int*> vecs;
   int n = 10;
   DBMFactory manager(n);
   DBMset<int> sets(manager);
   int num = 1000;
 
   for (int i = 0; i < num; i++) {
-    int *dbm = manager.randomFeasiableDBM();
+    int* dbm = manager.randomFeasiableDBM();
     if (sets.add(dbm)) {
       vecs.push_back(dbm);
     } else {
@@ -157,7 +154,7 @@ void example6() {
   }
 }
 
-void fisher(int n) {
+void fischer(int n) {
   INT_TAS_t sys;
   sys.addType("id_t", 0, n);
   sys.addInt("id", 1, 0, n);
@@ -175,7 +172,7 @@ void fisher(int n) {
   typename INT_TAS_t::L_t A(0, "A");
 
   typename INT_TAS_t::L_t req(1, "req");
-  typename INT_TAS_t::CS_t cs1(x, LE, Argument(k)); // x <= k
+  typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait(2, "wait");
@@ -187,38 +184,38 @@ void fisher(int n) {
   Argument second;
   Argument rhs(0);
 
-  CounterConstraint ccs1(first, second, EQ, rhs); // id==0
+  CounterConstraint ccs1(first, second, EQ, rhs);  // id==0
 
   A_req += ccs1;
 
-  A_req += ClockReset(x, Argument(0)); // x-->0
+  A_req += ClockReset(x, Argument(0));  // x-->0
 
   typename INT_TAS_t::T_t req_wait(req, wait);
-  typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
+  typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
   req_wait += cs2;
 
-  req_wait += ClockReset(x, Argument(0)); // x-->0
-                                          //  req_wait.addReset(x, 0); // x-->0
+  req_wait += ClockReset(x, Argument(0));  // x-->0
+                                           //  req_wait.addReset(x, 0); // x-->0
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs0(PARAMETER_ARG, "pid");
-  CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0); // id=pid
+  CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0);  // id=pid
 
   req_wait += action;
 
   typename INT_TAS_t::T_t wait_req(wait, req);
 
-  wait_req += ClockReset(x, Argument(0)); // x-->0
+  wait_req += ClockReset(x, Argument(0));  // x-->0
   // wait_req.addReset(x, 0);       // x-->0
-  wait_req += ccs1; // id==0
+  wait_req += ccs1;  // id==0
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
   Argument first1(NORMAL_VAR_ARG, "id");
   Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
-  CounterConstraint ccs2(first1, second1, EQ, rhs01); // id==pid
+  CounterConstraint ccs2(first1, second1, EQ, rhs01);  // id==pid
   wait_cs += ccs2;
-  typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
+  typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A(cs, A);
@@ -242,21 +239,18 @@ void fisher(int n) {
   es.push_back(cs_A);
 
   tmt1->initial(ls, es, 0);
+  tmt1->dump2Dot("fischer.gv");
 
   for (int i = 1; i <= n; i++) {
-
     Parameter param = tmt1->getParameter();
 
     param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
-
-    // sys += tma1;
   }
-  sys.build();
+  //  sys.build();
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
-  // sys.addInitState(data);
 
   Reachability<INT_TAS_t> reacher(sys);
   FischerMutual prop;
@@ -269,7 +263,39 @@ void fisher(int n) {
 
   cout << "reach data size: " << data.size() << endl;
   StateOutput::generatorDot(data, "test.gv");
-  // data.generatorDot("test.gv");
+
+  int* state = manager->newState();
+  vector<int> clock_ids;
+  clock_ids.push_back( 1);
+  vector<vector<int> > one_states;
+  for (size_t i = 0; i < data.size(); i++) {
+    vector<int> dummy;
+
+    data.getStateAt(state, i);
+    dummy.push_back(state[ 0] );
+    dummy.push_back(manager->getValue(0, state, "id" )==1 );
+    int *dbm=manager->getDBM(state );
+    manager->getClockManager( ).encode( dbm);
+    int *pdbm=manager->getClockManager( ).project( dbm, clock_ids );
+    for( int j=0; j< 4; j++){
+      dummy.push_back( pdbm[ j]);
+      
+    }
+    delete [ ] pdbm;
+    one_states.push_back( dummy);
+
+    cout<<sys.getLocationName(0, state[ 0] )<< ", "<< (manager->getValue(0, state, "id" )==1)<<endl;
+    //int *dbm=manager->getDBM(state );
+    
+    manager->getClockManager( ).dump( cout, dbm, clock_ids );
+    
+  }
+  
+  std::vector<vector<int>>::iterator it;
+  it = std::unique(one_states.begin(), one_states.end());
+  one_states.resize(std::distance(one_states.begin(), it));
+  cout<<"size: " <<one_states.size( )<<endl;
+  manager->destroyState(state);
 }
 
 void testIsConsistent() {
@@ -277,7 +303,7 @@ void testIsConsistent() {
   // int        len = ( n + 1 ) * ( n + 1 );
   DBMFactory df(n);
   for (int i = 0; i < 5; i++) {
-    int *d = df.randomFeasiableDBM();
+    int* d = df.randomFeasiableDBM();
     ClockConstraint cons = df.getCons(d, 2, 3);
     cout << cons << endl;
     ClockConstraint cons1 = cons.neg();
@@ -293,8 +319,8 @@ void testIsConsistent() {
 }
 
 void incrementalTest1() {
-  FisherGenerator F;
-  IncrementalCheck<INT_TAS_t, FisherGenerator, FisherProjector> check;
+  FischerGenerator F;
+  IncrementalCheck<INT_TAS_t, FischerGenerator, FischerProjector> check;
   FischerMutual prop;
 
   if (check.check(F, &prop)) {
@@ -323,7 +349,7 @@ void incrementalTest() {
   typename INT_TAS_t::L_t A(0);
 
   typename INT_TAS_t::L_t req(1);
-  typename INT_TAS_t::CS_t cs1(x, LE, Argument(k)); // x <= k
+  typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
   req += cs1;
 
   typename INT_TAS_t::L_t wait(2);
@@ -335,31 +361,31 @@ void incrementalTest() {
   Argument first3(NORMAL_VAR_ARG, 0);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
-  CounterConstraint ccs1(first3, second3, EQ, rhs3); // id==0
+  CounterConstraint ccs1(first3, second3, EQ, rhs3);  // id==0
 
   A_req += ccs1;
 
-  A_req += ClockReset(x, Argument(0)); // x-->0
+  A_req += ClockReset(x, Argument(0));  // x-->0
   // A_req.addReset(x, 0); // x-->0
 
   typename INT_TAS_t::T_t req_wait(req, wait);
-  typename INT_TAS_t::CS_t cs2(x, LE, Argument(k)); // x <= k
+  typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
   req_wait += cs2;
 
-  req_wait += ClockReset(x, Argument(0)); // x-->0
-                                          // req_wait.addReset(x, 0); // x-->0
+  req_wait += ClockReset(x, Argument(0));  // x-->0
+                                           // req_wait.addReset(x, 0); // x-->0
 
   Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs(PARAMETER_ARG, 0);
-  CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs); // id=pid
+  CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs);  // id=pid
 
   req_wait += caction;
 
   typename INT_TAS_t::T_t wait_req(wait, req);
 
-  wait_req += ClockReset(x, Argument(0)); // x-->0
+  wait_req += ClockReset(x, Argument(0));  // x-->0
   // wait_req.addReset(x, 0);       // x-->0
-  wait_req += ccs1; // id==0
+  wait_req += ccs1;  // id==0
 
   typename INT_TAS_t::T_t wait_cs(wait, cs);
 
@@ -367,16 +393,16 @@ void incrementalTest() {
   Argument second4(PARAMETER_ARG, 0);
   Argument rhs4(CONST_ARG, 0);
 
-  CounterConstraint ccs2(first4, second4, EQ, rhs4); // id==pid
+  CounterConstraint ccs2(first4, second4, EQ, rhs4);  // id==pid
   wait_cs += ccs2;
-  typename INT_TAS_t::CS_t cs3(x, GT, Argument(k)); // x> k
+  typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
   wait_cs += cs3;
 
   typename INT_TAS_t::T_t cs_A(cs, A);
 
   Argument lhs2(NORMAL_VAR_ARG, 0);
   Argument rhs2(CONST_ARG, 0);
-  CounterAction caction1(lhs2, ASSIGNMENT_ACTION, rhs2); // id=0;
+  CounterAction caction1(lhs2, ASSIGNMENT_ACTION, rhs2);  // id=0;
 
   cs_A += caction1;
 
@@ -421,7 +447,7 @@ void incrementalTest() {
 
   cout << "reach data size: " << data.size() << endl;
   vector<vector<int>> project;
-  FisherProjector proj(manager, 2);
+  FischerProjector proj(manager, 2);
   data.project(proj, project);
 
   INT_TAS_t sys1;
@@ -452,7 +478,7 @@ void incrementalTest() {
 
   cout << "reach data size: " << data1.size() << endl;
   vector<vector<int>> project1;
-  FisherProjector proj1(manager1, 2);
+  FischerProjector proj1(manager1, 2);
   data1.project(proj1, project1);
   int num = 0;
   size_t mm = project[0].size();
@@ -479,7 +505,6 @@ void incrementalTest() {
       }
     }
     if (j == project1.size()) {
-
       cout << num++ << endl;
       cout << "Can not hold" << endl;
     }
@@ -529,7 +554,6 @@ void fisher1() {
 
 void testOP() {
   for (int i = 0; i < 10; i++) {
-
     cout << "<  " << i - 5 << " " << getMatrixValue(i - 5, true) << endl;
     cout << "<= " << i - 5 << " " << getMatrixValue(i - 5, false) << endl
          << endl;
@@ -582,4 +606,4 @@ void train_gate(const int n) {
   // data.generatorDot("test.gv");
 }
 
-} // namespace graphsat
+}  // namespace graphsat

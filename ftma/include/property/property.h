@@ -17,12 +17,12 @@ namespace graphsat {
 using std::vector;
 
 class Property {
-public:
-  virtual bool operator()(const void *manager, const int *const state) const {
+ public:
+  virtual bool operator()(const void* manager, const int* const state) const {
     return false;
   }
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

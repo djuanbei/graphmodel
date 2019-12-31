@@ -2,16 +2,16 @@
 
 namespace graphsat {
 
-void StateOutput::generatorDot(const ReachableSet<TMStateManager> &reachSet,
-                               const string &filename) {
-  const TMStateManager *manager = reachSet.getManager();
-  int *cache_state = manager->newState();
-  int *convert_C_t = manager->newState();
+void StateOutput::generatorDot(const ReachableSet<TMStateManager>& reachSet,
+                               const string& filename) {
+  const TMStateManager* manager = reachSet.getManager();
+  int* cache_state = manager->newState();
+  int* convert_C_t = manager->newState();
   int component_num = manager->getComponentNumber();
   ofstream fout(filename);
   fout << "digraph G {" << endl;
 
-  int clock_num = manager->getClockNumber();
+  int clock_num = manager->getSystemClockNumber();
   for (size_t i = 0; i < reachSet.size(); i++) {
     reachSet.getStateAt(cache_state, i);
 
@@ -20,7 +20,7 @@ void StateOutput::generatorDot(const ReachableSet<TMStateManager> &reachSet,
     fout << "<tr><td COLSPAN=\"" << clock_num + 1 << "\"> <b>" << i << " : "
          << manager->getLocDotLabel(cache_state) << "</b></td> </tr> " << endl;
     vector<string> couter_labels = manager->getCounterDotLabel(cache_state);
-    for (auto &l : couter_labels) {
+    for (auto& l : couter_labels) {
       fout << "<tr><td COLSPAN=\"" << clock_num + 1
            << "\"> <font color=\"blue\">" << l << "</font></td> </tr> " << endl;
     }
@@ -49,8 +49,8 @@ void StateOutput::generatorDot(const ReachableSet<TMStateManager> &reachSet,
     }
     fout << "\"];" << endl;
   }
-  const vector<pair<int, int>> &passed_pair = reachSet.getFixPoindTail();
-  for (auto &p : passed_pair) {
+  const vector<pair<int, int>>& passed_pair = reachSet.getFixPoindTail();
+  for (auto& p : passed_pair) {
     reachSet.getStateAt(cache_state, p.first);
     reachSet.getStateAt(convert_C_t, p.second);
 
@@ -76,15 +76,15 @@ void StateOutput::generatorDot(const ReachableSet<TMStateManager> &reachSet,
   manager->destroyState(convert_C_t);
 }
 
-bool StateOutput::generatePath(const ReachableSet<TMStateManager> &reachSet,
-                               const string &filename,
-                               const int *const target) {
-  const TMStateManager *manager = reachSet.getManager();
-  int *cache_state = manager->newState();
-  int *convert_C_t = manager->newState();
+bool StateOutput::generatePath(const ReachableSet<TMStateManager>& reachSet,
+                               const string& filename,
+                               const int* const target) {
+  const TMStateManager* manager = reachSet.getManager();
+  int* cache_state = manager->newState();
+  int* convert_C_t = manager->newState();
   int component_num = manager->getComponentNumber();
 
-  int clock_num = manager->getClockNumber();
+  int clock_num = manager->getSystemClockNumber();
 
   vector<int> path = reachSet.findReachPath(target);
   if (path.empty()) {
@@ -100,7 +100,7 @@ bool StateOutput::generatePath(const ReachableSet<TMStateManager> &reachSet,
     fout << "<tr><td COLSPAN=\"" << clock_num + 1 << "\"> <b>" << i << " : "
          << manager->getLocDotLabel(cache_state) << "</b></td> </tr> " << endl;
     vector<string> couter_labels = manager->getCounterDotLabel(cache_state);
-    for (auto &l : couter_labels) {
+    for (auto& l : couter_labels) {
       fout << "<tr><td COLSPAN=\"" << clock_num + 1
            << "\"> <font color=\"blue\">" << l << "</font></td> </tr> " << endl;
     }
@@ -141,4 +141,4 @@ bool StateOutput::generatePath(const ReachableSet<TMStateManager> &reachSet,
 
   return true;
 }
-} // namespace graphsat
+}  // namespace graphsat

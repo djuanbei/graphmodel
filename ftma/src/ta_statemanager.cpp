@@ -7,12 +7,12 @@
 #include "model/graphmodel.hpp"
 
 namespace graphsat {
-TMStateManager::TMStateManager(const INT_TAS_t &s,
-                               const vector<Counter> &ecounters,
+TMStateManager::TMStateManager(const INT_TAS_t& s,
+                               const vector<Counter>& ecounters,
                                int out_clock_num,
-                               const vector<int> &oclock_upper_bounds,
-                               const vector<int> &nodes,
-                               const vector<int> &links)
+                               const vector<int>& oclock_upper_bounds,
+                               const vector<int>& nodes,
+                               const vector<int>& links)
     : sys(s) {
   clock_num = out_clock_num;
   assert((int)oclock_upper_bounds.size() == 2 * clock_num + 2);
@@ -43,7 +43,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   compress_state =
       StateConvert<int>(getClockStart(), getStateLen() - getClockStart(),
                         getHeadCompression(), getBodyCompression());
-  int *state = newState();
+  int* state = newState();
   for (int i = 0; i < component_num; i++) {
     state[i] = sys.getInitialLoc(i);
     if (sys.getLocationNumber(i) > 0 && sys.isFreezeLocation(i, state[i])) {
@@ -51,7 +51,7 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
     }
   }
 
-  state[parent_location_index] = -1; // initial state;
+  state[parent_location_index] = -1;  // initial state;
   if (getFreezeComponentNumber(state) == 0) {
     if (sys.getLocationNumber(0) > 0) {
       init_states = doEvolution(this, 0, state[0], state);
@@ -62,9 +62,8 @@ TMStateManager::TMStateManager(const INT_TAS_t &s,
   cache_state = newState();
 }
 
-int *TMStateManager::newState() const {
-
-  int *re_state = new int[state_length];
+int* TMStateManager::newState() const {
+  int* re_state = new int[state_length];
 
   fill(re_state, re_state + clock_start_loc, 0);
 
@@ -73,9 +72,8 @@ int *TMStateManager::newState() const {
   return re_state;
 }
 
-int *TMStateManager::rand() const {
-
-  int *re = newState();
+int* TMStateManager::rand() const {
+  int* re = newState();
   for (int i = 0; i < component_num; i++) {
     re[i] = ::rand() % sys.getLocationNumber(i);
   }
@@ -84,7 +82,7 @@ int *TMStateManager::rand() const {
     re[i] = ::rand() % 100;
   }
 
-  int *dbm = getClockManager().randomFeasiableDBM();
+  int* dbm = getClockManager().randomFeasiableDBM();
   memcpy(re + clock_start_loc, dbm,
          (state_length - clock_start_loc) * sizeof(int));
   getClockManager().destroyDBM(dbm);
@@ -92,8 +90,7 @@ int *TMStateManager::rand() const {
   return re;
 }
 
-bool TMStateManager::contain(const int *const lhs, const int *const rhs) const {
-
+bool TMStateManager::contain(const int* const lhs, const int* const rhs) const {
   if (memcmp(lhs, rhs, clock_start_loc * sizeof(int)) == 0) {
     return getClockManager().include(getDBM(lhs), getDBM(rhs));
   }
@@ -101,23 +98,23 @@ bool TMStateManager::contain(const int *const lhs, const int *const rhs) const {
 }
 
 bool TMStateManager::transitionReady(const int component, const int link,
-                                     const int *const state) const {
+                                     const int* const state) const {
   return sys.agents[component]->transitions[link].ready(this, state);
 }
 bool TMStateManager::isReachable(const int component, const int loc,
-                                 int *state) const {
+                                 int* state) const {
   return sys.agents[component]->locations[loc].isReachable(getClockManager(),
                                                            getDBM(state));
 }
 
-bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
+bool TMStateManager::hasMatchOutUrgentChan(const int* const state) const {
   if (sys.hasUrgentCh()) {
     set<int> send_part, receive_part;
     for (int comp = 0; comp < component_num; comp++) {
       int loc = getLocationID(comp, state);
       if (sys.hasUrgentCh(comp, loc)) {
         vector<int> dummy =
-            getEnableOutUrgent(comp, loc, const_cast<int *>(state));
+            getEnableOutUrgent(comp, loc, const_cast<int*>(state));
         for (auto e : dummy) {
           if (e > 0) {
             if (receive_part.find(-e) != receive_part.end()) {
@@ -142,14 +139,65 @@ bool TMStateManager::hasMatchOutUrgentChan(const int *const state) const {
   return false;
 }
 
-bool TMStateManager::hasOutBreakcastChan(const int *const state) const {
-
+// TODO:
+bool TMStateManager::hasOutBreakcastChan(const int* const state) const {
   for (int comp = 0; comp < component_num; comp++) {
     //  int loc = getLocationID(comp, state);
   }
 
   return false;
 }
+
+int TMStateManager::getTypeStart(const TYPE_T type) const {
+  switch (type) {
+    case INT_T:
+      return counter_start_loc;
+    case CLOCK_T:
+      return clock_start_loc;
+    default:
+      assert(false);
+      return 0;
+  }
+}
+
+int TMStateManager::getTypeNumber(const TYPE_T type) const {
+  switch (type) {
+    case INT_T:
+      return getCounterNumber();
+    case CLOCK_T:
+      return getClockNumber();
+    default:
+      assert(false);
+      return 0;
+  }
+}
+
+int TMStateManager::getValue(const int component, const int* const state,
+                             const string& key) const {
+  TYPE_T type = sys.getType(component, key);
+
+  if (type == NO_T) {
+    assert(false);
+    return 0;
+  }
+  int start=getTypeStart(type );
+  return state[start+sys.getKeyID( component, type, key )];
+}
+
+
+int& TMStateManager::getValue(const int component, int*  state,
+                             const string& key) const {
+  TYPE_T type = sys.getType(component, key);
+
+  if (type == NO_T) {
+    assert(false);
+    static int error_return=0;
+    return error_return;
+  }
+  int start=getTypeStart(type );
+  return state[start+sys.getKeyID( component, type, key )];
+}
+
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);
@@ -205,10 +253,9 @@ Compression<int> TMStateManager::getBodyCompression() const {
 
 vector<int> TMStateManager::getEnableOutUrgent(const int component,
                                                const int loc,
-                                               State_t *state) const {
-
+                                               State_t* state) const {
   vector<int> re;
-  int *counter_value = getCounterValue(state);
+  int* counter_value = getCounterValue(state);
   vector<int> outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
@@ -232,10 +279,10 @@ vector<int> TMStateManager::getEnableOutUrgent(const int component,
 
 vector<int> TMStateManager::getEnableOutNormalChan(const int component,
                                                    const int loc,
-                                                   int *state) const {
+                                                   int* state) const {
   vector<int> re;
   vector<int> outs = sys.getOutTransition(component, loc);
-  int *counter_value = getCounterValue(state);
+  int* counter_value = getCounterValue(state);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
       if (sys.agents[component]->transitions[link].getChannel().getType() ==
@@ -259,7 +306,7 @@ vector<int> TMStateManager::getEnableOutNormalChan(const int component,
 bool TMStateManager::hasDiffCons() const { return hasDiff; }
 
 int TMStateManager::getLocationID(const int component,
-                                  const int *const state) const {
+                                  const int* const state) const {
   return state[component];
 }
 
@@ -269,10 +316,10 @@ string TMStateManager::getLocationName(const int component,
 }
 
 vector<int> TMStateManager::getChanLinks(const int component, const int source,
-                                         int chid, int *state) const {
+                                         int chid, int* state) const {
   vector<int> re;
   vector<int> outs = sys.agents[component]->graph.getAdj(source);
-  int *counter_value = getCounterValue(state);
+  int* counter_value = getCounterValue(state);
   if (chid > 0) {
     for (auto link : outs) {
       if (sys.hasChannel(component, link) &&
@@ -295,10 +342,9 @@ vector<int> TMStateManager::getChanLinks(const int component, const int source,
 }
 
 vector<int> TMStateManager::blockComponents(const int chid,
-                                            const int *const state) const {
+                                            const int* const state) const {
   vector<int> re_block_components;
   for (int i = 0; i < component_num; i++) {
-
     /**
      * return entire componments which waits for this signal chid
      *
@@ -311,31 +357,31 @@ vector<int> TMStateManager::blockComponents(const int chid,
   return re_block_components;
 }
 
-int TMStateManager::getCounterStartLoc(const int id) const {
+int TMStateManager::getComponentCounterStartLoc(const int id) const {
   int re = counter_start_loc;
   for (int i = 0; i < id; i++) {
-    re += sys.getCounterNumber(i);
+    re += sys.getComponentCounterNumber(i);
   }
   return re;
 }
 
-int TMStateManager::getClockStartLoc(const int id) const {
+int TMStateManager::getComponentClockStartLoc(const int id) const {
   int re = clock_start_loc;
   for (int i = 0; i < id; i++) {
-    re += sys.getClockNumber(i);
+    re += sys.getComponentClockNumber(i);
   }
   return re;
 }
 
-int TMStateManager::getClockStartID(const int id) const {
-  int re = 1;
-  for (int i = 0; i < id; i++) {
-    re += sys.getClockNumber(i);
-  }
-  return re;
-}
+// int TMStateManager::getComponentClockStartID(const int id) const {
+//   int re = 1;
+//   for (int i = 0; i < id; i++) {
+//     re += sys.getComponentClockNumber(i);
+//   }
+//   return re;
+// }
 
-void TMStateManager::swap(const int i, const int j, int *state) const {
+void TMStateManager::swap(const int i, const int j, int* state) const {
   if (i == j) {
     return;
   }
@@ -346,9 +392,9 @@ void TMStateManager::swap(const int i, const int j, int *state) const {
   temp = state[i];
   state[i] = state[j];
   state[j] = temp;
-  int counter_a_loc = getCounterStartLoc(i);
-  int counter_b_loc = getCounterStartLoc(j);
-  int counter_num = sys.getCounterNumber(i);
+  int counter_a_loc = getComponentCounterStartLoc(i);
+  int counter_b_loc = getComponentCounterStartLoc(j);
+  int counter_num = sys.getComponentCounterNumber(i);
   for (int k = 0; k < counter_num; k++) {
     temp = state[counter_a_loc + k];
     state[counter_a_loc + k] = state[counter_b_loc + k];
@@ -360,33 +406,33 @@ void TMStateManager::swap(const int i, const int j, int *state) const {
   } else if (state[component_num] == j + 1) {
     state[component_num] = i + 1;
   }
-  int *dbm = getDBM(state);
+  int* dbm = getDBM(state);
 
-  int clock_a_start = getClockStartID(i);
-  int clock_b_start = getClockStartID(j);
-  int clock_num = sys.getClockNumber(i);
+  int clock_a_start = sys.getComponentClockStartID(i);
+  int clock_b_start = sys.getComponentClockStartID(j);
+  int clock_num = sys.getComponentClockNumber(i);
 
   for (int k = 0; k < clock_num; k++) {
     getClockManager().swap(dbm, clock_a_start + k, clock_b_start + k);
   }
 }
 
-void TMStateManager::constructState(const int *const state,
-                                    const int *const dbm, int *re_state) const {
+void TMStateManager::constructState(const int* const state,
+                                    const int* const dbm, int* re_state) const {
   memcpy(re_state, state, clock_start_loc * sizeof(int));
   memcpy(re_state + clock_start_loc, dbm,
          (state_length - clock_start_loc) * sizeof(int));
 }
 
 void TMStateManager::employLocInvariants(const int component,
-                                         int *state) const {
+                                         int* state) const {
   sys.agents[component]
       ->locations[getLocationID(component, state)]
       .employInvariants(getClockManager(), getDBM(state));
 }
 
 void TMStateManager::discretRun(const int component, const int link,
-                                int *state) const {
+                                int* state) const {
   sys.agents[component]->transitions[link](this, state);
   int source = sys.getSrc(component, link);
   int target = sys.getSnk(component, link);
@@ -404,19 +450,19 @@ void TMStateManager::discretRun(const int component, const int link,
   state[component] = target;
 }
 
-vector<int *> TMStateManager::evolution(const int component, const int loc,
-                                        int *state) const {
-  vector<int *> re;
+vector<int*> TMStateManager::evolution(const int component, const int loc,
+                                       int* state) const {
+  vector<int*> re;
   state[component] = loc;
   sys.agents[component]->locations[loc](getClockManager(), getDBM(state));
   if (hasDiffCons()) {
-    vector<int *> next_dbms;
+    vector<int*> next_dbms;
     norm(getDBM(state), next_dbms);
     if (1 == next_dbms.size()) {
       re.push_back(state);
     } else {
       for (auto dbm : next_dbms) {
-        int *dummy = newState();
+        int* dummy = newState();
         constructState(state, dbm, dummy);
         re.push_back(dummy);
       }
@@ -431,7 +477,7 @@ vector<int *> TMStateManager::evolution(const int component, const int loc,
   }
   return re;
 }
-string TMStateManager::getLocDotLabel(const int *const state) const {
+string TMStateManager::getLocDotLabel(const int* const state) const {
   string re = "";
   for (int i = 0; i < component_num; i++) {
     int loc = getLocationID(i, state);
@@ -444,13 +490,12 @@ string TMStateManager::getLocDotLabel(const int *const state) const {
   return re;
 }
 
-vector<string>
-TMStateManager::getCounterDotLabel(const int *const state) const {
-
+vector<string> TMStateManager::getCounterDotLabel(
+    const int* const state) const {
   vector<string> re;
-  const int *counter_value = getCounterValue(const_cast<int *>(state));
+  const int* counter_value = getCounterValue(const_cast<int*>(state));
   vector<BaseDecl> vars = sys.getAllVar(INT_T);
-  for (auto &e : vars) {
+  for (auto& e : vars) {
     string item = e.name;
     if (e.num == 1) {
       item += " = " + to_string(counter_value[e.start_loc]);
@@ -470,33 +515,30 @@ TMStateManager::getCounterDotLabel(const int *const state) const {
   return re;
 }
 
-void TMStateManager::encode(UINT *now, int *original) const {
-
+void TMStateManager::encode(UINT* now, int* original) const {
   // copy(cache_state, original);
   getClockManager().encode(getDBM(original));
   compress_state.encode(now, original);
 }
 
-void TMStateManager::decode(int *now, const UINT *const original) const {
+void TMStateManager::decode(int* now, const UINT* const original) const {
   compress_state.decode(now, original);
   getClockManager().decode(getDBM(now));
 }
 
-ostream &TMStateManager::dump(const int *const state, ostream &out) const {
-
+ostream& TMStateManager::dump(const int* const state, ostream& out) const {
   for (int i = 0; i < component_num; i++) {
-
     int loc = getLocationID(i, state);
 
     out << setw(LOC_OUT_WIDTH) << getLocationName(i, loc);
   }
   out << endl;
   vector<string> couter_labels = getCounterDotLabel(state);
-  for (auto &l : couter_labels) {
+  for (auto& l : couter_labels) {
     out << l << endl;
   }
 
   return getClockManager().dump(out, getDBM(state)) << endl;
 }
 
-} // namespace graphsat
+}  // namespace graphsat

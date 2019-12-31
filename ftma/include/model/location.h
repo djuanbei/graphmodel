@@ -25,9 +25,8 @@ using std::vector;
 enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
 class Location {
-
-public:
-public:
+ public:
+ public:
   explicit Location(int loc_id) {
     location_id = loc_id;
     type = NORMOAL_LOC;
@@ -42,7 +41,7 @@ public:
     name = LOC_NAME_PRE + to_string(loc_id);
     hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
   }
-  explicit Location(int loc_id, const string &n) {
+  explicit Location(int loc_id, const string& n) {
     location_id = loc_id;
     type = NORMOAL_LOC;
     name = n;
@@ -51,11 +50,11 @@ public:
 
   int getId() const { return location_id; }
 
-  void setName(const string &n) { name = n; }
+  void setName(const string& n) { name = n; }
 
   string getName(void) const { return name; }
 
-  const vector<ClockConstraint> &getInvarients() const { return invariants; }
+  const vector<ClockConstraint>& getInvarients() const { return invariants; }
 
   /**
    * @brief  the commit freeze time. Semantically, urgent locations are
@@ -82,7 +81,7 @@ public:
    */
   inline bool isFreezeLocation() const { return (isUrgent()) || (isCommit()); }
 
-  inline void employInvariants(const DBMFactory &dbm_manager, int *dbm) const {
+  inline void employInvariants(const DBMFactory& dbm_manager, int* dbm) const {
     for (auto cs : invariants) {
       dbm_manager.andImpl(dbm, cs);
     }
@@ -97,7 +96,7 @@ public:
    * @return  true if dbm  satisfies invariant, false otherwise.
    */
 
-  inline bool isReachable(const DBMFactory &dbm_manager, int *dbm) const {
+  inline bool isReachable(const DBMFactory& dbm_manager, int* dbm) const {
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -108,7 +107,7 @@ public:
     return dbm_manager.isConsistent(dbm);
   }
 
-  inline void operator()(const DBMFactory &dbm_manager, int *dbm) const {
+  inline void operator()(const DBMFactory& dbm_manager, int* dbm) const {
     assert(isReachable(dbm_manager, dbm));
     assert(!isFreezeLocation());
 
@@ -117,8 +116,8 @@ public:
     assert(dbm_manager.isConsistent(dbm));
   }
 
-  bool operator()(const DBMFactory &dbm_manager, const int *const dbm,
-                  vector<int *> &re_vec) const;
+  bool operator()(const DBMFactory& dbm_manager, const int* const dbm,
+                  vector<int*>& re_vec) const;
 
   void setHasOutUrgentCh(bool b) { hasOutUrgentChan = b; }
 
@@ -138,35 +137,11 @@ public:
    *
    * @return a new location
    */
-  Location &operator+=(const ClockConstraint &cs);
+  Location& operator+=(const ClockConstraint& cs);
 
-  void to_real(const TOReal *convertor);
+  void to_real(const TOReal* convertor);
 
-  ostream &dump2Dot(ostream &out) const {
-    out << name;
-    switch (type) {
-    case NORMOAL_LOC:
-      out << " [ shape = circle, label=<";
-      break;
-    case INIT_LOC:
-      out << " [ shape = doublecircle, label=<";
-      break;
-    case URGENT_LOC:
-      out << " [ shape = octagon, label=<";
-      break;
-    case COMMIT_LOC:
-      out << " [ shape = doubleoctagon, label=<";
-      break;
-    }
-    if (!invariants.empty()) {
-      out << "<table border=\"1\" >" << endl;
-      for (auto cs : invariants) {
-      }
-      out << "</table>";
-    }
-    out << ">];";
-    return out;
-  }
+  ostream& dump2Dot(ostream& out) const;
 
   // string to_string( ) const{
   //   string re_str="name: "+name;
@@ -177,15 +152,15 @@ public:
   //     }
   //   }
   // }
-  friend std::ostream &operator<<(std::ostream &os, const Location &loc);
+  friend std::ostream& operator<<(std::ostream& os, const Location& loc);
 
-private:
-  vector<ClockConstraint> invariants; // set of invariants  in this Location
+ private:
+  vector<ClockConstraint> invariants;  // set of invariants  in this Location
   int location_id;
   string name;
   Location_Type type;
   bool hasOutUrgentChan, hasOutBreakcastSendChan, hasNormalChannel;
 };
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

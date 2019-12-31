@@ -22,7 +22,7 @@ void example5(void);
 
 void example6();
 
-void fisher(int n = 2);
+void fischer(int n = 2);
 
 void testIsConsistent();
 
@@ -38,6 +38,6 @@ void testcompression();
 
 void train_gate(const int n);
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif

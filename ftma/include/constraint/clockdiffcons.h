@@ -30,26 +30,25 @@ const int GLOBAL_CLOCK_ID = 0;
  *
  */
 class ClockConstraint {
+ public:
+  ClockConstraint(const Argument& clock_id1, COMP_OPERATOR eop,
+                  const Argument& rhs);
 
-public:
-  ClockConstraint(const Argument &clock_id1, COMP_OPERATOR eop,
-                  const Argument &rhs);
+  ClockConstraint(const Argument& clock_id1, const Argument& clock_id2,
+                  COMP_OPERATOR eop, const Argument& rhs);
 
-  ClockConstraint(const Argument &clock_id1, const Argument &clock_id2,
-                  COMP_OPERATOR eop, const Argument &rhs);
-
-  void to_real(const TOReal *convertor);
+  void to_real(const TOReal* convertor);
 
   ClockConstraint neg(void) const;
 
-  bool isSat(const ClockConstraint &cons) const;
+  bool isSat(const ClockConstraint& cons) const;
 
-  ostream &dump2Dot(ostream &out) const;
+  ostream& dump2Dot(ostream& out) const;
 
-  friend std::ostream &operator<<(std::ostream &out,
-                                  const ClockConstraint &cons);
+  friend std::ostream& operator<<(std::ostream& out,
+                                  const ClockConstraint& cons);
 
-private:
+ private:
   /**
    is_strict_ref  is true : <
    is_strict_ref  is true : <=
@@ -62,7 +61,7 @@ private:
   void init(const int clock_id1, const int clock_id2, COMP_OPERATOR eop,
             const int rhs);
 
-public:
+ public:
   Argument clock_x_arg;
   Argument clock_y_arg;
   Argument rhs_arg;
@@ -76,11 +75,11 @@ public:
   COMP_OPERATOR op;
   int matrix_value;
 
-private:
+ private:
   friend ClockConstraint randConst(const int num, const int low, const int up);
   friend class DBMFactory;
 };
 ClockConstraint randConst(const int num, const int low, const int up);
 
-} // namespace graphsat
+}  // namespace graphsat
 #endif

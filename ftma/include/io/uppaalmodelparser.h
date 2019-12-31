@@ -32,15 +32,14 @@ typedef AgentSystem<Location, Transition> INT_TAS_t;
 static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, CHAN_T};
 
 class UppaalParser {
+ public:
+  UppaalParser(const string& xmlfile);
 
-public:
-  UppaalParser(const string &xmlfile);
+  const INT_TAS_t& getSYS() const { return sys; }
 
-  const INT_TAS_t &getSYS() const { return sys; }
+  const Property& getProp() const { return prop; }
 
-  const Property &getProp() const { return prop; }
-
-private:
+ private:
   UppaalData system_data;
   map<string, UppaalData> template_map;
 
@@ -55,18 +54,18 @@ private:
 
   int parseQuery(child_type queries);
 
-  int parseTemplateParamter(UppaalData &tempData, XML_P parameter);
+  int parseTemplateParamter(UppaalData& tempData, XML_P parameter);
 
   int setCounter();
   int setChannel();
 
-  vector<typename INT_TAS_t::L_t> parseLocation(UppaalData &tempData,
+  vector<typename INT_TAS_t::L_t> parseLocation(UppaalData& tempData,
                                                 child_type locations);
 
-  vector<typename INT_TAS_t::T_t> parseTransition(UppaalData &tempData,
+  vector<typename INT_TAS_t::T_t> parseTransition(UppaalData& tempData,
                                                   child_type transitions);
 
-  void parseLabel(UppaalData &data, string guards);
+  void parseLabel(UppaalData& data, string guards);
 
   /**
    * @param current_data  current template
@@ -74,10 +73,10 @@ private:
    * @param save_name  the name in code level
    * @return  the type of name
    */
-  TYPE_T getType(UppaalData *current_data, const string &xml_name,
-                 string &code_name);
+  TYPE_T getType(UppaalData* current_data, const string& xml_name,
+                 string& code_name);
 };
 
-} // namespace graphsat
+}  // namespace graphsat
 
 #endif
