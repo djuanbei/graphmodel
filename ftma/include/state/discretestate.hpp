@@ -16,6 +16,7 @@
 #include <random>
 #include <unordered_map>
 #include <vector>
+#include<cstring>
 
 #include "util/datacompression.h"
 #include "util/fastHash.h"

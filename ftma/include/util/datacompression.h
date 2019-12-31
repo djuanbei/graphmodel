@@ -14,6 +14,7 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+#include<cassert>
 
 #include "util/typedef.h"
 namespace graphsat {
