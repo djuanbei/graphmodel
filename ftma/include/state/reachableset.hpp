@@ -226,7 +226,7 @@ class ReachableSet {
 
       re.push_back(dummy);
     }
-    assert(re.size() == reach_set.size());
+    assert((int)re.size() == reach_set.size());
   }
 
   vector<vector<State_t>> getPath(const State_t* const target) const {
