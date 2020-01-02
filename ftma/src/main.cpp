@@ -1,4 +1,5 @@
 
+
 /**
  * @file   main.cpp
  * @author Liyun Dai <dlyun2009@gmail.com>
@@ -33,6 +34,7 @@
 #include "problem/pmcp.hpp"
 
 #include "benchmark/fischer.h"
+
 #include "benchmark/fischer_projector.h"
 
 #include "alg/symmetry.h"
@@ -95,7 +97,7 @@ void lift_customer() {
 }
 
 int main(int argc, const char* argv[]) {
-  //lift_customer();
+  // lift_customer();
   //  return 0;
   // test1();
   // return 0;

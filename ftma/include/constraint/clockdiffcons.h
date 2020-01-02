@@ -21,7 +21,7 @@
 
 namespace graphsat {
 
-using namespace std;
+// using namespace std;
 
 const int GLOBAL_CLOCK_ID = 0;
 
@@ -43,7 +43,7 @@ class ClockConstraint {
 
   bool isSat(const ClockConstraint& cons) const;
 
-  ostream& dump2Dot(ostream& out) const;
+  std::ostream& dump2Dot(std::ostream& out) const;
 
   friend std::ostream& operator<<(std::ostream& out,
                                   const ClockConstraint& cons);

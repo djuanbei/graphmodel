@@ -21,9 +21,9 @@
 #include "macrodef.h"
 
 namespace graphsat {
-using std::map;
-using std::string;
-using std::vector;
+// using std::map;
+// using std::string;
+// using std::vector;
 
 template <typename T>
 bool executeOp(const T& lhs, COMP_OPERATOR op, const T& rhs) {
@@ -45,29 +45,16 @@ bool executeOp(const T& lhs, COMP_OPERATOR op, const T& rhs) {
   }
 }
 
-int getIndex(const RealArgument& arg, int* counter_value);
-
-int getValue(const RealArgument& arg, int* counter_value);
-// int getValue(const RealArgument &arg1, const RealArgument &arg2, int
-// *counter_value);
-
-int getValue(const shared_ptr<RealArgument>& arg, int* counter_value);
-
-int_fast64_t getMapValue(const Argument& arg, const vector<int>& id_map,
-                         const vector<int>& parameter_value);
-
 // int_fast64_t getMapValue( const RealArgument & arg, const vector<int>
 // &id_map);
 
-string getOpStr(COMP_OPERATOR op);
+std::string getOpStr(COMP_OPERATOR op);
 
 COMP_OPERATOR negation(COMP_OPERATOR op);
 
-string getTypeStr(TYPE_T type);
+std::string getTypeStr(TYPE_T type);
 
 TYPE_T baseType(TYPE_T type);
-
-// TYPE_T getRef( TYPE_T type );
 
 int fromPidToChanId(int id);
 
@@ -128,47 +115,6 @@ inline C negMatrixValue(C matrix_value) {
 
   return getMatrixValue(-getRight(matrix_value), strict);
 }
-
-template <class T>
-inline bool CAS(T* ptr, T oldv, T newv) {
-  if (sizeof(T) == 1) {
-    return __sync_bool_compare_and_swap((bool*)ptr, *((bool*)&oldv),
-                                        *((bool*)&newv));
-  } else if (sizeof(T) == 4) {
-    return __sync_bool_compare_and_swap((int*)ptr, *((int*)&oldv),
-                                        *((int*)&newv));
-  } else if (sizeof(T) == 8) {
-    return __sync_bool_compare_and_swap((long*)ptr, *((long*)&oldv),
-                                        *((long*)&newv));
-  } else {
-    std::cout << "CAS bad length : " << sizeof(T) << std::endl;
-    abort();
-  }
-}
-
-template <class T>
-inline bool writeMin(T* a, T b) {
-  T c;
-  bool r = 0;
-  do
-    c = *a;
-  while (c > b && !(r = CAS(a, c, b)));
-  return r;
-}
-
-template <class T>
-inline void writeAdd(T* a, T b) {
-  volatile T newV, oldV;
-  do {
-    oldV = *a;
-    newV = oldV + b;
-  } while (!CAS(a, oldV, newV));
-}
-
-vector<string> splitStr(const string& stringToBeSplitted,
-                        const string& delimeter);
-
-string deleteChar(const string& value, const size_t start, const char ch);
 
 }  // namespace graphsat
 

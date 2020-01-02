@@ -20,7 +20,7 @@ class ClockReset {
     rhs_value = convertor->to_real(INT_T, rhs);
   }
   pair<int, int> getValue() const {
-    return make_pair(clock_value.value, rhs_value.value);
+    return std::make_pair(clock_value.value, rhs_value.value);
   }
 
  private:

@@ -17,14 +17,16 @@ namespace graphsat {
 
 class FischerProjector : public Projector {
  public:
-  FischerProjector(const shared_ptr<TMStateManager>& manager, const int pro_d);
+  FischerProjector(const std::shared_ptr<TMStateManager>& manager,
+                   const int pro_d);
 
   virtual void operator()(const int* original_state, vector<int>& proj) const;
 
   bool include(const vector<vector<int>>& lhs,
                const vector<vector<int>>& rhs) const;
 
-  virtual ostream& dump(const vector<int>& proj_e, ostream& out) const {
+  virtual std::ostream& dump(const vector<int>& proj_e,
+                             std::ostream& out) const {
     return out;
   }
 

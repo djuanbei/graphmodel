@@ -3,7 +3,7 @@
 namespace graphsat {
 
 TrainGateProjector::TrainGateProjector(
-    const shared_ptr<TMStateManager>& out_manager, const int pro_d)
+    const std::shared_ptr<TMStateManager>& out_manager, const int pro_d)
     : manager(out_manager) {
   component_num = manager->getComponentNumber();
   pro_dim = pro_d;
@@ -65,7 +65,7 @@ void TrainGateProjector::operator()(const int* original_state,
   }
 }
 
-bool TrainGateProjector::include(const vector<vector<int>>& lhs,
+bool TrainGateProjector::include(const std::vector<vector<int>>& lhs,
                                  const vector<vector<int>>& rhs) const {
   if (lhs.empty()) {
     return rhs.empty();
@@ -105,10 +105,10 @@ bool TrainGateProjector::include(const vector<vector<int>>& lhs,
   return true;
 }
 
-ostream& TrainGateProjector::dump(const vector<int>& proj_e,
-                                  ostream& out) const {
+std::ostream& TrainGateProjector::dump(const vector<int>& proj_e,
+                                       std::ostream& out) const {
   for (int i = 0; i < pro_dim; i++) {
-    out << setw(LOC_OUT_WIDTH) << manager->getLocationName(i, proj_e[i]);
+    out << std::setw(LOC_OUT_WIDTH) << manager->getLocationName(i, proj_e[i]);
   }
   out << endl;
   return DBMFactory::dump(out, &(proj_e[0]) + pro_clock_start, pro_dim + 1);

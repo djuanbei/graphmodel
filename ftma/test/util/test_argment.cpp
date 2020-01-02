@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "util/argument.h"
 #include "util/strutil.h"
 #include "util/typedef.h"
 
@@ -10,9 +11,9 @@ TEST(Argument, to_string) {
   EXPECT_EQ(h.to_string(), "");
   for (int i = -100; i < 100; i++) {
     Argument h(i);
-    EXPECT_EQ(h.to_string(), to_string(i));
+    EXPECT_EQ(h.to_string(), std::to_string(i));
   }
-  string p = "ss";
+  std::string p = "ss";
   Argument hh(NORMAL_VAR_ARG, "ss");
   EXPECT_EQ(hh.to_string(), p);
   p = rand_str();

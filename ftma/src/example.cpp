@@ -6,6 +6,7 @@
 #include <random>
 
 #include "action/counteraction.h"
+#include "alg/util.h"
 #include "benchmark/fischer.h"
 #include "benchmark/fischer_projector.h"
 #include "benchmark/train_gate.h"
@@ -266,36 +267,43 @@ void fischer(int n) {
 
   int* state = manager->newState();
   vector<int> clock_ids;
-  clock_ids.push_back( 1);
-  vector<vector<int> > one_states;
+  clock_ids.push_back(1);
+  vector<vector<int>> one_states;
   for (size_t i = 0; i < data.size(); i++) {
     vector<int> dummy;
 
     data.getStateAt(state, i);
-    dummy.push_back(state[ 0] );
-    dummy.push_back(manager->getValue(0, state, "id" )==1 );
-    int *dbm=manager->getDBM(state );
-    manager->getClockManager( ).encode( dbm);
-    int *pdbm=manager->getClockManager( ).project( dbm, clock_ids );
-    for( int j=0; j< 4; j++){
-      dummy.push_back( pdbm[ j]);
-      
+    dummy.push_back(state[0]);
+    dummy.push_back(manager->getValue(0, state, "id") == 1);
+    int* dbm = manager->getDBM(state);
+    manager->getClockManager().encode(dbm);
+    int* pdbm = manager->getClockManager().project(dbm, clock_ids);
+    for (int j = 0; j < 4; j++) {
+      dummy.push_back(pdbm[j]);
     }
-    delete [ ] pdbm;
-    one_states.push_back( dummy);
+    delete[] pdbm;
+    one_states.push_back(dummy);
 
-    cout<<sys.getLocationName(0, state[ 0] )<< ", "<< (manager->getValue(0, state, "id" )==1)<<endl;
-    //int *dbm=manager->getDBM(state );
-    
-    manager->getClockManager( ).dump( cout, dbm, clock_ids );
-    
+    // cout<<sys.getLocationName(0, state[ 0] )<< ", "<< (manager->getValue(0,
+    // state, "id" )==1)<<endl; int *dbm=manager->getDBM(state );
+
+    // manager->getClockManager( ).dump( cout, dbm, clock_ids );
   }
-  
+
   std::vector<vector<int>>::iterator it;
+  sort(one_states.begin(), one_states.end(), vect_cmp<int>);
   it = std::unique(one_states.begin(), one_states.end());
   one_states.resize(std::distance(one_states.begin(), it));
-  cout<<"size: " <<one_states.size( )<<endl;
+  cout << "size: " << one_states.size() << endl;
   manager->destroyState(state);
+
+  for (size_t i = 0; i < one_states.size(); i++) {
+    int* state = &(one_states[i][0]);
+    cout << sys.getLocationName(0, state[0]) << ", " << state[1] << endl;
+    // int *dbm=manager->getDBM(state );
+    int* dbm = state + 2;
+    manager->getClockManager().dump(cout, dbm, 2);
+  }
 }
 
 void testIsConsistent() {

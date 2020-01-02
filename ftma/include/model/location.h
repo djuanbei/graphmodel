@@ -141,7 +141,7 @@ class Location {
 
   void to_real(const TOReal* convertor);
 
-  ostream& dump2Dot(ostream& out) const;
+  std::ostream& dump2Dot(std::ostream& out) const;
 
   // string to_string( ) const{
   //   string re_str="name: "+name;

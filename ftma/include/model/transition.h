@@ -140,7 +140,7 @@ class Transition {
   string getSelectCollect(void) const { return select_collect; }
   bool isSelect() const { return (select_var != "") && (select_collect != ""); }
 
-  ostream& dump2Dot(ostream& out) const;
+  std::ostream& dump2Dot(std::ostream& out) const;
 
  private:
   int source, target;  // source location and target location of this

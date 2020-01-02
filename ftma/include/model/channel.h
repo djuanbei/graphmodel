@@ -13,7 +13,6 @@
 #include "to_real.h"
 #include "util/dbmutil.hpp"
 
-#include <map>
 namespace graphsat {
 
 class Channel {

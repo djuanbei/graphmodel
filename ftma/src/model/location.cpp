@@ -26,7 +26,7 @@ void Location::to_real(const TOReal* convertor) {
   }
 }
 // TODO: add name
-ostream& Location::dump2Dot(ostream& out) const {
+std::ostream& Location::dump2Dot(std::ostream& out) const {
   out << location_id;
   switch (type) {
     case NORMOAL_LOC:
@@ -43,14 +43,14 @@ ostream& Location::dump2Dot(ostream& out) const {
       break;
   }
 
-  out << "<table border=\"0\" >" << endl;
-  out << "<tr><td>" << name << "</td></tr>" << endl;
+  out << "<table border=\"0\" >" << std::endl;
+  out << "<tr><td>" << name << "</td></tr>" << std::endl;
   for (auto cs : invariants) {
     cs.dump2Dot(out);
   }
   out << "</table>";
 
-  out << ">];" << endl;
+  out << ">];" << std::endl;
   return out;
 }
 

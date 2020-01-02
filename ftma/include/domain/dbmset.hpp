@@ -18,7 +18,7 @@
 #include "domain/dbm.h"
 
 namespace graphsat {
-using namespace std;
+// using namespace std;
 template <typename C>
 class DBMset {
  public:
@@ -61,7 +61,7 @@ class DBMset {
 
       if (!dbm_manager.equal(DM, D1)) {
         bool have = false;
-        for (typename vector<C*>::iterator it = recovery_data.begin();
+        for (typename std::vector<C*>::iterator it = recovery_data.begin();
              it != recovery_data.end(); it++) {
           if (dbm_manager.equal(DM, *it)) {
             have = true;
@@ -104,12 +104,12 @@ class DBMset {
   }
 
   void deleteAll(void) {
-    for (typename vector<C*>::const_iterator it = map_data.begin();
+    for (typename std::vector<C*>::const_iterator it = map_data.begin();
          it != map_data.end(); it++) {
       delete[] * it;
     }
 
-    for (typename vector<C*>::iterator it = recovery_data.begin();
+    for (typename std::vector<C*>::iterator it = recovery_data.begin();
          it != recovery_data.end(); it++) {
       delete[] * it;
     }
@@ -117,12 +117,12 @@ class DBMset {
   }
 
   void And(DBMset<C>& other) {
-    for (typename vector<C*>::iterator it = other.map_data.begin();
+    for (typename std::vector<C*>::iterator it = other.map_data.begin();
          it != other.map_data.end(); it++) {
       add(dbm_manager, *it);
     }
 
-    for (typename vector<C*>::iterator it = other.recovery_data.begin();
+    for (typename std::vector<C*>::iterator it = other.recovery_data.begin();
          it != other.recovery_data.end(); it++) {
       add(dbm_manager, *it);
     }
@@ -207,12 +207,12 @@ class DBMset {
 
  private:
   DBMFactory dbm_manager;
-  map<uint32_t, int> passed_data;
-  vector<C*> map_data;
-  vector<DF_T> map_data_feature;
+  std::map<uint32_t, int> passed_data;
+  std::vector<C*> map_data;
+  std::vector<DF_T> map_data_feature;
 
-  vector<C*> recovery_data;
-  vector<DF_T> recovery_data_feature;
+  std::vector<C*> recovery_data;
+  std::vector<DF_T> recovery_data_feature;
 
   C* getD(uint32_t hash_value) { return map_data[passed_data[hash_value]]; }
 

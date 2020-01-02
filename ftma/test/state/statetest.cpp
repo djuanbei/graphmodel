@@ -161,5 +161,4 @@ TEST(StateSet1, equal) {
   for (size_t i = 0; i < vecs.size(); i++) {
     EXPECT_EQ(vecs[i], getRe[i]);
   }
-  
 }

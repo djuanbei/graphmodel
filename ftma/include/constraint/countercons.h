@@ -22,9 +22,9 @@
 #include "model/to_real.h"
 
 namespace graphsat {
-using std::ostream;
-using std::setw;
-using std::to_string;
+// using std::ostream;
+// using std::setw;
+// using std::to_string;
 
 // first - second op rhs
 class CounterConstraint {

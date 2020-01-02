@@ -14,7 +14,7 @@
 #include <iomanip>
 #include <iostream>
 
-using namespace std;
+// using namespace std;
 //#define PRINT_STATE 1
 
 #define STRING(s) #s

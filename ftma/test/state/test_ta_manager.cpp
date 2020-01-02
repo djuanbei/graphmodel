@@ -142,33 +142,29 @@ TEST(STATE_MANAGER_H, ENCODE) {
 
 TEST(STATE_MANAGER_H, getTypeNumber) {
   TrainGate TG;
-  int n=rand( )%10+3;
+  int n = rand() % 10 + 3;
   INT_TAS_t tg_sys = TG.generate(n);
   shared_ptr<INT_TAS_t::StateManager_t> manager = tg_sys.getStateManager();
-  EXPECT_EQ( manager->getTypeNumber(INT_T ), n+2);
-  EXPECT_EQ( manager->getTypeNumber(CLOCK_T ), (n+1) *( n+1));
+  EXPECT_EQ(manager->getTypeNumber(INT_T), n + 2);
+  EXPECT_EQ(manager->getTypeNumber(CLOCK_T), (n + 1) * (n + 1));
 }
 
 TEST(STATE_MANAGER_H, getValue) {
-
   TrainGate TG;
-  
-  int n=rand( )%10+3;
+
+  int n = rand() % 10 + 3;
   INT_TAS_t tg_sys = TG.generate(n);
-  tg_sys.addInt( "x", 1);
+  tg_sys.addInt("x", 1);
   tg_sys.buildManager();
   shared_ptr<INT_TAS_t::StateManager_t> manager = tg_sys.getStateManager();
-  
-  int * state=manager->newState( );
-  int index=2*( n+1)+1;
-  for( int i=0; i< 10; i++){
-    int v=rand( )%20;
-    state[ index]=v;
-    EXPECT_EQ( manager->getValue(n, state,  "len" ), v);
+
+  int* state = manager->newState();
+  int index = 2 * (n + 1) + 1;
+  for (int i = 0; i < 10; i++) {
+    int v = rand() % 20;
+    state[index] = v;
+    EXPECT_EQ(manager->getValue(n, state, "len"), v);
   }
 
-  manager->destroyState( state);
-
-
+  manager->destroyState(state);
 }
-

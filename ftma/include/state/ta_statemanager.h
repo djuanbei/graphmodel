@@ -79,23 +79,19 @@ class TMStateManager : public ComponentInfo {
   int getCounterNumber() const {
     return freeze_location_index - counter_start_loc;
   }
-  
+
   int getClockStart() const { return clock_start_loc; }
-  //number of int in one state for clock variables
-  int getClockNumber( ) const{
-    return parent_location_index-clock_start_loc;
-  }
-  
+  // number of int in one state for clock variables
+  int getClockNumber() const { return parent_location_index - clock_start_loc; }
 
   // Return the number of clock variables in the system
   int getSystemClockNumber() const { return clock_num; }
-  
 
   Compression<int> getHeadCompression() const;
 
   Compression<int> getBodyCompression() const;
 
-  string getLocationName(const int component, const int loc_ID) const;
+  std::string getLocationName(const int component, const int loc_ID) const;
 
   inline bool withoutChannel(const int component,
                              const int* const state) const {
@@ -166,10 +162,9 @@ class TMStateManager : public ComponentInfo {
    * @return
    */
   int getValue(const int component, const int* const state,
-               const string& key) const;
+               const std::string& key) const;
 
-  
-  int & getValue( const int component, int * state, const string & key) const;
+  int& getValue(const int component, int* state, const std::string& key) const;
 
   /**
    * @brief As the state is  abstract symbolic state. A symbolic state
@@ -185,7 +180,7 @@ class TMStateManager : public ComponentInfo {
   void destroyState(int* state) const { delete[] state; }
 
   int getComponentNumber() const { return component_num; }
-  
+
   inline const DBMFactory& getClockManager() const { return dbm_manager; }
 
   void norm(const int* const dbm, vector<int*>& re_vec) const {
@@ -236,8 +231,6 @@ class TMStateManager : public ComponentInfo {
    */
   int getComponentClockStartLoc(const int comp_id) const;
 
-
-
   /**
    * @brief swap component i and component j local state. The component i and j
    * must from a same template
@@ -247,8 +240,6 @@ class TMStateManager : public ComponentInfo {
    * @param state  original state
    */
   void swap(const int i, const int j, int* state) const;
-  
-  
 
   vector<int> getEnableOutUrgent(const int component, const int loc,
                                  int* state) const;
@@ -264,15 +255,15 @@ class TMStateManager : public ComponentInfo {
 
   vector<int*> evolution(const int component, const int loc, int* state) const;
 
-  string getLocDotLabel(const int* const state) const;
+  std::string getLocDotLabel(const int* const state) const;
 
-  vector<string> getCounterDotLabel(const int* const state) const;
+  std::vector<std::string> getCounterDotLabel(const int* const state) const;
 
   void encode(UINT* now, int* original) const;
 
   void decode(int* now, const UINT* const original) const;
 
-  ostream& dump(const int* const state, ostream& out) const;
+  std::ostream& dump(const int* const state, std::ostream& out) const;
 
   void dump(const int* const state) const { dump(state, cout); }
 

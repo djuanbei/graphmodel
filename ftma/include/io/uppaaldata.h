@@ -19,10 +19,10 @@
 #include "model/transition.h"
 #include "util/data.hpp"
 namespace graphsat {
-using std::map;
-using std::pair;
-using std::string;
-using std::vector;
+// using std::map;
+// using std::pair;
+// using std::string;
+// using std::vector;
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 struct FormalParameterItem {

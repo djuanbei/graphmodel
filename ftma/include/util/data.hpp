@@ -22,14 +22,9 @@
 #include "typedef.h"
 
 namespace graphsat {
-using std::map;
-using std::pair;
-using std::string;
-using std::stringstream;
-using std::vector;
 
-inline static string arrayToVar(const string& name, size_t id) {
-  stringstream ss;
+inline static std::string arrayToVar(const std::string& name, size_t id) {
+  std::stringstream ss;
   ss << id;
   return name + "#" + ss.str();
 }
@@ -39,14 +34,14 @@ class ValueData {
  public:
   void clear() { values.clear(); }
   void clear(const size_t type) { values[type].clear(); }
-  void clear(const size_t type, const string& name) {
+  void clear(const size_t type, const std::string& name) {
     for (size_t i = 0; i < values[type].size(); i++) {
       if (values[type][i].first == name) {
         values[type][i].second.clear();
       }
     }
   }
-  void addValue(const size_t type, const string& name, T v = 0) {
+  void addValue(const size_t type, const std::string& name, T v = 0) {
     for (size_t i = 0; i < values[type].size(); i++) {
       if (values[type][i].first == name) {
         values[type][i].second.push_back(v);
@@ -54,12 +49,12 @@ class ValueData {
       }
     }
 
-    vector<T> vec_v;
+    std::vector<T> vec_v;
     vec_v.push_back(v);
     values[type].push_back(make_pair(name, vec_v));
   }
 
-  void setValue(const size_t type, const string& name, T v) {
+  void setValue(const size_t type, const std::string& name, T v) {
     for (size_t i = 0; i < values[type].size(); i++) {
       if (values[type][i].first == name) {
         if (values[type][i].second.empty()) {
@@ -88,7 +83,7 @@ class ValueData {
    *
    * @return  @NOT_FOUND if name is not in values
    */
-  int getId(const size_t type, const string& name) const {
+  int getId(const size_t type, const std::string& name) const {
     if (values.find(type) == values.end()) {
       return NOT_FOUND;
     }
@@ -101,13 +96,14 @@ class ValueData {
     return NOT_FOUND;
   }
 
-  const pair<string, vector<T>>& getValue(const size_t type, int id) const {
+  const std::pair<std::string, std::vector<T>>& getValue(const size_t type,
+                                                         int id) const {
     return values.at(type)[id];
   }
 
-  vector<T> getValue(const size_t type, const string& name) const {
+  std::vector<T> getValue(const size_t type, const std::string& name) const {
     if (values.find(type) == values.end()) {
-      vector<T> dummy;
+      std::vector<T> dummy;
       return dummy;
     }
 
@@ -116,19 +112,20 @@ class ValueData {
         return values.at(type)[i].second;
       }
     }
-    vector<T> dummy;
+    std::vector<T> dummy;
     return dummy;
   }
 
-  vector<pair<string, vector<T>>> getValue(const size_t type) const {
+  std::vector<std::pair<std::string, std::vector<T>>> getValue(
+      const size_t type) const {
     if (values.find(type) != values.end()) {
       return values.at(type);
     }
 
-    return vector<pair<string, vector<T>>>();
+    return std::vector<std::pair<std::string, std::vector<T>>>();
   }
 
-  bool hasValue(const size_t type, const string& name) const {
+  bool hasValue(const size_t type, const std::string& name) const {
     if (values.find(type) == values.end()) {
       return false;
     }
@@ -144,7 +141,7 @@ class ValueData {
     return values.find(type) != values.end();
   }
 
-  T getValue(const size_t type, const string& name, int id) const {
+  T getValue(const size_t type, const std::string& name, int id) const {
     if (values.find(type) == values.end()) {
       return (T)NOT_FOUND;
     }
@@ -162,9 +159,10 @@ class ValueData {
    *
    * @return  NOT_FOUND if can not find name.
    */
-  int getType(const string& name) const {
-    for (typename map<size_t, vector<pair<string, vector<T>>>>::const_iterator
-             it = values.begin();
+  int getType(const std::string& name) const {
+    for (typename std::map<
+             size_t, std::vector<std::pair<std::string, std::vector<T>>>>::
+             const_iterator it = values.begin();
          it != values.end(); it++) {
       if (hasValue(it->first, name)) {
         return it->first;
@@ -174,7 +172,7 @@ class ValueData {
   }
 
  private:
-  map<size_t, vector<pair<string, vector<T>>>> values;
+  std::map<size_t, std::vector<std::pair<std::string, std::vector<T>>>> values;
 };
 
 // template <> class ValueData<int> {

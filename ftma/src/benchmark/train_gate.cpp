@@ -206,6 +206,7 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   Argument ch9_arg(NORMAL_VAR_ARG, "leave");
   shared_ptr<Argument> dummy9(new Argument(SELECT_VAR_ARG, "e"));
+
   ch9_arg.setIndex(dummy9);
   Occ_Free.setChannel(Channel(ch9_arg, CHANNEL_RECEIVE));
 

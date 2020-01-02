@@ -18,61 +18,59 @@
 
 #include "macrodef.h"
 
-#include "model/function.h"
-
 namespace graphsat {
-using std::string;
+// using std::std::string;
 typedef unsigned int UINT;
 
 const static int zero_clock_index = 0;
 
-const static string NTA_STR = "nta";
+const static std::string NTA_STR = "nta";
 
-const static string DECLARATION_STR = "declaration";
+const static std::string DECLARATION_STR = "declaration";
 
-const static string TEMPLATE_STR = "template";
+const static std::string TEMPLATE_STR = "template";
 
-const static string NAME_STR = "name";
+const static std::string NAME_STR = "name";
 
-const static string PARAMETER_STR = "parameter";
+const static std::string PARAMETER_STR = "parameter";
 
-const static string LOCATION_STR = "location";
+const static std::string LOCATION_STR = "location";
 
-const static string INIT_STR = "init";
+const static std::string INIT_STR = "init";
 
-const static string TRANSITION_STR = "transition";
+const static std::string TRANSITION_STR = "transition";
 
-const static string SOURCE_STR = "source";
+const static std::string SOURCE_STR = "source";
 
-const static string TARGET_STR = "target";
+const static std::string TARGET_STR = "target";
 
-const static string ID_STR = "id";
+const static std::string ID_STR = "id";
 
-const static string REF_STR = "ref";
+const static std::string REF_STR = "ref";
 
-const static string LABEL_STR = "label";
+const static std::string LABEL_STR = "label";
 
-const static string KIND_STR = "kind";
+const static std::string KIND_STR = "kind";
 
-const static string NAIL_STR = "nail";
+const static std::string NAIL_STR = "nail";
 
-const static string INVARIANT_STR = "invariant";
+const static std::string INVARIANT_STR = "invariant";
 
-const static string GUARD_STR = "guard";
+const static std::string GUARD_STR = "guard";
 
-const static string ASSIGNMENT_STR = "assignment";
+const static std::string ASSIGNMENT_STR = "assignment";
 
-const static string SYNCHRONISATION_STR = "synchronisation";
+const static std::string SYNCHRONISATION_STR = "synchronisation";
 
-const static string SYSTEM_STR = "system";
+const static std::string SYSTEM_STR = "system";
 
-const static string QUERIES_STR = "queries";
+const static std::string QUERIES_STR = "queries";
 
-const static string QUERY_STR = "query";
+const static std::string QUERY_STR = "query";
 
-const static string FORMULA_STR = "formula";
+const static std::string FORMULA_STR = "formula";
 
-const static string COMMENT_STR = "comment";
+const static std::string COMMENT_STR = "comment";
 
 const static int LOC_OUT_WIDTH = 7;
 const static int OP_OUT_WIDTH = 3;
@@ -84,45 +82,6 @@ typedef long double DF_T;
 enum Check_State { TRUE, FALSE, UNKOWN };
 
 enum COMP_OPERATOR { EQ, LE, GE, LT, GT, NE };
-
-enum ARGUMENT_TYPE {
-  CONST_ARG,          // constant value
-  NORMAL_VAR_ARG,     // template variable id
-  PARAMETER_ARG,      // template argument id (pass value)
-  REF_PARAMETER_ARG,  // temmplate argument if (pass reference)
-  FUN_POINTER_ARG,    // template function
-  SELECT_VAR_ARG,     // select variable
-  EMPTY_ARG           // otherwise
-};
-
-struct RealArgument {
-  ARGUMENT_TYPE type;
-  int_fast64_t value;
-
-  shared_ptr<RealArgument> index;
-  RealArgument() : type(EMPTY_ARG), value(0) {}
-  RealArgument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
-};
-
-class ClockConstraint;
-class DBMFactory;
-struct Argument {
-  ARGUMENT_TYPE type;
-  int_fast64_t value;
-  string name;
-  shared_ptr<Argument> index;
-  Argument() : type(EMPTY_ARG), value(0) {}
-  explicit Argument(int v) : type(CONST_ARG), value(v) {}
-  Argument(ARGUMENT_TYPE t, const string& n) : type(t), value(0), name(n) {}
-  void setIndex(const shared_ptr<Argument>& out_index) { index = out_index; }
-  Argument(ARGUMENT_TYPE t, int v) : type(t), value(v) {}
-  string to_string() const;
-
- private:
-  friend class ClockConstraint;
-  friend class DBMFactory;
-  friend ClockConstraint randConst(const int num, const int low, const int up);
-};
 
 enum Action_e {
   CALL_ACTION,        // invoke function
@@ -159,9 +118,9 @@ enum TYPE_T {
 
 class VariableMap {
  public:
-  virtual int getKeyID(const TYPE_T type, const string& key) const = 0;
+  virtual int getKeyID(const TYPE_T type, const std::string& key) const = 0;
   virtual int* getValue(const TYPE_T type, int* state,
-                        const string& key) const = 0;
+                        const std::string& key) const = 0;
 };
 
 typedef int (*IndexFun_t)(int*, ...);
@@ -181,10 +140,10 @@ const int DEFAULT_COUNTER_UPPER = 100;
 
 const static int NO_DEF = -1;
 
-const static string LOC_NAME_PRE = "Loc_";
-const static string TRANSITION_NAME_PRE = "Tran_";
+const static std::string LOC_NAME_PRE = "Loc_";
+const static std::string TRANSITION_NAME_PRE = "Tran_";
 
-const static string CLOCK_NAME_PRE = "c_";
+const static std::string CLOCK_NAME_PRE = "c_";
 
 }  // namespace graphsat
 

@@ -101,28 +101,28 @@ std::ostream& operator<<(std::ostream& out, const ClockConstraint& cons) {
   if (cons.clock_x >= 0 && cons.clock_y >= 0) {
     if (isStrict<int>(cons.matrix_value)) {
       out << CLOCK_NAME_PRE << cons.clock_x << " - " << CLOCK_NAME_PRE
-          << cons.clock_y << setw(2) << "<" << setw(5)
+          << cons.clock_y << std::setw(2) << "<" << std::setw(5)
           << getRight(cons.matrix_value);
     } else {
       out << CLOCK_NAME_PRE << cons.clock_x << " - " << CLOCK_NAME_PRE
-          << cons.clock_y << setw(2) << "<=" << setw(5)
+          << cons.clock_y << std::setw(2) << "<=" << std::setw(5)
           << getRight(cons.matrix_value);
     }
   } else if (cons.clock_x < 0) {
     if (isStrict<int>(cons.matrix_value)) {
-      out << "0     - " << CLOCK_NAME_PRE << cons.clock_y << setw(2) << "<"
-          << setw(5) << getRight(cons.matrix_value);
+      out << "0     - " << CLOCK_NAME_PRE << cons.clock_y << std::setw(2) << "<"
+          << std::setw(5) << getRight(cons.matrix_value);
     } else {
       out << "0     - "
-          << " - " << CLOCK_NAME_PRE << cons.clock_y << setw(2)
-          << "<=" << setw(5) << getRight(cons.matrix_value);
+          << " - " << CLOCK_NAME_PRE << cons.clock_y << std::setw(2)
+          << "<=" << std::setw(5) << getRight(cons.matrix_value);
     }
   } else {
     if (isStrict<int>(cons.matrix_value)) {
       out << CLOCK_NAME_PRE << cons.clock_x << "          <  "
           << getRight(cons.matrix_value);
     } else {
-      out << CLOCK_NAME_PRE << cons.clock_x << "          <= " << setw(5)
+      out << CLOCK_NAME_PRE << cons.clock_x << "          <= " << std::setw(5)
           << getRight(cons.matrix_value);
     }
   }
@@ -179,7 +179,7 @@ void ClockConstraint::init(const int clock_id1, const int clock_id2,
   }
 }
 
-ostream& ClockConstraint::dump2Dot(ostream& out) const {
+std::ostream& ClockConstraint::dump2Dot(std::ostream& out) const {
   out << "<tr><td>";
   if (clock_x_arg.type != EMPTY_ARG) {
     out << clock_x_arg.to_string();
@@ -187,7 +187,7 @@ ostream& ClockConstraint::dump2Dot(ostream& out) const {
     out << " - " << clock_y_arg.to_string();
   }
   out << " " << getOpStr(op) << " " << rhs_arg.to_string();
-  out << "</td></tr>" << endl;
+  out << "</td></tr>" << std::endl;
 
   return out;
 }

@@ -16,18 +16,19 @@ namespace graphsat {
 
 class TrainGateProjector : public Projector {
  public:
-  TrainGateProjector(const shared_ptr<TMStateManager>& out_manager,
+  TrainGateProjector(const std::shared_ptr<TMStateManager>& out_manager,
                      const int pro_d);
 
   virtual void operator()(const int* original_state, vector<int>& proj) const;
 
-  bool include(const vector<vector<int>>& lhs,
-               const vector<vector<int>>& rhs) const;
+  bool include(const std::vector<std::vector<int>>& lhs,
+               const std::vector<std::vector<int>>& rhs) const;
 
-  virtual ostream& dump(const vector<int>& proj_e, ostream& out) const;
+  virtual std::ostream& dump(const std::vector<int>& proj_e,
+                             std::ostream& out) const;
 
  private:
-  const shared_ptr<TMStateManager> manager;
+  const std::shared_ptr<TMStateManager> manager;
   int component_num;
   int pro_dim;
   int clock_start;

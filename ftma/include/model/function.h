@@ -16,11 +16,11 @@
 
 namespace graphsat {
 
-using namespace std;
+// using namespace std;
 
 class Function {
  private:
-  map<string, int> value_map;
+  std::map<std::string, int> value_map;
 
  public:
   virtual ~Function() {}
@@ -28,14 +28,14 @@ class Function {
 
   // virtual int operator()(const int *state...) { return 0; }
 
-  virtual vector<string> getKeys() const {
-    vector<string> re;
+  virtual std::vector<std::string> getKeys() const {
+    std::vector<std::string> re;
     for (auto& e : value_map) {
       re.push_back(e.first);
     }
     return re;
   }
-  virtual int& operator[](const string& key) { return value_map[key]; }
+  virtual int& operator[](const std::string& key) { return value_map[key]; }
   virtual Function* copy() const = 0;
 };
 

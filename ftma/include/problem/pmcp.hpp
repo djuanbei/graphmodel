@@ -10,12 +10,14 @@
  */
 #ifndef PMCP_H
 #define PMCP_H
-#include "problem/reachability.hpp"
-#include "property/property.h"
-#include "state/reachableset.hpp"
 
 #include <algorithm>
 #include <vector>
+
+#include "alg/util.h"
+#include "problem/reachability.hpp"
+#include "property/property.h"
+#include "state/reachableset.hpp"
 
 namespace graphsat {
 using namespace std;
@@ -41,7 +43,7 @@ class IncrementalCheck {
 
     pre_data.project(proj, pre_project);
     /// sort(pre_project.begin(), pre_project.end(), element_cmp);
-    //  deleteRepeat(pre_project);
+    deleteRepeat(pre_project);
 
     for (int i = start + 1; i < end; i++) {
       SYS dummy = g.generate(i);
@@ -57,7 +59,7 @@ class IncrementalCheck {
       vector<vector<int>> project;
       PROJ proj(manager, project_dim);
       data.project(proj, project);
-      // deleteRepeat(project);
+      deleteRepeat(project);
       //  sort(project.begin(), project.end(), element_cmp);
 
       if (proj.include(project, pre_project)) {
@@ -72,6 +74,7 @@ class IncrementalCheck {
  private:
   void deleteRepeat(vector<vector<int>>& pre_project) const {
     std::vector<vector<int>>::iterator it;
+    sort(pre_project.begin(), pre_project.end(), vect_cmp<int>);
     it = std::unique(pre_project.begin(), pre_project.end());
     pre_project.resize(std::distance(pre_project.begin(), it));
   }

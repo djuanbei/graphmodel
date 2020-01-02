@@ -17,8 +17,8 @@ DBMFactory::DBMFactory(const int n) : clock_num(n + 1) {
   }
 }
 
-DBMFactory::DBMFactory(int n, const vector<int>& oclockUppuerBound,
-                       const vector<ClockConstraint>& odifferenceCons)
+DBMFactory::DBMFactory(int n, const std::vector<int>& oclockUppuerBound,
+                       const std::vector<ClockConstraint>& odifferenceCons)
     : clock_num(n + 1) {
   assert((int)oclockUppuerBound.size() == 2 * clock_num);
   for (int i = 0; i < clock_num; i++) {
@@ -80,21 +80,21 @@ int* DBMFactory::randomFeasiableDBM() const {
   return dbm;
 }
 
-ostream& DBMFactory::dumpDot(ostream& out, const int* const dbm,
-                             const int clock_num) {
+std::ostream& DBMFactory::dumpDot(std::ostream& out, const int* const dbm,
+                                  const int clock_num) {
   int MAX_INT = getMAX_INT<int>();
   for (int i = 0; i < clock_num; i++) {
     out << "<tr> ";
     for (int j = 0; j < clock_num; j++) {
       out << "<td>";
       int v = dbm[LOC_N(i, j, clock_num)];
-      out << setw(3);
+      out << std::setw(3);
       if (isStrict<int>(v)) {
         out << "&lt;";
       } else {
         out << "&lt;=";
       }
-      out << setw(4);
+      out << std::setw(4);
       int right = getRight(v);
       if (right >= MAX_INT / 2) {
         out << std::left << "&#8734;";
@@ -103,15 +103,15 @@ ostream& DBMFactory::dumpDot(ostream& out, const int* const dbm,
       }
       out << "</td>";
     }
-    out << "</tr>" << endl;
+    out << "</tr>" << std::endl;
   }
 
   return out;
 }
 
-ostream& DBMFactory::dump(ostream& out, const int* const dbm,
-                          const int clock_num) {
-  int MAX_INT = getMAX_INT<int>();
+std::ostream& DBMFactory::dump(std::ostream& out, const int* const dbm,
+                               const int clock_num) {
+  // int MAX_INT = getMAX_INT<int>();
 
   for (int i = 0; i < clock_num; i++) {
     out << "[ ";
@@ -122,8 +122,8 @@ ostream& DBMFactory::dump(ostream& out, const int* const dbm,
   }
   return out;
 }
-ostream& DBMFactory::dump(ostream& out, const int* const dbm,
-                          const vector<int>& clock_ids) const {
+std::ostream& DBMFactory::dump(std::ostream& out, const int* const dbm,
+                               const std::vector<int>& clock_ids) const {
   int len = clock_ids.size() + 1;
   for (int i = 0; i < len; i++) {
     int clock_x = 0;
@@ -138,7 +138,6 @@ ostream& DBMFactory::dump(ostream& out, const int* const dbm,
         clock_y = clock_ids[j - 1];
       }
       dumpElement(out, dbm, clock_x, clock_y, clock_num);
-
     }
     out << "]\n";
   }
@@ -274,7 +273,7 @@ int* DBMFactory::shiftImpl(int* dbm, const int x, const int m) const {
   return dbm;
 }
 
-void DBMFactory::norm(int* dbm, const vector<int>& maximums) const {
+void DBMFactory::norm(int* dbm, const std::vector<int>& maximums) const {
   bool modify = false;
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
@@ -296,7 +295,7 @@ void DBMFactory::norm(int* dbm, const vector<int>& maximums) const {
   }
 }
 
-void DBMFactory::norm(int* dbm, vector<int*>& re_vec) const {
+void DBMFactory::norm(int* dbm, std::vector<int*>& re_vec) const {
   if (difference_cons.empty()) {
     norm(dbm, clock_upper_bounds);
     re_vec.push_back(dbm);
@@ -380,7 +379,7 @@ void DBMFactory::swap(int* dbm, int clock_x, int clock_y) const {
 }
 
 int* DBMFactory::project(const int* const dbm,
-                         const vector<int>& clock_ids) const {
+                         const std::vector<int>& clock_ids) const {
   int len = clock_ids.size();
   int re_row_len = len + 1;
   int* re = new int[re_row_len * re_row_len];
@@ -400,12 +399,12 @@ int* DBMFactory::project(const int* const dbm,
   return re;
 }
 
-void DBMFactory::norm(int* dbm, const vector<int>& maximums,
-                      const vector<ClockConstraint>& diff_cons,
-                      vector<int*>& re_vec) const {
+void DBMFactory::norm(int* dbm, const std::vector<int>& maximums,
+                      const std::vector<ClockConstraint>& diff_cons,
+                      std::vector<int*>& re_vec) const {
   assert(re_vec.empty());
 
-  vector<int*> split_domains;
+  std::vector<int*> split_domains;
   split(dbm, diff_cons, split_domains);
 
   for (auto temp_dbm : split_domains) {
@@ -413,14 +412,14 @@ void DBMFactory::norm(int* dbm, const vector<int>& maximums,
   }
 }
 
-void DBMFactory::split(int* dbm, const vector<ClockConstraint>& diffCons,
-                       vector<int*>& re_vec) const {
+void DBMFactory::split(int* dbm, const std::vector<ClockConstraint>& diffCons,
+                       std::vector<int*>& re_vec) const {
   assert(re_vec.empty());
-  vector<int*> wait_s;
+  std::vector<int*> wait_s;
   re_vec.push_back(dbm);
 
   for (auto cs : diffCons) {
-    vector<bool> addToWaitS(re_vec.size(), false);
+    std::vector<bool> addToWaitS(re_vec.size(), false);
 
     for (size_t i = 0; i < re_vec.size(); i++) {
       /**
@@ -460,9 +459,9 @@ void DBMFactory::split(int* dbm, const vector<ClockConstraint>& diffCons,
 }
 
 int* DBMFactory::corn_norm(
-    int* dbm, const vector<int>& maximums,
-    const vector<ClockConstraint>& difference_cons) const {
-  vector<ClockConstraint> G_unsat;
+    int* dbm, const std::vector<int>& maximums,
+    const std::vector<ClockConstraint>& difference_cons) const {
+  std::vector<ClockConstraint> G_unsat;
 
   for (size_t i = 0; i < difference_cons.size(); i++) {
     /**
@@ -491,19 +490,19 @@ int* DBMFactory::corn_norm(
   }
   return dbm;
 }
-ostream& DBMFactory::dumpElement(ostream& out, const int* const dbm,
-                                 int clock_x, int clock_y, int clock_num) {
+std::ostream& DBMFactory::dumpElement(std::ostream& out, const int* const dbm,
+                                      int clock_x, int clock_y, int clock_num) {
   int MAX_INT = getMAX_INT<int>();
   out << "(";
   int v = dbm[LOC_N(clock_x, clock_y, clock_num)];
 
-  out << setw(3);
+  out << std::setw(3);
   if (isStrict<int>(v)) {
     out << "< ";
   } else {
     out << "<=";
   }
-  out << setw(4);
+  out << std::setw(4);
   int right = getRight(v);
   if (right >= MAX_INT / 2) {
     out << std::left << ((char)126);

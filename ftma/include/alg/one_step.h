@@ -54,8 +54,8 @@ Check_State doOneStep(D* data, const M* manager, const State_t* const state,
   if (manager->hasDiffCons()) {
     for (auto& e : steps) {
       State_t* cache_state = manager->newState(state);
-      vector<State_t*> waitS;
-      vector<State_t*> tempSet;
+      std::vector<State_t*> waitS;
+      std::vector<State_t*> tempSet;
       waitS.push_back(cache_state);
 
       bool b = true;
@@ -157,11 +157,11 @@ bool doDiscreteJump(const M* manager, int component, int link, State_t* state) {
 }
 
 template <typename M, typename State_t>
-vector<State_t*> doEvolution(const M* manager, const int component, int loc,
-                             State_t* state) {
+std ::vector<State_t*> doEvolution(const M* manager, const int component,
+                                   int loc, State_t* state) {
   assert(manager->isReachable(component, loc, state));
   assert(state[component] == loc);
-  vector<State_t*> re = manager->evolution(component, loc, state);
+  std ::vector<State_t*> re = manager->evolution(component, loc, state);
   if (manager->hasDiffCons()) {
     for (auto& e : re) {
       for (int component_id = 0; component_id < manager->getComponentNumber();

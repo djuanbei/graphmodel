@@ -22,10 +22,10 @@
 #include "util/dbmutil.hpp"
 
 namespace graphsat {
-using std::ostream;
-using std::pair;
-using std::setw;
-using std::vector;
+// using std::ostream;
+// using std::pair;
+// using std::std::setw;
+// using std::vector;
 
 #define ACTION_TYPE_CASE(op)                                                \
   switch (rhs.type) {                                                       \
@@ -51,33 +51,33 @@ using std::vector;
       assert(false);                                                        \
   }
 
-#define ACTION_TYPE_CASE_OUT(op_str)                                     \
-  switch (act.rhs.type) {                                                \
-    case CONST_ARG:                                                      \
-      out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str \
-          << setw(VALUE_OUT_WIDTH) << act.rhs_value;                     \
-      return out;                                                        \
-    case NORMAL_VAR_ARG:                                                 \
-      out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str \
-          << "counter_" << act.rhs_value;                                \
-      return out;                                                        \
-    case PARAMETER_ARG:                                                  \
-      out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str \
-          << setw(VALUE_OUT_WIDTH) << act.rhs_value;                     \
-      return out;                                                        \
-    case REF_PARAMETER_ARG:                                              \
-      out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str \
-          << setw(VALUE_OUT_WIDTH) << "counter_" << act.rhs_value;       \
-      return out;                                                        \
-    case FUN_POINTER_ARG:                                                \
-      out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str \
-          << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;     \
-      return out;                                                        \
-    case SELECT_VAR_ARG:                                                 \
-      out << "counter_" << act.lhs_value << setw(OP_OUT_WIDTH) << op_str \
-          << setw(VALUE_OUT_WIDTH) << "function *" << act.rhs.name;      \
-    case EMPTY_ARG:                                                      \
-      assert(false);                                                     \
+#define ACTION_TYPE_CASE_OUT(op_str)                                          \
+  switch (act.rhs.type) {                                                     \
+    case CONST_ARG:                                                           \
+      out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
+          << std::setw(VALUE_OUT_WIDTH) << act.rhs_value;                     \
+      return out;                                                             \
+    case NORMAL_VAR_ARG:                                                      \
+      out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
+          << "counter_" << act.rhs_value;                                     \
+      return out;                                                             \
+    case PARAMETER_ARG:                                                       \
+      out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
+          << std::setw(VALUE_OUT_WIDTH) << act.rhs_value;                     \
+      return out;                                                             \
+    case REF_PARAMETER_ARG:                                                   \
+      out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
+          << std::setw(VALUE_OUT_WIDTH) << "counter_" << act.rhs_value;       \
+      return out;                                                             \
+    case FUN_POINTER_ARG:                                                     \
+      out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
+          << std::setw(VALUE_OUT_WIDTH) << "function *" << act.rhs_value;     \
+      return out;                                                             \
+    case SELECT_VAR_ARG:                                                      \
+      out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
+          << std::setw(VALUE_OUT_WIDTH) << "function *" << act.rhs.name;      \
+    case EMPTY_ARG:                                                           \
+      assert(false);                                                          \
   }
 
 class CounterAction {
@@ -113,7 +113,7 @@ class CounterAction {
     }
   }
 
-  friend ostream& operator<<(ostream& out, const CounterAction& act) {
+  friend std::ostream& operator<<(std::ostream& out, const CounterAction& act) {
     switch (act.action) {
       case CALL_ACTION:
         out << "call function point" << act.lhs_value;

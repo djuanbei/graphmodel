@@ -68,7 +68,7 @@ class AgentSystem : public VarDecl {
       const shared_ptr<AgentTemplate_t>& template_arg, const Parameter& param) {
     shared_ptr<Agent_t> re(new Agent_t(template_arg, param));
     agents.push_back(re);
-    manager=nullptr;//manager need update 
+    manager = nullptr;  // manager need update
     return re;
   }
 
@@ -130,19 +130,20 @@ class AgentSystem : public VarDecl {
   int getComponentClockNumber(const int comp_id) const {
     return agents[comp_id]->getTemplate()->getClockNumber();
   }
-  
-  int getComponentClockStartID(const int id) const{
+
+  int getComponentClockStartID(const int id) const {
     int re = 1;
     for (int i = 0; i < id; i++) {
       re += getComponentClockNumber(i);
     }
-    return re;    
+    return re;
   }
-  
-  int getKeyID( const int component,  const TYPE_T type,  const string & key) const{
-    return agents[ component]->getKeyID( type, key);
+
+  int getKeyID(const int component, const TYPE_T type,
+               const string& key) const {
+    return agents[component]->getKeyID(type, key);
   }
-      
+
   bool hasUrgentCh(const int component, const int loc) const {
     return agents[component]->locations[loc].hasOutUrgentCh();
   }
@@ -166,7 +167,7 @@ class AgentSystem : public VarDecl {
     return manager;
   }
 
-   vector<BaseDecl> getAllVar(const TYPE_T type) const {
+  vector<BaseDecl> getAllVar(const TYPE_T type) const {
     vector<BaseDecl> re = VarDecl::getAllVar(type);
     int id_start = 0;
     for (auto& e : re) {
@@ -185,8 +186,7 @@ class AgentSystem : public VarDecl {
     return re;
   }
 
-
-   int getTypeStart(const TYPE_T type) const {
+  int getTypeStart(const TYPE_T type) const {
     // clock and channel id start with 1
     if (CLOCK_T == type || CHAN_T == type) {
       return 1;
@@ -194,9 +194,9 @@ class AgentSystem : public VarDecl {
     return 0;
   }
 
-   int getStartLoc(const TYPE_T type, const int template_id) const {
-    int re = getTypeStart(type)+getTypeNumber( type);
-    
+  int getStartLoc(const TYPE_T type, const int template_id) const {
+    int re = getTypeStart(type) + getTypeNumber(type);
+
     for (auto& agent : agents) {
       if (agent->getTemplate()->id < template_id) {
         re += agent->getTemplate()->getTypeNumber(type);
@@ -205,7 +205,7 @@ class AgentSystem : public VarDecl {
     return re;
   }
 
-   Argument addClock(const string& n) {
+  Argument addClock(const string& n) {
     Argument dummy = VarDecl::addClock(n);
     dummy.type = NORMAL_VAR_ARG;
     return dummy;
@@ -241,24 +241,24 @@ class AgentSystem : public VarDecl {
   const Channel& getChan(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
   }
-  
-  void buildManager(){
+
+  void buildManager() {
     int clock_num = 0;
     for (auto& e : clock_max_value) {
       if (e.first > clock_num) {
         clock_num = e.first;
       }
     }
-    
+
     vector<int> temp_clock_upperbound(2 * clock_num + 2, 0);
-    
+
     for (int i = 0; i < clock_num + 1; i++) {
       temp_clock_upperbound[i] = getMatrixValue(clock_max_value[i], false);
     }
-    
+
     for (int i = 0; i < clock_num + 1; i++) {
       temp_clock_upperbound[i + clock_num + 1] =
-      getMatrixValue(-clock_max_value[i], true);
+          getMatrixValue(-clock_max_value[i], true);
     }
     vector<int> node_n;
     for (size_t i = 0; i < agents.size(); i++) {
@@ -274,7 +274,7 @@ class AgentSystem : public VarDecl {
       Counter counter(e.low, e.high);
       counters.push_back(counter);
     }
-    
+
     for (auto& e : agents) {
       vector<BaseDecl> counts = e->agent_tempate->getInts();
       for (auto& ee : counts) {
@@ -282,13 +282,10 @@ class AgentSystem : public VarDecl {
         counters.push_back(counter);
       }
     }
-    
+
     manager.reset(new StateManager_t(*this, counters, clock_num,
                                      temp_clock_upperbound, node_n, link_num));
   }
-  
-  
-  
 
  private:
   void transfrom(Agent_t* agent) {
@@ -354,22 +351,20 @@ class AgentSystem : public VarDecl {
       return (lhs->id < rhs->id);
     }
   };
-  
+
   void build() {
     AgentCMP cmp;
     sort(agents.begin(), agents.end(), cmp);
     counter_num = getTypeNumber(INT_T);
     chan_num = getTypeNumber(CHAN_T);
     difference_cons.clear();
-    
+
     for (auto& e : agents) {
       transfrom(e.get());
     }
-    
+
     buildManager();
   }
-
- 
 
   /**
    * multi-components

@@ -85,7 +85,7 @@ void Transition::to_real(const TOReal* convertor) {
     resets.push_back(e.getValue());
   }
 }
-ostream& Transition::dump2Dot(ostream& out) const {
+std::ostream& Transition::dump2Dot(std::ostream& out) const {
   out << "\t" << source << " -> " << target << " [label=<";
   out << "<table border=\"0\" >" << endl;
   out << "<tr><td>" << source << "-" << target << "</td></tr>" << endl;

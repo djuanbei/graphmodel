@@ -32,7 +32,7 @@
 #include "util/dbmutil.hpp"
 
 namespace graphsat {
-using namespace std;
+// using namespace std;
 
 #define ADD(x, y)                               \
   (((x) >= MAX_INT || (y) >= MAX_INT) ? MAX_INT \
@@ -47,7 +47,7 @@ using namespace std;
   FUN##Impl(new##dbm);            \
   return new##dbm;
 
-static const string DBM_DOT_TABLE_HEADER =
+static const std::string DBM_DOT_TABLE_HEADER =
     "<table border=\"1\"  bgcolor=\"#00FF00\" >";
 
 class DBMFactory {
@@ -62,8 +62,8 @@ class DBMFactory {
 
   explicit DBMFactory(const int n);
 
-  DBMFactory(const int n, const vector<int>& oclockUppuerBound,
-             const vector<ClockConstraint>& odifferenceCons);
+  DBMFactory(const int n, const std::vector<int>& oclockUppuerBound,
+             const std::vector<ClockConstraint>& odifferenceCons);
 
   ~DBMFactory() { clock_num = 0; }
 
@@ -74,7 +74,7 @@ class DBMFactory {
 
   int* createDBM() const {
     int* dbm = new int[matrix_size];
-    fill(dbm, dbm + matrix_size, LTEQ_ZERO);  // x-y<=0
+    std::fill(dbm, dbm + matrix_size, LTEQ_ZERO);  // x-y<=0
     return dbm;
   }
 
@@ -94,7 +94,7 @@ class DBMFactory {
   void destroyDBM(int* dbm) const { delete[] dbm; }
 
   void init(int* dbm) const {
-    fill(dbm, dbm + matrix_size, LTEQ_ZERO);  // x-y<=0
+    std::fill(dbm, dbm + matrix_size, LTEQ_ZERO);  // x-y<=0
   }
 
   int* randomDBM() {
@@ -109,23 +109,24 @@ class DBMFactory {
 
   int getSize() const { return matrix_size; }
 
-  static ostream& dumpDot(ostream& out, const int* const dbm,
-                          const int clock_num);
+  static std::ostream& dumpDot(std::ostream& out, const int* const dbm,
+                               const int clock_num);
 
-  static ostream& dump(ostream& out, const int* const dbm, const int clock_num);
+  static std::ostream& dump(std::ostream& out, const int* const dbm,
+                            const int clock_num);
 
-  ostream& dumpDot(ostream& out, const int* const dbm) const {
+  std::ostream& dumpDot(std::ostream& out, const int* const dbm) const {
     return DBMFactory::dumpDot(out, dbm, clock_num);
   }
 
-
-  ostream& dump(ostream& out, const int* const dbm) const {
+  std::ostream& dump(std::ostream& out, const int* const dbm) const {
     return DBMFactory::dump(out, dbm, clock_num);
   }
   // dump clock_ids clocks constrainted relations
-  ostream & dump( ostream& out, const int * const dbm, const vector<int> & clock_ids )const;
+  std::ostream& dump(std::ostream& out, const int* const dbm,
+                     const std::vector<int>& clock_ids) const;
 
-  void dump(const int* const dbm) const { dump(cout, dbm); }
+  void dump(const int* const dbm) const { dump(std::cout, dbm); }
 
   uint32_t getHashValue(const int* const dbm) const {
     return FastHash((char*)dbm, sizeof(int) * matrix_size);
@@ -140,7 +141,7 @@ class DBMFactory {
    *
    * @param Cvec the vector need to delete
    */
-  void deleteVectorM(vector<int*>& Cvec) const {
+  void deleteVectorM(std::vector<int*>& Cvec) const {
     for (auto d : Cvec) {
       delete[] d;
     }
@@ -289,7 +290,7 @@ class DBMFactory {
    * <= k_i maximum[i+clock_num]:= < -k_i
    * @param maximums maximums[i] is the maximum upper for x_i
    */
-  void norm(int* dbm, const vector<int>& maximums) const;
+  void norm(int* dbm, const std::vector<int>& maximums) const;
 
   /**
    * TODO: The difference bounds will adjust depend on source
@@ -297,7 +298,7 @@ class DBMFactory {
    * @param dbm the dbm matrix which want to norm
    * @param re_vec the return norm dbm vector
    */
-  void norm(int* dbm, vector<int*>& re_vec) const;
+  void norm(int* dbm, std::vector<int*>& re_vec) const;
 
   void norm(int* dbm) const { norm(dbm, clock_upper_bounds); }
 
@@ -323,7 +324,7 @@ class DBMFactory {
     return dbm[LOC(i, j)];
   }
   // every clock id >=1
-  int *project( const int * const dbm, const vector<int>& clock_ids ) const;
+  int* project(const int* const dbm, const std::vector<int>& clock_ids) const;
 
  private:
   /**
@@ -334,11 +335,11 @@ class DBMFactory {
   int MAX_INT;
   std::default_random_engine generator;
   std::uniform_int_distribution<int> distribution;
-  vector<int> clock_upper_bounds;
+  std::vector<int> clock_upper_bounds;
 
-  vector<ClockConstraint> difference_cons;
+  std::vector<ClockConstraint> difference_cons;
 
-  bool contain(const vector<int*>& values, const int* const dbm) const {
+  bool contain(const std::vector<int*>& values, const int* const dbm) const {
     for (auto v : values) {
       if (equal(v, dbm)) {
         return true;
@@ -358,21 +359,22 @@ class DBMFactory {
    * @param diff_cons All different constraint in model like x-y < c
    *@param re_vec the return dbm vector
    */
-  void norm(int* dbm, const vector<int>& maximums,
-            const vector<ClockConstraint>& diff_cons,
-            vector<int*>& re_vec) const;
+  void norm(int* dbm, const std::vector<int>& maximums,
+            const std::vector<ClockConstraint>& diff_cons,
+            std::vector<int*>& re_vec) const;
 
   /**
    split dbm to some smaller box in which the entire domain is
    satisfy or not in diffCons.
    */
-  void split(int* dbm, const vector<ClockConstraint>& diffCons,
-             vector<int*>& re_vec) const;
+  void split(int* dbm, const std::vector<ClockConstraint>& diffCons,
+             std::vector<int*>& re_vec) const;
 
-  int* corn_norm(int* dbm, const vector<int>& maximums,
-                 const vector<ClockConstraint>& difference_cons) const;
+  int* corn_norm(int* dbm, const std::vector<int>& maximums,
+                 const std::vector<ClockConstraint>& difference_cons) const;
 
-  static ostream & dumpElement( ostream & out , const  int* const dbm, int i, int j, int clock_num) ;
+  static std::ostream& dumpElement(std::ostream& out, const int* const dbm,
+                                   int i, int j, int clock_num);
 };
 
 }  // namespace graphsat

@@ -11,18 +11,14 @@
 
 #ifndef __DATA_COMPRESSION_H
 #define __DATA_COMPRESSION_H
+#include <cassert>
 #include <cmath>
 #include <limits>
 #include <vector>
-#include<cassert>
 
 #include "util/typedef.h"
 namespace graphsat {
 
-using std::make_pair;
-using std::numeric_limits;
-using std::pair;
-using std::vector;
 template <typename T>
 class Compression {
  public:
@@ -30,11 +26,11 @@ class Compression {
   Compression(int len)
       : original_data_len(len),
         bounds(len),
-        domain(len, numeric_limits<UINT>::max()),
+        domain(len, std::numeric_limits<UINT>::max()),
         shift(len, true) {
     for (int i = 0; i < len; i++) {
-      bounds[i].first = numeric_limits<int>::min();
-      bounds[i].second = numeric_limits<int>::max();
+      bounds[i].first = std::numeric_limits<int>::min();
+      bounds[i].second = std::numeric_limits<int>::max();
     }
     update();
   }
@@ -54,7 +50,7 @@ class Compression {
   int getCompressionSize() const { return compressionSize; }
 
   void encode(UINT* out, const T* const data) const {
-    fill(out, out + compressionSize, 0);
+    std::fill(out, out + compressionSize, 0);
     int j = 0;
     UINT base = 1;
     for (int i = 0; i < original_data_len; i++) {
@@ -97,20 +93,20 @@ class Compression {
    *
    */
 
-  vector<pair<T, T>> bounds;
-  vector<UINT> domain;
+  std::vector<std::pair<T, T>> bounds;
+  std::vector<UINT> domain;
 
-  vector<bool> shift;
+  std::vector<bool> shift;
   int compressionSize;
 
   void update() {
     fill(shift.begin(), shift.end(), false);
     compressionSize = 1;
-    UINT dummy = numeric_limits<UINT>::max();
+    UINT dummy = std::numeric_limits<UINT>::max();
     for (int i = 0; i < original_data_len; i++) {
       if (dummy < domain[i]) {
         shift[i] = true;
-        dummy = numeric_limits<UINT>::max();
+        dummy = std::numeric_limits<UINT>::max();
         compressionSize++;
       }
       dummy /= domain[i];

@@ -28,7 +28,7 @@ typedef AgentSystem<Location, Transition> INT_TAS_t;
 class GraphModelTest : public ::testing::Test {
  protected:
   GraphModelTest() {
-    n = rand( )%10+2;  // 6 train
+    n = rand() % 10 + 2;  // 6 train
     train_tmt = sys.createTemplate("Train");
     gate_tmt = sys.createTemplate("Gate");
     train_tmt->addPara("id");
@@ -123,8 +123,6 @@ TEST_F(GraphModelTest, getCompentId) {
   }
 }
 TEST_F(GraphModelTest, getTypeStart) {
-
-
   sys.removeAgent();
 
   int n = sys["N"];
@@ -138,16 +136,12 @@ TEST_F(GraphModelTest, getTypeStart) {
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(train_tmt, param);
   }
-  
+
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
-  EXPECT_EQ(manager->getTypeStart(INT_T ), n+1);
-  
-  
-  EXPECT_EQ(manager->getTypeStart(CLOCK_T ), 2*(n+1)+2);
+  EXPECT_EQ(manager->getTypeStart(INT_T), n + 1);
 
+  EXPECT_EQ(manager->getTypeStart(CLOCK_T), 2 * (n + 1) + 2);
 }
-
-
 
 TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
   sys.removeAgent();
@@ -305,16 +299,16 @@ TEST_F(GraphModelTest, Channel) {
 
   shared_ptr<Function> tail_c = tma->getFun("tail");
 
-  EXPECT_EQ(3*n+1, tma->getKeyID(CHAN_T, "go"));
+  EXPECT_EQ(3 * n + 1, tma->getKeyID(CHAN_T, "go"));
   for (int i = 0; i < n; i++) {
     (*enqueue_c)(counters, i);
     int ffid = ch1(counters);
-    EXPECT_EQ(3*n+1, ffid);
+    EXPECT_EQ(3 * n + 1, ffid);
   }
 
   for (int i = 0; i < n; i++) {
     int ffid = ch1(counters);
-    EXPECT_EQ(3*n+1 + i, ffid);
+    EXPECT_EQ(3 * n + 1 + i, ffid);
     (*dequeue_c)(counters);
   }
   manager->destroyState(state);
@@ -414,6 +408,3 @@ TEST(PMCP, train_gate) {
   prop.setCS(4);
   //  EXPECT_TRUE(check.check(TG, &prop));
 }
-
-
-

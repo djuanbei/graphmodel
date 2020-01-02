@@ -10,14 +10,19 @@
 
 #ifndef STR_UTIL_H
 #define STR_UTIL_H
-
 #include <string>
+#include <vector>
 namespace graphsat {
-using std::string;
 
-string getFunArg(const string& fun);
+std::vector<std::string> splitStr(const std::string& stringToBeSplitted,
+                                  const std::string& delimeter);
 
-string getFunName(const string& fun);
+std::string deleteChar(const std::string& value, const size_t start,
+                       const char ch);
+
+std::string getFunArg(const std::string& fun);
+
+std::string getFunName(const std::string& fun);
 
 /**
  * delete start spaces and  last spaces

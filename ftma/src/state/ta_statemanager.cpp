@@ -180,24 +180,22 @@ int TMStateManager::getValue(const int component, const int* const state,
     assert(false);
     return 0;
   }
-  int start=getTypeStart(type );
-  return state[start+sys.getKeyID( component, type, key )];
+  int start = getTypeStart(type);
+  return state[start + sys.getKeyID(component, type, key)];
 }
 
-
-int& TMStateManager::getValue(const int component, int*  state,
-                             const string& key) const {
+int& TMStateManager::getValue(const int component, int* state,
+                              const string& key) const {
   TYPE_T type = sys.getType(component, key);
 
   if (type == NO_T) {
     assert(false);
-    static int error_return=0;
+    static int error_return = 0;
     return error_return;
   }
-  int start=getTypeStart(type );
-  return state[start+sys.getKeyID( component, type, key )];
+  int start = getTypeStart(type);
+  return state[start + sys.getKeyID(component, type, key)];
 }
-
 
 Compression<int> TMStateManager::getHeadCompression() const {
   Compression<int> re_comp(clock_start_loc);

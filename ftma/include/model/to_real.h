@@ -9,13 +9,14 @@
  */
 #ifndef _TO_REAL_H
 #define _TO_REAL_H
+#include "util/argument.h"
 #include "util/typedef.h"
 namespace graphsat {
 class TOReal {
  public:
   virtual RealArgument to_real(const TYPE_T& type,
                                const Argument& arg) const = 0;
-  virtual CHANNEL_TYPE getChanType(const string& chan_name) const {
+  virtual CHANNEL_TYPE getChanType(const std::string& chan_name) const {
     return ONE2ONE_CH;
   }
 };

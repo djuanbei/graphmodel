@@ -9,6 +9,10 @@
  */
 #ifndef AGENT_MODEL_H
 #define AGENT_MODEL_H
+
+#include <map>
+#include <vector>
+
 #include "graph/graph.hpp"
 
 #include "function.h"
@@ -34,7 +38,7 @@ class Agent : public VariableMap, public TOReal {
  public:
   virtual ~Agent() {}
 
-  string getName(void) const {
+  std::string getName(void) const {
     if (agent_tempate->agents.size() == 1) {
       return agent_tempate->getName();
     }
@@ -44,7 +48,7 @@ class Agent : public VariableMap, public TOReal {
     graph.findRhs(link, lhs, rhs);
   }
 
-  map<int, int> getClockMaxValue() const { return clock_max_value; }
+  std::map<int, int> getClockMaxValue() const { return clock_max_value; }
 
   int getClockNumber() const { return agent_tempate->getClockNumber(); }
 
@@ -62,11 +66,11 @@ class Agent : public VariableMap, public TOReal {
 
   bool isCommit(int id) const { return locations[id].isCommit(); }
 
-  string getLocationName(int node_id) const {
+  std::string getLocationName(int node_id) const {
     return locations[node_id].getName();
   }
 
-  int getKeyID(const TYPE_T type, const string& key) const {
+  int getKeyID(const TYPE_T type, const std::string& key) const {
     int temp_var_id = agent_tempate->getLocalKeyID(type, key);
     if (temp_var_id > -1) {
       int start_loc = agent_tempate->getStart(type);
@@ -78,15 +82,15 @@ class Agent : public VariableMap, public TOReal {
     }
   }
 
-  int* getValue(const TYPE_T type, int* state, const string& key) const {
+  int* getValue(const TYPE_T type, int* state, const std::string& key) const {
     return state + getKeyID(type, key);
   }
 
-  TypeDefArray getTypeDef(const string& name) const {
+  TypeDefArray getTypeDef(const std::string& name) const {
     return agent_tempate->getTypeDef(name);
   }
 
-  TYPE_T getType(const string& name) const {
+  TYPE_T getType(const std::string& name) const {
     return agent_tempate->getType(name);
   }
 
@@ -129,11 +133,11 @@ class Agent : public VariableMap, public TOReal {
     return re;
   }
 
-  virtual CHANNEL_TYPE getChanType(const string& chan_name) const {
+  virtual CHANNEL_TYPE getChanType(const std::string& chan_name) const {
     return agent_tempate->getChanType(chan_name);
   }
 
-  shared_ptr<Function> getFun(const string& fun_name) const {
+  shared_ptr<Function> getFun(const std::string& fun_name) const {
     if (fun_map.find(fun_name) != fun_map.end()) {
       return fun_map.at(fun_name);
     }
@@ -148,40 +152,40 @@ class Agent : public VariableMap, public TOReal {
   //   out<<"digraph G { "<<endl;
 
   //   for(auto e : transitions ){
-  //     string source=locations[ e.source].
+  //       std::string source=locations[ e.source].
   //   }
 
   // }
 
  private:
   void initFuns() {
-    const map<string, shared_ptr<Function>>& funs = agent_tempate->getFuns();
+    const std::map<std::string, shared_ptr<Function>>& funs =
+        agent_tempate->getFuns();
     for (auto& e : funs) {
       shared_ptr<Function> dummy((e.second->copy()));
       setFun(e.first, dummy);
     }
   }
-  void loadFun(const ARGUMENT_TYPE type, const string& name,
+  void loadFun(const ARGUMENT_TYPE type, const std::string& name,
                RealArgument& re) const {
-    string fun_name = getFunName(name);
+    std::string fun_name = getFunName(name);
     re.value = (int_fast64_t)(getFun(fun_name).get());
 
-    string var = getFunArg(name);
+    std::string var = getFunArg(name);
     if (var != "") {  // If the function has argument then let the argument as
       // select variable
-      re.index = shared_ptr<RealArgument>(
-          new RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
+      re.index.reset(new RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
     }
   }
 
   void initFunction(const shared_ptr<Function>& fun) const {
-    vector<string> int_vars = agent_tempate->getKeys(INT_T);
+    vector<std::string> int_vars = agent_tempate->getKeys(INT_T);
     for (auto& e : int_vars) {
       (*fun)[e] = getKeyID(INT_T, e);
     }
   }
 
-  void setFun(const string& name, const shared_ptr<Function>& fun) {
+  void setFun(const std::string& name, const shared_ptr<Function>& fun) {
     initFunction(fun);
     if (fun_map.find(name) != fun_map.end()) {
       assert(false && "It does not allow two functions has same name.");
@@ -267,7 +271,7 @@ class Agent : public VariableMap, public TOReal {
   }
 
   shared_ptr<AgentTemplate_t> agent_tempate;
-  map<string, shared_ptr<Function>> fun_map;
+  std::map<std::string, shared_ptr<Function>> fun_map;
   Parameter parameter;
   int id;  // the interbal of instance of ta_tempate
  public:
@@ -280,7 +284,7 @@ class Agent : public VariableMap, public TOReal {
   vector<ClockConstraint> difference_cons;
 
   int initial_loc;
-  map<int, int> clock_max_value;
+  std::map<int, int> clock_max_value;
 
   bool hasUrgentChan;
   bool hasBroadcaseChan;
@@ -312,7 +316,7 @@ class Agent : public VariableMap, public TOReal {
 // public:
 //   virtual ~Agent() {}
 
-//   string getName( void) const{
+//     std::string getName( void) const{
 //     if(agent_tempate->number_children==1 ){
 //       return agent_tempate->getName( );
 //     }
@@ -322,7 +326,7 @@ class Agent : public VariableMap, public TOReal {
 //     graph.findRhs(link, lhs, rhs);
 //   }
 
-//   map<int, int> getClockMaxValue() const { return clock_max_value; }
+//     std::map<int, int> getClockMaxValue() const { return clock_max_value; }
 
 //   int getClockNumber() const { return agent_tempate->getClockNumber(); }
 
@@ -340,11 +344,11 @@ class Agent : public VariableMap, public TOReal {
 
 //   bool isCommit(int id) const { return locations[id].isCommit(); }
 
-//   string getLocationName(int node_id) const {
+//     std::string getLocationName(int node_id) const {
 //     return locations[node_id].getName();
 //   }
 
-//   int getKeyID(const TYPE_T type, const string &key) const {
+//   int getKeyID(const TYPE_T type, const   std::string &key) const {
 //     int temp_var_id = agent_tempate->getLocalKeyID(type, key);
 //     if (temp_var_id > -1) {
 //       int start_loc = agent_tempate->getStart(type);
@@ -356,11 +360,12 @@ class Agent : public VariableMap, public TOReal {
 //     }
 //   }
 
-//   int *getValue(const TYPE_T type, int *state, const string &key) const {
+//   int *getValue(const TYPE_T type, int *state, const   std::string &key)
+//   const {
 //     return state + getKeyID(type, key);
 //   }
 
-//   TypeDefArray getType(const string &name) const {
+//   TypeDefArray getType(const   std::string &name) const {
 //     return agent_tempate->getType(name);
 //   }
 
@@ -404,11 +409,11 @@ class Agent : public VariableMap, public TOReal {
 //     return re;
 //   }
 
-//   virtual CHANNEL_TYPE getChanType(const string &chan_name) const {
+//   virtual CHANNEL_TYPE getChanType(const   std::string &chan_name) const {
 //     return agent_tempate->getChanType(chan_name);
 //   }
 
-//   shared_ptr<Function> getFun(const string &fun_name) const {
+//   shared_ptr<Function> getFun(const   std::string &fun_name) const {
 //     if (fun_map.find(fun_name) != fun_map.end()) {
 //       return fun_map.at(fun_name);
 //     }
@@ -421,18 +426,18 @@ class Agent : public VariableMap, public TOReal {
 
 // private:
 //   void initFuns() {
-//     const map<string, shared_ptr<Function>> &funs = agent_tempate->getFuns();
-//     for (auto &e : funs) {
+//     const   std::map<  std::string, shared_ptr<Function>> &funs =
+//     agent_tempate->getFuns(); for (auto &e : funs) {
 //       shared_ptr<Function> dummy((e.second->copy()));
 //       setFun(e.first, dummy);
 //     }
 //   }
-//   void loadFun(const ARGUMENT_TYPE type, const string &name,
+//   void loadFun(const ARGUMENT_TYPE type, const   std::string &name,
 //                RealArgument &re) const {
-//     string fun_name = getFunName(name);
+//       std::string fun_name = getFunName(name);
 //     re.value = (int_fast64_t)(getFun(fun_name).get());
 
-//     string var = getFunArg(name);
+//       std::string var = getFunArg(name);
 //     if (var != "") { // If the function has argument then let the argument as
 //       // select variable
 //       re.index = shared_ptr<RealArgument>(
@@ -441,13 +446,13 @@ class Agent : public VariableMap, public TOReal {
 //   }
 
 //   void initFunction(const shared_ptr<Function> &fun) const {
-//     vector<string> int_vars = agent_tempate->getKeys(INT_T);
+//     vector<  std::string> int_vars = agent_tempate->getKeys(INT_T);
 //     for (auto &e : int_vars) {
 //       (*fun)[e] = getKeyID(INT_T, e);
 //     }
 //   }
 
-//   void setFun(const string &name, const shared_ptr<Function> &fun) {
+//   void setFun(const   std::string &name, const shared_ptr<Function> &fun) {
 //     initFunction(fun);
 //     if (fun_map.find(name) != fun_map.end()) {
 //       assert(false && "It does not allow two functions has same name.");
@@ -534,7 +539,7 @@ class Agent : public VariableMap, public TOReal {
 //   }
 
 //   shared_ptr<AgentTemplate_t> agent_tempate;
-//   map<string, shared_ptr<Function>> fun_map;
+//     std::map<  std::string, shared_ptr<Function>> fun_map;
 //   Parameter parameter;
 //   int id; // the interbal of instance of ta_tempate
 // public:
@@ -547,7 +552,7 @@ class Agent : public VariableMap, public TOReal {
 //   vector<ClockConstraint> difference_cons;
 
 //   int initial_loc;
-//   map<int, int> clock_max_value;
+//     std::map<int, int> clock_max_value;
 
 //   bool hasUrgentChan;
 //   bool hasBroadcaseChan;
