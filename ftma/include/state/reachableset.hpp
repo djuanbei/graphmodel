@@ -147,7 +147,7 @@ class ReachableSet {
     }
     manager->setParent(cache_state, current_state_id);
 
-    manager->getClockManager().encode(manager->getDBM(cache_state));
+    // manager->getClockManager().encode(manager->getDBM(cache_state));
     if (addToReachableSet(cache_state)) {
       if (isReach(cache_state)) {
         return TRUE;
@@ -277,9 +277,6 @@ class ReachableSet {
            "The element resently add the reach set.");
 
     if (re != NOT_FOUND) {
-      // int target = findPassEd(convert_UINT);
-      // assert(target != NOT_FOUND);
-      // assert(re ==target);
       passed_pair.push_back(make_pair(current_state_id, re));
     }
 

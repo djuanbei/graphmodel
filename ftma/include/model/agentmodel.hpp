@@ -204,11 +204,11 @@ class Agent : public VariableMap, public TOReal {
 
     graph.initial(srcs, snks);
 
-    int vertex_num = graph.getVertex_num();
+    //  int vertex_num = graph.getVertex_num();
 
     // // There are no edges connect with  initial location
     if (!transitions.empty()) {
-      assert(initial_loc >= 0 && initial_loc < vertex_num);
+      assert(initial_loc >= 0 && initial_loc < graph.getVertex_num());
     }
 
     difference_cons.clear();

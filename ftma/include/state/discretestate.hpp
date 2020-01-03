@@ -93,6 +93,8 @@ class StateSet {
   StateSet() {
     element_len = head_part_len = body_part_len = inc_body_part = 0;
     lhs_data = rhs_data = nullptr;
+    decoder_data_len = 0;
+    decoder_cmp_data_len = 0;
   }
   StateSet(const StateSet& s) { assert(false); }
 
@@ -107,9 +109,10 @@ class StateSet {
     body_part_len = n - head_len;
     inc_body_part = body_part_len + 1;
     decoder = d;
-    int len = decoder.getDataLen();
-    lhs_data = new int[len];
-    rhs_data = new int[len];
+    decoder_data_len = decoder.getDataLen();
+    decoder_cmp_data_len = decoder_data_len - 1;
+    lhs_data = new int[decoder_data_len];
+    rhs_data = new int[decoder_data_len];
   }
   ~StateSet() {
     deleteAll();
@@ -403,6 +406,8 @@ class StateSet {
   int* lhs_data;
   int* rhs_data;
   Compression<int> decoder;
+  int decoder_data_len;
+  int decoder_cmp_data_len;
 
   int addHead(const T* const head, int& hashV) {
     hashV = hash_value(head);
@@ -411,9 +416,10 @@ class StateSet {
         head_part_elements.find(hashV);
     if (ret != head_part_elements.end()) {
       size_t head_size = ret->second.second.size();
+      size_t head_part_size = head_part_len * sizeof(T);
       for (size_t i = 0; i < head_size; i++) {
         if (0 == memcmp(head, &(ret->second.first[i * head_part_len]),
-                        head_part_len * sizeof(T))) {
+                        head_part_size)) {
           return ret->second.second[i];
         }
       }
@@ -491,21 +497,26 @@ class StateSet {
     return memcmp(lhs, rhs, element_len * sizeof(T)) == 0;
   }
   inline bool containBody(const T* const lhs, const T* const rhs) const {
-    int len = decoder.getDataLen();
+    for (int i = 0; i < body_part_len - 1; i++) {
+      if (lhs[i] < rhs[i]) {
+        return false;
+      }
+    }
 
     decoder.decode(lhs_data, lhs);
     decoder.decode(rhs_data, rhs);
 
-    len--;
-    int i = 0;
+    // int i = 0;
 
-    for (; i < len; i++) {
+    for (int i = 0; i < decoder_cmp_data_len; i++) {
       if (lhs_data[i] < rhs_data[i]) {
-        break;
+        return false;
+        // break;
       }
     }
+    return true;
 
-    return i == len;
+    // return i == (decoder_cmp_data_len);
   }
   inline bool existsBody(const T* const lhs, const T* const rhs) const {
     return memcmp(lhs, rhs, body_part_len * sizeof(T)) == 0;

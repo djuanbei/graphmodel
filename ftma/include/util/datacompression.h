@@ -27,7 +27,9 @@ class Compression {
       : original_data_len(len),
         bounds(len),
         domain(len, std::numeric_limits<UINT>::max()),
-        shift(len, true) {
+        bases(len, 1),
+        shift(len, true),
+        compression_index(len) {
     for (int i = 0; i < len; i++) {
       bounds[i].first = std::numeric_limits<int>::min();
       bounds[i].second = std::numeric_limits<int>::max();
@@ -51,25 +53,13 @@ class Compression {
 
   void encode(UINT* out, const T* const data) const {
     std::fill(out, out + compressionSize, 0);
-    int j = 0;
-    UINT base = 1;
+
     for (int i = 0; i < original_data_len; i++) {
-      T temp = data[i];
-      // if(temp<bounds[ i ].first  ){
-      //   temp=bounds[ i ].first  ;
-      // }
-      // if(temp>bounds[ i ].second  ){
-      //   temp=bounds[ i ].second;
-      // }
       assert(data[i] >= bounds[i].first);
       assert(data[i] <= bounds[i].second);
 
-      if (shift[i]) {
-        j++;
-        base = 1;
-      }
-      out[j] += (temp - bounds[i].first) * base;
-      base *= domain[i];
+      int j = compression_index[i];
+      out[j] += (data[i] - bounds[i].first) * bases[i];
     }
   }
 
@@ -81,6 +71,7 @@ class Compression {
         j++;
         dummy = data[j];
       }
+
       out[i] = (dummy % domain[i]) + bounds[i].first;
       dummy /= domain[i];
     }
@@ -95,20 +86,33 @@ class Compression {
 
   std::vector<std::pair<T, T>> bounds;
   std::vector<UINT> domain;
+  std::vector<UINT> bases;
 
   std::vector<bool> shift;
+  std::vector<int> compression_index;
   int compressionSize;
 
   void update() {
-    fill(shift.begin(), shift.end(), false);
+    std::fill(shift.begin(), shift.end(), false);
+    std::fill(bases.begin(), bases.end(), 1);
+    std::fill(compression_index.begin(), compression_index.end(), 0);
     compressionSize = 1;
     UINT dummy = std::numeric_limits<UINT>::max();
+    int j = 0;
     for (int i = 0; i < original_data_len; i++) {
       if (dummy < domain[i]) {
         shift[i] = true;
         dummy = std::numeric_limits<UINT>::max();
         compressionSize++;
       }
+      if (shift[i]) {
+        j++;
+        bases[i] = 1;
+
+      } else if (i > 0) {
+        bases[i] = bases[i - 1] * domain[i - 1];
+      }
+      compression_index[i] = j;
       dummy /= domain[i];
     }
   }

@@ -46,6 +46,7 @@ class IncrementalCheck {
     deleteRepeat(pre_project);
 
     for (int i = start + 1; i < end; i++) {
+      std::cout << i << " instances" << std::endl;
       SYS dummy = g.generate(i);
       shared_ptr<typename SYS::StateManager_t> manager =
           dummy.getStateManager();

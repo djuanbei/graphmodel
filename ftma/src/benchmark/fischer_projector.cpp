@@ -3,7 +3,8 @@
 namespace graphsat {
 
 FischerProjector::FischerProjector(
-    const std::shared_ptr<TMStateManager>& manager, const int pro_d) {
+    const std::shared_ptr<TMStateManager>& out_manager, const int pro_d)
+    : manager(out_manager) {
   component_num = manager->getComponentNumber();
   pro_dim = pro_d;
   clock_start = manager->getClockStart();
@@ -14,9 +15,14 @@ void FischerProjector::operator()(const int* original_state,
   for (int i = 0; i < pro_dim; i++) {
     proj.push_back(original_state[i]);
   }
+  int id = manager->getValue(0, original_state, "id");
+  for (int i = 0; i < pro_dim; i++) {
+    proj.push_back(id == i + 1);
+  }
+  const int* dbm = manager->getDBM(original_state);
   for (int i = 0; i <= pro_dim; i++) {
     for (int j = 0; j <= pro_dim; j++) {
-      proj.push_back(original_state[i * (component_num + 1) + j + clock_start]);
+      proj.push_back(manager->getClockManager().at(dbm, i, j));
     }
   }
 }
@@ -37,13 +43,12 @@ bool FischerProjector::include(const vector<vector<int>>& lhs,
     size_t j = 0;
     for (; j < rhs.size(); j++) {
       size_t k = 0;
-      for (; k < (size_t)pro_dim; k++) {
-        if (lhs[i][k] != rhs[j][k]) {
-          break;
-        }
+      if (0 ==
+          memcmp(&(lhs[i][0]), &(rhs[j][0]), (pro_dim + 1) * sizeof(int))) {
+        k = 2 * pro_dim;
       }
 
-      if (k == (size_t)pro_dim) {
+      if (k == (size_t)(2 * pro_dim)) {
         for (; k < n; k++) {
           if (lhs[i][k] > rhs[j][k]) {
             break;

@@ -97,6 +97,10 @@ void lift_customer() {
 }
 
 int main(int argc, const char* argv[]) {
+  test();
+  return 0;
+  incrementalTest1();
+  return 0;
   // lift_customer();
   //  return 0;
   // test1();

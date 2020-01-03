@@ -431,8 +431,6 @@ void incrementalTest() {
     Parameter param = tmt1->getParameter();
     param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
-
-    // sys += tma1;
   }
 
   // Counter counter( 0, 100 );

@@ -31,6 +31,7 @@ class FischerProjector : public Projector {
   }
 
  private:
+  const std::shared_ptr<TMStateManager>& manager;
   int component_num;
   int pro_dim;
   int clock_start;
