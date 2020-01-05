@@ -15,7 +15,7 @@ using namespace std;
 TEST(DBMFactory, createDBM) {
   int n = 10;
   int len = (n + 1) * (n + 1);
-  DBMFactory df(n);
+  DBMManager df(n);
 
   for (int i = 0; i < 5; i++) {
     int* d = df.createDBM();
@@ -28,7 +28,7 @@ TEST(DBMFactory, createDBM) {
 TEST(DBM, copy) {
   int n = 12;
 
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 10; i++) {
     int* d = df.randomFeasiableDBM();
     int* d1 = df.createDBM(d);
@@ -41,7 +41,7 @@ TEST(DBM, copy) {
 TEST(DBM, canonicalForm) {
   int n = 12;
 
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 10; i++) {
     int* d = df.randomFeasiableDBM();
     int* d1 = df.createDBM(d);
@@ -56,7 +56,7 @@ TEST(DBM, canonicalForm) {
 TEST(DBM, isConsistent) {
   int n = 3;
 
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 10; i++) {
     int* d = df.randomFeasiableDBM();
 
@@ -79,7 +79,7 @@ TEST(DBM, isConsistent) {
 TEST(DBM, include) {
   int n = 12;
   // int             len = ( n + 1 ) * ( n + 1 );
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 10; i++) {
     int* d = df.randomFeasiableDBM();
     ClockConstraint cons = randConst(n, -100, 100);
@@ -98,7 +98,7 @@ TEST(DBM, include) {
 TEST(DBM, getIncludeFeature) {
   int n = 13;
   // int             len = ( n + 1 ) * ( n + 1 );
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 10; i++) {
     int* d = df.randomFeasiableDBM();
     int* d1 = df.createDBM(d);
@@ -132,7 +132,7 @@ TEST(DBM, norm) {
   for (int j = 0; j < n + 1; j++) {
     bounds[j + n + 1] = getMatrixValue(-clock_bounds[j], true);
   }
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 10; i++) {
     int* d = df.randomFeasiableDBM();
     int* d1 = df.createDBM(d);
@@ -164,7 +164,7 @@ TEST(DBM, encode) {
       bounds[j + n + 1] = getMatrixValue(-clock_bounds[j], true);
     }
     vector<ClockConstraint> ss;
-    DBMFactory df(n, bounds, ss);
+    DBMManager df(n, bounds, ss);
 
     int* d = df.randomFeasiableDBM();
     int* d1 = df.createDBM(d);
@@ -204,7 +204,7 @@ TEST(DBM, swap) {
       bounds[j + n + 1] = getMatrixValue(-clock_bounds[j], true);
     }
     vector<ClockConstraint> ss;
-    DBMFactory df(n, bounds, ss);
+    DBMManager df(n, bounds, ss);
 
     int* d = df.randomFeasiableDBM();
     int* d1 = df.createDBM(d);

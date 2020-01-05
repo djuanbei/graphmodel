@@ -68,7 +68,7 @@ class RealArgument {
 };
 
 class ClockConstraint;
-class DBMFactory;
+class DBMManager;
 class Argument {
  public:
   Argument() : type(EMPTY_ARG), value(0), index(nullptr) {}
@@ -138,7 +138,7 @@ class Argument {
 
   Argument* index;
   friend class ClockConstraint;
-  friend class DBMFactory;
+  friend class DBMManager;
   friend ClockConstraint randConst(const int num, const int low, const int up);
 };
 

@@ -2,11 +2,8 @@
 
 #include "alg/combination.h"
 #include "benchmark/fischer_projector.h"
-#include "graph/graph.hpp"
 
 namespace graphsat {
-
-using namespace raptor;
 
 FischerProjector::FischerProjector(
     const std::shared_ptr<TMStateManager>& out_manager, const int pro_d)
@@ -37,8 +34,7 @@ bool FischerProjector::projectEqualReach(
     const std::vector<std::vector<int>>& projs,
     const ReachableSet<TMStateManager>& next_reach_set) const {
   std::map<AbsOneDimState, int> oneDimStateMap;
-std:
-  vector<AbsOneDimState> oneStataes;
+  std::vector<AbsOneDimState> oneStataes;
 
   int id = 0;
   for (auto& e : projs) {
@@ -118,7 +114,7 @@ std:
           for (size_t k = 0; k < choose.size(); k++) {
             choose[k] = link_map[choose[k]];
           }
-          constructState(state, projs, oneStataes, vertices, choose);
+          constructState(state, projs, oneStataes, vertices, choose, graph);
           if (!next_reach_set.contain(state)) {
             return false;
           }
@@ -131,26 +127,46 @@ std:
   return true;
 }
 
+static int findIndex(const std::vector<int> & values, int v ){
+  std::vector<int>::const_iterator it=find( values.begin( ), values.end( ), v);
+  assert( it!= values.end( ));
+  return it-values.begin( );
+}
+
+
 void FischerProjector::constructState(
     int* state, const std::vector<std::vector<int>>& projs,
     const std::vector<AbsOneDimState>& oneStataes,
-    const std::vector<int>& vertices, const std::vector<int>& links) const {
+    const std::vector<int>& vertices, const std::vector<int>& links,
+    const Graph_t<int>& graph) const {
   int component_num = manager->getComponentNumber();
   for (int i = 0; i < component_num; i++) {
     state[i] = oneStataes[vertices[i]].loc;
     if (oneStataes[vertices[i]].has_id == 1) {
       manager->setValue(0, state, "id", i + 1);
     }
+    // loc  freeze  id  0         clock_1 ..
+    // component_num+2         component_num+1
+    state[i + component_num + 3] = oneStataes[vertices[i]].clock_lower_bound;
+
+    int index = component_num + 2 + (i + 1) * (component_num + 1);
+    state[index] = oneStataes[vertices[i]].clock_upper_bound;
+  }
+  for (auto e : links) {
+    int src, snk;
+    graph.findSrcSnk( e, src, snk);
+    src=findIndex( vertices, src );
+    snk=findIndex( vertices, snk);
+    
+    MatrixValue value(projs[ e][ 9] ); //src-snk
+    manager->setClockUpperBound(src+1,"x", snk+1, "x", state, value  );
+    
+    MatrixValue value1(projs[ e][ 11] ); //snk-src
+    
+    manager->setClockUpperBound(snk+1,"x", src+1, "x", state, value1  );
+        
   }
 }
-// void FischerProjector::addOneDimState(const std::vector<int>& proj) {
-//   AbsOneDimState state;
-//   state.loc = proj[0];
-//   state.has_id = proj[2];
-//   state.clock_lower_bound = -proj[5];
-//   state.clock_upper_bound = proj[7];
-//   oneDimStates.insert(state);
-// }
 
 bool FischerProjector::include(const vector<vector<int>>& lhs,
                                const vector<vector<int>>& rhs) const {

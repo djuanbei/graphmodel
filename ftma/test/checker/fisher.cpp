@@ -344,4 +344,12 @@ TEST(FISHER, equal3) {
   // }
 }
 
-TEST(FISHER, getKeyID) {}
+TEST(FISHER, getKeyID) {
+  int n = 7;
+  FischerGenerator F;
+  INT_TAS_t sys = F.generate(n);
+  for( int i=0; i< n; i++){
+    EXPECT_EQ(sys.getKeyID( i, CLOCK_T, "x"), i+1 );
+  }
+
+}

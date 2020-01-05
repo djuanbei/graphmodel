@@ -111,7 +111,7 @@ std::ostream& TrainGateProjector::dump(const vector<int>& proj_e,
     out << std::setw(LOC_OUT_WIDTH) << manager->getLocationName(i, proj_e[i]);
   }
   out << endl;
-  return DBMFactory::dump(out, &(proj_e[0]) + pro_clock_start, pro_dim + 1);
+  return DBMManager::dump(out, &(proj_e[0]) + pro_clock_start, pro_dim + 1);
 }
 
 }  // namespace graphsat

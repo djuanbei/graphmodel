@@ -81,7 +81,7 @@ class Location {
    */
   inline bool isFreezeLocation() const { return (isUrgent()) || (isCommit()); }
 
-  inline void employInvariants(const DBMFactory& dbm_manager, int* dbm) const {
+  inline void employInvariants(const DBMManager& dbm_manager, int* dbm) const {
     for (auto cs : invariants) {
       dbm_manager.andImpl(dbm, cs);
     }
@@ -96,7 +96,7 @@ class Location {
    * @return  true if dbm  satisfies invariant, false otherwise.
    */
 
-  inline bool isReachable(const DBMFactory& dbm_manager, int* dbm) const {
+  inline bool isReachable(const DBMManager& dbm_manager, int* dbm) const {
     /**
      * D reach Location first check D satisfies all the invariants in
      * this Location
@@ -107,7 +107,7 @@ class Location {
     return dbm_manager.isConsistent(dbm);
   }
 
-  inline void operator()(const DBMFactory& dbm_manager, int* dbm) const {
+  inline void operator()(const DBMManager& dbm_manager, int* dbm) const {
     assert(isReachable(dbm_manager, dbm));
     assert(!isFreezeLocation());
 
@@ -116,7 +116,7 @@ class Location {
     assert(dbm_manager.isConsistent(dbm));
   }
 
-  bool operator()(const DBMFactory& dbm_manager, const int* const dbm,
+  bool operator()(const DBMManager& dbm_manager, const int* const dbm,
                   vector<int*>& re_vec) const;
 
   void setHasOutUrgentCh(bool b) { hasOutUrgentChan = b; }

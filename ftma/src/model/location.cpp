@@ -2,7 +2,7 @@
 #include "model/location.h"
 
 namespace graphsat {
-bool Location::operator()(const DBMFactory& dbm_manager, const int* const dbm,
+bool Location::operator()(const DBMManager& dbm_manager, const int* const dbm,
                           vector<int*>& re_vec) const {
   int* newDBM = dbm_manager.createDBM(dbm);
   bool re = isReachable(dbm_manager, newDBM);

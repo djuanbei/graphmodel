@@ -11,11 +11,15 @@
 #define FISCHER_PROJECTOR_H
 #include <set>
 
+#include "graph/graph.hpp"
+
 #include "alg/projector.h"
 
 #include "state/ta_statemanager.h"
 
 namespace graphsat {
+
+using namespace raptor;
 
 class FischerProjector : public Projector {
  public:
@@ -49,6 +53,7 @@ class FischerProjector : public Projector {
   struct AbsOneDimState {
     int loc;
     int has_id;  // 1 -> true, 0 -> false
+    
     int clock_lower_bound;
     int clock_upper_bound;
     friend bool operator<(const AbsOneDimState& lhs, const AbsOneDimState& rhs);
@@ -65,7 +70,7 @@ class FischerProjector : public Projector {
   void constructState(int* state, const std::vector<std::vector<int>>& projs,
                       const std::vector<AbsOneDimState>& oneStataes,
                       const std::vector<int>& vertices,
-                      const std::vector<int>& choose) const;
+                      const std::vector<int>& choose, const Graph_t<int> & graph) const;
 };
 
 }  // namespace graphsat

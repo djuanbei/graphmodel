@@ -23,7 +23,7 @@ namespace graphsat {
 
 // using namespace std;
 
-const int GLOBAL_CLOCK_ID = 0;
+//const int GLOBAL_CLOCK_ID = 0;
 
 /**
  *  clock_x -clock_y < ( <= ) realRight
@@ -77,7 +77,7 @@ class ClockConstraint {
 
  private:
   friend ClockConstraint randConst(const int num, const int low, const int up);
-  friend class DBMFactory;
+  friend class DBMManager;
 };
 ClockConstraint randConst(const int num, const int low, const int up);
 

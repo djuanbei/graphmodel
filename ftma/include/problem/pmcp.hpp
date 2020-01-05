@@ -61,11 +61,11 @@ class IncrementalCheck {
       deleteRepeat(project);
 
       if (proj.include(project, pre_project)) {
-        // if( proj.projectEqualReach(pre_project, data )){
-        cout << "size: " << project.size() << " : " << pre_project.size()
-             << endl;
-        return true;
-        //}
+        if( proj.projectEqualReach(pre_project, data )){
+          cout << "size: " << project.size() << " : " << pre_project.size()
+          << endl;
+          return true;
+        }
       }
 
       pre_project.swap(project);

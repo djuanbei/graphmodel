@@ -70,7 +70,7 @@ TEST(STATE_MANAGER_H, swap) {
   INT_TAS_t fs = F.generate(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager = fs.getStateManager();
   for (int i = 0; i < 1000; i++) {
-    int* state = manager->rand();
+    int* state = manager->randState();
     int* state1 = manager->newState();
     manager->copy(state1, state);
     int ii = rand() % n;
@@ -179,7 +179,7 @@ TEST(STATE_MANAGER_H, setValue) {
   shared_ptr<INT_TAS_t::StateManager_t> manager = tg_sys.getStateManager();
 
   int* state = manager->newState();
-  int index = 2 * (n + 1) + 1;
+  // int index = 2 * (n + 1) + 1;
   for (int i = 0; i < 10; i++) {
     int v = rand() % 20;
     manager->setValue(n, state, "len", v);
@@ -187,4 +187,51 @@ TEST(STATE_MANAGER_H, setValue) {
   }
 
   manager->destroyState(state);
+}
+
+TEST(STATE_MANAGER_H, getClockBound) {
+  FischerGenerator F;
+  for (int i = 1; i < 10; i++) {
+    INT_TAS_t fs = F.generate(i);
+
+    shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+        fs.getStateManager();
+    int* state = manager->randState();
+    int v = rand() % 1000;
+    MatrixValue value(v, false);  //<= 10
+    manager->setClockLowerBound(0, "x", state, value);
+
+    EXPECT_EQ(manager->getClockLowerBound(0, "x", state), value);
+    value.value *= -1;
+    EXPECT_EQ(state[i + 3], value.matrixValue());
+
+    MatrixValue value1(v, true);  //<= 10
+    manager->setClockLowerBound(0, "x", state, value1);
+
+    EXPECT_EQ(manager->getClockLowerBound(0, "x", state), value1);
+    value1.value *= -1;
+    EXPECT_EQ(state[i + 3], value1.matrixValue());
+  }
+
+  for (int i = 1; i < 10; i++) {
+    INT_TAS_t fs = F.generate(i);
+
+    shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+        fs.getStateManager();
+    int* state = manager->randState();
+    int v = rand() % 1000;
+    MatrixValue value(v, false);  //<= 10
+    manager->setClockUpperBound(0, "x", state, value);
+
+    EXPECT_EQ(manager->getClockUpperBound(0, "x", state), value);
+
+    EXPECT_EQ(state[2 * i + 3], value.matrixValue());
+
+    MatrixValue value1(v, true);  //<= 10
+    manager->setClockUpperBound(0, "x", state, value1);
+
+    EXPECT_EQ(manager->getClockUpperBound(0, "x", state), value1);
+
+    EXPECT_EQ(state[2 * i + 3], value1.matrixValue());
+  }
 }

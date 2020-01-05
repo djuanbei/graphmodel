@@ -258,15 +258,19 @@ class ReachableSet {
   }
 
   bool contain(const State_t* const target) const {
-    for (size_t i = 0; i < size(); i++) {
-      getStateAt(cache_state, i);
+    manager->copy( cache_state, target);
+    manager->encode(convert_UINT, cache_state);
+    return reach_set.contain(convert_UINT )!= NOT_FOUND;
+    // for (size_t i = 0; i < size(); i++) {
+    //   getStateAt(cache_state, i);
 
-      if (manager->contain(cache_state, target)) {
-        return true;
-      }
-    }
-    return false;
+    //   if (manager->contain(cache_state, target)) {
+    //     return true;
+    //   }
+    // }
+    // return false;
   }
+
 
  private:
   inline bool addToReachableSet(State_t* state) {

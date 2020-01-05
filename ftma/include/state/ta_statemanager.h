@@ -109,7 +109,7 @@ class TMStateManager : public ComponentInfo {
     return re;
   }
 
-  int* rand() const;
+  int* randState() const;
 
   void copy(int* des_state, const int* const source_state) const {
     memcpy(des_state, source_state, state_length * sizeof(int));
@@ -168,6 +168,7 @@ class TMStateManager : public ComponentInfo {
                 int value) const;
 
   int& getValue(const int component, int* state, const std::string& key) const;
+  
 
   /**
    * @brief As the state is  abstract symbolic state. A symbolic state
@@ -184,7 +185,7 @@ class TMStateManager : public ComponentInfo {
 
   int getComponentNumber() const { return component_num; }
 
-  inline const DBMFactory& getClockManager() const { return dbm_manager; }
+  inline const DBMManager& getClockManager() const { return dbm_manager; }
 
   void norm(const int* const dbm, vector<int*>& re_vec) const {
     int* newDBM = dbm_manager.createDBM(dbm);
@@ -193,11 +194,38 @@ class TMStateManager : public ComponentInfo {
 
   inline void norm(int* dbm) const { dbm_manager.norm(dbm); }
 
+  MatrixValue getClockLowerBound(const int component, const std::string& key,
+                                 const int* const state) const;
+
+  void setClockLowerBound(const int component, const std::string& key,
+                          int* state, const MatrixValue& value) const;
+
   MatrixValue getClockUpperBound(const int component, const std::string& key,
                                  const int* const state) const;
 
   void setClockUpperBound(const int component, const std::string& key,
                           int* state, const MatrixValue& value) const;
+
+  // keyA- keyB > ( >=) re
+  MatrixValue getClockDiffLowerBound(const int componentA,
+                                     const std::string& keyA,
+                                     const int componentB,
+                                     const std::string& keyB,
+                                     const int* const state) const;
+
+  void setClockLowerBound(const int componentA, const std::string& keyA,
+                          const int componentB, const std::string& keyB,
+                          int* state, const MatrixValue& value) const;
+
+  MatrixValue getClockUpperBound(const int componentA, const std::string& keyA,
+                                 const int componentB, const std::string& keyB,
+                                 const int* const state) const;
+
+  void setClockUpperBound(const int componentA, const std::string& keyA,
+                          const int componentB, const std::string& keyB,
+                          int* state, const MatrixValue& value) const;
+
+  
 
   inline int* getDBM(int* state) const { return state + clock_start_loc; }
 
@@ -288,7 +316,7 @@ class TMStateManager : public ComponentInfo {
   int clock_start_loc;
 
   vector<int> clock_upper_bounds;
-  DBMFactory dbm_manager;
+  DBMManager dbm_manager;
   vector<Counter> counters;
   vector<Parameter> parameters;
   vector<int> node_nums;

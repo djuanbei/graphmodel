@@ -138,7 +138,7 @@ int* randV(int n, int s) {
 void example6() {
   vector<int*> vecs;
   int n = 10;
-  DBMFactory manager(n);
+  DBMManager manager(n);
   DBMset<int> sets(manager);
   int num = 1000;
 
@@ -314,7 +314,7 @@ void fischer(int n) {
 void testIsConsistent() {
   int n = 12;
   // int        len = ( n + 1 ) * ( n + 1 );
-  DBMFactory df(n);
+  DBMManager df(n);
   for (int i = 0; i < 5; i++) {
     int* d = df.randomFeasiableDBM();
     ClockConstraint cons = df.getCons(d, 2, 3);

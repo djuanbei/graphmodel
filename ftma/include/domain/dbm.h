@@ -51,14 +51,20 @@ static const std::string DBM_DOT_TABLE_HEADER =
     "<table border=\"1\"  bgcolor=\"#00FF00\" >";
 
 struct MatrixValue {
-  MatrixValue() : isStrict(false), value(0) {}
-  bool isStrict;
+  MatrixValue() : strict(false), value(0) {}
+  MatrixValue( int matrix_value);
+  MatrixValue( int value,  bool s);
+  bool operator ==( const MatrixValue & other) const;
+  int matrixValue( ) const;
+  bool strict;
   int value;
 };
 
-class DBMFactory {
+const static  int GLOBAL_CLOCK_ID=0;
+
+class DBMManager {
  public:
-  DBMFactory(void) {
+  DBMManager(void) {
     clock_num = 0;
     matrix_size = 0;
     MAX_INT = getMAX_INT<int>();
@@ -66,12 +72,12 @@ class DBMFactory {
     distribution = std::uniform_int_distribution<int>(-100, 100);
   }
 
-  explicit DBMFactory(const int n);
+  explicit DBMManager(const int n);
 
-  DBMFactory(const int n, const std::vector<int>& oclockUppuerBound,
+  DBMManager(const int n, const std::vector<int>& oclockUppuerBound,
              const std::vector<ClockConstraint>& odifferenceCons);
 
-  ~DBMFactory() { clock_num = 0; }
+  ~DBMManager() { clock_num = 0; }
 
   void setClockNum(int num) {
     clock_num = num + 1;
@@ -122,11 +128,11 @@ class DBMFactory {
                             const int clock_num);
 
   std::ostream& dumpDot(std::ostream& out, const int* const dbm) const {
-    return DBMFactory::dumpDot(out, dbm, clock_num);
+    return DBMManager::dumpDot(out, dbm, clock_num);
   }
 
   std::ostream& dump(std::ostream& out, const int* const dbm) const {
-    return DBMFactory::dump(out, dbm, clock_num);
+    return DBMManager::dump(out, dbm, clock_num);
   }
   // dump clock_ids clocks constrainted relations
   std::ostream& dump(std::ostream& out, const int* const dbm,
@@ -329,6 +335,30 @@ class DBMFactory {
   int at(const int* const dbm, const int i, const int j) const {
     return dbm[LOC(i, j)];
   }
+  // // x-y >(>= ) 
+  // MatrixValue getLowerBound( const int * const dbm ,const int clock_x, const  int clock_y) const;
+
+  
+  // void setLowerBound( int * dbm, const int clock_x, const int clock_y, const MatrixValue & value ) const;
+
+  // x-y < ( <=)  re
+  MatrixValue getUpperBound( const int * const dbm, const int clock_x, const int clock_y ) const;
+
+  // x-y < ( <=)  value
+  void setUppperBound( int * dbm , const int clock_x, const int clock_y, const MatrixValue & value) const;
+  
+  // // x> ( >=) re
+  // MatrixValue getLowerBound( const int * const dbm, const int clock_id) const;
+  // //  x > ( x>=)  value
+  // void setLowerBound( int * dbm, const int clock_id, const MatrixValue & value) const;
+
+  // // x< ( <=) re
+  // MatrixValue getUpperBound( const int * const dbm, const int clock_id) const;
+
+  // // x < ( <= ) value
+  // void setUppperBound( int * dbm, const int clock_id,  const MatrixValue & value) const;
+  
+  
   // every clock id >=1
   int* project(const int* const dbm, const std::vector<int>& clock_ids) const;
 

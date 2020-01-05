@@ -56,7 +56,7 @@ class Agent : public VariableMap, public TOReal {
 
   int getInitialLoc() const { return agent_tempate->initial_loc; }
 
-  bool locationRun(int link, const DBMFactory& manager, int* D) const {
+  bool locationRun(int link, const DBMManager& manager, int* D) const {
     if (!locations[link].isReachable(manager, D)) {
       return false;
     }

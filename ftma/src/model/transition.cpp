@@ -7,7 +7,7 @@ namespace graphsat {
 bool Transition::ready(const TMStateManager* manager,
                        const int* const state) const {
   if (!guards.empty()) {
-    const DBMFactory& dbm_manager = manager->getClockManager();
+    const DBMManager& dbm_manager = manager->getClockManager();
     const int* source_DBM = manager->getDBM(state);
     assert(dbm_manager.isConsistent(source_DBM));
     int* copy_DBM = dbm_manager.createDBM(source_DBM);
@@ -39,7 +39,7 @@ void Transition::operator()(const TMStateManager* const manager,
                             int* re_state) const {
   assert(ready(manager, re_state));
 
-  const DBMFactory& dbm_manager = manager->getClockManager();
+  const DBMManager& dbm_manager = manager->getClockManager();
 
   int* source_DBM = manager->getDBM(re_state);
 

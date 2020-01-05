@@ -26,7 +26,7 @@ class DBMset {
 
   class const_iterator;
 
-  DBMset(DBMFactory& manager) { dbm_manager = manager; }
+  DBMset(DBMManager& manager) { dbm_manager = manager; }
   ~DBMset() { deleteAll(); }
 
   iterator begin() { return iterator(this); }
@@ -206,7 +206,7 @@ class DBMset {
   };
 
  private:
-  DBMFactory dbm_manager;
+  DBMManager dbm_manager;
   std::map<uint32_t, int> passed_data;
   std::vector<C*> map_data;
   std::vector<DF_T> map_data_feature;

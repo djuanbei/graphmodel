@@ -38,7 +38,7 @@ TMStateManager::TMStateManager(const INT_TAS_t& s,
   state_length++;
 
   hasDiff = !sys.getDiffCons().empty();
-  dbm_manager = DBMFactory(clock_num, clock_upper_bounds, sys.getDiffCons());
+  dbm_manager = DBMManager(clock_num, clock_upper_bounds, sys.getDiffCons());
   counters = ecounters;
   compress_state =
       StateConvert<int>(getClockStart(), getStateLen() - getClockStart(),
@@ -72,7 +72,7 @@ int* TMStateManager::newState() const {
   return re_state;
 }
 
-int* TMStateManager::rand() const {
+int* TMStateManager::randState() const {
   int* re = newState();
   for (int i = 0; i < component_num; i++) {
     re[i] = ::rand() % sys.getLocationNumber(i);
@@ -208,10 +208,90 @@ int& TMStateManager::getValue(const int component, int* state,
   return state[start + sys.getKeyID(component, type, key)];
 }
 
+MatrixValue TMStateManager::getClockLowerBound(const int component,
+                                               const std::string& key,
+                                               const int* const state) const {
+  int id = sys.getKeyID(component, CLOCK_T, key);
+  const int* const dbm = getDBM(state);
+  MatrixValue re = getClockManager().getUpperBound(dbm, GLOBAL_CLOCK_ID, id);
+  re.value *= -1;
+  return re;
+}
+
+void TMStateManager::setClockLowerBound(const int component,
+                                        const std::string& key, int* state,
+                                        const MatrixValue& value) const {
+  int id = sys.getKeyID(component, CLOCK_T, key);
+  int* dbm = getDBM(state);
+  MatrixValue temp(value);
+  temp.value *= -1;
+  getClockManager().setUppperBound(dbm, GLOBAL_CLOCK_ID, id, temp);
+}
+
 MatrixValue TMStateManager::getClockUpperBound(const int component,
                                                const string& key,
                                                const int* const state) const {
-  return MatrixValue();
+  int id = sys.getKeyID(component, CLOCK_T, key);
+  const int* const dbm = getDBM(state);
+  return getClockManager().getUpperBound(dbm, id, GLOBAL_CLOCK_ID);
+}
+
+void TMStateManager::setClockUpperBound(const int component,
+                                        const std::string& key, int* state,
+                                        const MatrixValue& value) const {
+  int id = sys.getKeyID(component, CLOCK_T, key);
+  int* dbm = getDBM(state);
+  getClockManager().setUppperBound(dbm, id, GLOBAL_CLOCK_ID, value);
+}
+
+// keyA- keyB > ( >=) re
+MatrixValue TMStateManager::getClockDiffLowerBound(
+    const int componentA, const std::string& keyA, const int componentB,
+    const std::string& keyB, const int* const state) const {
+  int idA = sys.getKeyID(componentA, CLOCK_T, keyA);
+  int idB = sys.getKeyID(componentB, CLOCK_T, keyB);
+  const int* const dbm = getDBM(state);
+
+  MatrixValue re = getClockManager().getUpperBound(dbm, idB, idA);
+  re.value *= -1;
+  return re;
+}
+
+void TMStateManager::setClockLowerBound(const int componentA,
+                                        const std::string& keyA,
+                                        const int componentB,
+                                        const std::string& keyB, int* state,
+                                        const MatrixValue& value) const {
+  int idA = sys.getKeyID(componentA, CLOCK_T, keyA);
+  int idB = sys.getKeyID(componentB, CLOCK_T, keyB);
+
+  int* dbm = getDBM(state);
+  MatrixValue temp(value);
+  temp.value *= -1;
+  getClockManager().setUppperBound(dbm, idB, idA, temp);
+}
+
+MatrixValue TMStateManager::getClockUpperBound(const int componentA,
+                                               const std::string& keyA,
+                                               const int componentB,
+                                               const std::string& keyB,
+                                               const int* const state) const {
+  int idA = sys.getKeyID(componentA, CLOCK_T, keyA);
+  int idB = sys.getKeyID(componentB, CLOCK_T, keyB);
+  const int* const dbm = getDBM(state);
+
+  return getClockManager().getUpperBound(dbm, idA, idB);
+}
+
+void TMStateManager::setClockUpperBound(const int componentA,
+                                        const std::string& keyA,
+                                        const int componentB,
+                                        const std::string& keyB, int* state,
+                                        const MatrixValue& value) const {
+  int idA = sys.getKeyID(componentA, CLOCK_T, keyA);
+  int idB = sys.getKeyID(componentB, CLOCK_T, keyB);
+  int* dbm = getDBM(state);
+  getClockManager().setUppperBound(dbm, idA, idB, value);
 }
 
 Compression<int> TMStateManager::getHeadCompression() const {

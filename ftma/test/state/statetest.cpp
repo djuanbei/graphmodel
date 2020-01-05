@@ -84,7 +84,7 @@ TEST(StateSet1, add_contain) {
 TEST(DBMSET1, add) {
   vector<int*> vecs;
   int n = 10;
-  DBMFactory manager(n);
+  DBMManager manager(n);
   DBMset<int> sets(manager);
   int num = 10000;
 
@@ -105,7 +105,7 @@ TEST(DBM1, include) {
   distribution =
       std::uniform_int_distribution<int>(-MAX_INT / 4 + 1, MAX_INT / 4);
   int clock_num = 20;
-  DBMFactory manager(clock_num);
+  DBMManager manager(clock_num);
   int num = 100;
   for (int i = 0; i < num; i++) {
     int* dbm = manager.randomFeasiableDBM();
