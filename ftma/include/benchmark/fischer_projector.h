@@ -70,7 +70,7 @@ class FischerProjector : public Projector {
   void constructState(int* state, const std::vector<std::vector<int>>& projs,
                       const std::vector<AbsOneDimState>& oneStataes,
                       const std::vector<int>& vertices,
-                      const std::vector<int>& choose, const Graph_t<int> & graph) const;
+                      const std::vector<int>& choose, const Graph_t<int> & graph, const  std::map<int, int> &link_map) const;
 };
 
 }  // namespace graphsat

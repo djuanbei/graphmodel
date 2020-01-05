@@ -111,11 +111,15 @@ bool FischerProjector::projectEqualReach(
         FullChoose fc(choose);
         while (fc.next()) {
           vector<int> choose = *fc;
-          for (size_t k = 0; k < choose.size(); k++) {
-            choose[k] = link_map[choose[k]];
+          for(size_t i=0; i< choose.size(); i++){
+            choose[i]=links[i][choose[i]];
           }
-          constructState(state, projs, oneStataes, vertices, choose, graph);
+          manager->reset(state);
+          manager->dump(state);
+          
+          constructState(state, projs, oneStataes, vertices, choose, graph, link_map);
           if (!next_reach_set.contain(state)) {
+            manager->dump(state);
             return false;
           }
         }
@@ -138,8 +142,9 @@ void FischerProjector::constructState(
     int* state, const std::vector<std::vector<int>>& projs,
     const std::vector<AbsOneDimState>& oneStataes,
     const std::vector<int>& vertices, const std::vector<int>& links,
-    const Graph_t<int>& graph) const {
+    const Graph_t<int>& graph, const  std::map<int, int>& link_map) const {
   int component_num = manager->getComponentNumber();
+  manager->dump(state);
   for (int i = 0; i < component_num; i++) {
     state[i] = oneStataes[vertices[i]].loc;
     if (oneStataes[vertices[i]].has_id == 1) {
@@ -152,19 +157,21 @@ void FischerProjector::constructState(
     int index = component_num + 2 + (i + 1) * (component_num + 1);
     state[index] = oneStataes[vertices[i]].clock_upper_bound;
   }
+  manager->dump(state);
   for (auto e : links) {
     int src, snk;
     graph.findSrcSnk( e, src, snk);
     src=findIndex( vertices, src );
     snk=findIndex( vertices, snk);
+    int link_id= link_map.at(e);
     
-    MatrixValue value(projs[ e][ 9] ); //src-snk
-    manager->setClockUpperBound(src+1,"x", snk+1, "x", state, value  );
+    MatrixValue value(projs[ link_id][ 9] ); //src-snk
+    manager->setClockUpperBound(src,"x", snk, "x", state, value  );
+     manager->dump(state);
+    MatrixValue value1(projs[ link_id][ 11] ); //snk-src
     
-    MatrixValue value1(projs[ e][ 11] ); //snk-src
-    
-    manager->setClockUpperBound(snk+1,"x", src+1, "x", state, value1  );
-        
+    manager->setClockUpperBound(snk,"x", src, "x", state, value1  );
+         manager->dump(state);
   }
 }
 

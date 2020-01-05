@@ -108,6 +108,8 @@ class TMStateManager : public ComponentInfo {
     memcpy(re, state, state_length * sizeof(int));
     return re;
   }
+  
+  void reset( int * state) const;
 
   int* randState() const;
 
