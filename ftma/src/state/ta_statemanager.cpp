@@ -184,6 +184,17 @@ int TMStateManager::getValue(const int component, const int* const state,
   return state[start + sys.getKeyID(component, type, key)];
 }
 
+void TMStateManager::setValue(const int component, int* state,
+                              const string& key, int value) const {
+  TYPE_T type = sys.getType(component, key);
+
+  if (type == NO_T) {
+    assert(false);
+  }
+  int start = getTypeStart(type);
+  state[start + sys.getKeyID(component, type, key)] = value;
+}
+
 int& TMStateManager::getValue(const int component, int* state,
                               const string& key) const {
   TYPE_T type = sys.getType(component, key);
@@ -195,6 +206,12 @@ int& TMStateManager::getValue(const int component, int* state,
   }
   int start = getTypeStart(type);
   return state[start + sys.getKeyID(component, type, key)];
+}
+
+MatrixValue TMStateManager::getClockUpperBound(const int component,
+                                               const string& key,
+                                               const int* const state) const {
+  return MatrixValue();
 }
 
 Compression<int> TMStateManager::getHeadCompression() const {

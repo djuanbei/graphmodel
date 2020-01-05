@@ -24,6 +24,12 @@ class TrainGateProjector : public Projector {
   bool include(const std::vector<std::vector<int>>& lhs,
                const std::vector<std::vector<int>>& rhs) const;
 
+  virtual bool projectEqualReach(
+      const std::vector<std::vector<int>>& projs,
+      const ReachableSet<TMStateManager>& next_reach_set) const {
+    return false;
+  }
+
   virtual std::ostream& dump(const std::vector<int>& proj_e,
                              std::ostream& out) const;
 

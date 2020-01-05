@@ -168,3 +168,23 @@ TEST(STATE_MANAGER_H, getValue) {
 
   manager->destroyState(state);
 }
+
+TEST(STATE_MANAGER_H, setValue) {
+  TrainGate TG;
+
+  int n = rand() % 10 + 3;
+  INT_TAS_t tg_sys = TG.generate(n);
+  tg_sys.addInt("x", 1);
+  tg_sys.buildManager();
+  shared_ptr<INT_TAS_t::StateManager_t> manager = tg_sys.getStateManager();
+
+  int* state = manager->newState();
+  int index = 2 * (n + 1) + 1;
+  for (int i = 0; i < 10; i++) {
+    int v = rand() % 20;
+    manager->setValue(n, state, "len", v);
+    EXPECT_EQ(manager->getValue(n, state, "len"), v);
+  }
+
+  manager->destroyState(state);
+}

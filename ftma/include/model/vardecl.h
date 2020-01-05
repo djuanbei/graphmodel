@@ -22,10 +22,9 @@
 
 namespace graphsat {
 
-using namespace std;
 struct BaseDecl {
   int start_loc;
-  string name;
+  std::string name;
   int num;
   int low, high;
   BaseDecl() {
@@ -34,13 +33,13 @@ struct BaseDecl {
     low = DEFAULT_COUNTER_LOWER;
     high = DEFAULT_COUNTER_UPPER;
   }
-  BaseDecl(const string& n) : name(n), num(1) {
+  explicit BaseDecl(const std::string& n) : name(n), num(1) {
     start_loc = 0;
     low = DEFAULT_COUNTER_LOWER;
     high = DEFAULT_COUNTER_UPPER;
   }
 
-  BaseDecl(const string& n, int len, int l, int h) {
+  BaseDecl(const std::string& n, int len, int l, int h) {
     start_loc = 0;
     name = n;
     num = len;
@@ -51,7 +50,7 @@ struct BaseDecl {
 
 struct ChanDecl : public BaseDecl {
   CHANNEL_TYPE type;
-  ChanDecl(const string& n) : BaseDecl(n) { type = ONE2ONE_CH; }
+  ChanDecl(const std::string& n) : BaseDecl(n) { type = ONE2ONE_CH; }
 };
 
 class VarDecl {
@@ -64,29 +63,30 @@ class VarDecl {
   virtual ~VarDecl();
   virtual int addInt(const BaseDecl& ch);
 
-  virtual int addInt(const string& name, int num = 1);
+  virtual int addInt(const std::string& name, int num = 1);
 
-  virtual int addInt(const string& name, int num, int low, int high);
+  virtual int addInt(const std::string& name, int num, int low, int high);
 
   virtual int addChan(const ChanDecl& ch);
 
-  virtual int addChan(const string& name, int num, CHANNEL_TYPE type);
+  virtual int addChan(const std::string& name, int num, CHANNEL_TYPE type);
 
-  virtual int addFun(const string& name, shared_ptr<Function> fun);
+  virtual int addFun(const std::string& name, std::shared_ptr<Function> fun);
 
-  virtual shared_ptr<Function> getFun(const string& name) const;
+  virtual std::shared_ptr<Function> getFun(const std::string& name) const;
 
-  virtual const map<string, shared_ptr<Function>>& getFuns() const;
+  virtual const std::map<std::string, std::shared_ptr<Function>>& getFuns()
+      const;
 
-  virtual int addConstant(const string& n, const int v);
+  virtual int addConstant(const std::string& n, const int v);
 
-  virtual int addType(const string& n, const TypeDefArray& type);
+  virtual int addType(const std::string& n, const TypeDefArray& type);
 
-  virtual vector<string> getKeys(const TYPE_T type) const;
+  virtual std::vector<std::string> getKeys(const TYPE_T type) const;
 
-  virtual vector<BaseDecl> getAllVar(const TYPE_T type) const;
+  virtual std::vector<BaseDecl> getAllVar(const TYPE_T type) const;
 
-  virtual vector<BaseDecl> getInts() const;
+  virtual std::vector<BaseDecl> getInts() const;
 
   /**
    *
@@ -97,11 +97,11 @@ class VarDecl {
    *
    * @return
    */
-  virtual int addType(const string& n, const int low, const int high);
+  virtual int addType(const std::string& n, const int low, const int high);
 
-  TYPE_T getType(const string& name) const;
+  TYPE_T getType(const std::string& name) const;
 
-  virtual TypeDefArray getTypeDef(const string& n) const;
+  virtual TypeDefArray getTypeDef(const std::string& n) const;
 
   virtual int getStartLoc(const TYPE_T type, const int template_id) const {
     assert(false);
@@ -113,9 +113,9 @@ class VarDecl {
     return 0;
   }
 
-  bool contain(const string& n) const;
+  bool contain(const std::string& n) const;
 
-  int operator[](const string& k) const;
+  int operator[](const std::string& k) const;
 
   int getCounterNumber() const;
 
@@ -123,17 +123,17 @@ class VarDecl {
 
   int getClockNumber() const;
 
-  int getLocalKeyID(const TYPE_T type, const string& key) const;
+  int getLocalKeyID(const TYPE_T type, const std::string& key) const;
 
-  CHANNEL_TYPE getChanType(const string& name) const;
+  CHANNEL_TYPE getChanType(const std::string& name) const;
 
  protected:
   VarDecl* parent;
   PointerData data;
 
-  map<string, int> const_values;
-  vector<TypeDefArray> self_types;
-  map<string, shared_ptr<Function>> functions;
+  std::map<std::string, int> const_values;
+  std::vector<TypeDefArray> self_types;
+  std::map<std::string, std::shared_ptr<Function>> functions;
 
   int getTypeNumber(const int type) const;
 };

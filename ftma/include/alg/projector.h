@@ -13,11 +13,10 @@
 #include <iostream>
 #include <vector>
 
+#include "state/reachableset.hpp"
+#include "state/ta_statemanager.h"
+
 namespace graphsat {
-// using std::cout;
-// using std::endl;
-// using std::ostream;
-// using std::vector;
 
 class Projector {
  public:
@@ -25,6 +24,10 @@ class Projector {
                           std::vector<int>& proj) const = 0;
   virtual bool include(const std::vector<std::vector<int>>& lhs,
                        const std::vector<std::vector<int>>& rhs) const = 0;
+
+  virtual bool projectEqualReach(
+      const std::vector<std::vector<int>>& projs,
+      const ReachableSet<TMStateManager>& next_reach_set) const = 0;
 
   virtual std::ostream& dump(const std::vector<int>& proj_e,
                              std::ostream& out) const = 0;

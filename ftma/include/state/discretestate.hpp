@@ -506,17 +506,12 @@ class StateSet {
     decoder.decode(lhs_data, lhs);
     decoder.decode(rhs_data, rhs);
 
-    // int i = 0;
-
     for (int i = 0; i < decoder_cmp_data_len; i++) {
       if (lhs_data[i] < rhs_data[i]) {
         return false;
-        // break;
       }
     }
     return true;
-
-    // return i == (decoder_cmp_data_len);
   }
   inline bool existsBody(const T* const lhs, const T* const rhs) const {
     return memcmp(lhs, rhs, body_part_len * sizeof(T)) == 0;

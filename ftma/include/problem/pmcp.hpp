@@ -20,8 +20,8 @@
 #include "state/reachableset.hpp"
 
 namespace graphsat {
-using namespace std;
-bool element_cmp(const vector<int>& lhs, const vector<int>& rhs);
+// using namespace std;
+bool element_cmp(const std::vector<int>& lhs, const std::vector<int>& rhs);
 
 template <typename SYS, typename G, typename PROJ>
 class IncrementalCheck {
@@ -33,16 +33,15 @@ class IncrementalCheck {
     shared_ptr<typename SYS::StateManager_t> manager = dummy.getStateManager();
     ReachableSet<typename SYS::StateManager_t> pre_data(manager);
 
-    // dummy.addInitState(pre_data);
     Reachability<SYS> reacher(dummy);
     if (reacher.satisfy(&pre_data, prop)) {
       return false;
     }
-    vector<vector<int>> pre_project;
+    std::vector<std::vector<int>> pre_project;
     PROJ proj(manager, project_dim);
 
     pre_data.project(proj, pre_project);
-    /// sort(pre_project.begin(), pre_project.end(), element_cmp);
+
     deleteRepeat(pre_project);
 
     for (int i = start + 1; i < end; i++) {
@@ -52,19 +51,21 @@ class IncrementalCheck {
           dummy.getStateManager();
       ReachableSet<typename SYS::StateManager_t> data(manager);
 
-      //  dummy.addInitState(data);
       Reachability<SYS> reacher(dummy);
       if (reacher.satisfy(&data, prop)) {
         return false;
       }
-      vector<vector<int>> project;
+      std::vector<std::vector<int>> project;
       PROJ proj(manager, project_dim);
       data.project(proj, project);
       deleteRepeat(project);
-      //  sort(project.begin(), project.end(), element_cmp);
 
       if (proj.include(project, pre_project)) {
+        // if( proj.projectEqualReach(pre_project, data )){
+        cout << "size: " << project.size() << " : " << pre_project.size()
+             << endl;
         return true;
+        //}
       }
 
       pre_project.swap(project);
@@ -73,9 +74,9 @@ class IncrementalCheck {
   }
 
  private:
-  void deleteRepeat(vector<vector<int>>& pre_project) const {
-    std::vector<vector<int>>::iterator it;
-    sort(pre_project.begin(), pre_project.end(), vect_cmp<int>);
+  void deleteRepeat(std::vector<std::vector<int>>& pre_project) const {
+    std::vector<std::vector<int>>::iterator it;
+    std::sort(pre_project.begin(), pre_project.end(), vect_cmp<int>);
     it = std::unique(pre_project.begin(), pre_project.end());
     pre_project.resize(std::distance(pre_project.begin(), it));
   }

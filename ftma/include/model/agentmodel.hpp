@@ -102,32 +102,39 @@ class Agent : public VariableMap, public TOReal {
 
   RealArgument to_real(const TYPE_T& type, const Argument& arg) const {
     RealArgument re;
-    re.type = arg.type;
-    switch (re.type) {
+    re.setType(arg.getType());
+
+    switch (re.getType()) {
       case CONST_ARG:
-        re.value = arg.value;
+        re.setValue(arg.getValue());
+
         break;
       case NORMAL_VAR_ARG:
-        re.value = getKeyID(type, arg.name);
+        re.setValue(getKeyID(type, arg.getName()));
+
         break;
 
       case PARAMETER_ARG:
-        re.value = parameter.getParameter(arg.name);
+        re.setValue(parameter.getParameter(arg.getName()));
+
         break;
       case REF_PARAMETER_ARG:
-        re.value = parameter.getCounter(arg.name);
+        re.setValue(parameter.getCounter(arg.getName()));
+
         break;
       case FUN_POINTER_ARG:
-        loadFun(FUN_POINTER_ARG, arg.name, re);
+        loadFun(FUN_POINTER_ARG, arg.getName(), re);
         break;
       case SELECT_VAR_ARG:
-        re.value = parameter.getSelect();
+        re.setValue(parameter.getSelect());
+
         break;
       case EMPTY_ARG:
         break;
     }
-    if (arg.index != nullptr) {
-      re.index.reset(new RealArgument(to_real(type, *arg.index)));
+    if (arg.getIndex() != nullptr) {
+      re.setIndex(to_real(type, *(arg.getIndex())));
+      // re.index=new RealArgument(to_real(type, *arg.index));
     }
 
     return re;
@@ -169,12 +176,12 @@ class Agent : public VariableMap, public TOReal {
   void loadFun(const ARGUMENT_TYPE type, const std::string& name,
                RealArgument& re) const {
     std::string fun_name = getFunName(name);
-    re.value = (int_fast64_t)(getFun(fun_name).get());
+    re.setValue((int_fast64_t)(getFun(fun_name).get()));
 
     std::string var = getFunArg(name);
     if (var != "") {  // If the function has argument then let the argument as
       // select variable
-      re.index.reset(new RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
+      re.setIndex(RealArgument(SELECT_VAR_ARG, parameter.getSelect()));
     }
   }
 

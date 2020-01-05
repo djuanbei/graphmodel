@@ -22,10 +22,6 @@
 #include "util/dbmutil.hpp"
 
 namespace graphsat {
-// using std::ostream;
-// using std::pair;
-// using std::std::setw;
-// using std::vector;
 
 #define ACTION_TYPE_CASE(op)                                                \
   switch (rhs.type) {                                                       \
@@ -52,7 +48,7 @@ namespace graphsat {
   }
 
 #define ACTION_TYPE_CASE_OUT(op_str)                                          \
-  switch (act.rhs.type) {                                                     \
+  switch (act.rhs.getType()) {                                                \
     case CONST_ARG:                                                           \
       out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
           << std::setw(VALUE_OUT_WIDTH) << act.rhs_value;                     \
@@ -75,7 +71,7 @@ namespace graphsat {
       return out;                                                             \
     case SELECT_VAR_ARG:                                                      \
       out << "counter_" << act.lhs_value << std::setw(OP_OUT_WIDTH) << op_str \
-          << std::setw(VALUE_OUT_WIDTH) << "function *" << act.rhs.name;      \
+          << std::setw(VALUE_OUT_WIDTH) << "function *" << act.rhs.getName(); \
     case EMPTY_ARG:                                                           \
       assert(false);                                                          \
   }
@@ -93,11 +89,11 @@ class CounterAction {
 
   void operator()(int* counter_value) const {
     if (action == CALL_ACTION) {
-      getValue(real_lhs, counter_value);
+      real_lhs.getValue(counter_value);
       return;
     }
-    int lhs_index = getIndex(real_lhs, counter_value);
-    int rhs_v = getValue(real_rhs, counter_value);
+    int lhs_index = real_lhs.getIndex(counter_value);
+    int rhs_v = real_rhs.getValue(counter_value);
     switch (action) {
       case ASSIGNMENT_ACTION:
         counter_value[lhs_index] = rhs_v;

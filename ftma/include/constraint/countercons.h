@@ -33,9 +33,9 @@ class CounterConstraint {
                     COMP_OPERATOR oop, const Argument& out_rhs)
       : first(out_first), second(out_second), op(oop), rhs(out_rhs) {}
   bool operator()(int* counter_value) const {
-    int one = getValue(first_value, counter_value);
-    int two = getValue(second_value, counter_value);
-    int three = getValue(rhs_value, counter_value);
+    int one = first_value.getValue(counter_value);
+    int two = second_value.getValue(counter_value);
+    int three = rhs_value.getValue(counter_value);
     return executeOp(one - two, op, three);
   }
   void to_real(const TOReal* convertor);

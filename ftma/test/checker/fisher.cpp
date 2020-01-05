@@ -343,3 +343,5 @@ TEST(FISHER, equal3) {
   //   EXPECT_EQ(vecs1[i], vecs3[i]);
   // }
 }
+
+TEST(FISHER, getKeyID) {}

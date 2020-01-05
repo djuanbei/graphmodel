@@ -2,7 +2,8 @@
 
 namespace graphsat {
 VarDecl::~VarDecl() {
-  const vector<pair<string, vector<void*>>>& int_values = data.getValue(INT_T);
+  const std::vector<std::pair<std::string, std::vector<void*>>>& int_values =
+      data.getValue(INT_T);
   for (auto e : int_values) {
     for (auto ee : e.second) {
       delete (BaseDecl*)ee;
@@ -10,7 +11,7 @@ VarDecl::~VarDecl() {
   }
   data.clear(INT_T);
 
-  const vector<pair<string, vector<void*>>>& clock_values =
+  const std::vector<std::pair<std::string, std::vector<void*>>>& clock_values =
       data.getValue(CLOCK_T);
   for (auto e : clock_values) {
     for (auto ee : e.second) {
@@ -19,7 +20,7 @@ VarDecl::~VarDecl() {
   }
   data.clear(CLOCK_T);
 
-  const vector<pair<string, vector<void*>>>& chan_values =
+  const std::vector<std::pair<std::string, std::vector<void*>>>& chan_values =
       data.getValue(CHAN_T);
   for (auto e : chan_values) {
     for (auto ee : e.second) {
@@ -28,22 +29,23 @@ VarDecl::~VarDecl() {
   }
   data.clear(CHAN_T);
 }
-Argument VarDecl::addClock(const string& n) {
+Argument VarDecl::addClock(const std::string& n) {
   assert(!contain(n));
   int re = data.getTypeNum(CLOCK_T) + 1;
   data.addValue(CLOCK_T, n, new BaseDecl(n));
   Argument temp(CONST_ARG, re);
-  temp.name = n;
+  temp.setName(n);
+  // temp.name = n;
   return temp;
 }
 
-int VarDecl::addInt(const string& n, int num) {
+int VarDecl::addInt(const std::string& n, int num) {
   BaseDecl b(n);
   b.num = num;
   return addInt(b);
 }
 
-int VarDecl::addInt(const string& name, int num, int low, int high) {
+int VarDecl::addInt(const std::string& name, int num, int low, int high) {
   BaseDecl b(name, num, low, high);
   return addInt(b);
 }
@@ -55,7 +57,7 @@ int VarDecl::addInt(const BaseDecl& ch) {
   return re;
 }
 
-int VarDecl::addConstant(const string& n, const int v) {
+int VarDecl::addConstant(const std::string& n, const int v) {
   assert(!contain(n));
   int re = const_values.size();
   const_values[n] = v;
@@ -68,35 +70,36 @@ int VarDecl::addChan(const ChanDecl& ch) {
   data.addValue(CHAN_T, ch.name, new ChanDecl(ch));
   return re;
 }
-int VarDecl::addChan(const string& name, int num, CHANNEL_TYPE type) {
+int VarDecl::addChan(const std::string& name, int num, CHANNEL_TYPE type) {
   ChanDecl dummy(name);
   dummy.type = type;
   dummy.num = num;
   return addChan(dummy);
 }
 
-int VarDecl::addFun(const string& name, shared_ptr<Function> fun) {
+int VarDecl::addFun(const std::string& name, std::shared_ptr<Function> fun) {
   int re = functions.size();
   functions[name] = fun;
   return re;
 }
 
-shared_ptr<Function> VarDecl::getFun(const string& name) const {
+std::shared_ptr<Function> VarDecl::getFun(const std::string& name) const {
   return functions.at(name);
 }
 
-const map<string, shared_ptr<Function>>& VarDecl::getFuns() const {
+const std::map<std::string, std::shared_ptr<Function>>& VarDecl::getFuns()
+    const {
   return functions;
 }
 
-int VarDecl::addType(const string& n, const TypeDefArray& type) {
+int VarDecl::addType(const std::string& n, const TypeDefArray& type) {
   assert(!contain(n));
   int re = self_types.size();
   self_types.push_back(type);
   return re;
 }
 
-int VarDecl::addType(const string& n, const int low, const int high) {
+int VarDecl::addType(const std::string& n, const int low, const int high) {
   assert(!contain(n));
   int re = self_types.size();
   TypeDefArray t(n, 0, high);  // typedef int[ 0,N-1] id_t;
@@ -104,7 +107,7 @@ int VarDecl::addType(const string& n, const int low, const int high) {
   return re;
 }
 
-TYPE_T VarDecl::getType(const string& name) const {
+TYPE_T VarDecl::getType(const std::string& name) const {
   int re = data.getType(name);
   if (re == NOT_FOUND) {
     return NO_T;
@@ -112,7 +115,7 @@ TYPE_T VarDecl::getType(const string& name) const {
   return (TYPE_T)re;
 }
 
-TypeDefArray VarDecl::getTypeDef(const string& n) const {
+TypeDefArray VarDecl::getTypeDef(const std::string& n) const {
   for (auto& e : self_types) {
     if (e.getName() == n) {
       return e;
@@ -124,9 +127,10 @@ TypeDefArray VarDecl::getTypeDef(const string& n) const {
   return TypeDefArray();
 }
 
-vector<BaseDecl> VarDecl::getInts() const {
-  const vector<pair<string, vector<void*>>>& temp = data.getValue(INT_T);
-  vector<BaseDecl> re;
+std::vector<BaseDecl> VarDecl::getInts() const {
+  const std::vector<std::pair<std::string, std::vector<void*>>>& temp =
+      data.getValue(INT_T);
+  std::vector<BaseDecl> re;
   for (auto& e : temp) {
     BaseDecl dummy = *((BaseDecl*)e.second[0]);
     if (1 == dummy.num) {
@@ -134,7 +138,7 @@ vector<BaseDecl> VarDecl::getInts() const {
     } else {
       for (int i = 0; i < dummy.num; i++) {
         BaseDecl t = dummy;
-        t.name += to_string(i);
+        t.name += std::to_string(i);
         re.push_back(t);
       }
     }
@@ -142,12 +146,12 @@ vector<BaseDecl> VarDecl::getInts() const {
   return re;
 }
 
-int VarDecl::operator[](const string& k) const {
+int VarDecl::operator[](const std::string& k) const {
   assert(contain(k));
   return const_values.at(k);
 }
 
-bool VarDecl::contain(const string& n) const {
+bool VarDecl::contain(const std::string& n) const {
   if (data.hasValue(CLOCK_T, n)) {
     return true;
   }
@@ -178,43 +182,47 @@ int VarDecl::getClockNumber() const { return getTypeNumber(CLOCK_T); }
 
 int VarDecl::getTypeNumber(const int type) const {
   int re = 0;
-  vector<pair<string, vector<void*>>> clocks = data.getValue(type);
+  std::vector<std::pair<std::string, std::vector<void*>>> clocks =
+      data.getValue(type);
   for (auto& e : clocks) {
     re += ((BaseDecl*)e.second[0])->num;
   }
   return re;
 }
 
-vector<string> VarDecl::getKeys(const TYPE_T type) const {
-  vector<string> re;
-  vector<pair<string, vector<void*>>> counters = data.getValue(type);
-  for (vector<pair<string, vector<void*>>>::const_iterator it =
-           counters.begin();
+std::vector<std::string> VarDecl::getKeys(const TYPE_T type) const {
+  std::vector<std::string> re;
+  std::vector<std::pair<std::string, std::vector<void*>>> counters =
+      data.getValue(type);
+  for (std::vector<std::pair<std::string, std::vector<void*>>>::const_iterator
+           it = counters.begin();
        it != counters.end(); it++) {
     re.push_back(((BaseDecl*)it->second[0])->name);
   }
   return re;
 }
 
-vector<BaseDecl> VarDecl::getAllVar(const TYPE_T type) const {
-  vector<BaseDecl> re;
-  vector<pair<string, vector<void*>>> counters = data.getValue(type);
-  for (vector<pair<string, vector<void*>>>::const_iterator it =
-           counters.begin();
+std::vector<BaseDecl> VarDecl::getAllVar(const TYPE_T type) const {
+  std::vector<BaseDecl> re;
+  std::vector<std::pair<std::string, std::vector<void*>>> counters =
+      data.getValue(type);
+  for (std::vector<std::pair<std::string, std::vector<void*>>>::const_iterator
+           it = counters.begin();
        it != counters.end(); it++) {
     re.push_back(*((BaseDecl*)it->second[0]));
   }
   return re;
 }
 
-int VarDecl::getLocalKeyID(const TYPE_T type, const string& key) const {
+int VarDecl::getLocalKeyID(const TYPE_T type, const std::string& key) const {
   int re = 0;
   //  if(type==CLOCK_T|| type== CHAN_T){
   //    re=1;
   //  }
-  vector<pair<string, vector<void*>>> counters = data.getValue(type);
-  for (vector<pair<string, vector<void*>>>::const_iterator it =
-           counters.begin();
+  std::vector<std::pair<std::string, std::vector<void*>>> counters =
+      data.getValue(type);
+  for (std::vector<std::pair<std::string, std::vector<void*>>>::const_iterator
+           it = counters.begin();
        it != counters.end(); it++) {
     if (((BaseDecl*)it->second[0])->name == key) {
       return re;
@@ -224,8 +232,9 @@ int VarDecl::getLocalKeyID(const TYPE_T type, const string& key) const {
   // assert( false );
   return NOT_FOUND;
 }
-CHANNEL_TYPE VarDecl::getChanType(const string& name) const {
-  vector<pair<string, vector<void*>>> temp = data.getValue(CHAN_T);
+CHANNEL_TYPE VarDecl::getChanType(const std::string& name) const {
+  std::vector<std::pair<std::string, std::vector<void*>>> temp =
+      data.getValue(CHAN_T);
   for (auto& e : temp) {
     if (e.first == name) {
       return ((ChanDecl*)e.second[0])->type;

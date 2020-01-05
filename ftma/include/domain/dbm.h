@@ -50,6 +50,12 @@ namespace graphsat {
 static const std::string DBM_DOT_TABLE_HEADER =
     "<table border=\"1\"  bgcolor=\"#00FF00\" >";
 
+struct MatrixValue {
+  MatrixValue() : isStrict(false), value(0) {}
+  bool isStrict;
+  int value;
+};
+
 class DBMFactory {
  public:
   DBMFactory(void) {

@@ -24,23 +24,70 @@ enum ARGUMENT_TYPE {
   EMPTY_ARG           // otherwise
 };
 
-struct RealArgument {
+class RealArgument {
+ public:
+  RealArgument() : type(EMPTY_ARG), value(0), index(nullptr) {}
+  RealArgument(ARGUMENT_TYPE t, int v) : type(t), value(v), index(nullptr) {}
+  ~RealArgument() {
+    if (index != nullptr) {
+      delete index;
+    }
+  }
+  RealArgument(const RealArgument& other)
+      : type(other.type), value(other.value), index(nullptr) {
+    if (nullptr != other.index) {
+      index = new RealArgument(*(other.index));
+    }
+  }
+  void setType(ARGUMENT_TYPE t) { type = t; }
+  ARGUMENT_TYPE getType() const { return type; }
+  void setValue(int_fast64_t v) { value = v; }
+
+  int_fast64_t getValue() const { return value; }
+
+  void setIndex(const RealArgument& real) {
+    if (nullptr != index) {
+      delete index;
+    }
+    index = new RealArgument(real);
+  }
+
+  const RealArgument* getIndex() const { return index; }
+
+  RealArgument& operator=(const RealArgument& other);
+
+  int getIndex(int* count_value) const;
+  int getValue(int* counter_value) const;
+
+ private:
   ARGUMENT_TYPE type;
   int_fast64_t value;
 
-  std::shared_ptr<RealArgument> index;
-  RealArgument() : type(EMPTY_ARG), value(0), index(nullptr) {}
-  RealArgument(ARGUMENT_TYPE t, int v) : type(t), value(v), index(nullptr) {}
+  // std::unique_ptr<RealArgument> index;
+  RealArgument* index;
 };
 
 class ClockConstraint;
 class DBMFactory;
-struct Argument {
-  ARGUMENT_TYPE type;
-  int_fast64_t value;
-  std::string name;
-  std::shared_ptr<Argument> index;
+class Argument {
+ public:
   Argument() : type(EMPTY_ARG), value(0), index(nullptr) {}
+  Argument(const Argument& other) {
+    type = other.type;
+    value = other.value;
+    name = other.name;
+
+    index = nullptr;
+    if (nullptr != other.index) {
+      index = new Argument(*(other.index));
+    }
+  }
+  ~Argument() {
+    if (nullptr != index) {
+      delete index;
+      index = nullptr;
+    }
+  }
   explicit Argument(int v) : type(CONST_ARG), value(v), index(nullptr) {}
   explicit Argument(ARGUMENT_TYPE t, const std::string& n)
       : type(t), value(0), name(n), index(nullptr) {}
@@ -48,23 +95,55 @@ struct Argument {
   explicit Argument(ARGUMENT_TYPE t, int v)
       : type(t), value(v), index(nullptr) {}
 
-  void setIndex(std::shared_ptr<Argument>& out_index) { index = out_index; }
+  void setType(ARGUMENT_TYPE t) { type = t; }
+  ARGUMENT_TYPE getType() const { return type; }
+
+  int_fast64_t getValue() const { return value; }
+  void setValue(int_fast64_t v) { value = v; }
+
+  std::string getName() const { return name; }
+
+  void setName(const std::string n) { name = n; }
+  const Argument* getIndex() const { return index; }
+
+  void setIndex(const Argument& out_index) {
+    if (nullptr != index) {
+      delete index;
+    }
+    index = new Argument(out_index);
+  }
+  Argument& operator=(const Argument& other) {
+    if (index != nullptr) {
+      delete index;
+    }
+
+    type = other.type;
+    value = other.value;
+    name = other.name;
+
+    index = nullptr;
+    if (nullptr != other.index) {
+      index = new Argument(*(other.index));
+    }
+    return *this;
+  }
+  int_fast64_t getMapValue(const std::vector<int>& id_map,
+                           const std::vector<int>& parameter_value) const;
   std::string to_string() const;
 
  private:
+  ARGUMENT_TYPE type;
+  int_fast64_t value;
+  std::string name;
+
+  Argument* index;
   friend class ClockConstraint;
   friend class DBMFactory;
   friend ClockConstraint randConst(const int num, const int low, const int up);
 };
 
-int getIndex(const RealArgument& arg, int* counter_value);
-
-int getValue(const RealArgument& arg, int* counter_value);
-
-int getValue(const RealArgument* arg, int* counter_value);
-
-int_fast64_t getMapValue(const Argument& arg, const std::vector<int>& id_map,
-                         const std::vector<int>& parameter_value);
+// int_fast64_t getMapValue(const Argument& arg, const std::vector<int>& id_map,
+//                          const std::vector<int>& parameter_value);
 
 }  // namespace graphsat
 #endif

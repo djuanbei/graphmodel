@@ -28,9 +28,9 @@
 
 namespace graphsat {
 
-using std::map;
-using std::set;
-using std::vector;
+// using std::map;
+// using std::set;
+// using std::vector;
 
 template <typename SYS>
 class Reachability {

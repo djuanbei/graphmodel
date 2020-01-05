@@ -145,7 +145,7 @@ void UppaalData::addClockConstraint(int clock1_id, int clock2_id,
                                     int parameter_id) {
   Argument rhs_a(rhs);
   if (parameter_id > 0) {
-    rhs_a.type = PARAMETER_ARG;
+    rhs_a.setType(PARAMETER_ARG);
   }
   if (EQ == op) {
     void* cs = new INT_TAS_t::CS_t(Argument(NORMAL_VAR_ARG, clock1_id),

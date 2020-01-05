@@ -36,7 +36,8 @@ void ClockConstraint::to_real(const TOReal* convertor) {
   real_clock_x_arg = convertor->to_real(CLOCK_T, clock_x_arg);
   real_clock_y_arg = convertor->to_real(CLOCK_T, clock_y_arg);
   real_rhs_arg = convertor->to_real(CLOCK_T, rhs_arg);
-  init(real_clock_x_arg.value, real_clock_y_arg.value, op, real_rhs_arg.value);
+  init(real_clock_x_arg.getValue(), real_clock_y_arg.getValue(), op,
+       real_rhs_arg.getValue());
 }
 
 // void ClockConstraint::globalUpdate(const vector<int> &parameter_value) {

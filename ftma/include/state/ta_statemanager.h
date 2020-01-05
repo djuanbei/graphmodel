@@ -164,6 +164,9 @@ class TMStateManager : public ComponentInfo {
   int getValue(const int component, const int* const state,
                const std::string& key) const;
 
+  void setValue(const int component, int* state, const std::string& key,
+                int value) const;
+
   int& getValue(const int component, int* state, const std::string& key) const;
 
   /**
@@ -188,7 +191,13 @@ class TMStateManager : public ComponentInfo {
     dbm_manager.norm(newDBM, re_vec);
   }
 
-  void norm(int* dbm) const { dbm_manager.norm(dbm); }
+  inline void norm(int* dbm) const { dbm_manager.norm(dbm); }
+
+  MatrixValue getClockUpperBound(const int component, const std::string& key,
+                                 const int* const state) const;
+
+  void setClockUpperBound(const int component, const std::string& key,
+                          int* state, const MatrixValue& value) const;
 
   inline int* getDBM(int* state) const { return state + clock_start_loc; }
 

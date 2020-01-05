@@ -215,7 +215,7 @@ class ReachableSet {
    *
    */
   template <typename PROJ>
-  void project(const PROJ& proj, vector<vector<State_t>>& re) {
+  void project(PROJ& proj, vector<vector<State_t>>& re) {
     re.clear();
 
     for (auto state : reach_set) {

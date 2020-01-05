@@ -160,8 +160,8 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   Argument arg(NORMAL_VAR_ARG, "list");
-  shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
-  arg.setIndex(dummy);
+  // shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
+  arg.setIndex(Argument(NORMAL_VAR_ARG, "len"));
 
   RealArgument rarg = tma->to_real(INT_T, arg);
 
@@ -169,7 +169,7 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
 
   INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
-  EXPECT_EQ(getValue(rarg, counters), 0);
+  EXPECT_EQ(rarg.getValue(counters), 0);
 
   Argument len_arg(NORMAL_VAR_ARG, "len");
   RealArgument rlen_arg = tma->to_real(INT_T, len_arg);
@@ -183,19 +183,19 @@ TEST_F(GraphModelTest, TEMPALTE_FUN_POINTER_ARG) {
 
   for (int i = 0; i < n; i++) {
     (*enqueue_c)(counters, i);
-    EXPECT_EQ(getValue(rlen_arg, counters), i + 1);
+    EXPECT_EQ(rlen_arg.getValue(counters), i + 1);
     EXPECT_EQ((*tail_c)(counters), i);
-    EXPECT_EQ(getValue(rlen_arg, counters), i + 1);
+    EXPECT_EQ(rlen_arg.getValue(counters), i + 1);
   }
 
   for (int i = 0; i < n; i++) {
-    EXPECT_EQ(getValue(rlen_arg, counters), n - i);
+    EXPECT_EQ(rlen_arg.getValue(counters), n - i);
     EXPECT_EQ((*front_c)(counters), i);
     (*dequeue_c)(counters);
-    if (getValue(rlen_arg, counters) > 0) {
+    if (rlen_arg.getValue(counters) > 0) {
       EXPECT_EQ((*front_c)(counters), i + 1);
     }
-    EXPECT_EQ(getValue(rlen_arg, counters), n - i - 1);
+    EXPECT_EQ(rlen_arg.getValue(counters), n - i - 1);
   }
 
   manager->destroyState(state);
@@ -216,8 +216,8 @@ TEST_F(GraphModelTest, constraint) {
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   Argument arg(NORMAL_VAR_ARG, "list");
-  shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
-  arg.setIndex(dummy);
+  // shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
+  arg.setIndex(Argument(NORMAL_VAR_ARG, "len"));
 
   RealArgument rarg = tma->to_real(INT_T, arg);
 
@@ -225,7 +225,7 @@ TEST_F(GraphModelTest, constraint) {
 
   INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
-  EXPECT_EQ(getValue(rarg, counters), 0);
+  EXPECT_EQ(rarg.getValue(counters), 0);
 
   Argument len_arg(NORMAL_VAR_ARG, "len");
 
@@ -275,8 +275,8 @@ TEST_F(GraphModelTest, Channel) {
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   Argument arg(NORMAL_VAR_ARG, "list");
-  shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
-  arg.setIndex(dummy);
+  // shared_ptr<Argument> dummy(new Argument(NORMAL_VAR_ARG, "len"));
+  arg.setIndex(Argument(NORMAL_VAR_ARG, "len"));
 
   RealArgument rarg = tma->to_real(INT_T, arg);
 
@@ -285,8 +285,8 @@ TEST_F(GraphModelTest, Channel) {
   INT_TAS_t::State_t* counters = manager->getCounterValue(state);
 
   Argument ch1_arg(NORMAL_VAR_ARG, "go");
-  shared_ptr<Argument> dummy1(new Argument(FUN_POINTER_ARG, "front"));
-  ch1_arg.setIndex(dummy1);
+  // shared_ptr<Argument> dummy1(new Argument(FUN_POINTER_ARG, "front"));
+  ch1_arg.setIndex(Argument(FUN_POINTER_ARG, "front"));
 
   Channel ch1(ch1_arg);
   ch1.setAction(CHANNEL_SEND);
@@ -339,8 +339,8 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
   EXPECT_EQ(tt.getHigh(), n - 1);
 
   Argument ch1_arg(NORMAL_VAR_ARG, "appr");
-  shared_ptr<Argument> dummy1(new Argument(SELECT_VAR_ARG, "e"));
-  ch1_arg.setIndex(dummy1);
+  // shared_ptr<Argument> dummy1(new Argument(SELECT_VAR_ARG, "e"));
+  ch1_arg.setIndex(Argument(SELECT_VAR_ARG, "e"));
 
   Channel ch1(ch1_arg);
 

@@ -31,7 +31,7 @@
 
 namespace graphsat {
 
-using std::vector;
+// using std::vector;
 
 template <typename L, typename T>
 class AgentSystem : public VarDecl {
@@ -207,7 +207,7 @@ class AgentSystem : public VarDecl {
 
   Argument addClock(const string& n) {
     Argument dummy = VarDecl::addClock(n);
-    dummy.type = NORMAL_VAR_ARG;
+    dummy.setType(NORMAL_VAR_ARG);
     return dummy;
   }
 

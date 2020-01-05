@@ -277,11 +277,16 @@ void fischer(int n) {
     dummy.push_back(manager->getValue(0, state, "id") == 1);
     int* dbm = manager->getDBM(state);
     manager->getClockManager().encode(dbm);
-    int* pdbm = manager->getClockManager().project(dbm, clock_ids);
-    for (int j = 0; j < 4; j++) {
-      dummy.push_back(pdbm[j]);
-    }
-    delete[] pdbm;
+    dummy.push_back(manager->getClockManager().at(dbm, 0, 0));
+    dummy.push_back(manager->getClockManager().at(dbm, 0, 1));
+    dummy.push_back(manager->getClockManager().at(dbm, 1, 0));
+    dummy.push_back(manager->getClockManager().at(dbm, 1, 1));
+    //
+    //    int* pdbm = manager->getClockManager().project(dbm, clock_ids);
+    //    for (int j = 0; j < 4; j++) {
+    //      dummy.push_back(pdbm[j]);
+    //    }
+    //    delete[] pdbm;
     one_states.push_back(dummy);
 
     // cout<<sys.getLocationName(0, state[ 0] )<< ", "<< (manager->getValue(0,
