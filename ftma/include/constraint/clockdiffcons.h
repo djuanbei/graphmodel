@@ -23,7 +23,7 @@ namespace graphsat {
 
 // using namespace std;
 
-//const int GLOBAL_CLOCK_ID = 0;
+// const int GLOBAL_CLOCK_ID = 0;
 
 /**
  *  clock_x -clock_y < ( <= ) realRight

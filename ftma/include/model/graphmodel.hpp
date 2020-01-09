@@ -290,7 +290,10 @@ class AgentSystem : public VarDecl {
  private:
   void transfrom(Agent_t* agent) {
     agent->initFuns();
-    agent->locations = agent->agent_tempate->template_locations;
+    for (auto& e : agent->agent_tempate->template_locations) {
+      agent->locations.push_back(*e);
+    }
+    // agent->locations = agent->agent_tempate->template_locations;
     for (auto& e : agent->locations) {
       e.to_real(agent);
     }
@@ -298,8 +301,8 @@ class AgentSystem : public VarDecl {
     agent->transitions.clear();
     for (size_t i = 0; i < agent->agent_tempate->template_transitions.size();
          i++) {
-      if (agent->agent_tempate->template_transitions[i].isSelect()) {
-        T dummy(agent->agent_tempate->template_transitions[i]);
+      if (agent->agent_tempate->template_transitions[i]->isSelect()) {
+        T dummy(*(agent->agent_tempate->template_transitions[i]));
         TypeDefArray select_domain =
             agent->getTypeDef(dummy.getSelectCollect());
         for (int i = select_domain.getLow(); i <= select_domain.getHigh();
@@ -309,7 +312,7 @@ class AgentSystem : public VarDecl {
           agent->transitions.push_back(dummy);
         }
       } else {
-        T dummy(agent->agent_tempate->template_transitions[i]);
+        T dummy(*(agent->agent_tempate->template_transitions[i]));
         dummy.to_real(agent);
         agent->transitions.push_back(dummy);
       }

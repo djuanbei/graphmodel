@@ -24,7 +24,16 @@ bool vect_cmp(const std::vector<T>& lhs, const std::vector<T>& rhs) {
   }
   return false;
 }
+template <typename T>
+int findIndex(const std::vector<T>& values, const T& v) {
+  typename std::vector<T>::const_iterator it =
+      find(values.begin(), values.end(), v);
+  if (it == values.end()) {
+    return -1;
+  }
+  return it - values.begin();
 
 }  // namespace graphsat
 
+}  // namespace graphsat
 #endif

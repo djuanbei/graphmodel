@@ -71,7 +71,7 @@ int* TMStateManager::newState() const {
 
   return re_state;
 }
-void TMStateManager::reset( int *state) const{
+void TMStateManager::reset(int* state) const {
   fill(state, state + clock_start_loc, 0);
   dbm_manager.init(state + clock_start_loc);
 }

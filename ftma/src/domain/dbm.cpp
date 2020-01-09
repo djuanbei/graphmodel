@@ -7,13 +7,11 @@ MatrixValue::MatrixValue(int matrix_value) {
   value = getRight(matrix_value);
 }
 
-MatrixValue::MatrixValue(int v, bool b) :strict( b), value(v ){
-
-}
+MatrixValue::MatrixValue(int v, bool b) : strict(b), value(v) {}
 int MatrixValue::matrixValue() const { return getMatrixValue(value, strict); }
 
-bool MatrixValue::operator ==( const MatrixValue & other) const{
-  return (value==other.value) &&(  strict==other.strict);
+bool MatrixValue::operator==(const MatrixValue& other) const {
+  return (value == other.value) && (strict == other.strict);
 }
 
 DBMManager::DBMManager(const int n) : clock_num(n + 1) {
@@ -392,20 +390,22 @@ void DBMManager::swap(int* dbm, int clock_x, int clock_y) const {
   }
 }
 
-MatrixValue DBMManager::getUpperBound( const int * const dbm, const int clock_x, const int clock_y ) const{
-  assert(clock_x >= 0 && clock_y>=0 && "The meanful clock is it greater then 0.");
-  
-  int matrix_value = at(dbm, clock_x, clock_y );
-  return MatrixValue( matrix_value);
+MatrixValue DBMManager::getUpperBound(const int* const dbm, const int clock_x,
+                                      const int clock_y) const {
+  assert(clock_x >= 0 && clock_y >= 0 &&
+         "The meanful clock is it greater then 0.");
+
+  int matrix_value = at(dbm, clock_x, clock_y);
+  return MatrixValue(matrix_value);
 }
 
-  // x-y < ( <=)  value
-void DBMManager::setUppperBound( int * dbm , const int clock_x, const int clock_y, const MatrixValue & value) const{
-  assert(clock_x >= 0 && clock_y>=0 && "The meanful clock is it greater then 0.");
-  dbm[ LOC( clock_x, clock_y)]= value.matrixValue( );
+// x-y < ( <=)  value
+void DBMManager::setUppperBound(int* dbm, const int clock_x, const int clock_y,
+                                const MatrixValue& value) const {
+  assert(clock_x >= 0 && clock_y >= 0 &&
+         "The meanful clock is it greater then 0.");
+  dbm[LOC(clock_x, clock_y)] = value.matrixValue();
 }
-
-
 
 int* DBMManager::project(const int* const dbm,
                          const std::vector<int>& clock_ids) const {

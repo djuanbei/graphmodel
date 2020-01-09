@@ -228,6 +228,7 @@ TEST(STATE_MANAGER_H, getClockBound) {
     EXPECT_EQ(state[2 * i + 3], value.matrixValue());
 
     MatrixValue value1(v, true);  //<= 10
+
     manager->setClockUpperBound(0, "x", state, value1);
 
     EXPECT_EQ(manager->getClockUpperBound(0, "x", state), value1);

@@ -30,7 +30,8 @@ FullChoose::FullChoose(const std::vector<int>& f)
   }
   current = 0;
 }
-FullChoose::FullChoose(int out_len, int base) : perChoose(out_len, base), data(out_len) {
+FullChoose::FullChoose(int out_len, int base)
+    : perChoose(out_len, base), data(out_len) {
   len = 1;
   for (int i = 0; i < out_len; i++) {
     len *= base;

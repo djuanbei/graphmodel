@@ -23,15 +23,15 @@ bool Symmetry::isSymmetry(const StateSet<UINT>& sets,
 
     while (next_permutation(dummy.begin(), dummy.end())) {
       manager->decode(temp, e);
-      cout << "original:" << endl;
-      manager->dump(temp);
+      // cout << "=====original=====" << endl;
+      //   manager->dump(temp);
       swap(temp, dummy, manager);
-      cout << "===========" << endl;
-      manager->dump(temp);
-      cout << "===========" << endl;
+      //  cout << "=====swap======" << endl;
+      // manager->dump(temp);
+      //  cout << "===========" << endl;
       manager->encode(comTemp, temp);
 
-      if (!sets.contain(comTemp)) {
+      if (sets.contain(comTemp) == NOT_FOUND) {
         manager->decode(temp, e);
         StateOutput::generatePath(reachSet, "onepath.gv", temp);
         vector<vector<int>> path_state = reachSet.getPath(temp);

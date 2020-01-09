@@ -15,31 +15,21 @@
 
 //#define YYDEBUG 1
 
+#include "alg/symmetry.h"
+#include "benchmark/fischer.h"
+#include "benchmark/fischer_projector.h"
 #include "example.h"
+#include "io/uppaalmodelparser.h"
 #include "log/logset.h"
 
 #include "benchmark/train_gate.h"
-#include "io/uppaalmodelparser.h"
-
+#include "benchmark/train_gate_projector.h"
 #include "model/graphmodel.hpp"
 #include "model/location.h"
 #include "model/transition.h"
+#include "problem/pmcp.hpp"
 #include "problem/reachability.hpp"
 #include "state/reachableset.hpp"
-
-#include "benchmark/train_gate.h"
-
-#include "benchmark/train_gate_projector.h"
-
-#include "problem/pmcp.hpp"
-
-#include "benchmark/fischer.h"
-
-#include "benchmark/fischer_projector.h"
-
-#include "alg/symmetry.h"
-
-#include "benchmark/liftcustomer.h"
 
 #include <iostream>
 
@@ -48,17 +38,6 @@ extern int yy_flex_debug;
 using std::vector;
 using namespace graphsat;
 
-void test() {
-  TrainGate TG;
-  IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector> check;
-  TrainGatePro prop(2);
-  prop.setCS(4);
-  if (check.check(TG, &prop)) {
-    cout << "ok" << endl;
-  } else {
-    cout << "no" << endl;
-  }
-}
 void test1() {
   int n = 3;
   FischerGenerator F;
@@ -78,38 +57,22 @@ void test1() {
   }
 }
 
-void lift_customer() {
-  LiftCustomer liftc;
-  INT_TAS_t sys = liftc.generate(2);
-  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
-      sys.getStateManager();
-  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
-  Reachability<INT_TAS_t> reacher(sys);
-  reacher.computeAllReachableSet(&data);
-  int* state = manager->newState();
-  for (size_t i = 0; i < data.size(); i++) {
-    data.getStateAt(state, i);
-    manager->dump(state);
-  }
-  manager->destroyState(state);
-  cout << data.size() << endl;
-}
-
 int main(int argc, const char* argv[]) {
-  // test();
-  // return 0;
-  incrementalTest1();
+  lift_customer(3);
   return 0;
-  // lift_customer();
+  // incrementalTestTG( );
+  // return 0;
+  incrementalTestFS();
+  return 0;
+
   //  return 0;
   // test1();
   // return 0;
   // train_gate(3);
-  fischer(2);
+  //  fischer(2);
   fischer(3);
-  fischer(4);
-  fischer(5);
+  // fischer(4);
+  // fischer(5);
   return 0;
 
   // test();
@@ -123,7 +86,7 @@ int main(int argc, const char* argv[]) {
   // set_log_dir_2("./log");
   // google::InitGoogleLogging("testlog");
   // LOG( ERROR ) << "Found " << 2 << " cookies";
-  incrementalTest1();
+  incrementalTestFS();
   //  google::ShutdownGoogleLogging();
   return 0;
 

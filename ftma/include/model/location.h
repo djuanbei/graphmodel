@@ -26,28 +26,6 @@ enum Location_Type { NORMOAL_LOC, INIT_LOC, URGENT_LOC, COMMIT_LOC };
 
 class Location {
  public:
- public:
-  explicit Location(int loc_id) {
-    location_id = loc_id;
-    type = NORMOAL_LOC;
-    name = LOC_NAME_PRE + to_string(loc_id);
-
-    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
-  }
-
-  explicit Location(int loc_id, Location_Type etype) {
-    location_id = loc_id;
-    type = etype;
-    name = LOC_NAME_PRE + to_string(loc_id);
-    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
-  }
-  explicit Location(int loc_id, const string& n) {
-    location_id = loc_id;
-    type = NORMOAL_LOC;
-    name = n;
-    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
-  }
-
   int getId() const { return location_id; }
 
   void setName(const string& n) { name = n; }
@@ -155,11 +133,35 @@ class Location {
   friend std::ostream& operator<<(std::ostream& os, const Location& loc);
 
  private:
+  explicit Location(int loc_id) {
+    location_id = loc_id;
+    type = NORMOAL_LOC;
+    name = LOC_NAME_PRE + to_string(loc_id);
+
+    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
+  }
+
+  explicit Location(int loc_id, Location_Type etype) {
+    location_id = loc_id;
+    type = etype;
+    name = LOC_NAME_PRE + to_string(loc_id);
+    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
+  }
+  explicit Location(int loc_id, const string& n) {
+    location_id = loc_id;
+    type = NORMOAL_LOC;
+    name = n;
+    hasOutUrgentChan = hasOutBreakcastSendChan = hasNormalChannel = false;
+  }
+
   vector<ClockConstraint> invariants;  // set of invariants  in this Location
   int location_id;
   string name;
   Location_Type type;
   bool hasOutUrgentChan, hasOutBreakcastSendChan, hasNormalChannel;
+
+  template <typename LL, typename TT>
+  friend class AgentTemplate;
 };
 }  // namespace graphsat
 

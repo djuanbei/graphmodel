@@ -37,53 +37,43 @@ TEST(TA, UNREACH) {
   ADD_CLOCK((*tmt1), x);
   ADD_CLOCK((*tmt1), y);
 
-  vector<INT_TAS_t::T_t> es;
-  vector<INT_TAS_t::L_t> ls;
-  INT_TAS_t::L_t L0(0);
-  INT_TAS_t::L_t L1(1);
+  INT_TAS_t::L_t* L0 = tmt1->createLocation();
+  INT_TAS_t::L_t* L1 = tmt1->createLocation();
 
-  INT_TAS_t::T_t E00a(L0, L0);
+  INT_TAS_t::T_t* E00a = tmt1->createTransition(L0, L0);
 
   ClockReset reset(y, Argument(0));  // y-->0
-  E00a += reset;
-  // E00a.addReset(y, 0);                     // y-->0
-  INT_TAS_t::CS_t cs1(y, LE, Argument(2));  // y<=2
-  E00a += cs1;
+  (*E00a) += reset;
 
-  INT_TAS_t::T_t E00b(L0, L0);
+  INT_TAS_t::CS_t cs1(y, LE, Argument(2));  // y<=2
+  (*E00a) += cs1;
+
+  INT_TAS_t::T_t* E00b = tmt1->createTransition(L0, L0);
 
   ClockReset reset1(x, Argument(0));  // x-->0
-  E00b += reset1;
-  // E00b.addReset(x, 0);                     // x-->0
-  INT_TAS_t::CS_t cs2(x, LE, Argument(2));  // x<=2
-  E00b += cs2;
+  (*E00b) += reset1;
 
-  INT_TAS_t::T_t E01(L0, L1);
+  INT_TAS_t::CS_t cs2(x, LE, Argument(2));  // x<=2
+  (*E00b) += cs2;
+
+  INT_TAS_t::T_t* E01 = tmt1->createTransition(L0, L1);
 
   INT_TAS_t::CS_t cs3(y, LE, Argument(2));  // y<=2
   INT_TAS_t::CS_t cs4(x, GE, Argument(4));  // x>=4
 
-  E01 += cs3;
-  E01 += cs4;
+  (*E01) += cs3;
+  (*E01) += cs4;
 
-  ls.push_back(L0);
-  ls.push_back(L1);
-
-  es.push_back(E00a);
-
-  es.push_back(E00b);
-  es.push_back(E01);
-  tmt1->initial(ls, es, 0);
+  tmt1->initial(0);
 
   Parameter param = tmt1->getParameter();
 
   shared_ptr<INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
 
-  //  sys.build();
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(sys);
   vector<int> loc;
   loc.push_back(1);
@@ -99,50 +89,39 @@ TEST(REACHSET, TERIMINAL) {
   ADD_CLOCK((*tmt1), x);
   ADD_CLOCK((*tmt1), y);
 
-  vector<INT_TAS_t::T_t> es;
-  vector<INT_TAS_t::L_t> ls;
+  INT_TAS_t::L_t* start = tmt1->createLocation("start");
 
-  INT_TAS_t::L_t start(0, "start");
-
-  INT_TAS_t::L_t loop(1, "loop");
+  INT_TAS_t::L_t* loop = tmt1->createLocation("loop");
   INT_TAS_t::CS_t cs1(x, LE, Argument(10));  // x <= 10
-  loop += cs1;
+  (*loop) += cs1;
 
-  INT_TAS_t::L_t end(2, "end");
+  INT_TAS_t::L_t* end = tmt1->createLocation("end");
 
-  INT_TAS_t::T_t start_loop(start, loop);
+  INT_TAS_t::T_t* start_loop = tmt1->createTransition(start, loop);
 
   ClockReset reset3(x, Argument(0));  // x-->0
-  start_loop += reset3;
+  (*start_loop) += reset3;
   ClockReset reset4(y, Argument(0));
-  start_loop += reset4;  // y-->0
+  (*start_loop) += reset4;  // y-->0
 
-  INT_TAS_t::T_t loop_loop(loop, loop);
+  INT_TAS_t::T_t* loop_loop = tmt1->createTransition(loop, loop);
   INT_TAS_t::CS_t cs2(x, LE, Argument(10));  // x <= 10
   INT_TAS_t::CS_t cs3(x, GE, Argument(10));  // x>=10 === 0-x <= -10
-  loop_loop += cs2;
-  loop_loop += cs3;
+  (*loop_loop) += cs2;
+  (*loop_loop) += cs3;
 
-  loop_loop +=
+  (*loop_loop) +=
       ClockReset(x, Argument(0));  // x-->0
                                    // ClockReset reset5(x,)
                                    // loop_loop.addReset(x, 0); // x-->0
 
-  INT_TAS_t::T_t loop_end(loop, end);
+  INT_TAS_t::T_t* loop_end = tmt1->createTransition(loop, end);
   INT_TAS_t::CS_t cs4(y, GE, Argument(20));  // y>=20=== 0-y <= -20
-  loop_end += cs4;
-  loop_end += ClockReset(x, Argument(0));  // x-->0
-  loop_end += ClockReset(y, Argument(0));  // y--> 0
+  (*loop_end) += cs4;
+  (*loop_end) += ClockReset(x, Argument(0));  // x-->0
+  (*loop_end) += ClockReset(y, Argument(0));  // y--> 0
 
-  ls.push_back(start);
-  ls.push_back(loop);
-  ls.push_back(end);
-
-  es.push_back(start_loop);
-  es.push_back(loop_loop);
-  es.push_back(loop_end);
-
-  tmt1->initial(ls, es, 0);
+  tmt1->initial(0);
   Parameter param = tmt1->getParameter();
 
   shared_ptr<INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
@@ -173,77 +152,66 @@ TEST(REACHSET, FISHER) {
   vector<typename INT_TAS_t::L_t> ls;
   int k = 2;
 
-  typename INT_TAS_t::L_t A(0);
+  typename INT_TAS_t::L_t* A = tmt1->createLocation();
 
-  typename INT_TAS_t::L_t req(1);
+  typename INT_TAS_t::L_t* req = tmt1->createLocation();
   typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
-  req += cs1;
+  (*req) += cs1;
 
-  typename INT_TAS_t::L_t wait(2);
+  typename INT_TAS_t::L_t* wait = tmt1->createLocation();
 
-  typename INT_TAS_t::L_t cs(3);
+  typename INT_TAS_t::L_t* cs = tmt1->createLocation();
 
-  typename INT_TAS_t::T_t A_req(A, req);
+  typename INT_TAS_t::T_t* A_req = tmt1->createTransition(A, req);
   Argument first(NORMAL_VAR_ARG, "id");
   Argument second(EMPTY_ARG, 0);
   Argument rhs(CONST_ARG, 0);
 
   CounterConstraint ccs1(first, second, EQ, rhs);  // id==0
 
-  A_req += ccs1;
+  (*A_req) += ccs1;
 
-  A_req += ClockReset(x, Argument(0));  // x-->0
-                                        //  A_req.addReset(x, 0); // x-->0
+  (*A_req) += ClockReset(x, Argument(0));  // x-->0
+                                           //  A_req.addReset(x, 0); // x-->0
 
-  typename INT_TAS_t::T_t req_wait(req, wait);
+  typename INT_TAS_t::T_t* req_wait = tmt1->createTransition(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
-  req_wait += cs2;
+  (*req_wait) += cs2;
 
-  req_wait += ClockReset(x, Argument(0));  // x-->0
-                                           // req_wait.addReset(x, 0); // x-->0
+  (*req_wait) +=
+      ClockReset(x, Argument(0));  // x-->0
+                                   // req_wait.addReset(x, 0); // x-->0
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs0(PARAMETER_ARG, "pid");
   CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0);  // id=pid
 
-  req_wait += action;
+  (*req_wait) += action;
 
-  typename INT_TAS_t::T_t wait_req(wait, req);
+  typename INT_TAS_t::T_t* wait_req = tmt1->createTransition(wait, req);
 
-  wait_req += ClockReset(x, Argument(0));  // x-->0
+  (*wait_req) += ClockReset(x, Argument(0));  // x-->0
   //  wait_req.addReset(x, 0);       // x-->0
-  wait_req += ccs1;  // id==0
+  (*wait_req) += ccs1;  // id==0
 
-  typename INT_TAS_t::T_t wait_cs(wait, cs);
+  typename INT_TAS_t::T_t* wait_cs = tmt1->createTransition(wait, cs);
 
   Argument first1(NORMAL_VAR_ARG, "id");
   Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
   CounterConstraint ccs2(first1, second1, EQ, rhs01);  // id==pid
-  wait_cs += ccs2;
+  (*wait_cs) += ccs2;
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
-  wait_cs += cs3;
+  (*wait_cs) += cs3;
 
-  typename INT_TAS_t::T_t cs_A(cs, A);
+  typename INT_TAS_t::T_t* cs_A = tmt1->createTransition(cs, A);
 
   Argument lhs1(NORMAL_VAR_ARG, 0);
   Argument rhs1(CONST_ARG, 0);
   CounterAction caction1(lhs1, ASSIGNMENT_ACTION, rhs1);
 
-  cs_A += caction1;
+  (*cs_A) += caction1;
 
-  ls.push_back(A);
-
-  ls.push_back(req);
-  ls.push_back(wait);
-  ls.push_back(cs);
-
-  es.push_back(A_req);
-  es.push_back(req_wait);
-  es.push_back(wait_req);
-  es.push_back(wait_cs);
-  es.push_back(cs_A);
-
-  tmt1->initial(ls, es, 0);
+  tmt1->initial(0);
 
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt1->getParameter();
@@ -274,18 +242,18 @@ TEST(PMCP, FISHER) {
 }
 
 TEST(FISHER, SYMMETRY) {
-  int n = 3;
+  int n = 4;
   FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
   Symmetry symm(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
 
-  // EXPECT_TRUE(symm.isSymmetry(data.getStates(), data, manager.get()));
+  EXPECT_TRUE(symm.isSymmetry(data.getStates(), data, manager.get()));
 }
 
 TEST(FISHER, equal3) {
@@ -348,8 +316,29 @@ TEST(FISHER, getKeyID) {
   int n = 7;
   FischerGenerator F;
   INT_TAS_t sys = F.generate(n);
-  for( int i=0; i< n; i++){
-    EXPECT_EQ(sys.getKeyID( i, CLOCK_T, "x"), i+1 );
+  for (int i = 0; i < n; i++) {
+    EXPECT_EQ(sys.getKeyID(i, CLOCK_T, "x"), i + 1);
   }
+}
 
+TEST(FISHER, selectByHead) {
+  int n = 3;
+  FischerGenerator F;
+  INT_TAS_t sys = F.generate(n);
+
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+
+  int* state = manager->newState();
+
+  std::vector<std::vector<int>> states = data.selectByHead(state);
+
+  for (auto& e : states) {
+    manager->dump(e);
+  }
+  manager->destroyState(state);
 }

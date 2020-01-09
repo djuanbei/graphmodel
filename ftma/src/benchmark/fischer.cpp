@@ -12,75 +12,66 @@ void FischerGenerator::initial(
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
 
-  typename INT_TAS_t::L_t A(0, "A");
+  typename INT_TAS_t::L_t* A = tmt->createLocation("A");
 
-  typename INT_TAS_t::L_t req(1, "req");
+  typename INT_TAS_t::L_t* req = tmt->createLocation("req");
+
   typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
-  req += cs1;
+  (*req) += cs1;
 
-  typename INT_TAS_t::L_t wait(2, "wait");
+  typename INT_TAS_t::L_t* wait = tmt->createLocation("wait");
 
-  typename INT_TAS_t::L_t cs(3, "cs");
+  typename INT_TAS_t::L_t* cs = tmt->createLocation("cs");
 
-  typename INT_TAS_t::T_t A_req(A, req);
+  typename INT_TAS_t::T_t* A_req = tmt->createTransition(A, req);
 
   Argument first3(NORMAL_VAR_ARG, "id");
   Argument second3;
   Argument rhs3(0);
   CounterConstraint ccs1(first3, second3, EQ, rhs3);  // id==0
 
-  A_req += ccs1;
+  (*A_req) += ccs1;
   ClockReset reset(x, Argument(0));
-  A_req += reset;  // x-->0
+  (*A_req) += reset;  // x-->0
 
-  typename INT_TAS_t::T_t req_wait(req, wait);
+  typename INT_TAS_t::T_t* req_wait = tmt->createTransition(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
-  req_wait += cs2;
+  (*req_wait) += cs2;
 
-  req_wait += ClockReset(x, Argument(0));  // x-->0
+  (*req_wait) += ClockReset(x, Argument(0));  // x-->0
 
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs(PARAMETER_ARG, "pid");
   CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs);  // id=pid
 
-  req_wait += caction;
+  (*req_wait) += caction;
 
-  typename INT_TAS_t::T_t wait_req(wait, req);
+  typename INT_TAS_t::T_t* wait_req = tmt->createTransition(wait, req);
 
-  wait_req += ClockReset(x, Argument(0));  // x-->0
+  (*wait_req) += ClockReset(x, Argument(0));  // x-->0
 
-  wait_req += ccs1;  // id==0
+  (*wait_req) += ccs1;  // id==0
 
-  typename INT_TAS_t::T_t wait_cs(wait, cs);
+  typename INT_TAS_t::T_t* wait_cs = tmt->createTransition(wait, cs);
 
   Argument first4(NORMAL_VAR_ARG, "id");
   Argument second4(PARAMETER_ARG, "pid");
   Argument rhs4(0);
 
   CounterConstraint ccs2(first4, second4, EQ, rhs4);  // id==pid
-  wait_cs += ccs2;
+  (*wait_cs) += ccs2;
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
-  wait_cs += cs3;
+  (*wait_cs) += cs3;
 
-  typename INT_TAS_t::T_t cs_A(cs, A);
+  typename INT_TAS_t::T_t* cs_A = tmt->createTransition(cs, A);
 
   Argument lhs2(NORMAL_VAR_ARG, "id");
   Argument rhs2(0);
   CounterAction caction1(lhs2, ASSIGNMENT_ACTION, rhs2);  // id=0;
 
-  cs_A += caction1;
+  (*cs_A) += caction1;
 
-  ls.push_back(A);
-  ls.push_back(req);
-  ls.push_back(wait);
-  ls.push_back(cs);
-
-  es.push_back(A_req);
-  es.push_back(req_wait);
-  es.push_back(wait_req);
-  es.push_back(wait_cs);
-  es.push_back(cs_A);
-  tmt->initial(ls, es, 0);
+  tmt->initial(0);
 }
 INT_TAS_t FischerGenerator::generate(int n) const {
   INT_TAS_t re(sys);

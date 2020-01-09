@@ -53,7 +53,7 @@ class FischerProjector : public Projector {
   struct AbsOneDimState {
     int loc;
     int has_id;  // 1 -> true, 0 -> false
-    
+
     int clock_lower_bound;
     int clock_upper_bound;
     friend bool operator<(const AbsOneDimState& lhs, const AbsOneDimState& rhs);
@@ -70,7 +70,9 @@ class FischerProjector : public Projector {
   void constructState(int* state, const std::vector<std::vector<int>>& projs,
                       const std::vector<AbsOneDimState>& oneStataes,
                       const std::vector<int>& vertices,
-                      const std::vector<int>& choose, const Graph_t<int> & graph, const  std::map<int, int> &link_map) const;
+                      const std::vector<int>& choose,
+                      const std::vector<std::pair<int, int>>& link_src_snk_map,
+                      const std::map<int, int>& link_map) const;
 };
 
 }  // namespace graphsat

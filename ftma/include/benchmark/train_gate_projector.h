@@ -25,8 +25,8 @@ class TrainGateProjector : public Projector {
                const std::vector<std::vector<int>>& rhs) const;
 
   virtual bool projectEqualReach(
-      const std::vector<std::vector<int>>& projs,
-      const ReachableSet<TMStateManager>& next_reach_set) const {
+      const std::vector<std::vector<int>>& pre_projs,
+      const ReachableSet<TMStateManager>& reach_set) const {
     return false;
   }
 

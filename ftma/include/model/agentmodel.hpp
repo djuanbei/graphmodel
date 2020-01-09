@@ -44,6 +44,7 @@ class Agent : public VariableMap, public TOReal {
     }
     return agent_tempate->getName() + "[" + to_string(id) + "]";
   }
+
   void findRhs(const int link, const int lhs, int& rhs) const {
     graph.findRhs(link, lhs, rhs);
   }

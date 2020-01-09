@@ -180,6 +180,21 @@ class StateSet {
     }
     return NOT_FOUND;
   }
+  // select all state body where the head equal to one
+  void selectByHead(const T* const one,
+                    std::vector<const UINT*>& bodies) const {
+    bodies.clear();
+    int id = containHead(one);
+    if (id > -1) {
+      for (size_t i = 0; i < body_part_elements[id].size();
+           i += inc_body_part) {
+        bodies.push_back(&(body_part_elements[id][i]));
+      }
+    }
+  }
+  void appendBody(UINT* head, const UINT* const body) const {
+    std::copy(body, body + body_part_len, head + head_part_len);
+  }
 
   /**
    * @brief find the id of one in the set,

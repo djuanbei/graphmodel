@@ -26,9 +26,11 @@ void fischer(int n = 2);
 
 void testIsConsistent();
 
-void incrementalTest1();
+void incrementalTestFS();
 
 void incrementalTest();
+
+void incrementalTestTG();
 
 void fisher1();
 
@@ -37,6 +39,8 @@ void testOP();
 void testcompression();
 
 void train_gate(const int n);
+
+void lift_customer(int n);
 
 }  // namespace graphsat
 

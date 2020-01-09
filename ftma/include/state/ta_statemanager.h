@@ -108,8 +108,8 @@ class TMStateManager : public ComponentInfo {
     memcpy(re, state, state_length * sizeof(int));
     return re;
   }
-  
-  void reset( int * state) const;
+
+  void reset(int* state) const;
 
   int* randState() const;
 
@@ -170,7 +170,6 @@ class TMStateManager : public ComponentInfo {
                 int value) const;
 
   int& getValue(const int component, int* state, const std::string& key) const;
-  
 
   /**
    * @brief As the state is  abstract symbolic state. A symbolic state
@@ -226,8 +225,6 @@ class TMStateManager : public ComponentInfo {
   void setClockUpperBound(const int componentA, const std::string& keyA,
                           const int componentB, const std::string& keyB,
                           int* state, const MatrixValue& value) const;
-
-  
 
   inline int* getDBM(int* state) const { return state + clock_start_loc; }
 
@@ -305,6 +302,8 @@ class TMStateManager : public ComponentInfo {
   std::ostream& dump(const int* const state, std::ostream& out) const;
 
   void dump(const int* const state) const { dump(state, cout); }
+
+  void dump(const vector<int>& state) const { dump(&(state[0]), cout); }
 
  private:
   const INT_TAS_t& sys;

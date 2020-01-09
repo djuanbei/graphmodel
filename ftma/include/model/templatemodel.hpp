@@ -41,13 +41,51 @@ class AgentTemplate : public VarDecl {
 
  public:
   virtual ~AgentTemplate() {}
-  void initial(vector<L>& locs, vector<T>& es, int init) {
-    template_locations = locs;
+  void initial(int init) {
+    // template_locations = locs;
 
-    template_transitions = es;
+    // template_transitions = es;
 
     initial_loc = init;
     initial();
+  }
+  L* createLocation(const string& name) {
+    std::shared_ptr<L> re(new L(template_locations.size(), name));
+    template_locations.push_back(re);
+    return re.get();
+  }
+  L* createLocation(Location_Type etype) {
+    std::shared_ptr<L> re(new L(template_locations.size(), etype));
+    template_locations.push_back(re);
+    return re.get();
+  }
+
+  L* createLocation(int id) {
+    std::shared_ptr<L> re(new L(id));
+    template_locations.push_back(re);
+    return re.get();
+  }
+
+  L* createLocation() {
+    std::shared_ptr<L> re(new L(template_locations.size()));
+    template_locations.push_back(re);
+    return re.get();
+  }
+
+  T* createTransition() {
+    std::shared_ptr<T> re(new T());
+    template_transitions.push_back(re);
+    return re.get();
+  }
+  T* createTransition(const Location* lhs, const Location* rhs) {
+    std::shared_ptr<T> re(new T(lhs, rhs));
+    template_transitions.push_back(re);
+    return re.get();
+  }
+  T* createTransition(const int lhs, const int rhs) {
+    std::shared_ptr<T> re(new T(lhs, rhs));
+    template_transitions.push_back(re);
+    return re.get();
   }
 
   void findRhs(const int link, const int lhs, int& rhs) const {
@@ -93,10 +131,10 @@ class AgentTemplate : public VarDecl {
     ofstream fout(filename);
     fout << "digraph G {" << endl;
     for (auto& e : template_locations) {
-      e.dump2Dot(fout);
+      e->dump2Dot(fout);
     }
     for (auto& e : template_transitions) {
-      e.dump2Dot(fout);
+      e->dump2Dot(fout);
     }
 
     fout << "}" << endl;
@@ -128,8 +166,8 @@ class AgentTemplate : public VarDecl {
     vector<int> snks;
 
     for (auto t : template_transitions) {
-      srcs.push_back(t.getSource());
-      snks.push_back(t.getTarget());
+      srcs.push_back(t->getSource());
+      snks.push_back(t->getTarget());
     }
 
     graph.initial(srcs, snks);
@@ -142,8 +180,8 @@ class AgentTemplate : public VarDecl {
   const VarDecl* sys;
   int id;
 
-  vector<L> template_locations;
-  vector<T> template_transitions;
+  vector<shared_ptr<L>> template_locations;
+  vector<shared_ptr<T>> template_transitions;
   int initial_loc;
 
   Graph_t<int> graph;

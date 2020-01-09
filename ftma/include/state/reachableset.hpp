@@ -45,7 +45,7 @@ class ReachableSet {
 
     prop = nullptr;
     component_num = manager->getComponentNumber();
-
+    state_len = manager->getStateLen();
     cache_state = manager->newState();
 
     convert_C_t = manager->newState();
@@ -147,7 +147,6 @@ class ReachableSet {
     }
     manager->setParent(cache_state, current_state_id);
 
-    // manager->getClockManager().encode(manager->getDBM(cache_state));
     if (addToReachableSet(cache_state)) {
       if (isReach(cache_state)) {
         return TRUE;
@@ -258,19 +257,28 @@ class ReachableSet {
   }
 
   bool contain(const State_t* const target) const {
-    manager->copy( cache_state, target);
+    manager->copy(cache_state, target);
     manager->encode(convert_UINT, cache_state);
-    return reach_set.contain(convert_UINT )!= NOT_FOUND;
-    // for (size_t i = 0; i < size(); i++) {
-    //   getStateAt(cache_state, i);
-
-    //   if (manager->contain(cache_state, target)) {
-    //     return true;
-    //   }
-    // }
-    // return false;
+    return reach_set.contain(convert_UINT) != NOT_FOUND;
   }
 
+  std::vector<std::vector<int>> selectByHead(
+      const State_t* const target) const {
+    manager->copy(cache_state, target);
+    manager->encode(convert_UINT, cache_state);
+    vector<const UINT*> bodies;
+    reach_set.selectByHead(convert_UINT, bodies);
+    std::vector<std::vector<int>> re;
+    for (auto e : bodies) {
+      reach_set.appendBody(convert_UINT, e);
+      manager->decode(cache_state, convert_UINT);
+      std::vector<int> dummy(cache_state, cache_state + state_len);
+      re.push_back(dummy);
+    }
+    return re;
+  }
+
+  int getCurrentId() const { return current_state_id; }
 
  private:
   inline bool addToReachableSet(State_t* state) {
@@ -282,9 +290,10 @@ class ReachableSet {
 
     if (re != NOT_FOUND) {
       passed_pair.push_back(make_pair(current_state_id, re));
+      return false;
     }
 
-    return re == NOT_FOUND;
+    return true;
   }
 
   int findPassEd(const UINT* state) const {
@@ -307,6 +316,7 @@ class ReachableSet {
   shared_ptr<const M> manager;
   StateSet<UINT> reach_set;
 
+  int state_len;
   State_t* cache_state;
 
   int component_num;
@@ -324,9 +334,8 @@ class ReachableSet {
   vector<State_t> getState(const int id) const {
     reach_set.getElementAt(convert_UINT, id);
     manager->decode(cache_state, convert_UINT);
-    int state_len = manager->getStateLen();
+
     vector<State_t> re(cache_state, cache_state + state_len);
-    // assert(contain(&(re[0])));
     return re;
   }
 };

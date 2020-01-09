@@ -35,14 +35,6 @@ class Transition {
   typedef int State_t;
   typedef TMStateManager StateManager_t;
 
-  Transition() {
-    source = target = -1;
-    has_channel = false;
-  }
-
-  Transition(const Location& lhs, const Location& rhs)
-      : source(lhs.getId()), target(rhs.getId()), has_channel(false) {}
-
   void setSource(int s) { source = s; }
 
   int getSource() const { return source; }
@@ -143,6 +135,17 @@ class Transition {
   std::ostream& dump2Dot(std::ostream& out) const;
 
  private:
+  Transition() {
+    source = target = -1;
+    has_channel = false;
+  }
+
+  explicit Transition(const Location* lhs, const Location* rhs)
+      : source(lhs->getId()), target(rhs->getId()), has_channel(false) {}
+
+  explicit Transition(const int lhs, const int rhs)
+      : source(lhs), target(rhs), has_channel(false) {}
+
   int source, target;  // source location and target location of this
   // transitionedge. The index of location in tma.locations
   vector<ClockConstraint> guards;  // set of constraint at this transitionedge
@@ -160,6 +163,9 @@ class Transition {
 
   string select_var;
   string select_collect;
+
+  template <typename LL, typename TT>
+  friend class AgentTemplate;
 };
 }  // namespace graphsat
 

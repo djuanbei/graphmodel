@@ -29,6 +29,10 @@
 #include "util/datacompression.h"
 #include "util/dbmutil.hpp"
 
+#include "benchmark/liftcustomer.h"
+#include "benchmark/train_gate.h"
+#include "benchmark/train_gate_projector.h"
+
 using std::vector;
 using namespace graphsat;
 
@@ -52,40 +56,32 @@ void example2(void) {
   Argument y = tmt1->addClock("y");
   vector<typename INT_TAS_t::T_t> es;
   vector<typename INT_TAS_t::L_t> ls;
-  typename INT_TAS_t::L_t L0(0);
-  typename INT_TAS_t::L_t L1(1);
+  typename INT_TAS_t::L_t* L0 = tmt1->createLocation(0);
+  typename INT_TAS_t::L_t* L1 = tmt1->createLocation(1);
 
-  typename INT_TAS_t::T_t E00a(L0, L0);
+  typename INT_TAS_t::T_t* E00a = tmt1->createTransition(L0, L0);
   Clock ZERO;
-  E00a += ClockReset(y, Argument(0));  // y-->0
+  (*E00a) += ClockReset(y, Argument(0));  // y-->0
   // E00a.addReset(y, 0);                              // y-->0
   typename INT_TAS_t::CS_t cs1(y, LE, Argument(2));  // y<=2
-  E00a += cs1;
+  (*E00a) += cs1;
 
-  typename INT_TAS_t::T_t E00b(L0, L0);
+  typename INT_TAS_t::T_t* E00b = tmt1->createTransition(L0, L0);
   // pair<int, int>          reset2( x, 0 );
-  E00b += ClockReset(x, Argument(0));  // x-->0
+  (*E00b) += ClockReset(x, Argument(0));  // x-->0
   // E00b.addReset(x, 0);                              // x-->0
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(2));  // x<=2
-  E00b += cs2;
+  (*E00b) += cs2;
 
-  typename INT_TAS_t::T_t E01(L0, L1);
+  typename INT_TAS_t::T_t* E01 = tmt1->createTransition(L0, L1);
 
   typename INT_TAS_t::CS_t cs3(y, LE, Argument(2));  // y<=2
   typename INT_TAS_t::CS_t cs4(x, GE, Argument(4));  // x>=4
 
-  E01 += cs3;
-  E01 += cs4;
+  (*E01) += cs3;
+  (*E01) += cs4;
 
-  ls.push_back(L0);
-  ls.push_back(L1);
-
-  es.push_back(E00a);
-
-  es.push_back(E00b);
-  es.push_back(E01);
-
-  tmt1->initial(ls, es, 0);
+  tmt1->initial(0);
 
   Parameter param = tmt1->getParameter();
   shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
@@ -170,76 +166,65 @@ void fischer(int n) {
   vector<typename INT_TAS_t::L_t> ls;
   int k = 3;
 
-  typename INT_TAS_t::L_t A(0, "A");
+  typename INT_TAS_t::L_t* A = tmt1->createLocation("A");
 
-  typename INT_TAS_t::L_t req(1, "req");
+  typename INT_TAS_t::L_t* req = tmt1->createLocation("req");
   typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
-  req += cs1;
+  (*req) += cs1;
 
-  typename INT_TAS_t::L_t wait(2, "wait");
+  typename INT_TAS_t::L_t* wait = tmt1->createLocation("wait");
 
-  typename INT_TAS_t::L_t cs(3, "cs");
+  typename INT_TAS_t::L_t* cs = tmt1->createLocation("cs");
 
-  typename INT_TAS_t::T_t A_req(A, req);
+  typename INT_TAS_t::T_t* A_req = tmt1->createTransition(A, req);
   Argument first(NORMAL_VAR_ARG, "id");
   Argument second;
   Argument rhs(0);
 
   CounterConstraint ccs1(first, second, EQ, rhs);  // id==0
 
-  A_req += ccs1;
+  (*A_req) += ccs1;
 
-  A_req += ClockReset(x, Argument(0));  // x-->0
+  (*A_req) += ClockReset(x, Argument(0));  // x-->0
 
-  typename INT_TAS_t::T_t req_wait(req, wait);
+  typename INT_TAS_t::T_t* req_wait = tmt1->createTransition(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
-  req_wait += cs2;
+  (*req_wait) += cs2;
 
-  req_wait += ClockReset(x, Argument(0));  // x-->0
-                                           //  req_wait.addReset(x, 0); // x-->0
+  (*req_wait) +=
+      ClockReset(x, Argument(0));  // x-->0
+                                   //  req_wait.addReset(x, 0); // x-->0
   Argument lhs(NORMAL_VAR_ARG, "id");
   Argument rhs0(PARAMETER_ARG, "pid");
   CounterAction action(lhs, ASSIGNMENT_ACTION, rhs0);  // id=pid
 
-  req_wait += action;
+  (*req_wait) += action;
 
-  typename INT_TAS_t::T_t wait_req(wait, req);
+  typename INT_TAS_t::T_t* wait_req = tmt1->createTransition(wait, req);
 
-  wait_req += ClockReset(x, Argument(0));  // x-->0
+  (*wait_req) += ClockReset(x, Argument(0));  // x-->0
   // wait_req.addReset(x, 0);       // x-->0
-  wait_req += ccs1;  // id==0
+  (*wait_req) += ccs1;  // id==0
 
-  typename INT_TAS_t::T_t wait_cs(wait, cs);
+  typename INT_TAS_t::T_t* wait_cs = tmt1->createTransition(wait, cs);
 
   Argument first1(NORMAL_VAR_ARG, "id");
   Argument second1(PARAMETER_ARG, "pid");
   Argument rhs01(CONST_ARG, 0);
   CounterConstraint ccs2(first1, second1, EQ, rhs01);  // id==pid
-  wait_cs += ccs2;
+  (*wait_cs) += ccs2;
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
-  wait_cs += cs3;
+  (*wait_cs) += cs3;
 
-  typename INT_TAS_t::T_t cs_A(cs, A);
+  typename INT_TAS_t::T_t* cs_A = tmt1->createTransition(cs, A);
 
   Argument lhs1(NORMAL_VAR_ARG, "id");
   Argument rhs1(CONST_ARG, 0);
   CounterAction caction1(lhs1, ASSIGNMENT_ACTION, rhs1);
 
-  cs_A += caction1;
+  (*cs_A) += caction1;
 
-  ls.push_back(A);
-
-  ls.push_back(req);
-  ls.push_back(wait);
-  ls.push_back(cs);
-
-  es.push_back(A_req);
-  es.push_back(req_wait);
-  es.push_back(wait_req);
-  es.push_back(wait_cs);
-  es.push_back(cs_A);
-
-  tmt1->initial(ls, es, 0);
+  tmt1->initial(0);
   tmt1->dump2Dot("fischer.gv");
 
   for (int i = 1; i <= n; i++) {
@@ -248,7 +233,6 @@ void fischer(int n) {
     param.setParameterMap("pid", i);
     shared_ptr<typename INT_TAS_t::Agent_t> tma1 = sys.createAgent(tmt1, param);
   }
-  //  sys.build();
 
   shared_ptr<INT_TAS_t::StateManager_t> manager = sys.getStateManager();
   R_t data(manager);
@@ -313,7 +297,7 @@ void fischer(int n) {
 
 void testIsConsistent() {
   int n = 12;
-  // int        len = ( n + 1 ) * ( n + 1 );
+
   DBMManager df(n);
   for (int i = 0; i < 5; i++) {
     int* d = df.randomFeasiableDBM();
@@ -331,7 +315,7 @@ void testIsConsistent() {
   }
 }
 
-void incrementalTest1() {
+void incrementalTestFS() {
   FischerGenerator F;
   IncrementalCheck<INT_TAS_t, FischerGenerator, FischerProjector> check;
   FischerMutual prop;
@@ -340,6 +324,17 @@ void incrementalTest1() {
     cout << "ok" << endl;
   } else {
     cout << "fail" << endl;
+  }
+}
+void incrementalTestTG() {
+  TrainGate TG;
+  IncrementalCheck<INT_TAS_t, TrainGate, TrainGateProjector> check;
+  TrainGatePro prop(2);
+  prop.setCS(4);
+  if (check.check(TG, &prop)) {
+    cout << "ok" << endl;
+  } else {
+    cout << "no" << endl;
   }
 }
 
@@ -359,78 +354,68 @@ void incrementalTest() {
   vector<typename INT_TAS_t::L_t> ls;
   int k = 2;
 
-  typename INT_TAS_t::L_t A(0);
+  typename INT_TAS_t::L_t* A = tmt1->createLocation();
 
-  typename INT_TAS_t::L_t req(1);
+  typename INT_TAS_t::L_t* req = tmt1->createLocation();
   typename INT_TAS_t::CS_t cs1(x, LE, Argument(k));  // x <= k
-  req += cs1;
+  (*req) += cs1;
 
-  typename INT_TAS_t::L_t wait(2);
+  typename INT_TAS_t::L_t* wait = tmt1->createLocation();
 
-  typename INT_TAS_t::L_t cs(3);
+  typename INT_TAS_t::L_t* cs = tmt1->createLocation();
 
-  typename INT_TAS_t::T_t A_req(A, req);
+  typename INT_TAS_t::T_t* A_req = tmt1->createTransition(A, req);
 
   Argument first3(NORMAL_VAR_ARG, 0);
   Argument second3(EMPTY_ARG, 0);
   Argument rhs3(CONST_ARG, 0);
   CounterConstraint ccs1(first3, second3, EQ, rhs3);  // id==0
 
-  A_req += ccs1;
+  (*A_req) += ccs1;
 
-  A_req += ClockReset(x, Argument(0));  // x-->0
+  (*A_req) += ClockReset(x, Argument(0));  // x-->0
   // A_req.addReset(x, 0); // x-->0
 
-  typename INT_TAS_t::T_t req_wait(req, wait);
+  typename INT_TAS_t::T_t* req_wait = tmt1->createTransition(req, wait);
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(k));  // x <= k
-  req_wait += cs2;
+  (*req_wait) += cs2;
 
-  req_wait += ClockReset(x, Argument(0));  // x-->0
-                                           // req_wait.addReset(x, 0); // x-->0
+  (*req_wait) +=
+      ClockReset(x, Argument(0));  // x-->0
+                                   // req_wait.addReset(x, 0); // x-->0
 
   Argument lhs(NORMAL_VAR_ARG, 0);
   Argument rhs(PARAMETER_ARG, 0);
   CounterAction caction(lhs, ASSIGNMENT_ACTION, rhs);  // id=pid
 
-  req_wait += caction;
+  (*req_wait) += caction;
 
-  typename INT_TAS_t::T_t wait_req(wait, req);
+  typename INT_TAS_t::T_t* wait_req = tmt1->createTransition(wait, req);
 
-  wait_req += ClockReset(x, Argument(0));  // x-->0
+  (*wait_req) += ClockReset(x, Argument(0));  // x-->0
   // wait_req.addReset(x, 0);       // x-->0
-  wait_req += ccs1;  // id==0
+  (*wait_req) += ccs1;  // id==0
 
-  typename INT_TAS_t::T_t wait_cs(wait, cs);
+  typename INT_TAS_t::T_t* wait_cs = tmt1->createTransition(wait, cs);
 
   Argument first4(NORMAL_VAR_ARG, 0);
   Argument second4(PARAMETER_ARG, 0);
   Argument rhs4(CONST_ARG, 0);
 
   CounterConstraint ccs2(first4, second4, EQ, rhs4);  // id==pid
-  wait_cs += ccs2;
+  (*wait_cs) += ccs2;
   typename INT_TAS_t::CS_t cs3(x, GT, Argument(k));  // x> k
-  wait_cs += cs3;
+  (*wait_cs) += cs3;
 
-  typename INT_TAS_t::T_t cs_A(cs, A);
+  typename INT_TAS_t::T_t* cs_A = tmt1->createTransition(cs, A);
 
   Argument lhs2(NORMAL_VAR_ARG, 0);
   Argument rhs2(CONST_ARG, 0);
   CounterAction caction1(lhs2, ASSIGNMENT_ACTION, rhs2);  // id=0;
 
-  cs_A += caction1;
+  (*cs_A) += caction1;
 
-  ls.push_back(A);
-  ls.push_back(req);
-  ls.push_back(wait);
-  ls.push_back(cs);
-
-  es.push_back(A_req);
-  es.push_back(req_wait);
-  es.push_back(wait_req);
-  es.push_back(wait_cs);
-  es.push_back(cs_A);
-
-  tmt1->initial(ls, es, 0);
+  tmt1->initial(0);
 
   for (int i = 1; i <= n; i++) {
     Parameter param = tmt1->getParameter();
@@ -615,6 +600,24 @@ void train_gate(const int n) {
   }
   StateOutput::generatorDot(data, "test.gv");
   // data.generatorDot("test.gv");
+}
+
+void lift_customer(int n) {
+  LiftCustomer liftc;
+  INT_TAS_t sys = liftc.generate(n);
+  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
+      sys.getStateManager();
+  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
+  // sys.addInitState(data);
+  Reachability<INT_TAS_t> reacher(sys);
+  reacher.computeAllReachableSet(&data);
+  int* state = manager->newState();
+  for (size_t i = 0; i < data.size(); i++) {
+    data.getStateAt(state, i);
+    manager->dump(state);
+  }
+  manager->destroyState(state);
+  cout << data.size() << endl;
 }
 
 }  // namespace graphsat

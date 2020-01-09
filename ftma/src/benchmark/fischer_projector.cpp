@@ -81,7 +81,7 @@ bool FischerProjector::projectEqualReach(
   }
   graph.initial(srcs, snks);
   std::set<std::vector<int>> check;
-  FullChoose fc(manager->getComponentNumber(), id);
+  FullChoose fc(component_num, id);
 
   int* state = manager->newState();
   while (fc.next()) {
@@ -89,15 +89,21 @@ bool FischerProjector::projectEqualReach(
 
     std::sort(vertices.begin(), vertices.end());
     bool b = false;
-    vector<vector<int>> links;
+    std::vector<std::vector<int>> links;
+    std::vector<std::pair<int, int>> link_src_snk_map;
     if (check.find(vertices) == check.end()) {
       b = true;
-      for (size_t j = 0; b && j < manager->getComponentNumber(); j++) {
-        for (size_t k = j + 1; b && k < manager->getComponentNumber(); k++) {
-          if (!graph.hasUndirectEdge(vertices[j], vertices[k])) {
-            b = false;
-          } else {
-            links.push_back(graph.getConnectEdges(vertices[j], vertices[k]));
+      for (size_t j = 0; b && j < component_num; j++) {
+        for (size_t k = j + 1; b && k < component_num; k++) {
+          b = false;
+          if (graph.hasDirectEdge(vertices[j], vertices[k])) {
+            links.push_back(graph.getDirectEdges(vertices[j], vertices[k]));
+            link_src_snk_map.push_back(make_pair(j, k));
+            b = true;
+          } else if (graph.hasDirectEdge(vertices[k], vertices[j])) {
+            links.push_back(graph.getDirectEdges(vertices[k], vertices[j]));
+            link_src_snk_map.push_back(make_pair(k, j));
+            b = true;
           }
         }
       }
@@ -111,13 +117,14 @@ bool FischerProjector::projectEqualReach(
         FullChoose fc(choose);
         while (fc.next()) {
           vector<int> choose = *fc;
-          for(size_t i=0; i< choose.size(); i++){
-            choose[i]=links[i][choose[i]];
+          for (size_t i = 0; i < choose.size(); i++) {
+            choose[i] = links[i][choose[i]];
           }
           manager->reset(state);
           manager->dump(state);
-          
-          constructState(state, projs, oneStataes, vertices, choose, graph, link_map);
+
+          constructState(state, projs, oneStataes, vertices, choose,
+                         link_src_snk_map, link_map);
           if (!next_reach_set.contain(state)) {
             manager->dump(state);
             return false;
@@ -131,47 +138,43 @@ bool FischerProjector::projectEqualReach(
   return true;
 }
 
-static int findIndex(const std::vector<int> & values, int v ){
-  std::vector<int>::const_iterator it=find( values.begin( ), values.end( ), v);
-  assert( it!= values.end( ));
-  return it-values.begin( );
-}
-
-
 void FischerProjector::constructState(
     int* state, const std::vector<std::vector<int>>& projs,
     const std::vector<AbsOneDimState>& oneStataes,
     const std::vector<int>& vertices, const std::vector<int>& links,
-    const Graph_t<int>& graph, const  std::map<int, int>& link_map) const {
-  int component_num = manager->getComponentNumber();
+    const std::vector<std::pair<int, int>>& link_src_snk_map,
+    const std::map<int, int>& link_map) const {
   manager->dump(state);
   for (int i = 0; i < component_num; i++) {
-    state[i] = oneStataes[vertices[i]].loc;
-    if (oneStataes[vertices[i]].has_id == 1) {
+    int vertex = vertices[i];
+    int loc = oneStataes[vertex].loc;
+    state[i] = loc;
+
+    if (oneStataes[vertex].has_id == 1) {
       manager->setValue(0, state, "id", i + 1);
     }
     // loc  freeze  id  0         clock_1 ..
     // component_num+2         component_num+1
-    state[i + component_num + 3] = oneStataes[vertices[i]].clock_lower_bound;
+    state[i + component_num + 3] = oneStataes[vertex].clock_lower_bound;
 
     int index = component_num + 2 + (i + 1) * (component_num + 1);
-    state[index] = oneStataes[vertices[i]].clock_upper_bound;
+    state[index] = oneStataes[vertex].clock_upper_bound;
   }
   manager->dump(state);
-  for (auto e : links) {
-    int src, snk;
-    graph.findSrcSnk( e, src, snk);
-    src=findIndex( vertices, src );
-    snk=findIndex( vertices, snk);
-    int link_id= link_map.at(e);
-    
-    MatrixValue value(projs[ link_id][ 9] ); //src-snk
-    manager->setClockUpperBound(src,"x", snk, "x", state, value  );
-     manager->dump(state);
-    MatrixValue value1(projs[ link_id][ 11] ); //snk-src
-    
-    manager->setClockUpperBound(snk,"x", src, "x", state, value1  );
-         manager->dump(state);
+  for (size_t i = 0; i < links.size(); i++) {
+    int e = links[i];
+    int src = link_src_snk_map[i].first;
+    int snk = link_src_snk_map[i].second;
+
+    int link_id = link_map.at(e);
+
+    MatrixValue value(projs[link_id][9]);  // src-snk
+    manager->setClockUpperBound(src, "x", snk, "x", state, value);
+    manager->dump(state);
+    MatrixValue value1(projs[link_id][11]);  // snk-src
+
+    manager->setClockUpperBound(snk, "x", src, "x", state, value1);
+    manager->dump(state);
   }
 }
 

@@ -26,8 +26,8 @@ class Projector {
                        const std::vector<std::vector<int>>& rhs) const = 0;
 
   virtual bool projectEqualReach(
-      const std::vector<std::vector<int>>& projs,
-      const ReachableSet<TMStateManager>& next_reach_set) const = 0;
+      const std::vector<std::vector<int>>& pre_projs,
+      const ReachableSet<TMStateManager>& reach_set) const = 0;
 
   virtual std::ostream& dump(const std::vector<int>& proj_e,
                              std::ostream& out) const = 0;

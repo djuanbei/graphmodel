@@ -80,8 +80,7 @@ int UppaalParser::parseTemplate(child_type templates) {
       template_data.tat->addClock(ee.first);
     }
 
-    template_data.tat->initial(locations, transitions,
-                               template_data.getInitialLoc());
+    template_data.tat->initial(template_data.getInitialLoc());
 
     template_map[template_data.name] = template_data;
 
@@ -182,12 +181,12 @@ vector<INT_TAS_t::L_t> UppaalParser::parseLocation(UppaalData& template_data,
 
     int location_id = template_data.getId(LOCATION_T, id_str);
 
-    INT_TAS_t::L_t location(location_id);
+    INT_TAS_t::L_t* location = template_data.tat->createLocation(location_id);
     if (nullptr !=
         (*lit)->getOneChild(
             NAME_STR)) {  // Not evvery location require name property
       string location_name = (*lit)->getOneChild(NAME_STR)->getValue();
-      location.setName(location_name);
+      location->setName(location_name);
     }
 
     child_type labels = (*lit)->getChild(LABEL_STR);
@@ -203,13 +202,13 @@ vector<INT_TAS_t::L_t> UppaalParser::parseLocation(UppaalData& template_data,
           vector<void*> cons =
               template_data.getPoints(CLOCK_CS_T, STRING(CLOCK_CS_T));
           for (auto cs : cons) {
-            location += *((INT_TAS_t::CS_t*)(cs));
+            (*location) += *((INT_TAS_t::CS_t*)(cs));
           }
           template_data.clear(CLOCK_CS_T);
         }
       }
     }
-    return_locations.push_back(location);
+    // return_locations.push_back(location);
   }
   return return_locations;
 }
@@ -237,9 +236,10 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData& template_data,
 
     int source_id = template_data.getId(LOCATION_T, source_ref);
     int target_id = template_data.getId(LOCATION_T, target_ref);
-    INT_TAS_t::L_t src(source_id);
-    INT_TAS_t::L_t snk(target_id);
-    INT_TAS_t::T_t transition(src, snk);
+    // INT_TAS_t::L_t src(source_id);
+    // INT_TAS_t::L_t snk(target_id);
+    INT_TAS_t::T_t* transition =
+        template_data.tat->createTransition(source_id, target_id);
 
     child_type labels = (*tit)->getChild(LABEL_STR);
     if (nullptr != labels) {
@@ -253,7 +253,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData& template_data,
           vector<void*> cons =
               template_data.getPoints(CLOCK_CS_T, STRING(CLOCK_CS_T));
           for (auto cs : cons) {
-            transition += *((INT_TAS_t::CS_t*)(cs));
+            (*transition) += *((INT_TAS_t::CS_t*)(cs));
           }
 
           template_data.clear(CLOCK_CS_T);
@@ -261,7 +261,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData& template_data,
           vector<void*> counterCs =
               template_data.getPoints(INT_CS_T, STRING(INT_CS_T));
           for (auto cs : counterCs) {
-            transition += (*((CounterConstraint*)cs));
+            (*transition) += (*((CounterConstraint*)cs));
             delete (CounterConstraint*)cs;
           }
 
@@ -273,7 +273,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData& template_data,
           vector<void*> updates =
               template_data.getPoints(INT_UPDATE_T, STRING(INT_UPDATE_T));
           for (auto update : updates) {
-            transition += *((CounterAction*)update);
+            (*transition) += *((CounterAction*)update);
             delete (CounterAction*)update;
           }
           template_data.clear(INT_UPDATE_T);
@@ -281,7 +281,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData& template_data,
           vector<void*> resets =
               template_data.getPoints(RESET_T, getTypeStr(RESET_T));
           for (auto reset : resets) {
-            transition += ClockReset(
+            (*transition) += ClockReset(
                 Argument(NORMAL_VAR_ARG, ((pair<int, int>*)reset)->first),
                 Argument(((pair<int, int>*)reset)->second));
             //            transition.addReset(
@@ -323,7 +323,7 @@ vector<INT_TAS_t::T_t> UppaalParser::parseTransition(UppaalData& template_data,
         }
       }
     }
-    return_transitions.push_back(transition);
+    // return_transitions.push_back(transition);
   }
   return return_transitions;
 }
