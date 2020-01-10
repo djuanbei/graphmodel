@@ -612,12 +612,25 @@ void lift_customer(int n) {
   Reachability<INT_TAS_t> reacher(sys);
   reacher.computeAllReachableSet(&data);
   int* state = manager->newState();
+  set<vector<int> > proj2;
   for (size_t i = 0; i < data.size(); i++) {
+
     data.getStateAt(state, i);
+    vector<int> dummy;
+    dummy.push_back( state[ 0]);
+    dummy.push_back( state[ 1]);
+    dummy.push_back( state[ 2]);
+
+    proj2.insert( dummy);
     manager->dump(state);
   }
   manager->destroyState(state);
   cout << data.size() << endl;
+  StateOutput::generatorDot(data, "test.gv");
+  cout<<"2 proj size: "<<proj2.size( )<<endl;
+  for( auto e: proj2){
+    cout<<sys.getLocationName( 0, e[ 0])<<", "<< sys.getLocationName( 1, e[ 1])<<", "<<sys.getLocationName( 1, e[ 2])<<endl;
+  }
 }
 
 }  // namespace graphsat

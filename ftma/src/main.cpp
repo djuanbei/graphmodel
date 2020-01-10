@@ -58,7 +58,7 @@ void test1() {
 }
 
 int main(int argc, const char* argv[]) {
-  lift_customer(3);
+  lift_customer(4);
   return 0;
   // incrementalTestTG( );
   // return 0;

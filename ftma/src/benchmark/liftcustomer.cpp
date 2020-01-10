@@ -9,25 +9,25 @@ INT_TAS_t LiftCustomer::generate(int n) const {
       sys.createTemplate("Lift");
   shared_ptr<typename INT_TAS_t::AgentTemplate_t> customer_tmt =
       sys.createTemplate("Costomer");
-  string wait_counter = "wait_lift_len";
-  string stop_counter = "stop_cus_len";
+  string wait_cus_num = "wait_cus_len"; 
+  string stop_lift_num = "stop_lift_len";
   
   sys.addChan("ask", 1, BROADCAST_CH);  //ask
   sys.addChan("enter", 1, ONE2ONE_CH);  //enter
   
-  sys.addInt(wait_counter, 1);
-  sys.addInt(stop_counter, 1);
+  sys.addInt(wait_cus_num, 1);
+  sys.addInt(stop_lift_num, 1);
   
 
   typename INT_TAS_t::L_t* Ie = lift_tmt->createLocation("Ie");
 
-  typename INT_TAS_t::L_t* near = lift_tmt->createLocation("near");
+  //typename INT_TAS_t::L_t* near = lift_tmt->createLocation("near");
 
   typename INT_TAS_t::L_t* stop = lift_tmt->createLocation("stop");
 
   typename INT_TAS_t::L_t* one = lift_tmt->createLocation("one");
 
-  typename INT_TAS_t::L_t* two = lift_tmt->createLocation("two");
+  //typename INT_TAS_t::L_t* two = lift_tmt->createLocation("two");
 
   typename INT_TAS_t::L_t* cross = lift_tmt->createLocation("cross");
 
@@ -35,25 +35,36 @@ INT_TAS_t LiftCustomer::generate(int n) const {
   
   
 
-  lift_tmt->createTransition(Ie, near);
+  //lift_tmt->createTransition(Ie, near);
 
-  lift_tmt->createTransition(near, cross);
+  lift_tmt->createTransition(Ie, cross);
   
   
-  
-
-  typename INT_TAS_t::T_t* near_stop = lift_tmt->createTransition(near, stop);
   
 
-  Argument lhs2(NORMAL_VAR_ARG, stop_counter);
+  typename INT_TAS_t::T_t* Ie_stop = lift_tmt->createTransition(Ie, stop);
+  
+
+  Argument lhs2(NORMAL_VAR_ARG, stop_lift_num);
   Argument rhs2(1);
   CounterAction action1(lhs2, SELF_INC_ACTION, rhs2);
-  (*near_stop) += action1;  // stop_lift_num+=1;
+  (*Ie_stop) += action1;  // stop_lift_num+=1;
 
 
   Argument ch_ask(NORMAL_VAR_ARG, "ask");
 
-  near_stop->setChannel( Channel( ch_ask, CHANNEL_RECEIVE ));
+  Ie_stop->setChannel( Channel( ch_ask, CHANNEL_RECEIVE ));
+
+
+  typename INT_TAS_t::T_t* Ie_stop2 = lift_tmt->createTransition(Ie, stop);
+  (*Ie_stop2) += action1;  // stop_lift_num+=1;
+
+
+  Argument first10(NORMAL_VAR_ARG, wait_cus_num);
+  Argument second10(0);
+  Argument rhs10(0);
+  CounterConstraint cs10(first10, second10, GT, rhs10);
+  (*Ie_stop2) += cs10;  // wait_cus_num>0;
 
   
 
@@ -63,29 +74,30 @@ INT_TAS_t LiftCustomer::generate(int n) const {
   stop_one->setChannel( Channel( ch_enter, CHANNEL_RECEIVE));
 
 
-  typename INT_TAS_t::T_t* one_two=lift_tmt->createTransition( one, two);
+  //typename INT_TAS_t::T_t* one_two=lift_tmt->createTransition( one, two);
 
 
-  one_two->setChannel(Channel( ch_enter, CHANNEL_RECEIVE));
+  //one_two->setChannel(Channel( ch_enter, CHANNEL_RECEIVE));
   
 
-  typename INT_TAS_t::T_t* two_overload=lift_tmt->createTransition(  two, overload);
+  typename INT_TAS_t::T_t* one_overload=lift_tmt->createTransition(  one, overload);
 
-  two_overload->setChannel(Channel( ch_enter, CHANNEL_RECEIVE));
+  one_overload->setChannel(Channel( ch_enter, CHANNEL_RECEIVE));
 
-  Argument lhs3(NORMAL_VAR_ARG, stop_counter);
+  Argument lhs3(NORMAL_VAR_ARG, stop_lift_num);
   Argument rhs3(1);
   CounterAction action2(lhs2, SELF_DEC_ACTION, rhs3);
-  (*two_overload) += action2;  // stop_lift_num-=1;
+  (*one_overload) += action2;  // stop_lift_num-=1;
 
-  typename INT_TAS_t::T_t* two_cross= lift_tmt->createTransition( two, cross);
-  (*two_cross)+=action2;
+  typename INT_TAS_t::T_t* one_cross= lift_tmt->createTransition( one, cross);
+  (*one_cross)+=action2;
   
-  two_cross->setChannel( Channel( ch_ask, CHANNEL_RECEIVE ));
+  one_cross->setChannel( Channel( ch_ask, CHANNEL_RECEIVE ));
 
 
-  typename INT_TAS_t::T_t* two_cross2= lift_tmt->createTransition( two, cross);
-  (*two_cross)+=action2;
+  typename INT_TAS_t::T_t* one_cross2=
+  lift_tmt->createTransition( one, cross);
+  (*one_cross2)+=action2;
 
 
   lift_tmt->createTransition( cross, Ie);
@@ -109,17 +121,17 @@ INT_TAS_t LiftCustomer::generate(int n) const {
   typename INT_TAS_t::T_t *Ic_wait =customer_tmt->createTransition(Ic, wait);
 
   
-  Argument first7(NORMAL_VAR_ARG, wait_counter);
+  Argument first7(NORMAL_VAR_ARG, wait_cus_num);
   Argument second7(0);
   Argument rhs7(0);
   CounterConstraint cs7(first7, second7, EQ, rhs7);
-  ( *Ic_wait)+=cs7;
+  ( *Ic_wait)+=cs7; //wait_cus_num==0
   Ic_wait->setChannel( Channel( ch_ask, CHANNEL_SEND ));
   
   
 
 
-  Argument lhs5(NORMAL_VAR_ARG, wait_counter);
+  Argument lhs5(NORMAL_VAR_ARG, wait_cus_num);
 
   Argument rhs5(1);
   
@@ -138,7 +150,7 @@ INT_TAS_t LiftCustomer::generate(int n) const {
   (*wait_in) += action6; //wait_cus_num--
   
 
-  Argument first5(NORMAL_VAR_ARG, stop_counter);
+  Argument first5(NORMAL_VAR_ARG, stop_lift_num);
   Argument second5(0);
   Argument rhs51(0);
   CounterConstraint cs5(first5, second5, GT, rhs51);
@@ -156,6 +168,7 @@ INT_TAS_t LiftCustomer::generate(int n) const {
     shared_ptr<typename INT_TAS_t::Agent_t> tma =
         sys.createAgent(customer_tmt, param);
   }
+  
 
   return sys;
 }

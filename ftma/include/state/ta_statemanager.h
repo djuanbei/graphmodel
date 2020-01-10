@@ -152,7 +152,7 @@ class TMStateManager : public ComponentInfo {
   bool hasMatchOutUrgentChan(const int* const state) const;
 
   // check wether there is a out transition with  breakcast send channel
-  bool hasOutBreakcastChan(const int* const state) const;
+  bool hasOutSendBroadcastChan(const int* const state) const;
 
   /**
    * @brief Get the key value in the state under component context. If the can
@@ -188,7 +188,7 @@ class TMStateManager : public ComponentInfo {
 
   inline const DBMManager& getClockManager() const { return dbm_manager; }
 
-  void norm(const int* const dbm, vector<int*>& re_vec) const {
+  void norm(const int* const dbm, std::vector<int*>& re_vec) const {
     int* newDBM = dbm_manager.createDBM(dbm);
     dbm_manager.norm(newDBM, re_vec);
   }
@@ -247,9 +247,10 @@ class TMStateManager : public ComponentInfo {
     return dbm_manager.isConsistent(getDBM(state));
   }
 
-  vector<int> blockComponents(const int chid, const int* const state) const;
+  std::vector<int> blockComponents(const int chid,
+                                   const int* const state) const;
 
-  const vector<int*>& getInitialState() const { return init_states; }
+  const std::vector<int*>& getInitialState() const { return init_states; }
 
   void constructState(const int* const state, const int* const dbm,
                       int* re_state) const;
@@ -277,11 +278,14 @@ class TMStateManager : public ComponentInfo {
    */
   void swap(const int i, const int j, int* state) const;
 
-  vector<int> getEnableOutUrgent(const int component, const int loc,
-                                 int* state) const;
+  std::vector<int> getEnableOutBroadcast(const int component, const int loc,
+                                         int* state) const;
 
-  vector<int> getEnableOutNormalChan(const int component, const int loc,
-                                     int* state) const;
+  std::vector<int> getEnableOutUrgent(const int component, const int loc,
+                                      int* state) const;
+
+  std::vector<int> getEnableOutNormalChan(const int component, const int loc,
+                                          int* state) const;
 
   bool hasDiffCons() const;
 

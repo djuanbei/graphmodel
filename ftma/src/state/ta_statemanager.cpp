@@ -112,30 +112,31 @@ bool TMStateManager::isReachable(const int component, const int loc,
 }
 
 bool TMStateManager::hasMatchOutUrgentChan(const int* const state) const {
-  if (sys.hasUrgentCh()) {
-    set<int> send_part, receive_part;
-    for (int comp = 0; comp < component_num; comp++) {
-      int loc = getLocationID(comp, state);
-      if (sys.hasUrgentCh(comp, loc)) {
-        vector<int> dummy =
-            getEnableOutUrgent(comp, loc, const_cast<int*>(state));
-        for (auto e : dummy) {
-          if (e > 0) {
-            if (receive_part.find(-e) != receive_part.end()) {
-              return true;
-            }
-          } else {
-            if (send_part.find(-e) != send_part.end()) {
-              return true;
-            }
+  if (!sys.hasUrgentCh()) {
+    return false;
+  }
+  std::set<int> send_part, receive_part;
+  for (int comp = 0; comp < component_num; comp++) {
+    int loc = getLocationID(comp, state);
+    if (sys.hasUrgentCh(comp, loc)) {
+      std::vector<int> dummy =
+          getEnableOutUrgent(comp, loc, const_cast<int*>(state));
+      for (auto e : dummy) {
+        if (e > 0) {
+          if (receive_part.find(-e) != receive_part.end()) {
+            return true;
+          }
+        } else {
+          if (send_part.find(-e) != send_part.end()) {
+            return true;
           }
         }
-        for (auto e : dummy) {
-          if (e > 0) {
-            send_part.insert(e);
-          } else {
-            receive_part.insert(e);
-          }
+      }
+      for (auto e : dummy) {
+        if (e > 0) {
+          send_part.insert(e);
+        } else {
+          receive_part.insert(e);
         }
       }
     }
@@ -144,9 +145,22 @@ bool TMStateManager::hasMatchOutUrgentChan(const int* const state) const {
 }
 
 // TODO:
-bool TMStateManager::hasOutBreakcastChan(const int* const state) const {
+bool TMStateManager::hasOutSendBroadcastChan(const int* const state) const {
+  if (!sys.hasBroadcaseCh()) {
+    return false;
+  }
+  std::set<int> send_part, receive_part;
   for (int comp = 0; comp < component_num; comp++) {
-    //  int loc = getLocationID(comp, state);
+    int loc = getLocationID(comp, state);
+    if (sys.hasBroadcaseSendCh(comp, loc)) {
+      std::vector<int> dummy =
+          getEnableOutBroadcast(comp, loc, const_cast<int*>(state));
+      for (auto e : dummy) {
+        if (e > 0) {
+          return true;
+        }
+      }
+    }
   }
 
   return false;
@@ -350,10 +364,36 @@ Compression<int> TMStateManager::getBodyCompression() const {
   return re_comp;
 }
 
-vector<int> TMStateManager::getEnableOutUrgent(const int component,
-                                               const int loc,
-                                               State_t* state) const {
-  vector<int> re;
+std::vector<int> TMStateManager::getEnableOutBroadcast(const int component,
+                                                       const int loc,
+                                                       int* state) const {
+  std::vector<int> re;
+  int* counter_value = getCounterValue(state);
+  vector<int> outs = sys.getOutTransition(component, loc);
+  for (auto link : outs) {
+    if (sys.hasChannel(component, link)) {
+      if (sys.agents[component]->transitions[link].getChannel().getType() ==
+          BROADCAST_CH) {
+        if (transitionReady(component, link, state)) {
+          int chid =
+              sys.agents[component]->transitions[link].getChannel().getGlobalId(
+                  counter_value);
+          if (sys.agents[component]->transitions[link].getChannel().isSend()) {
+            re.push_back(chid);
+          } else {
+            re.push_back(-chid);
+          }
+        }
+      }
+    }
+  }
+  return re;
+}
+
+std::vector<int> TMStateManager::getEnableOutUrgent(const int component,
+                                                    const int loc,
+                                                    State_t* state) const {
+  std::vector<int> re;
   int* counter_value = getCounterValue(state);
   vector<int> outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {

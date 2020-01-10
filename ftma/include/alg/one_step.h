@@ -112,13 +112,17 @@ Check_State doOneStep(D* data, const M* manager, const State_t* const state,
            b && (it != actions.end()); it++) {
         switch (it->action) {
           case OneStep::DISCRETE_JUMP:
+            
+           
             b = doDiscreteJump(manager, it->component, it->transition,
                                cache_state);
+       
             break;
           case OneStep::CONTINUED_EVOLUTION:
             if (it != actions.begin() &&
                 !manager->hasMatchOutUrgentChan(cache_state)) {
               doEvolution(manager, it->component, it->location, cache_state);
+                assert(cache_state[5]>=0);
             }
             break;
         }
