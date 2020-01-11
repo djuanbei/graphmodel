@@ -24,6 +24,8 @@ void example6();
 
 void fischer(int n = 2);
 
+void fischerSymmetry( int n=3);
+
 void testIsConsistent();
 
 void incrementalTestFS();

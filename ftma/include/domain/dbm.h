@@ -335,6 +335,9 @@ class DBMManager {
   int at(const int* const dbm, const int i, const int j) const {
     return dbm[LOC(i, j)];
   }
+  static int getIndex( int i, int j,  const int clock_num ){
+    return LOC_N(i,j, clock_num );
+  }
   // // x-y >(>= )
   // MatrixValue getLowerBound( const int * const dbm ,const int clock_x, const
   // int clock_y) const;

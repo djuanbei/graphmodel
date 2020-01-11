@@ -45,7 +45,7 @@ class TANextStep : public NextStep {
                std::vector<OneStep>& re) const;
   
 
-  // public:
+ 
   void doNormal(int* state, std::vector<OneStep>& re) const;
 
   /**

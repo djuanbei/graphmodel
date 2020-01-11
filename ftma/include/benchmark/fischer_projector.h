@@ -29,6 +29,9 @@ class FischerProjector : public Projector {
   virtual void operator()(const int* original_state,
                           std::vector<int>& proj) const;
 
+  std::vector<int> to_vec(const  TMStateManager * manager, const int * state) const;
+  bool contain( const std::vector<int> & one, const std::vector<std::vector<int>>& rhs ) const;
+
   bool include(const std::vector<std::vector<int>>& lhs,
                const std::vector<std::vector<int>>& rhs) const;
 
@@ -73,6 +76,12 @@ class FischerProjector : public Projector {
                       const std::vector<int>& choose,
                       const std::vector<std::pair<int, int>>& link_src_snk_map,
                       const std::map<int, int>& link_map) const;
+
+  // void constructState(int* state, const std::vector<std::vector<int>>& projs,
+  //                     const std::vector<AbsOneDimState>& oneStataes,
+  //                     const std::vector<int>& vertices,
+  //                     const std::vector<int>& choose,
+  //                     const std::map<int, int>& link_map) const;
 };
 
 }  // namespace graphsat

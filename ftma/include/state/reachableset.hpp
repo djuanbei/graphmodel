@@ -205,6 +205,13 @@ class ReachableSet {
 
   size_t size() const { return reach_set.size(); }
 
+  // clear all the data
+  void clear( ){
+    reach_set.clear( );
+    passed_pair.clear( );
+    current_state_id = -1;
+  }
+
   const StateSet<UINT>& getStates() const { return reach_set; }
   const M* getManager() const { return manager.get(); }
 

@@ -2,11 +2,11 @@
 
 /**
  * @file   main.cpp
- * @author Liyun Dai <dlyun2009@gmail.com>
+ * @author LiyunOB Dai <dlyun2009@gmail.com>
  * @date   Sat Mar 30 18:10:24 2019
  *
  * @brief  a test main
- *
+*
  *
  */
 //#define ONLINE_CHECK
@@ -15,7 +15,7 @@
 
 //#define YYDEBUG 1
 
-#include "alg/symmetry.h"
+
 #include "benchmark/fischer.h"
 #include "benchmark/fischer_projector.h"
 #include "example.h"
@@ -38,30 +38,17 @@ extern int yy_flex_debug;
 using std::vector;
 using namespace graphsat;
 
-void test1() {
-  int n = 3;
-  FischerGenerator F;
-  INT_TAS_t sys = F.generate(n);
-  Symmetry symm(n);
-  shared_ptr<typename INT_TAS_t::StateManager_t> manager =
-      sys.getStateManager();
-  ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
-  Reachability<INT_TAS_t> reacher(sys);
-  reacher.computeAllReachableSet(&data);
 
-  if (symm.isSymmetry(data.getStates(), data, manager.get())) {
-    cout << "ok" << endl;
-  } else {
-    cout << "error" << endl;
-  }
-}
 
 int main(int argc, const char* argv[]) {
-  lift_customer(4);
-  return 0;
+//  fischerSymmetry( 4);
+//  return 0;
+  //lift_customer(4);
+  //return 0;
   // incrementalTestTG( );
-  // return 0;
+  
+ // fischer(3);
+  //return 0;
   incrementalTestFS();
   return 0;
 
@@ -70,7 +57,7 @@ int main(int argc, const char* argv[]) {
   // return 0;
   // train_gate(3);
   //  fischer(2);
-  fischer(3);
+
   // fischer(4);
   // fischer(5);
   return 0;
