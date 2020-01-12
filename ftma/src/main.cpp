@@ -6,7 +6,7 @@
  * @date   Sat Mar 30 18:10:24 2019
  *
  * @brief  a test main
-*
+ *
  *
  */
 //#define ONLINE_CHECK
@@ -14,7 +14,6 @@
 //#define PRINT_STATE
 
 //#define YYDEBUG 1
-
 
 #include "benchmark/fischer.h"
 #include "benchmark/fischer_projector.h"
@@ -38,17 +37,17 @@ extern int yy_flex_debug;
 using std::vector;
 using namespace graphsat;
 
-
-
 int main(int argc, const char* argv[]) {
-//  fischerSymmetry( 4);
-//  return 0;
-  //lift_customer(4);
-  //return 0;
+  incrementalTestLC();
+  return 0;
+  //  fischerSymmetry( 4);
+  //  return 0;
+  lift_customer(4);
+  return 0;
   // incrementalTestTG( );
-  
- // fischer(3);
-  //return 0;
+
+  // fischer(3);
+  // return 0;
   incrementalTestFS();
   return 0;
 

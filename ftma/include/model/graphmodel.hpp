@@ -226,6 +226,9 @@ class AgentSystem : public VarDecl {
   string getLocationName(const int component, const int loc_ID) const {
     return agents[component]->getLocationName(loc_ID);
   }
+  int getLocationID(const int component, const string& name) const {
+    return agents[component]->getLocationID(name);
+  }
   int getLocationNumber(const int component) const {
     return agents[component]->locations.size();
   }

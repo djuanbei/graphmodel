@@ -18,17 +18,15 @@ std::vector<OneStep> TANextStep::getNextStep(void* s) const {
   if (re.empty()) {  // there is no force  locations or transitions
     if (manager->hasOutSendBroadcastChan(state)) {
       doBroadcast(state, re);
-    } //else {
+    }  // else {
     doNormal(state, re);
-   // }
+    // }
   }
 
   return re;
 }
 
 void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
-
-
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
     if (sys.hasNormalCh(i, loc_a)) {
@@ -90,8 +88,8 @@ void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
   }
 }
 
-void TANextStep::doCommit(int*    state, std::vector<OneStep>& re) const {
-  int*  counter_value = manager->getCounterValue(state);
+void TANextStep::doCommit(int* state, std::vector<OneStep>& re) const {
+  int* counter_value = manager->getCounterValue(state);
   for (int component = 0; component < component_num; component++) {
     const int source = manager->getLocationID(component, state);
     if (sys.isCommit(component, source)) {
@@ -203,12 +201,13 @@ void TANextStep::doBroadcast(int* state, std::vector<OneStep>& re) const {
               manager->getChanLinks(i, loc_a, chid, state);
           for (auto link_a : links_a) {
             vector<pair<int, int>> path;
-            path.push_back( make_pair( i, link_a));//send part first
-            vector<vector<pair<int,int> >> paths;
-            paths.push_back( path);
-            
+            path.push_back(make_pair(i, link_a));  // send part first
+            vector<vector<pair<int, int>>> paths;
+            paths.push_back(path);
+
             for (int j = 0; j < component_num; j++) {
-              if (i == j) { //The send and receive part can not in the same component 
+              if (i == j) {  // The send and receive part can not in the same
+                             // component
                 continue;
               }
               const int loc_b = manager->getLocationID(j, state);
@@ -219,27 +218,27 @@ void TANextStep::doBroadcast(int* state, std::vector<OneStep>& re) const {
 
                   std::vector<int> links_b =
                       manager->getChanLinks(j, loc_b, e, state);
-                  if(links_b.size( )==1 ){
-                    for(auto & p:paths ){
-                      p.push_back( make_pair( j, links_b[ 0]));
+                  if (links_b.size() == 1) {
+                    for (auto& p : paths) {
+                      p.push_back(make_pair(j, links_b[0]));
                     }
-                    
-                  }else{
-                    vector<vector<pair<int,int> >> copy_paths;
-                    copy_paths.swap( paths);
-                    for(auto& p: copy_paths  ){
-                      vector<pair<int, int> > tt( p);
-                      for( auto link_b: links_b){
-                        tt.push_back(make_pair( j, link_b) );
-                        paths.push_back( tt);
+
+                  } else {
+                    vector<vector<pair<int, int>>> copy_paths;
+                    copy_paths.swap(paths);
+                    for (auto& p : copy_paths) {
+                      vector<pair<int, int>> tt(p);
+                      for (auto link_b : links_b) {
+                        tt.push_back(make_pair(j, link_b));
+                        paths.push_back(tt);
                       }
                     }
                   }
                 }
               }
             }
-            for( auto & path: paths){
-              discret( state, path, re );
+            for (auto& path : paths) {
+              discret(state, path, re);
             }
           }
         }
@@ -248,13 +247,13 @@ void TANextStep::doBroadcast(int* state, std::vector<OneStep>& re) const {
   }
 }
 
-void TANextStep::discret(const int*  const state, std::vector<pair<int, int>>& path,
+void TANextStep::discret(const int* const state,
+                         std::vector<pair<int, int>>& path,
                          std::vector<OneStep>& re) const {
   assert(!path.empty());
 
   OneStep dummy;
-  int commit_num = manager->getFreezeComponentNumber(
-      state);  
+  int commit_num = manager->getFreezeComponentNumber(state);
   for (auto& p : path) {
     OneStep::Action action(p.first, -1, p.second);
     dummy.addAction(action);

@@ -6,11 +6,15 @@
 #include <random>
 
 #include "action/counteraction.h"
-#include "alg/util.h"
 #include "alg/symmetry.h"
+#include "alg/util.h"
 #include "benchmark/fischer.h"
 #include "benchmark/fischer_projector.h"
+#include "benchmark/liftcustomer.h"
+#include "benchmark/liftcustomer_projector.h"
+#include "benchmark/liftcustomerproperty.h"
 #include "benchmark/train_gate.h"
+
 #include "constraint/clockdiffcons.h"
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
@@ -339,6 +343,23 @@ void incrementalTestTG() {
   }
 }
 
+void incrementalTestLC() {
+  LiftCustomer generator;
+  IncrementalCheck<INT_TAS_t, LiftCustomer, LiftCustomerProjector> check;
+  INT_TAS_t sys = generator.generate(1);
+  int overload_loc = sys.getLocationID(0, "overload");
+  std::vector<int> locs;
+  locs.push_back(overload_loc);
+
+  LiftCustomerProperty prop(locs);
+
+  if (check.check(generator, &prop)) {
+    cout << "ok" << endl;
+  } else {
+    cout << "no" << endl;
+  }
+}
+
 void incrementalTest() {
   INT_TAS_t sys;
   int n = 3;
@@ -609,9 +630,21 @@ void lift_customer(int n) {
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       sys.getStateManager();
   ReachableSet<typename INT_TAS_t::StateManager_t> data(manager);
-  // sys.addInitState(data);
+
   Reachability<INT_TAS_t> reacher(sys);
-  reacher.computeAllReachableSet(&data);
+  int overload_loc = sys.getLocationID(0, "overload");
+  std::vector<int> locs;
+  locs.push_back(overload_loc);
+
+  LiftCustomerProperty prop(locs);
+
+  if (reacher.satisfy(&data, &prop)) {
+    cout << "There is something wrong" << endl;
+  } else {
+    cout << "Lift costomer without overload property check right" << endl;
+  }
+
+  //  reacher.computeAllReachableSet(&data);
   int* state = manager->newState();
   set<vector<int>> proj2;
   for (size_t i = 0; i < data.size(); i++) {

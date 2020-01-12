@@ -57,11 +57,11 @@ class Agent : public VariableMap, public TOReal {
 
   int getInitialLoc() const { return agent_tempate->initial_loc; }
 
-  bool locationRun(int link, const DBMManager& manager, int* D) const {
-    if (!locations[link].isReachable(manager, D)) {
+  bool locationRun(int loc, const DBMManager& manager, int* D) const {
+    if (!locations[loc].isReachable(manager, D)) {
       return false;
     }
-    locations[link](manager, D);
+    locations[loc](manager, D);
     return true;
   }
 
@@ -69,6 +69,14 @@ class Agent : public VariableMap, public TOReal {
 
   std::string getLocationName(int node_id) const {
     return locations[node_id].getName();
+  }
+  int getLocationID(const string& name) const {
+    for (size_t i = 0; i < locations.size(); i++) {
+      if (locations[i].getName() == name) {
+        return i;
+      }
+    }
+    return NOT_FOUND;
   }
 
   int getKeyID(const TYPE_T type, const std::string& key) const {

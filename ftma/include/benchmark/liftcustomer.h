@@ -3,7 +3,8 @@
  * @author Liyun Dai <dlyun2009@gmail.com>
  * @date   Mon Dec 30 19:27:11 2019
  *
- * @brief  cav paper first example
+ * @brief  for the paper  "Safety Verification of Parametrized Systems via
+ * Incremental Methods"
  *
  *
  */

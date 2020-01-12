@@ -32,20 +32,16 @@ class TANextStep : public NextStep {
   shared_ptr<const typename INT_TAS_t::StateManager_t> manager;
   int component_num;
 
-  void doCommit( int*  state, std::vector<OneStep>& re) const;
-
+  void doCommit(int* state, std::vector<OneStep>& re) const;
 
   int getCommitCount(const int component, const int link, int count) const;
 
   void doCommitComponent(int* state, int component,
                          std::vector<OneStep>& re) const;
 
-
-  void discret(const int*  const state, std::vector<pair<int, int>>& paths,
+  void discret(const int* const state, std::vector<pair<int, int>>& paths,
                std::vector<OneStep>& re) const;
-  
 
- 
   void doNormal(int* state, std::vector<OneStep>& re) const;
 
   /**

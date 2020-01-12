@@ -32,6 +32,10 @@ class Location {
 
   string getName(void) const { return name; }
 
+  friend bool operator<(const Location& lhs, const Location& rhs) {
+    return (lhs.getId() < rhs.getId());
+  }
+
   const vector<ClockConstraint>& getInvarients() const { return invariants; }
 
   /**

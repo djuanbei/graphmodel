@@ -21,7 +21,7 @@
 
 namespace graphsat {
 // using namespace std;
-bool element_cmp(const std::vector<int>& lhs, const std::vector<int>& rhs);
+// bool element_cmp(const std::vector<int>& lhs, const std::vector<int>& rhs);
 
 template <typename SYS, typename G, typename PROJ>
 class IncrementalCheck {
@@ -61,11 +61,11 @@ class IncrementalCheck {
       deleteRepeat(project);
 
       if (proj.include(project, pre_project)) {
-        if( proj.projectEqualReach(project, data )){
-          cout << "size: " << project.size() << " : " << pre_project.size()
-          << endl;
-          return true;
-        }
+        // if( proj.projectEqualReach(project, data )){
+        cout << "size: " << project.size() << " : " << pre_project.size()
+             << endl;
+        return true;
+        //}
       }
 
       pre_project.swap(project);

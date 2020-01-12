@@ -42,10 +42,6 @@ class AgentTemplate : public VarDecl {
  public:
   virtual ~AgentTemplate() {}
   void initial(int init) {
-    // template_locations = locs;
-
-    // template_transitions = es;
-
     initial_loc = init;
     initial();
   }
@@ -160,10 +156,18 @@ class AgentTemplate : public VarDecl {
   shared_ptr<Function> getSYSFun(const string& name) const {
     return sys->getFun(name);
   }
+  bool cmp_location(const shared_ptr<L>& lhs, const shared_ptr<L>& rhs) const {
+    return lhs->getId() < rhs->getId();
+  }
 
   void initial() {
     vector<int> srcs;
     vector<int> snks;
+
+    std::sort(template_locations.begin(), template_locations.end(),
+              [this](const shared_ptr<L>& l, const shared_ptr<L>& r) {
+                return cmp_location(l, r);
+              });
 
     for (auto t : template_transitions) {
       srcs.push_back(t->getSource());

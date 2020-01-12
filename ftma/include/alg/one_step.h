@@ -121,7 +121,6 @@ Check_State doOneStep(D* data, const M* manager, const State_t* const state,
             if (it != actions.begin() &&
                 !manager->hasMatchOutUrgentChan(cache_state)) {
               doEvolution(manager, it->component, it->location, cache_state);
-             
             }
             break;
         }

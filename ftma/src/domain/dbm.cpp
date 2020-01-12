@@ -94,7 +94,7 @@ int* DBMManager::randomFeasiableDBM() const {
 
 std::ostream& DBMManager::dumpDot(std::ostream& out, const int* const dbm,
                                   const int clock_num) {
-  if( clock_num<=1){
+  if (clock_num <= 1) {
     return out;
   }
   int MAX_INT = getMAX_INT<int>();
@@ -127,7 +127,7 @@ std::ostream& DBMManager::dumpDot(std::ostream& out, const int* const dbm,
 std::ostream& DBMManager::dump(std::ostream& out, const int* const dbm,
                                const int clock_num) {
   // int MAX_INT = getMAX_INT<int>();
-  if( clock_num<=1){
+  if (clock_num <= 1) {
     return out;
   }
 
@@ -143,8 +143,8 @@ std::ostream& DBMManager::dump(std::ostream& out, const int* const dbm,
 std::ostream& DBMManager::dump(std::ostream& out, const int* const dbm,
                                const std::vector<int>& clock_ids) const {
   int len = clock_ids.size() + 1;
-  if( len<=1){
-    return  out;
+  if (len <= 1) {
+    return out;
   }
   for (int i = 0; i < len; i++) {
     int clock_x = 0;
