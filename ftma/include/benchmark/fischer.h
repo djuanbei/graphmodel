@@ -12,12 +12,13 @@
 #define FISCHGER_H
 #include "model/graphmodel.hpp"
 #include "model/location.h"
+#include "model/system_generator.h"
 #include "model/transition.h"
 
 namespace graphsat {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
-class FischerGenerator {
+class FischerGenerator : public SystemGenerator {
  public:
   FischerGenerator();
 
@@ -25,7 +26,7 @@ class FischerGenerator {
 
  private:
   size_t k = 0;
-  // shared_ptr<typename INT_TAS_t::AgentTemplate_t> tmt;
+
   INT_TAS_t sys;
 
   void initial(shared_ptr<typename INT_TAS_t::AgentTemplate_t>& tmt) const;

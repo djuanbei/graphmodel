@@ -14,13 +14,14 @@
 #include "model/function.h"
 #include "model/graphmodel.hpp"
 #include "model/location.h"
+#include "model/system_generator.h"
 #include "model/transition.h"
 
 #include "property/train_gate_prop.h"
 
 namespace graphsat {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
-class TrainGate {
+class TrainGate : public SystemGenerator {
  public:
   TrainGate() {}
   INT_TAS_t generate(int n) const;

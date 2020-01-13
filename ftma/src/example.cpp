@@ -264,24 +264,15 @@ void fischer(int n) {
     data.getStateAt(state, i);
     dummy.push_back(state[0]);
     dummy.push_back(manager->getValue(0, state, "id") == 1);
+    dummy.push_back(manager->getValue(0, state, "id") > 0);
     int* dbm = manager->getDBM(state);
     manager->getClockManager().encode(dbm);
     dummy.push_back(manager->getClockManager().at(dbm, 0, 0));
     dummy.push_back(manager->getClockManager().at(dbm, 0, 1));
     dummy.push_back(manager->getClockManager().at(dbm, 1, 0));
     dummy.push_back(manager->getClockManager().at(dbm, 1, 1));
-    //
-    //    int* pdbm = manager->getClockManager().project(dbm, clock_ids);
-    //    for (int j = 0; j < 4; j++) {
-    //      dummy.push_back(pdbm[j]);
-    //    }
-    //    delete[] pdbm;
+
     one_states.push_back(dummy);
-
-    // cout<<sys.getLocationName(0, state[ 0] )<< ", "<< (manager->getValue(0,
-    // state, "id" )==1)<<endl; int *dbm=manager->getDBM(state );
-
-    // manager->getClockManager( ).dump( cout, dbm, clock_ids );
   }
 
   std::vector<vector<int>>::iterator it;
@@ -293,9 +284,29 @@ void fischer(int n) {
 
   for (size_t i = 0; i < one_states.size(); i++) {
     int* state = &(one_states[i][0]);
-    cout << sys.getLocationName(0, state[0]) << ", " << state[1] << endl;
-    // int *dbm=manager->getDBM(state );
-    int* dbm = state + 2;
+
+    cout << i + 1 << ": " << sys.getLocationName(0, state[0])
+         << ", ";  // << state[1]<<", " <<state[2] << endl;
+    if (state[1] == 1) {
+      cout << "true"
+           << ", ";
+    } else {
+      cout << "false"
+           << ", ";
+    }
+    if (state[2] == 1) {
+      cout << "true"
+           << ", ";
+    } else {
+      cout << "false"
+           << ", ";
+    }
+    cout << endl;
+
+    //<< sys.getLocationName(0, state[0]) << ", " << state[1]<<", " <<state[2]
+    //<< endl;
+
+    int* dbm = state + 3;
     manager->getClockManager().dump(cout, dbm, 2);
   }
 }
@@ -530,7 +541,7 @@ void incrementalTest() {
   cout << "ok" << endl;
 }
 
-void fisher1() {
+void fischer1() {
   UppaalParser parser(
       "/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml");
   //  UppaalParser parser( "/Users/yun/mycode/c++/ftma/ftma/example/test1.xml"

@@ -15,20 +15,7 @@
 
 //#define YYDEBUG 1
 
-#include "benchmark/fischer.h"
-#include "benchmark/fischer_projector.h"
 #include "example.h"
-#include "io/uppaalmodelparser.h"
-#include "log/logset.h"
-
-#include "benchmark/train_gate.h"
-#include "benchmark/train_gate_projector.h"
-#include "model/graphmodel.hpp"
-#include "model/location.h"
-#include "model/transition.h"
-#include "problem/pmcp.hpp"
-#include "problem/reachability.hpp"
-#include "state/reachableset.hpp"
 
 #include <iostream>
 
@@ -38,16 +25,18 @@ using std::vector;
 using namespace graphsat;
 
 int main(int argc, const char* argv[]) {
-  incrementalTestLC();
-  return 0;
+  // fischer(4);
+  // return 0;
+  // incrementalTestLC();
+  // return 0;
   //  fischerSymmetry( 4);
   //  return 0;
-  lift_customer(4);
-  return 0;
-  // incrementalTestTG( );
+  // lift_customer(4);
+  // return 0;
+  incrementalTestTG();
 
   // fischer(3);
-  // return 0;
+  return 0;
   incrementalTestFS();
   return 0;
 
@@ -76,12 +65,12 @@ int main(int argc, const char* argv[]) {
   //  google::ShutdownGoogleLogging();
   return 0;
 
-  runxml("/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml");
-  return 0;
-  if (argc > 1) {
-    runxml(argv[1]);
-    return 0;
-  }
+  //  runxml("/Users/yunyun/mycode/c++/graphmodel/ftma/example/2doors.xml");
+  //  return 0;
+  //  if (argc > 1) {
+  //    runxml(argv[1]);
+  //    return 0;
+  //  }
   fischer(2);
   return 0;
   testIsConsistent();

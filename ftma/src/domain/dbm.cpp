@@ -358,9 +358,10 @@ void DBMManager::decode(int* dbm) const {
   for (int i = 0; i < clock_num; i++) {
     int row_index = LOC(i, 0);
     for (int j = 0; j < clock_num; j++) {
-      if (dbm[row_index + j] > clock_upper_bounds[i]) {
-        dbm[row_index + j] = MAX_INT;
+      if (dbm[row_index] > clock_upper_bounds[i]) {
+        dbm[row_index] = MAX_INT;
       }
+      row_index++;
     }
   }
 

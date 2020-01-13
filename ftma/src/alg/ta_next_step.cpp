@@ -27,41 +27,56 @@ std::vector<OneStep> TANextStep::getNextStep(void* s) const {
 }
 
 void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
+  vector<bool> hasEnableNormalCh(component_num, false);
+  vector<vector<int>> enableoutNorChan(component_num);
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
     if (sys.hasNormalCh(i, loc_a)) {
       vector<int> dummy_a = manager->getEnableOutNormalChan(i, loc_a, state);
+      enableoutNorChan[i] = dummy_a;
       if (!dummy_a.empty()) {
-        const set<int> temp(dummy_a.begin(), dummy_a.end());
-        for (int j = i + 1; j < component_num; j++) {
-          const int loc_b = manager->getLocationID(j, state);
-          if (sys.hasNormalCh(j, loc_b)) {
-            const vector<int> dummy_b =
-                manager->getEnableOutNormalChan(j, loc_b, state);
-            for (auto e : dummy_b) {
-              if (temp.find(-e) != temp.end()) {
-                vector<int> links_a =
-                    manager->getChanLinks(i, loc_a, -e, state);
-                vector<int> links_b = manager->getChanLinks(j, loc_b, e, state);
-                // b is send part
-                if (e > 0) {
-                  for (auto link_b : links_b) {
-                    for (auto link_a : links_a) {
-                      vector<pair<int, int>> path;
-                      path.push_back(make_pair(j, link_b));
-                      path.push_back(make_pair(i, link_a));
-                      discret(state, path, re);
-                    }
-                  }
+        hasEnableNormalCh[i] = true;
+      }
+    }
+  }
 
-                } else {  // a is send part
-                  for (auto link_b : links_b) {
-                    for (auto link_a : links_a) {
-                      vector<pair<int, int>> path;
-                      path.push_back(make_pair(i, link_a));
-                      path.push_back(make_pair(j, link_b));
-                      discret(state, path, re);
-                    }
+  for (int i = 0; i < component_num; i++) {
+    if (hasEnableNormalCh[i]) {
+      const int loc_a = manager->getLocationID(i, state);
+
+      vector<int>& dummy_a =
+          enableoutNorChan[i];  // manager->getEnableOutNormalChan(i,
+                                // loc_a, state);
+
+      const set<int> temp(dummy_a.begin(), dummy_a.end());
+      for (int j = i + 1; j < component_num; j++) {
+        if (hasEnableNormalCh[j]) {
+          const int loc_b = manager->getLocationID(j, state);
+
+          const vector<int>& dummy_b = enableoutNorChan[j];
+
+          for (auto e : dummy_b) {
+            if (temp.find(-e) != temp.end()) {
+              vector<int> links_a = manager->getChanLinks(i, loc_a, -e, state);
+              vector<int> links_b = manager->getChanLinks(j, loc_b, e, state);
+              // b is send part
+              if (e > 0) {
+                for (auto link_b : links_b) {
+                  for (auto link_a : links_a) {
+                    vector<pair<int, int>> path;
+                    path.push_back(make_pair(j, link_b));
+                    path.push_back(make_pair(i, link_a));
+                    discret(state, path, re);
+                  }
+                }
+
+              } else {  // a is send part
+                for (auto link_b : links_b) {
+                  for (auto link_a : links_a) {
+                    vector<pair<int, int>> path;
+                    path.push_back(make_pair(i, link_a));
+                    path.push_back(make_pair(j, link_b));
+                    discret(state, path, re);
                   }
                 }
               }
@@ -86,7 +101,7 @@ void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
       }
     }
   }
-}
+}  // namespace graphsat
 
 void TANextStep::doCommit(int* state, std::vector<OneStep>& re) const {
   int* counter_value = manager->getCounterValue(state);
@@ -148,37 +163,52 @@ void TANextStep::doCommit(int* state, std::vector<OneStep>& re) const {
 }
 
 void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
+  vector<bool> hasUrgentCh(component_num, false);
+  vector<vector<int>> enableoutUrgantChan(component_num);
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
     std::vector<int> dummy_a = manager->getEnableOutUrgent(i, loc_a, state);
     if (!dummy_a.empty()) {
+      hasUrgentCh[i] = true;
+      enableoutUrgantChan[i] = dummy_a;
+    }
+  }
+  for (int i = 0; i < component_num; i++) {
+    if (hasUrgentCh[i]) {
+      const int loc_a = manager->getLocationID(i, state);
+      std::vector<int>& dummy_a =
+          enableoutUrgantChan[i];  // manager->getEnableOutUrgent(i,
+                                   // loc_a, state);
+
       const std::set<int> temp(dummy_a.begin(), dummy_a.end());
       for (int j = i + 1; j < component_num; j++) {
-        const int loc_b = manager->getLocationID(j, state);
-        const std::vector<int> dummy_b =
-            manager->getEnableOutUrgent(j, loc_b, state);
-        for (auto e : dummy_b) {
-          if (temp.find(-e) != temp.end()) {
-            vector<int> links_a = manager->getChanLinks(i, loc_a, -e, state);
-            vector<int> links_b = manager->getChanLinks(j, loc_b, e, state);
-            // b is send part
-            if (e > 0) {
-              for (auto link_b : links_b) {
-                for (auto link_a : links_a) {
-                  vector<pair<int, int>> path;
-                  path.push_back(make_pair(j, link_b));
-                  path.push_back(make_pair(i, link_a));
-                  discret(state, path, re);
+        if (hasUrgentCh[j]) {
+          const int loc_b = manager->getLocationID(j, state);
+          const std::vector<int>& dummy_b = enableoutUrgantChan[j];
+          // manager->getEnableOutUrgent(j, loc_b, state);
+          for (auto e : dummy_b) {
+            if (temp.find(-e) != temp.end()) {
+              vector<int> links_a = manager->getChanLinks(i, loc_a, -e, state);
+              vector<int> links_b = manager->getChanLinks(j, loc_b, e, state);
+              // b is send part
+              if (e > 0) {
+                for (auto link_b : links_b) {
+                  for (auto link_a : links_a) {
+                    vector<pair<int, int>> path;
+                    path.push_back(make_pair(j, link_b));
+                    path.push_back(make_pair(i, link_a));
+                    discret(state, path, re);
+                  }
                 }
-              }
 
-            } else {  // a is send part
-              for (auto link_b : links_b) {
-                for (auto link_a : links_a) {
-                  vector<pair<int, int>> path;
-                  path.push_back(make_pair(i, link_a));
-                  path.push_back(make_pair(j, link_b));
-                  discret(state, path, re);
+              } else {  // a is send part
+                for (auto link_b : links_b) {
+                  for (auto link_a : links_a) {
+                    vector<pair<int, int>> path;
+                    path.push_back(make_pair(i, link_a));
+                    path.push_back(make_pair(j, link_b));
+                    discret(state, path, re);
+                  }
                 }
               }
             }

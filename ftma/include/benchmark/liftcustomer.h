@@ -15,11 +15,13 @@
 #include "model/location.h"
 #include "model/transition.h"
 
+#include "model/system_generator.h"
+
 namespace graphsat {
 
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
-class LiftCustomer {
+class LiftCustomer : public SystemGenerator {
  public:
   INT_TAS_t generate(int n) const;
 };

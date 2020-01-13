@@ -16,18 +16,39 @@
 #include "state/reachableset.hpp"
 #include "state/ta_statemanager.h"
 
+#include "model/system_generator.h"
+
 namespace graphsat {
 
 class Projector {
  public:
   virtual void operator()(const int* original_state,
                           std::vector<int>& proj) const = 0;
-  virtual bool include(const std::vector<std::vector<int>>& lhs,
+
+  virtual bool contain(const std::vector<int>& one,
                        const std::vector<std::vector<int>>& rhs) const = 0;
 
-  virtual bool projectEqualReach(
-      const std::vector<std::vector<int>>& pre_projs,
-      const ReachableSet<TMStateManager>& reach_set) const = 0;
+  virtual bool include(const std::vector<std::vector<int>>& lhs,
+                       const std::vector<std::vector<int>>& rhs) const;
+
+  virtual bool projectStableCheck(
+      const std::vector<std::vector<int>>& two_dim_projs,
+      const ReachableSet<TMStateManager>& reach_set,
+      const SystemGenerator* generator) const;
+
+  virtual bool constructState(
+      int* state, const std::vector<std::vector<int>>& projs,
+      const std::vector<std::vector<int>>& oneStataes,
+      const std::vector<int>& vertices, const std::vector<int>& choose,
+      const std::vector<std::pair<int, int>>& link_src_snk_map,
+      const std::map<int, int>& link_map) const = 0;
+
+  virtual std::vector<int> getSrc(const std::vector<int>& proj) const = 0;
+
+  virtual std::vector<int> getSnk(const std::vector<int>& proj) const = 0;
+
+  virtual std::vector<int> to_vec(const TMStateManager* manager,
+                                  const int* state) const = 0;
 
   virtual std::ostream& dump(const std::vector<int>& proj_e,
                              std::ostream& out) const = 0;

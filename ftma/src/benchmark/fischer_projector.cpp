@@ -40,6 +40,27 @@ void FischerProjector::operator()(const int* original_state,
   }
 }
 
+std::vector<int> FischerProjector::getSrc(const std::vector<int>& e) const {
+  std::vector<int> re;
+  re.push_back(e[0]);
+  re.push_back(e[2]);  // id!=0
+  re.push_back(e[3] == 1);
+  re.push_back(e[5]);
+  re.push_back(e[7]);
+
+  return re;
+}
+
+std::vector<int> FischerProjector::getSnk(const std::vector<int>& e) const {
+  std::vector<int> re;
+  re.push_back(e[1]);
+  re.push_back(e[2]);
+  re.push_back(e[3] == 2);
+  re.push_back(e[6]);
+  re.push_back(e[10]);
+  return re;
+}
+
 std::vector<int> FischerProjector::to_vec(const TMStateManager* manager,
                                           const int* original_state) const {
   std::vector<int> proj;
@@ -70,12 +91,11 @@ bool FischerProjector::contain(const vector<int>& one,
   size_t j = 0;
   size_t n = rhs[0].size();
   size_t equal_size = (pro_dim + 1) * sizeof(int);
+  size_t equal_n = 2 * pro_dim;
   for (; j < rhs.size(); j++) {
     size_t k = 0;
     if (0 == memcmp(&(one[0]), &(rhs[j][0]), equal_size)) {
-      k = 2 * pro_dim;
-    }
-    if (k == (size_t)(2 * pro_dim)) {
+      k = equal_n;
       for (; k < n; k++) {
         if (one[k] > rhs[j][k]) {
           break;
@@ -83,213 +103,60 @@ bool FischerProjector::contain(const vector<int>& one,
       }
     }
     if (k == n) {
-      break;
+      return true;
     }
   }
-  return j != rhs.size();
+  return false;
 }
 
-bool FischerProjector::include(const vector<vector<int>>& lhs,
-                               const vector<vector<int>>& rhs) const {
-  if (lhs.empty()) {
-    return rhs.empty();
-  }
-  if (rhs.empty()) {
-    return false;
-  }
-  assert(lhs[0].size() == rhs[0].size());
-
-  for (size_t i = 0; i < lhs.size(); i++) {
-    if (!contain(lhs[i], rhs)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool FischerProjector::projectEqualReach(
-    const std::vector<std::vector<int>>& projs,
-    const ReachableSet<TMStateManager>& reach_set) const {
-  std::map<AbsOneDimState, int> oneDimStateMap;
-  std::vector<AbsOneDimState> oneStataes;
-  FischerGenerator generator;
-
-  INT_TAS_t test_sys = generator.generate(4);
-  TANextStep nextS(test_sys);
-
-  shared_ptr<typename INT_TAS_t::StateManager_t> test_manager =
-      test_sys.getStateManager();
-  ReachableSet<typename INT_TAS_t::StateManager_t> data(test_manager);
-
-  int id = 0;
-  for (auto& e : projs) {
-    AbsOneDimState state;
-    state.loc = e[0];
-    state.has_id = (e[3] == 1);
-    state.clock_lower_bound = e[5];
-    state.clock_upper_bound = e[7];
-    if (oneDimStateMap.find(state) == oneDimStateMap.end()) {
-      oneDimStateMap[state] = id++;
-      oneStataes.push_back(state);
-    }
-  }
-  Graph_t<int> graph;
-  std::vector<int> srcs;
-  std::vector<int> snks;
-  std::set<std::pair<int, int>> ant_symmetry;
-  std::map<int, int> link_map;
-  for (int i = 0; i < (int)projs.size(); i++) {
-    std::vector<int> e = projs[i];
-    AbsOneDimState A;
-    A.loc = e[0];
-    A.has_id = e[3] == 1;
-    A.clock_lower_bound = e[5];
-    A.clock_upper_bound = e[7];
-    int src = oneDimStateMap.at(A);
-
-    AbsOneDimState B;
-    B.loc = e[1];
-    B.has_id = e[3] == 2;
-    B.clock_lower_bound = e[6];
-    B.clock_upper_bound = e[10];
-    int snk = oneDimStateMap.at(B);
-    std::pair<int, int> dummy1(src, snk);
-    std::pair<int, int> dummy2(snk, src);
-
-    if (ant_symmetry.find(dummy2) == ant_symmetry.end()) {
-      link_map[srcs.size()] = i;
-      ant_symmetry.insert(dummy1);
-
-      srcs.push_back(src);
-      snks.push_back(snk);
-      link_map[srcs.size()] = -i - 1;
-      srcs.push_back(snk);
-      snks.push_back(src);
-    }
-  }
-  graph.initial(srcs, snks);
-  std::set<std::vector<int>> check;
-  // FullChoose fc(component_num, id);
-
-  int* state = manager->newState();
-  int link_num = graph.getLink_num();
-
-  for (int i = 0; i < link_num; i++) {
-    int src, snk;
-    int ll = link_map[i];
-    if (ll < 0) {
-      continue;
-    }
-
-    graph.findSrcSnk(i, src, snk);
-
-    for (int j = 0; j < link_num; j++) {
-      int jj = link_map[j];
-      if (jj < 0) {
-        continue;
-      }
-
-      int src_2, snk_2;
-      graph.findSrcSnk(j, src_2, snk_2);
-      if (projs[ll][pro_dim] != 0) {
-        if (oneStataes[src].has_id == 0 && oneStataes[snk].has_id == 0 &&
-            oneStataes[src_2].has_id == 0 && oneStataes[snk_2].has_id == 0) {
-          continue;
-        }
-
-      } else {
-        if (oneStataes[src].has_id == 1 || oneStataes[snk].has_id == 1 ||
-            oneStataes[src_2].has_id == 1 || oneStataes[snk_2].has_id == 1) {
-          continue;
-        }
-      }
-
-      if (graph.directConnect(src, src_2) && graph.directConnect(src, snk_2) &&
-          graph.directConnect(snk, src_2) && graph.directConnect(snk, snk_2)) {
-        vector<int> vertices;
-        vertices.push_back(src);
-        vertices.push_back(snk);
-        vertices.push_back(src_2);
-        vertices.push_back(snk_2);
-        std::vector<std::vector<int>> links;
-        std::vector<std::pair<int, int>> link_src_snk_map;
-        links.push_back(graph.getDirectEdges(src, snk));
-        link_src_snk_map.push_back(make_pair(0, 1));
-        links.push_back(graph.getDirectEdges(src, src_2));
-        link_src_snk_map.push_back(make_pair(0, 2));
-        links.push_back(graph.getDirectEdges(src, snk_2));
-        link_src_snk_map.push_back(make_pair(0, 3));
-        links.push_back(graph.getDirectEdges(snk, src_2));
-        link_src_snk_map.push_back(make_pair(1, 2));
-        links.push_back(graph.getDirectEdges(snk, snk_2));
-        link_src_snk_map.push_back(make_pair(1, 3));
-        links.push_back(graph.getDirectEdges(src_2, snk_2));
-        link_src_snk_map.push_back(make_pair(2, 3));
-
-        std::vector<int> choose;
-        for (auto& l : links) {
-          choose.push_back(l.size());
-        }
-        FullChoose fc(choose);
-
-        while (fc.next()) {
-          vector<int> one_choose = *fc;
-          for (size_t i = 0; i < choose.size(); i++) {
-            one_choose[i] = links[i][one_choose[i]];
-          }
-          test_manager->reset(state);
-          constructState(state, projs, oneStataes, vertices, one_choose,
-                         link_src_snk_map, link_map);
-
-          std::vector<OneStep> re = nextS.getNextStep(const_cast<int*>(state));
-          data.clear();
-          doOneStep(&data, test_manager.get(), state, re);
-          for (size_t k = 0; k < data.size(); k++) {
-            // cout << "======" << endl;
-
-            data.getStateAt(state, k);
-            // test_manager->dump(state);
-            vector<int> dummy = to_vec(test_manager.get(), state);
-            if (!contain(dummy, projs)) {
-              test_manager->dump(state);
-              return false;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  manager->destroyState(state);
-
-  return true;
-}
-
-void FischerProjector::constructState(
+bool FischerProjector::constructState(
     int* state, const std::vector<std::vector<int>>& pre_projs,
-    const std::vector<AbsOneDimState>& oneStataes,
+    const std::vector<std::vector<int>>& oneStataes,
     const std::vector<int>& vertices, const std::vector<int>& links,
     const std::vector<std::pair<int, int>>& link_src_snk_map,
     const std::map<int, int>& link_map) const {
-  // manager->dump(state);
   int num = vertices.size();
-  // state[num] = 0;
+
+  int vertex = vertices[0];
+  if (oneStataes[vertex][1] == 1) {
+    bool b = false;
+    for (int i = 0; i < num; i++) {
+      int vertex = vertices[i];
+      if (oneStataes[vertex][2] == 1) {
+        b = true;
+      }
+    }
+    if (!b) {
+      return false;
+    }
+  } else {
+    bool b = true;
+    for (int i = 0; i < num; i++) {
+      int vertex = vertices[i];
+      if (oneStataes[vertex][2] == 1) {
+        b = false;
+      }
+    }
+    if (!b) {
+      return false;
+    }
+  }
+
   for (int i = 0; i < num; i++) {
     int vertex = vertices[i];
-    int loc = oneStataes[vertex].loc;
+    int loc = oneStataes[vertex][0];
     state[i] = loc;
 
-    if (oneStataes[vertex].has_id == 1) {
+    if (oneStataes[vertex][2] == 1) {
       state[num] = i + 1;
     }
-    // loc    id freeze 0         clock_1 ..
-    // component_num+2         component_num+1
-    state[i + num + 3] = oneStataes[vertex].clock_lower_bound;
+
+    state[i + num + 3] = oneStataes[vertex][3];
 
     int index = num + 2 + (i + 1) * (num + 1);
-    state[index] = oneStataes[vertex].clock_upper_bound;
+    state[index] = oneStataes[vertex][4];
   }
-  // manager->dump(state);
+
   for (size_t i = 0; i < links.size(); i++) {
     int e = links[i];
     int src = link_src_snk_map[i].first;
@@ -313,82 +180,7 @@ void FischerProjector::constructState(
     index = clock_start + DBMManager::getIndex(snk + 1, src + 1, num + 1);
     state[index] = pre_projs[link_id][11];  //// snk-src
   }
-}
-
-FischerProjector::BetaElement FischerProjector::beta(
-    const std::vector<int>& one) const {
-  BetaElement re;
-  re.A_loc = one[0];
-  re.B_loc = one[1];
-  re.A_has_id = one[2];
-  re.B_has_id = one[3];
-  return re;
-}
-
-bool operator<(const FischerProjector::BetaElement& lhs,
-               const FischerProjector::BetaElement& rhs) {
-  if (lhs.A_loc < rhs.A_loc) {
-    return true;
-  }
-
-  if (lhs.A_loc > rhs.A_loc) {
-    return false;
-  }
-
-  if (lhs.B_loc < rhs.B_loc) {
-    return true;
-  }
-
-  if (lhs.B_loc > rhs.B_loc) {
-    return false;
-  }
-
-  if (lhs.A_has_id < rhs.A_has_id) {
-    return true;
-  }
-
-  if (lhs.A_has_id > rhs.A_has_id) {
-    return false;
-  }
-  if (lhs.B_has_id < rhs.B_has_id) {
-    return true;
-  }
-  if (lhs.B_has_id > rhs.B_has_id) {
-    return false;
-  }
-  for (int i = 0; i < 9; i++) {
-    if (lhs.clock_dbm[i] < rhs.clock_dbm[i]) {
-      return true;
-    }
-    if (lhs.clock_dbm[i] > rhs.clock_dbm[i]) {
-      return false;
-    }
-  }
-  return false;
-}
-
-bool operator<(const FischerProjector::AbsOneDimState& lhs,
-               const FischerProjector::AbsOneDimState& rhs) {
-  if (lhs.loc < rhs.loc) {
-    return true;
-  }
-  if (lhs.loc > rhs.loc) {
-    return false;
-  }
-  if (lhs.has_id < rhs.has_id) {
-    return true;
-  }
-  if (lhs.has_id > rhs.has_id) {
-    return false;
-  }
-  if (lhs.clock_lower_bound < rhs.clock_lower_bound) {
-    return true;
-  }
-  if (lhs.clock_lower_bound > rhs.clock_lower_bound) {
-    return false;
-  }
-
-  return lhs.clock_upper_bound < rhs.clock_upper_bound;
+  return true;
 }
 
 }  // namespace graphsat

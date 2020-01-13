@@ -65,44 +65,55 @@ void TrainGateProjector::operator()(const int* original_state,
   }
 }
 
-bool TrainGateProjector::include(const std::vector<vector<int>>& lhs,
-                                 const vector<vector<int>>& rhs) const {
-  if (lhs.empty()) {
-    return rhs.empty();
-  }
-  if (rhs.empty()) {
-    return false;
-  }
-  assert(lhs[0].size() == rhs[0].size());
+bool TrainGateProjector::contain(
+    const vector<int>& one, const std::vector<std::vector<int>>& rhs) const {
+  size_t n = one.size();
 
-  size_t n = lhs[0].size();
-
-  size_t equal_size = pro_dim + pro_dim * pro_dim;
-
-  for (size_t i = 0; i < lhs.size(); i++) {
-    size_t j = 0;
-    for (; j < rhs.size(); j++) {
-      size_t k = 0;
-      if (0 == memcmp(&(lhs[i][0]), &(rhs[j][0]), equal_size * sizeof(int))) {
-        k = equal_size;
-      }
-      if (k == equal_size) {
-        for (; k < n; k++) {
-          if (lhs[i][k] > rhs[j][k]) {
-            break;
-          }
+  size_t equal_size = (pro_dim + pro_dim * pro_dim) * sizeof(int);
+  size_t equal_n = (pro_dim + pro_dim * pro_dim);
+  size_t j = 0;
+  for (; j < rhs.size(); j++) {
+    size_t k = 0;
+    if (0 == memcmp(&(one[0]), &(rhs[j][0]), equal_size)) {
+      k = equal_n;
+      for (; k < n; k++) {
+        if (one[k] > rhs[j][k]) {
+          break;
         }
       }
-      if (k == n) {
-        break;
-      }
     }
-    if (j == rhs.size()) {
-      dump_D(lhs[i]);
-      return false;
+    if (k == n) {
+      return true;
     }
   }
-  return true;
+  return false;
+}
+
+std::vector<int> TrainGateProjector::getSrc(
+    const std::vector<int>& proj) const {
+  std::vector<int> re;
+  return re;
+}
+
+std::vector<int> TrainGateProjector::getSnk(
+    const std::vector<int>& proj) const {
+  std::vector<int> re;
+  return re;
+}
+
+bool TrainGateProjector::constructState(
+    int* state, const std::vector<std::vector<int>>& projs,
+    const std::vector<std::vector<int>>& oneStataes,
+    const std::vector<int>& vertices, const std::vector<int>& choose,
+    const std::vector<std::pair<int, int>>& link_src_snk_map,
+    const std::map<int, int>& link_map) const {
+  return false;
+}
+
+std::vector<int> TrainGateProjector::to_vec(const TMStateManager* manager,
+                                            const int* original_state) const {
+  std::vector<int> re;
+  return re;
 }
 
 std::ostream& TrainGateProjector::dump(const vector<int>& proj_e,
