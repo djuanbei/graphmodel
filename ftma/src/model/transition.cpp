@@ -12,7 +12,7 @@ bool Transition::ready(const TMStateManager* manager,
     assert(dbm_manager.isConsistent(source_DBM));
     int* copy_DBM = dbm_manager.createDBM(source_DBM);
 
-    for (auto cs : guards) {
+    for (auto& cs : guards) {
       dbm_manager.andImpl(copy_DBM, cs);
     }
 
@@ -26,7 +26,7 @@ bool Transition::ready(const TMStateManager* manager,
   if (!counter_cons.empty()) {
     const int* counter_value = manager->getCounterValue(state);
 
-    for (auto cs : counter_cons) {
+    for (auto& cs : counter_cons) {
       if (!cs(const_cast<int*>(counter_value))) {
         return false;
       }
@@ -47,11 +47,11 @@ void Transition::operator()(const TMStateManager* const manager,
    * the state which statisfied the guards can jump this transition
    *
    */
-  for (auto cs : guards) {
+  for (auto& cs : guards) {
     dbm_manager.andImpl(source_DBM, cs);
   }
 
-  for (auto reset : resets) {
+  for (auto& reset : resets) {
     assert(reset.first > 0);    // clock id start from 1
     assert(reset.second >= 0);  // clock value must positive
     dbm_manager.resetImpl(source_DBM, reset.first, reset.second);
@@ -60,7 +60,7 @@ void Transition::operator()(const TMStateManager* const manager,
   if (!actions.empty()) {
     int* counterValue = manager->getCounterValue(re_state);
 
-    for (auto action : actions) {
+    for (auto& action : actions) {
       action(counterValue);
     }
   }
@@ -89,7 +89,7 @@ std::ostream& Transition::dump2Dot(std::ostream& out) const {
   out << "\t" << source << " -> " << target << " [label=<";
   out << "<table border=\"0\" >" << endl;
   out << "<tr><td>" << source << "-" << target << "</td></tr>" << endl;
-  for (auto e : guards) {
+  for (auto& e : guards) {
     e.dump2Dot(out);
   }
 

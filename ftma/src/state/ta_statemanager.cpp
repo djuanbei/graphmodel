@@ -1,5 +1,6 @@
 
 #include <cassert>
+#include <unordered_set>
 
 #include "state/ta_statemanager.h"
 
@@ -111,34 +112,36 @@ bool TMStateManager::isReachable(const int component, const int loc,
                                                            getDBM(state));
 }
 
+std::vector<int> TMStateManager::getCommitComponents(
+    const int* const state) const {
+  std::vector<int> re;
+  for (int i = 0; i < component_num; i++) {
+    if (sys.isCommit(i, state[i])) {
+      re.push_back(i);
+    }
+  }
+  return re;
+}
+
 bool TMStateManager::hasMatchOutUrgentChan(const int* const state) const {
   if (!sys.hasUrgentCh()) {
     return false;
   }
-  std::set<int> send_part, receive_part;
+  std::unordered_set<int> pass_part;
+
   for (int comp = 0; comp < component_num; comp++) {
     int loc = getLocationID(comp, state);
     if (sys.hasUrgentCh(comp, loc)) {
-      std::vector<int> dummy =
+      std::set<int> dummy =
           getEnableOutUrgent(comp, loc, const_cast<int*>(state));
+
       for (auto e : dummy) {
-        if (e > 0) {
-          if (receive_part.find(-e) != receive_part.end()) {
-            return true;
-          }
-        } else {
-          if (send_part.find(-e) != send_part.end()) {
-            return true;
-          }
+        if (pass_part.find(-e) != pass_part.end()) {
+          return true;
         }
       }
-      for (auto e : dummy) {
-        if (e > 0) {
-          send_part.insert(e);
-        } else {
-          receive_part.insert(e);
-        }
-      }
+
+      pass_part.insert(dummy.begin(), dummy.end());
     }
   }
   return false;
@@ -153,7 +156,7 @@ bool TMStateManager::hasOutSendBroadcastChan(const int* const state) const {
   for (int comp = 0; comp < component_num; comp++) {
     int loc = getLocationID(comp, state);
     if (sys.hasBroadcaseSendCh(comp, loc)) {
-      std::vector<int> dummy =
+      std::set<int> dummy =
           getEnableOutBroadcast(comp, loc, const_cast<int*>(state));
       for (auto e : dummy) {
         if (e > 0) {
@@ -364,25 +367,35 @@ Compression<int> TMStateManager::getBodyCompression() const {
   return re_comp;
 }
 
-std::vector<int> TMStateManager::getEnableOutBroadcast(const int component,
-                                                       const int loc,
-                                                       int* state) const {
+std::vector<int> TMStateManager::getEnableOutLinks(const int component,
+                                                   const int source, int* state) const{
   std::vector<int> re;
+
+
+  const vector<int>& out_ts = sys.getOutTransition(component, source);
+  for (auto link : out_ts) {
+    if (transitionReady(component, link, state)) {
+      re.push_back(link);
+    }
+  }
+  return re;
+}
+
+std::set<int> TMStateManager::getEnableOutBroadcast(const int component,
+                                                    const int loc,
+                                                    int* state) const {
+  std::set<int> re;
   int* counter_value = getCounterValue(state);
-  vector<int> outs = sys.getOutTransition(component, loc);
+  const vector<int>& outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
       if (sys.agents[component]->transitions[link].getChannel().getType() ==
           BROADCAST_CH) {
         if (transitionReady(component, link, state)) {
-          int chid =
-              sys.agents[component]->transitions[link].getChannel().getGlobalId(
-                  counter_value);
-          if (sys.agents[component]->transitions[link].getChannel().isSend()) {
-            re.push_back(chid);
-          } else {
-            re.push_back(-chid);
-          }
+          re.insert(sys.agents[component]
+                        ->transitions[link]
+                        .getChannel()
+                        .getSiginGlobalId(counter_value));
         }
       }
     }
@@ -390,25 +403,21 @@ std::vector<int> TMStateManager::getEnableOutBroadcast(const int component,
   return re;
 }
 
-std::vector<int> TMStateManager::getEnableOutUrgent(const int component,
-                                                    const int loc,
-                                                    State_t* state) const {
-  std::vector<int> re;
+std::set<int> TMStateManager::getEnableOutUrgent(const int component,
+                                                 const int loc,
+                                                 State_t* state) const {
+  std::set<int> re;
   int* counter_value = getCounterValue(state);
-  vector<int> outs = sys.getOutTransition(component, loc);
+  const vector<int>& outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
       if (sys.agents[component]->transitions[link].getChannel().getType() ==
           URGENT_CH) {
         if (transitionReady(component, link, state)) {
-          int chid =
-              sys.agents[component]->transitions[link].getChannel().getGlobalId(
-                  counter_value);
-          if (sys.agents[component]->transitions[link].getChannel().isSend()) {
-            re.push_back(chid);
-          } else {
-            re.push_back(-chid);
-          }
+          re.insert(sys.agents[component]
+                        ->transitions[link]
+                        .getChannel()
+                        .getSiginGlobalId(counter_value));
         }
       }
     }
@@ -416,25 +425,18 @@ std::vector<int> TMStateManager::getEnableOutUrgent(const int component,
   return re;
 }
 
-vector<int> TMStateManager::getEnableOutNormalChan(const int component,
-                                                   const int loc,
-                                                   int* state) const {
-  vector<int> re;
-  vector<int> outs = sys.getOutTransition(component, loc);
+set<int> TMStateManager::getEnableOutNormalChan(const int component,
+                                                const int loc,
+                                                int* state) const {
+  set<int> re;
+  const vector<int>& outs = sys.getOutTransition(component, loc);
   int* counter_value = getCounterValue(state);
   for (auto link : outs) {
     if (sys.hasChannel(component, link)) {
-      if (sys.agents[component]->transitions[link].getChannel().getType() ==
-          ONE2ONE_CH) {
+      const Channel& ch = sys.agents[component]->transitions[link].getChannel();
+      if (ch.getType() == ONE2ONE_CH) {
         if (transitionReady(component, link, state)) {
-          int chid =
-              sys.agents[component]->transitions[link].getChannel().getGlobalId(
-                  counter_value);
-          if (sys.agents[component]->transitions[link].getChannel().isSend()) {
-            re.push_back(chid);
-          } else {
-            re.push_back(-chid);
-          }
+          re.insert(ch.getSiginGlobalId(counter_value));
         }
       }
     }
@@ -456,28 +458,20 @@ string TMStateManager::getLocationName(const int component,
 
 vector<int> TMStateManager::getChanLinks(const int component, const int source,
                                          int chid, int* state) const {
-  vector<int> re;
+  // set<int> re;
   vector<int> outs = sys.agents[component]->graph.getAdj(source);
   int* counter_value = getCounterValue(state);
-  if (chid > 0) {
-    for (auto link : outs) {
-      if (sys.hasChannel(component, link) &&
-          sys.getChannel(component, link).isSend() &&
-          sys.getChannel(component, link).getGlobalId(counter_value) == chid) {
-        re.push_back(link);
-      }
-    }
-  } else {
-    chid *= -1;
-    for (auto link : outs) {
-      if (sys.hasChannel(component, link) &&
-          sys.getChannel(component, link).isRecive() &&
-          sys.getChannel(component, link).getGlobalId(counter_value) == chid) {
-        re.push_back(link);
-      }
+  vector<int> temp;
+
+  for (auto link : outs) {
+    if (sys.hasChannel(component, link) &&
+        sys.getChannel(component, link).getSiginGlobalId(counter_value) ==
+            chid) {
+      temp.push_back(link);
     }
   }
-  return re;
+
+  return temp;
 }
 
 vector<int> TMStateManager::blockComponents(const int chid,
@@ -511,14 +505,6 @@ int TMStateManager::getComponentClockStartLoc(const int id) const {
   }
   return re;
 }
-
-// int TMStateManager::getComponentClockStartID(const int id) const {
-//   int re = 1;
-//   for (int i = 0; i < id; i++) {
-//     re += sys.getComponentClockNumber(i);
-//   }
-//   return re;
-// }
 
 void TMStateManager::swap(const int i, const int j, int* state) const {
   if (i == j) {
@@ -570,19 +556,17 @@ void TMStateManager::employLocInvariants(const int component,
       .employInvariants(getClockManager(), getDBM(state));
 }
 
-void TMStateManager::discretRun(const int component, const int link,
-                                int* state) const {
+void TMStateManager::discreteRun(const int component, const int link,
+                                 int* state) const {
   sys.agents[component]->transitions[link](this, state);
   int source = sys.getSrc(component, link);
   int target = sys.getSnk(component, link);
   if (sys.isFreezeLocation(component, source)) {
     decFreeze(state);
-    // state[getFreezeLocation()]--;
     assert(getFreezeComponentNumber(state) >= 0);
   }
   if (sys.isFreezeLocation(component, target)) {
     incFreeze(state);
-    // state[getFreezeLocation()]++;
     assert(getFreezeComponentNumber(state) <= component_num);
   }
 

@@ -38,6 +38,7 @@ class ClockConstraint {
                   COMP_OPERATOR eop, const Argument& rhs);
 
   void to_real(const TOReal* convertor);
+  void setSelectValue( const int setSelectValue );
 
   ClockConstraint neg(void) const;
 

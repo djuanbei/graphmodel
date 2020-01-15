@@ -151,7 +151,7 @@ Check_State doOneStep(D* data, const M* manager, const State_t* const state,
 template <typename M, typename State_t>
 bool doDiscreteJump(const M* manager, int component, int link, State_t* state) {
   if (manager->transitionReady(component, link, state)) {
-    manager->discretRun(component, link, state);
+    manager->discreteRun(component, link, state);
     return true;
   }
 

@@ -11,6 +11,7 @@
 #ifndef __STATE_MANAGER_H
 #define __STATE_MANAGER_H
 #include <vector>
+#include<set>
 
 #include "discretestate.hpp"
 #include "domain/dbm.h"
@@ -98,7 +99,7 @@ class TMStateManager : public ComponentInfo {
     return state[component + component_num] == NO_CHANNEL;
   }
 
-  vector<int> getChanLinks(const int component, const int source, int chid,
+  std::vector<int> getChanLinks(const int component, const int source, int chid,
                            int* state) const;
 
   int* newState() const;
@@ -128,6 +129,8 @@ class TMStateManager : public ComponentInfo {
   int getFreezeComponentNumber(const int* const state) const {
     return state[freeze_location_index];
   }
+  
+  std::vector<int> getCommitComponents(const int * const state  ) const;
 
   int getParentId(const int* const state) const {
     return state[parent_location_index];
@@ -278,20 +281,24 @@ class TMStateManager : public ComponentInfo {
    */
   void swap(const int i, const int j, int* state) const;
 
-  std::vector<int> getEnableOutBroadcast(const int component, const int loc,
+  std::vector<int> getEnableOutLinks( const int component, int loc, int *state ) const;
+  
+  std::set<int> getEnableOutBroadcast(const int component, const int loc,
                                          int* state) const;
 
-  std::vector<int> getEnableOutUrgent(const int component, const int loc,
+  std::set<int> getEnableOutUrgent(const int component, const int loc,
                                       int* state) const;
 
-  std::vector<int> getEnableOutNormalChan(const int component, const int loc,
+  std::set<int> getEnableOutNormalChan(const int component, const int loc,
                                           int* state) const;
+
+
 
   bool hasDiffCons() const;
 
   void employLocInvariants(const int component, int* state) const;
 
-  void discretRun(const int component, const int link, int* state) const;
+  void discreteRun(const int component, const int link, int* state) const;
 
   vector<int*> evolution(const int component, const int loc, int* state) const;
 

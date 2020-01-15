@@ -31,6 +31,7 @@ class RealArgument {
   ~RealArgument() {
     if (index != nullptr) {
       delete index;
+      index=nullptr;
     }
   }
   RealArgument(const RealArgument& other)
@@ -42,6 +43,8 @@ class RealArgument {
   void setType(ARGUMENT_TYPE t) { type = t; }
   ARGUMENT_TYPE getType() const { return type; }
   void setValue(int_fast64_t v) { value = v; }
+  
+  void setSelectValue( const int v);
 
   int_fast64_t getValue() const { return value; }
 
@@ -63,7 +66,6 @@ class RealArgument {
   ARGUMENT_TYPE type;
   int_fast64_t value;
 
-  // std::unique_ptr<RealArgument> index;
   RealArgument* index;
 };
 

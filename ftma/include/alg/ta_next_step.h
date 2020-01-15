@@ -39,7 +39,7 @@ class TANextStep : public NextStep {
   void doCommitComponent(int* state, int component,
                          std::vector<OneStep>& re) const;
 
-  void discret(const int* const state, std::vector<pair<int, int>>& paths,
+  void discrete(const int* const state, std::vector<pair<int, int>>& paths,
                std::vector<OneStep>& re) const;
 
   void doNormal(int* state, std::vector<OneStep>& re) const;

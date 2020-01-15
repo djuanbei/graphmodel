@@ -387,7 +387,7 @@ TEST_F(GraphModelTest, SELECT_VAR_ARG) {
 
 TEST(TRAIN_GATE_H, generate) {
   TrainGate TG;
-  int n = 2;
+  int n = 3;
   INT_TAS_t tg_sys = TG.generate(n);
   shared_ptr<typename INT_TAS_t::StateManager_t> manager =
       tg_sys.getStateManager();

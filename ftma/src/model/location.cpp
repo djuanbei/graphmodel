@@ -45,7 +45,7 @@ std::ostream& Location::dump2Dot(std::ostream& out) const {
 
   out << "<table border=\"0\" >" << std::endl;
   out << "<tr><td>" << name << "</td></tr>" << std::endl;
-  for (auto cs : invariants) {
+  for (auto& cs : invariants) {
     cs.dump2Dot(out);
   }
   out << "</table>";

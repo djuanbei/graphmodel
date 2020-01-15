@@ -22,9 +22,7 @@
 #include "model/to_real.h"
 
 namespace graphsat {
-// using std::ostream;
-// using std::setw;
-// using std::to_string;
+
 
 // first - second op rhs
 class CounterConstraint {
@@ -39,6 +37,7 @@ class CounterConstraint {
     return executeOp(one - two, op, three);
   }
   void to_real(const TOReal* convertor);
+  void setSelectValue( const int select_value);
 
  private:
   Argument first;

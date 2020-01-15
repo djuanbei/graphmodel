@@ -86,6 +86,10 @@ class CounterAction {
     real_lhs = convertor->to_real(INT_T, lhs);
     real_rhs = convertor->to_real(INT_T, rhs);
   }
+  void setSelectValue( const int select_value){
+    real_lhs.setSelectValue(select_value );
+    real_rhs.setSelectValue( select_value);
+  }
 
   void operator()(int* counter_value) const {
     if (action == CALL_ACTION) {

@@ -40,6 +40,10 @@ void ClockConstraint::to_real(const TOReal* convertor) {
        real_rhs_arg.getValue());
 }
 
+void ClockConstraint::setSelectValue( const int select_value){
+  
+}
+
 // void ClockConstraint::globalUpdate(const vector<int> &parameter_value) {
 //   if (rhs_arg.type == CONST_ARG) {
 //     return;

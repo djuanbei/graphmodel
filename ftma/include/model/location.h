@@ -125,15 +125,7 @@ class Location {
 
   std::ostream& dump2Dot(std::ostream& out) const;
 
-  // string to_string( ) const{
-  //   string re_str="name: "+name;
-  //   if( !invariants.empty( )){
-  //     re_str+"\n"+"invariants: ";
-  //     for( auto e: invariants){
 
-  //     }
-  //   }
-  // }
   friend std::ostream& operator<<(std::ostream& os, const Location& loc);
 
  private:

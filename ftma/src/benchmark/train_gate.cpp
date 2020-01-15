@@ -23,8 +23,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   sys.addChan("go", sys["N"], URGENT_CH);  // urgent chan go[ N]
 
   ADD_CLOCK((*train_tmt), x);
-  vector<typename INT_TAS_t::T_t> es;
-  vector<typename INT_TAS_t::L_t> ls;
+
 
   typename INT_TAS_t::L_t* Safe = train_tmt->createLocation("Safe");
   typename INT_TAS_t::L_t* Appr = train_tmt->createLocation("Appr");
@@ -41,11 +40,7 @@ INT_TAS_t TrainGate::generate(int n) const {
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(5));  // x <= 5
   (*Cross) += cs2;
 
-  // ls.push_back(Safe);
-  // ls.push_back(Appr);
-  // ls.push_back(Stop);
-  // ls.push_back(Start);
-  // ls.push_back(Cross);
+ 
 
   typename INT_TAS_t::T_t* Safe_Appr = train_tmt->createTransition(Safe, Appr);
 

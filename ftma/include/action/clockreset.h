@@ -19,6 +19,10 @@ class ClockReset {
     clock_value = convertor->to_real(CLOCK_T, clock);
     rhs_value = convertor->to_real(INT_T, rhs);
   }
+  void setSelectValue(const int select_value) {
+    clock_value.setSelectValue(select_value);
+    rhs_value.setSelectValue(select_value);
+  }
   std::pair<int, int> getValue() const {
     return std::make_pair(clock_value.getValue(), rhs_value.getValue());
   }
