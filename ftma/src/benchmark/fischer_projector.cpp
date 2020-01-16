@@ -44,7 +44,7 @@ std::vector<int> FischerProjector::to_vec(const TMStateManager* manager,
   for (int i = 0; i < pro_dim; i++) {
     proj.push_back(original_state[i]);
   }
-  int id = *manager->getValue(0,  "id", original_state);
+  int id = *manager->getValue(0, "id", original_state);
   proj.push_back(id != 0);
   if (id == 1) {
     proj.push_back(1);
@@ -91,9 +91,7 @@ bool FischerProjector::constructState(
     const std::vector<std::vector<int>>& pre_projs,
     const std::vector<std::vector<int>>& vertices,
     const std::vector<int>& links,
-    const std::vector<std::pair<int, int>>& link_src_snk_map
-    // const std::map<int, int>& link_map
-    ) const {
+    const std::vector<std::pair<int, int>>& link_src_snk_map) const {
   int num = vertices.size();
 
   if (vertices[0][1] == 1) {
@@ -136,8 +134,6 @@ bool FischerProjector::constructState(
     int link_id = links[i];
     int src = link_src_snk_map[i].first;
     int snk = link_src_snk_map[i].second;
-
-    //int link_id = link_map.at(e);
 
     if (link_id < 0) {
       int temp = src;

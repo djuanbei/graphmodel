@@ -57,6 +57,8 @@ bool LiftCustomerProjector::constructState(
     const std::vector<std::pair<int, int>>& link_src_snk_map
     //const std::map<int, int>& link_map
                                            ) const {
+                                  
+                                            
   int num = vertices.size();
   state[0] = vertices[0][0];
   for (int i = 0; i < num; i++) {

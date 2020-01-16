@@ -138,12 +138,14 @@ bool TrainGateProjector::constructState(
     const std::vector<std::vector<int>>& vertices,
     const std::vector<int>& links,
     const std::vector<std::pair<int, int>>& link_src_snk_map) const {
+  manager->dump( state);
   int num = vertices.size();
   assert(4 == num);
   state[num] = vertices[0][1];  // gate location
   for (int i = 0; i < num; i++) {
     state[i] = vertices[i][0];  // train location
   }
+  manager->dump( state);
   int gate_id = manager->getCompentId("Gate", 0);
 
   int* list = manager->getValue(gate_id, "list", state);
@@ -154,13 +156,37 @@ bool TrainGateProjector::constructState(
       temp.push_back(make_pair(vertices[i][4], i));
     }
   }
+  manager->dump( state);
   std::sort(temp.begin(), temp.end(), sortQ);
   *len = temp.size();
   for (size_t i = 0; i < temp.size(); i++) {
     list[i] = temp[i].second;
   }
-  int *dbm=manager->getDBM( state);
-  
+  manager->dump( state);
+  int* dbm = manager->getDBM(state);
+  for (int i = 0; i < num; i++) {
+    dbm[i + 1] = vertices[i][2];
+    dbm[(i + 1) * (num + 1)] = vertices[i][3];
+  }
+  manager->dump( state);
+  for (size_t i = 0; i < links.size(); i++) {
+    int link_id = links[i];
+    int src = link_src_snk_map[i].first;
+    int snk = link_src_snk_map[i].second;
+
+    if (link_id < 0) {
+      int temp = src;
+      src = snk;
+      snk = temp;
+      link_id *= -1;
+      link_id--;
+    }
+    int index = DBMManager::getIndex(src + 1, snk + 1, num + 1);
+    dbm[index] = pre_projs[link_id][pro_clock_start + 5];
+    index = DBMManager::getIndex(snk + 1, src + 1, num + 1);
+    dbm[index] = pre_projs[link_id][pro_clock_start + 7];
+  }
+  manager->dump( state);
 
   return true;
 }

@@ -106,10 +106,10 @@ class AgentSystem : public VarDecl {
     int pass = 0;
     for (size_t i = 0; i < agents.size(); i++) {
       if (agents[i]->getTemplateName() == template_name) {
-        pass++;
         if (pass == agent_id) {
-          return 0;
+          return i;
         }
+         pass++;
       }
     }
     return NOT_FOUND;
