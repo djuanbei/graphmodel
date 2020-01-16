@@ -10,8 +10,8 @@
 
 #ifndef __STATE_MANAGER_H
 #define __STATE_MANAGER_H
+#include <set>
 #include <vector>
-#include<set>
 
 #include "discretestate.hpp"
 #include "domain/dbm.h"
@@ -100,7 +100,7 @@ class TMStateManager : public ComponentInfo {
   }
 
   std::vector<int> getChanLinks(const int component, const int source, int chid,
-                           int* state) const;
+                                int* state) const;
 
   int* newState() const;
 
@@ -129,8 +129,8 @@ class TMStateManager : public ComponentInfo {
   int getFreezeComponentNumber(const int* const state) const {
     return state[freeze_location_index];
   }
-  
-  std::vector<int> getCommitComponents(const int * const state  ) const;
+
+  std::vector<int> getCommitComponents(const int* const state) const;
 
   int getParentId(const int* const state) const {
     return state[parent_location_index];
@@ -281,18 +281,17 @@ class TMStateManager : public ComponentInfo {
    */
   void swap(const int i, const int j, int* state) const;
 
-  std::vector<int> getEnableOutLinks( const int component, int loc, int *state ) const;
-  
-  std::set<int> getEnableOutBroadcast(const int component, const int loc,
-                                         int* state) const;
+  std::vector<int> getEnableOutLinks(const int component, int loc,
+                                     int* state) const;
 
-  std::set<int> getEnableOutUrgent(const int component, const int loc,
+  std::set<int> getEnableOutBroadcast(const int component, const int loc,
                                       int* state) const;
 
+  std::set<int> getEnableOutUrgent(const int component, const int loc,
+                                   int* state) const;
+
   std::set<int> getEnableOutNormalChan(const int component, const int loc,
-                                          int* state) const;
-
-
+                                       int* state) const;
 
   bool hasDiffCons() const;
 

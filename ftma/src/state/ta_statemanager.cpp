@@ -368,9 +368,9 @@ Compression<int> TMStateManager::getBodyCompression() const {
 }
 
 std::vector<int> TMStateManager::getEnableOutLinks(const int component,
-                                                   const int source, int* state) const{
+                                                   const int source,
+                                                   int* state) const {
   std::vector<int> re;
-
 
   const vector<int>& out_ts = sys.getOutTransition(component, source);
   for (auto link : out_ts) {

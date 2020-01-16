@@ -90,9 +90,7 @@ class Agent : public VariableMap, public TOReal {
       return agent_tempate->getParentKeyID(type, key);
     }
   }
-  const  vector<int>& getOutTransition(const int v )const{
-    return outlinks[v ];
-  }
+  const vector<int>& getOutTransition(const int v) const { return outlinks[v]; }
 
   int* getValue(const TYPE_T type, int* state, const std::string& key) const {
     return state + getKeyID(type, key);
@@ -221,12 +219,12 @@ class Agent : public VariableMap, public TOReal {
     }
 
     graph.initial(srcs, snks);
-    
-    outlinks.clear( );
+
+    outlinks.clear();
     int vertex_num = graph.getVertex_num();
-    for( int i=0; i<vertex_num; i++ ){
-      vector<int> outs=graph.getAdj( i);
-      outlinks.push_back( outs);
+    for (int i = 0; i < vertex_num; i++) {
+      vector<int> outs = graph.getAdj(i);
+      outlinks.push_back(outs);
     }
 
     // // There are no edges connect with  initial location
@@ -305,7 +303,7 @@ class Agent : public VariableMap, public TOReal {
 
  private:
   std::vector<ClockConstraint> difference_cons;
-  std::vector<std::vector<int> > outlinks;
+  std::vector<std::vector<int>> outlinks;
 
   int initial_loc;
   std::map<int, int> clock_max_value;
@@ -329,8 +327,6 @@ class Agent : public VariableMap, public TOReal {
     hasBroadcaseChan = true;
   }
 };
-
-
 
 }  // namespace graphsat
 #endif

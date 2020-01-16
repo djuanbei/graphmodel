@@ -199,10 +199,8 @@ void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
             }
           }
         }
-        //}
       }
     }
-    //    }
   }
 }
 

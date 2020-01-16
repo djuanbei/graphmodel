@@ -86,9 +86,9 @@ class AgentSystem : public VarDecl {
   bool hasChannel(const int component, const int link) const {
     return agents[component]->transitions[link].hasChannel();
   }
-  
-  bool hasSendChannel( const int component, const int link ) const{
-    return agents[component]->transitions[link].hasSendChannel( );
+
+  bool hasSendChannel(const int component, const int link) const {
+    return agents[component]->transitions[link].hasSendChannel();
   }
 
   bool isCommit(const int component, const int loc) const {
@@ -239,8 +239,9 @@ class AgentSystem : public VarDecl {
     return agents[component]->transitions.size();
   }
 
-  const vector<int>& getOutTransition(const int component, const int src) const {
-    return agents[component]->getOutTransition( src);
+  const vector<int>& getOutTransition(const int component,
+                                      const int src) const {
+    return agents[component]->getOutTransition(src);
   }
 
   const Channel& getChan(const int component, const int link) const {
@@ -399,7 +400,6 @@ class AgentSystem : public VarDecl {
   friend class TMStateManager;
   // template <typename TT> friend class Reachability;
 };
-
 
 }  // namespace graphsat
 

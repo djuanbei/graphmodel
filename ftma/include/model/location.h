@@ -125,7 +125,6 @@ class Location {
 
   std::ostream& dump2Dot(std::ostream& out) const;
 
-
   friend std::ostream& operator<<(std::ostream& os, const Location& loc);
 
  private:

@@ -24,7 +24,6 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   ADD_CLOCK((*train_tmt), x);
 
-
   typename INT_TAS_t::L_t* Safe = train_tmt->createLocation("Safe");
   typename INT_TAS_t::L_t* Appr = train_tmt->createLocation("Appr");
   typename INT_TAS_t::L_t* Stop = train_tmt->createLocation("Stop");
@@ -39,8 +38,6 @@ INT_TAS_t TrainGate::generate(int n) const {
 
   typename INT_TAS_t::CS_t cs2(x, LE, Argument(5));  // x <= 5
   (*Cross) += cs2;
-
- 
 
   typename INT_TAS_t::T_t* Safe_Appr = train_tmt->createTransition(Safe, Appr);
 

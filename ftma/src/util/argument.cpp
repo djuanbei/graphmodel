@@ -51,11 +51,11 @@ int RealArgument::getIndex(int* counter_value) const {
   }
 }
 
-void RealArgument::setSelectValue( const int select_value){
-  if(type==SELECT_VAR_ARG ){
-    value=select_value;
+void RealArgument::setSelectValue(const int select_value) {
+  if (type == SELECT_VAR_ARG) {
+    value = select_value;
   }
-  if(nullptr!= index){
+  if (nullptr != index) {
     index->setSelectValue(select_value);
   }
 }
@@ -82,8 +82,6 @@ int RealArgument::getValue(int* counter_value) const {
       return 0;
   }
 }
-
-
 
 int_fast64_t Argument::getMapValue(
     const std::vector<int>& id_map,

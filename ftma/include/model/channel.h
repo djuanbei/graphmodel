@@ -25,19 +25,19 @@ class Channel {
 
   Channel(const Argument& arg, const CHANNEL_ACTION& a)
       : chan_id(arg), type(ONE2ONE_CH), action(a) {
-    if( action==CHANNEL_SEND){
-      ch_sigin=1;
-    }else{
-      ch_sigin=-1;
+    if (action == CHANNEL_SEND) {
+      ch_sigin = 1;
+    } else {
+      ch_sigin = -1;
     }
   }
 
   Channel(const Argument& arg, const CHANNEL_TYPE& t, const CHANNEL_ACTION& a)
       : chan_id(arg), type(t), action(a) {
-    if( action==CHANNEL_SEND){
-      ch_sigin=1;
-    }else{
-      ch_sigin=-1;
+    if (action == CHANNEL_SEND) {
+      ch_sigin = 1;
+    } else {
+      ch_sigin = -1;
     }
   }
 
@@ -45,14 +45,15 @@ class Channel {
     return real_chan_id.getValue(counter_value);
   }
   int getGlobalId(int* counter_value) const { return (*this)(counter_value); }
-  int getSiginGlobalId( int* counter_value ) const{
-    return ch_sigin*(*this)(counter_value);
+  int getSiginGlobalId(int* counter_value) const {
+    return ch_sigin * (*this)(counter_value);
   }
-  void setAction(const CHANNEL_ACTION& a) { action = a;
-    if( action==CHANNEL_SEND){
-      ch_sigin=1;
-    }else{
-      ch_sigin=-1;
+  void setAction(const CHANNEL_ACTION& a) {
+    action = a;
+    if (action == CHANNEL_SEND) {
+      ch_sigin = 1;
+    } else {
+      ch_sigin = -1;
     }
   }
 
@@ -61,8 +62,8 @@ class Channel {
     real_chan_id.setType(CONST_ARG);
     type = convertor->getChanType(chan_id.getName());
   }
-  void setSelectValue( const int select_value){
-    real_chan_id.setSelectValue(select_value );
+  void setSelectValue(const int select_value) {
+    real_chan_id.setSelectValue(select_value);
   }
   CHANNEL_TYPE getType(void) const { return type; }
 
@@ -70,19 +71,11 @@ class Channel {
   bool isRecive() const { return CHANNEL_RECEIVE == action; }
 
  private:
-  Argument chan_id{
-    0
-  };
-  CHANNEL_TYPE type{
-    ONE2ONE_CH    
-  };
-  CHANNEL_ACTION action{
-    CHANNEL_SEND
-  };
+  Argument chan_id{0};
+  CHANNEL_TYPE type{ONE2ONE_CH};
+  CHANNEL_ACTION action{CHANNEL_SEND};
   RealArgument real_chan_id;
-  int ch_sigin{
-    1
-  };
+  int ch_sigin{1};
 };
 
 }  // namespace graphsat

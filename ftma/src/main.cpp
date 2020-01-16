@@ -16,7 +16,7 @@
 //#define YYDEBUG 1
 
 #include "example.h"
-#include"util/timer.h"
+#include "util/timer.h"
 
 #include <iostream>
 
@@ -26,8 +26,6 @@ using std::vector;
 using namespace graphsat;
 
 int main(int argc, const char* argv[]) {
-
-
   // fischer(4);
   // return 0;
   // incrementalTestLC();
@@ -37,7 +35,6 @@ int main(int argc, const char* argv[]) {
   // lift_customer(4);
   // return 0;
   incrementalTestTG();
-  
 
   // fischer(3);
   return 0;

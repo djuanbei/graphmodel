@@ -23,7 +23,6 @@
 
 namespace graphsat {
 
-
 // first - second op rhs
 class CounterConstraint {
  public:
@@ -37,7 +36,7 @@ class CounterConstraint {
     return executeOp(one - two, op, three);
   }
   void to_real(const TOReal* convertor);
-  void setSelectValue( const int select_value);
+  void setSelectValue(const int select_value);
 
  private:
   Argument first;

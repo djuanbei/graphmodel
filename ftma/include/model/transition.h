@@ -16,7 +16,6 @@
 #include "channel.h"
 #include "clock.h"
 
-
 #include "constraint/countercons.h"
 #include "model/location.h"
 #include "state/ta_statemanager.h"
@@ -98,18 +97,15 @@ class Transition {
   void setChannel(const Channel& ch) {
     channel = ch;
     has_channel = true;
-    
-    has_send_channel=ch.isSend( );
+
+    has_send_channel = ch.isSend();
   }
 
   const Channel& getChannel() const { return channel; }
 
   bool hasChannel() const { return has_channel; }
 
-  bool hasSendChannel( ) const{
-    return has_send_channel;
-  }
- 
+  bool hasSendChannel() const { return has_send_channel; }
 
   /**
    * @brief Except synchronize signal, other state satisfies jump conditions
@@ -140,9 +136,7 @@ class Transition {
 
   void setSelectCollect(const string& c) { select_collect = c; }
 
-  void setSelectDomain( const TypeDefArray & td){
-    select_domain=td;
-  }
+  void setSelectDomain(const TypeDefArray& td) { select_domain = td; }
 
   string getSelectCollect(void) const { return select_collect; }
 
@@ -154,18 +148,22 @@ class Transition {
   Transition() {
     source = target = -1;
     has_channel = false;
-    has_send_channel=false;
+    has_send_channel = false;
   }
 
   explicit Transition(const Location* lhs, const Location* rhs)
-      : source(lhs->getId()), target(rhs->getId()), has_channel(false), has_send_channel( false) {}
+      : source(lhs->getId()),
+        target(rhs->getId()),
+        has_channel(false),
+        has_send_channel(false) {}
 
   explicit Transition(const int lhs, const int rhs)
-      : source(lhs), target(rhs), has_channel(false), has_send_channel( false) {}
+      : source(lhs), target(rhs), has_channel(false), has_send_channel(false) {}
 
   int source, target;  // source location and target location of this
   // transitionedge. The index of location in tma.locations
-  std::vector<ClockConstraint> guards;  // set of constraint at this transitionedge
+  std::vector<ClockConstraint>
+      guards;  // set of constraint at this transitionedge
 
   std::vector<CounterConstraint>
       counter_cons;  // counter constraint like pid ==id or id==0
@@ -181,8 +179,8 @@ class Transition {
 
   string select_var;
   string select_collect;
-  
-  TypeDefArray  select_domain;
+
+  TypeDefArray select_domain;
 
   template <typename LL, typename TT>
   friend class AgentTemplate;
