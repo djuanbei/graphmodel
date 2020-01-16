@@ -44,6 +44,9 @@ class Agent : public VariableMap, public TOReal {
     }
     return agent_tempate->getName() + "[" + to_string(id) + "]";
   }
+  std::string getTemplateName( void) const{
+    return agent_tempate->getName();
+  }
 
   void findRhs(const int link, const int lhs, int& rhs) const {
     graph.findRhs(link, lhs, rhs);

@@ -11,33 +11,10 @@ namespace graphsat {
 
 FischerProjector::FischerProjector(
     const std::shared_ptr<TMStateManager>& out_manager, const int pro_d)
-    : manager(out_manager) {
+    : Projector(out_manager) {
   component_num = manager->getComponentNumber();
   pro_dim = pro_d;
   clock_start = manager->getClockStart();
-}
-
-void FischerProjector::operator()(const int* original_state,
-                                  vector<int>& proj) const {
-  for (int i = 0; i < pro_dim; i++) {
-    proj.push_back(original_state[i]);
-  }
-  int id = manager->getValue(0, original_state, "id");
-  proj.push_back(id != 0);
-  if (id == 1) {
-    proj.push_back(1);
-  } else if (id == 2) {
-    proj.push_back(2);
-  } else {
-    proj.push_back(0);
-  }
-
-  const int* dbm = manager->getDBM(original_state);
-  for (int i = 0; i <= pro_dim; i++) {
-    for (int j = 0; j <= pro_dim; j++) {
-      proj.push_back(manager->getClockManager().at(dbm, i, j));
-    }
-  }
 }
 
 std::vector<int> FischerProjector::getSrc(const std::vector<int>& e) const {
@@ -67,7 +44,7 @@ std::vector<int> FischerProjector::to_vec(const TMStateManager* manager,
   for (int i = 0; i < pro_dim; i++) {
     proj.push_back(original_state[i]);
   }
-  int id = manager->getValue(0, original_state, "id");
+  int id = *manager->getValue(0,  "id", original_state);
   proj.push_back(id != 0);
   if (id == 1) {
     proj.push_back(1);
@@ -110,30 +87,29 @@ bool FischerProjector::contain(const vector<int>& one,
 }
 
 bool FischerProjector::constructState(
-    int* state, const std::vector<std::vector<int>>& pre_projs,
-    const std::vector<std::vector<int>>& oneStataes,
-    const std::vector<int>& vertices, const std::vector<int>& links,
-    const std::vector<std::pair<int, int>>& link_src_snk_map,
-    const std::map<int, int>& link_map) const {
+    TMStateManager* manager, int* state,
+    const std::vector<std::vector<int>>& pre_projs,
+    const std::vector<std::vector<int>>& vertices,
+    const std::vector<int>& links,
+    const std::vector<std::pair<int, int>>& link_src_snk_map
+    // const std::map<int, int>& link_map
+    ) const {
   int num = vertices.size();
 
-  int vertex = vertices[0];
-  if (oneStataes[vertex][1] == 1) {
+  if (vertices[0][1] == 1) {
     bool b = false;
     for (int i = 0; i < num; i++) {
-      int vertex = vertices[i];
-      if (oneStataes[vertex][2] == 1) {
+      if (vertices[i][2] == 1) {
         b = true;
       }
     }
     if (!b) {
-      return false;
+      state[num] = num + 1;
     }
   } else {
     bool b = true;
     for (int i = 0; i < num; i++) {
-      int vertex = vertices[i];
-      if (oneStataes[vertex][2] == 1) {
+      if (vertices[i][2] == 1) {
         b = false;
       }
     }
@@ -143,26 +119,25 @@ bool FischerProjector::constructState(
   }
 
   for (int i = 0; i < num; i++) {
-    int vertex = vertices[i];
-    int loc = oneStataes[vertex][0];
+    int loc = vertices[i][0];
     state[i] = loc;
 
-    if (oneStataes[vertex][2] == 1) {
+    if (vertices[i][2] == 1) {
       state[num] = i + 1;
     }
 
-    state[i + num + 3] = oneStataes[vertex][3];
+    state[i + num + 3] = vertices[i][3];
 
     int index = num + 2 + (i + 1) * (num + 1);
-    state[index] = oneStataes[vertex][4];
+    state[index] = vertices[i][4];
   }
 
   for (size_t i = 0; i < links.size(); i++) {
-    int e = links[i];
+    int link_id = links[i];
     int src = link_src_snk_map[i].first;
     int snk = link_src_snk_map[i].second;
 
-    int link_id = link_map.at(e);
+    //int link_id = link_map.at(e);
 
     if (link_id < 0) {
       int temp = src;

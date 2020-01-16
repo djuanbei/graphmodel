@@ -22,8 +22,11 @@ namespace graphsat {
 
 class Projector {
  public:
-  virtual void operator()(const int* original_state,
-                          std::vector<int>& proj) const = 0;
+  Projector(const std::shared_ptr<TMStateManager>& out_manager)
+      : manager(out_manager) {}
+  std::vector<int> operator()(const int* original_state) const {
+    return to_vec(manager.get(), original_state);
+  }
 
   virtual bool contain(const std::vector<int>& one,
                        const std::vector<std::vector<int>>& rhs) const = 0;
@@ -37,11 +40,12 @@ class Projector {
       const SystemGenerator* generator) const;
 
   virtual bool constructState(
+      TMStateManager * manager,
       int* state, const std::vector<std::vector<int>>& projs,
-      const std::vector<std::vector<int>>& oneStataes,
-      const std::vector<int>& vertices, const std::vector<int>& choose,
-      const std::vector<std::pair<int, int>>& link_src_snk_map,
-      const std::map<int, int>& link_map) const = 0;
+      const std::vector<std::vector<int>> & vertices, const std::vector<int>& choose,
+      const std::vector<std::pair<int, int>>& link_src_snk_map
+      //const std::map<int, int>& link_map
+                              ) const = 0;
 
   virtual std::vector<int> getSrc(const std::vector<int>& proj) const = 0;
 
@@ -66,6 +70,9 @@ class Projector {
   void dump_D(const std::vector<std::vector<int>>& proj) const {
     dump(proj, std::cout);
   }
+
+ protected:
+  const std::shared_ptr<TMStateManager> manager;
 };
 
 }  // namespace graphsat

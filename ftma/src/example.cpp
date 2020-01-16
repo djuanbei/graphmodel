@@ -263,8 +263,8 @@ void fischer(int n) {
 
     data.getStateAt(state, i);
     dummy.push_back(state[0]);
-    dummy.push_back(manager->getValue(0, state, "id") == 1);
-    dummy.push_back(manager->getValue(0, state, "id") > 0);
+    dummy.push_back(*manager->getValue(0,  "id", state) == 1);
+    dummy.push_back(*manager->getValue(0,  "id", state) > 0);
     int* dbm = manager->getDBM(state);
     manager->getClockManager().encode(dbm);
     dummy.push_back(manager->getClockManager().at(dbm, 0, 0));

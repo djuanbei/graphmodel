@@ -163,7 +163,7 @@ TEST(STATE_MANAGER_H, getValue) {
   for (int i = 0; i < 10; i++) {
     int v = rand() % 20;
     state[index] = v;
-    EXPECT_EQ(manager->getValue(n, state, "len"), v);
+    EXPECT_EQ(*manager->getValue(n, "len", state), v);
   }
 
   manager->destroyState(state);
@@ -182,8 +182,8 @@ TEST(STATE_MANAGER_H, setValue) {
   // int index = 2 * (n + 1) + 1;
   for (int i = 0; i < 10; i++) {
     int v = rand() % 20;
-    manager->setValue(n, state, "len", v);
-    EXPECT_EQ(manager->getValue(n, state, "len"), v);
+    manager->setValue(n,  "len", v, state);
+    EXPECT_EQ(*manager->getValue(n,  "len", state), v);
   }
 
   manager->destroyState(state);

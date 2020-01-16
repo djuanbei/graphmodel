@@ -9,6 +9,10 @@
 #include "benchmark/train_gate.h"
 #include "benchmark/train_gate_projector.h"
 
+#include "benchmark/liftcustomer.h"
+#include "benchmark/liftcustomer_projector.h"
+#include "benchmark/liftcustomerproperty.h"
+
 #include "problem/pmcp.hpp"
 
 #undef PRINT_STATE
@@ -407,4 +411,17 @@ TEST(PMCP, train_gate) {
   TrainGatePro prop(2);
   prop.setCS(4);
   //  EXPECT_TRUE(check.check(TG, &prop));
+}
+
+TEST( PMCP,liftcustomer){
+    LiftCustomer generator;
+  IncrementalCheck<INT_TAS_t, LiftCustomer, LiftCustomerProjector> check;
+  INT_TAS_t sys = generator.generate(1);
+  int overload_loc = sys.getLocationID(0, "overload");
+  std::vector<int> locs;
+  locs.push_back(overload_loc);
+
+  LiftCustomerProperty prop(locs);
+  EXPECT_TRUE( check.check( generator, &prop));
+  
 }

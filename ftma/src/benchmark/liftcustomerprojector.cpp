@@ -6,21 +6,18 @@
 namespace graphsat {
 LiftCustomerProjector::LiftCustomerProjector(
     const std::shared_ptr<TMStateManager>& out_manager, const int pro_d)
-    : manager(out_manager) {
+    : Projector(out_manager) {
   component_num = manager->getComponentNumber();
 }
-void LiftCustomerProjector::operator()(const int* original_state,
-                                       vector<int>& proj) const {
-  proj = to_vec(manager.get(), original_state);
-}
+
 std::vector<int> LiftCustomerProjector::to_vec(
     const TMStateManager* manager, const int* original_state) const {
   std::vector<int> proj;
   proj.push_back(original_state[0]);
   proj.push_back(original_state[1]);
   proj.push_back(original_state[2]);
-  int wait_cus_num = manager->getValue(0, original_state, "wait_cus_len");
-  int stop_lift_num = manager->getValue(0, original_state, "stop_lift_len");
+  int wait_cus_num = *manager->getValue(0,  "wait_cus_len", original_state);
+  int stop_lift_num = *manager->getValue(0,  "stop_lift_len", original_state);
   proj.push_back(wait_cus_num);
   proj.push_back(stop_lift_num);
 
@@ -53,20 +50,21 @@ bool LiftCustomerProjector::contain(
 }
 
 bool LiftCustomerProjector::constructState(
+    TMStateManager* manager,
     int* state, const std::vector<std::vector<int>>& pre_projs,
-    const std::vector<std::vector<int>>& oneStataes,
-    const std::vector<int>& vertices, const std::vector<int>& links,
-    const std::vector<std::pair<int, int>>& link_src_snk_map,
-    const std::map<int, int>& link_map) const {
+    const std::vector<std::vector<int>>& vertices,
+    const std::vector<int>& links,
+    const std::vector<std::pair<int, int>>& link_src_snk_map
+    //const std::map<int, int>& link_map
+                                           ) const {
   int num = vertices.size();
-  state[0] = oneStataes[vertices[0]][0];
+  state[0] = vertices[0][0];
   for (int i = 0; i < num; i++) {
-    int vertex = vertices[i];
-    int loc = oneStataes[vertex][1];
+    int loc = vertices[i][1];
     state[i + 1] = loc;
   }
-  state[num + 1] = oneStataes[vertices[0]][2];
-  state[num + 2] = oneStataes[vertices[0]][3];
+  state[num + 1] = vertices[0][2];
+  state[num + 2] = vertices[0][3];
   return true;
 }
 

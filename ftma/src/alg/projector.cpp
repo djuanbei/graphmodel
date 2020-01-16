@@ -132,11 +132,15 @@ bool Projector::projectStableCheck(
         while (fc.next()) {
           vector<int> one_choose = *fc;
           for (size_t i = 0; i < choose.size(); i++) {
-            one_choose[i] = links[i][one_choose[i]];
+            one_choose[i] = link_map.at(links[i][one_choose[i]]);
           }
           test_manager->reset(state);
-          if (constructState(state, two_dim_projs, oneStataes, vertices,
-                             one_choose, link_src_snk_map, link_map)) {
+          vector<vector<int>> points;
+          for (size_t k = 0; k < vertices.size(); k++) {
+            points.push_back(oneStataes[vertices[k]]);
+          }
+          if (constructState(test_manager.get(), state, two_dim_projs, points,
+                             one_choose, link_src_snk_map)) {
             std::vector<OneStep> re =
                 nextS.getNextStep(const_cast<int*>(state));
             data.clear();

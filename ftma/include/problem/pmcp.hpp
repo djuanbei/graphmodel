@@ -20,8 +20,7 @@
 #include "state/reachableset.hpp"
 
 namespace graphsat {
-// using namespace std;
-// bool element_cmp(const std::vector<int>& lhs, const std::vector<int>& rhs);
+
 
 template <typename SYS, typename G, typename PROJ>
 class IncrementalCheck {
@@ -61,11 +60,11 @@ class IncrementalCheck {
       deleteRepeat(project);
 
       if (proj.include(project, pre_project)) {
-        // if( proj.projectStableCheck(project, data, &g  )){
+        if( proj.projectStableCheck(project, data, &g  )){
         cout << "size: " << project.size() << " : " << pre_project.size()
              << endl;
         return true;
-        //}
+        }
       }
 
       pre_project.swap(project);

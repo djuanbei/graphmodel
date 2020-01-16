@@ -19,34 +19,33 @@ class TrainGateProjector : public Projector {
   TrainGateProjector(const std::shared_ptr<TMStateManager>& out_manager,
                      const int pro_d);
 
-  virtual void operator()(const int* original_state, vector<int>& proj) const;
+  std::vector<int> to_vec(const TMStateManager* manager,
+                          const int* state) const override final;
 
-  virtual std::vector<int> to_vec(const TMStateManager* manager,
-                                  const int* state) const;
+  std::vector<int> getSrc(const std::vector<int>& proj) const override final;
 
-  virtual std::vector<int> getSrc(const std::vector<int>& proj) const;
+  std::vector<int> getSnk(const std::vector<int>& proj) const override final;
 
-  virtual std::vector<int> getSnk(const std::vector<int>& proj) const;
+  bool contain(const std::vector<int>& one,
+               const std::vector<std::vector<int>>& rhs) const override final;
 
-  virtual bool contain(const std::vector<int>& one,
-                       const std::vector<std::vector<int>>& rhs) const;
+  bool constructState(TMStateManager* manager, int* state,
+                      const std::vector<std::vector<int>>& projs,
+                      const std::vector<std::vector<int>>& vertices,
+                      const std::vector<int>& choose,
+                      const std::vector<std::pair<int, int>>& link_src_snk_map
+                      //const std::map<int, int>& link_map
+                      ) const override final;
 
-  virtual bool constructState(
-      int* state, const std::vector<std::vector<int>>& projs,
-      const std::vector<std::vector<int>>& oneStataes,
-      const std::vector<int>& vertices, const std::vector<int>& choose,
-      const std::vector<std::pair<int, int>>& link_src_snk_map,
-      const std::map<int, int>& link_map) const;
-
-  virtual std::ostream& dump(const std::vector<int>& proj_e,
-                             std::ostream& out) const;
+  std::ostream& dump(const std::vector<int>& proj_e,
+                     std::ostream& out) const override final;
 
  private:
-  const std::shared_ptr<TMStateManager> manager;
   int component_num;
   int pro_dim;
   int clock_start;
   int pro_clock_start;
+  int comparae_data_len;
 
   enum Order { UNKOWN = 0, EQUAL = 1, FRONTER = 2, LATER = 3 };
 };

@@ -227,10 +227,9 @@ class ReachableSet {
     for (auto state : reach_set) {
       manager->decode(convert_C_t, state);
 
-      vector<State_t> dummy;
-      proj(convert_C_t, dummy);
+      // vector<State_t> dummy=proj(convert_C_t);
 
-      re.push_back(dummy);
+      re.push_back(std::move(proj(convert_C_t)));
     }
     assert((int)re.size() == reach_set.size());
   }

@@ -102,6 +102,19 @@ class AgentSystem : public VarDecl {
   const Channel& getChannel(const int component, const int link) const {
     return agents[component]->transitions[link].getChannel();
   }
+  int getCompentId(const string& template_name, const int agent_id) const {
+    int pass = 0;
+    for (size_t i = 0; i < agents.size(); i++) {
+      if (agents[i]->getTemplateName() == template_name) {
+        pass++;
+        if (pass == agent_id) {
+          return 0;
+        }
+      }
+    }
+    return NOT_FOUND;
+  }
+
   int getCompentId(const string& component_name) const {
     for (size_t i = 0; i < agents.size(); i++) {
       if (agents[i]->getName() == component_name) {

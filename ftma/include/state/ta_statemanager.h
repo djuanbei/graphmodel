@@ -166,13 +166,13 @@ class TMStateManager : public ComponentInfo {
    *
    * @return
    */
-  int getValue(const int component, const int* const state,
-               const std::string& key) const;
+  const int* getValue(const int component, 
+               const std::string& key, const int* const state) const;
 
-  void setValue(const int component, int* state, const std::string& key,
-                int value) const;
+  void setValue(const int component,  const std::string& key,
+                int value, int* state) const;
 
-  int& getValue(const int component, int* state, const std::string& key) const;
+  int* getValue(const int component,  const std::string& key, int* state) const;
 
   /**
    * @brief As the state is  abstract symbolic state. A symbolic state
@@ -187,6 +187,8 @@ class TMStateManager : public ComponentInfo {
 
   void destroyState(int* state) const { delete[] state; }
 
+  int getCompentId( const std::string & template_name, const int agent_id) const;
+  
   int getComponentNumber() const { return component_num; }
 
   inline const DBMManager& getClockManager() const { return dbm_manager; }
@@ -219,7 +221,7 @@ class TMStateManager : public ComponentInfo {
 
   void setClockLowerBound(const int componentA, const std::string& keyA,
                           const int componentB, const std::string& keyB,
-                          int* state, const MatrixValue& value) const;
+                          const MatrixValue& value, int* state) const;
 
   MatrixValue getClockUpperBound(const int componentA, const std::string& keyA,
                                  const int componentB, const std::string& keyB,
@@ -227,7 +229,7 @@ class TMStateManager : public ComponentInfo {
 
   void setClockUpperBound(const int componentA, const std::string& keyA,
                           const int componentB, const std::string& keyB,
-                          int* state, const MatrixValue& value) const;
+                          const MatrixValue& value, int* state) const;
 
   inline int* getDBM(int* state) const { return state + clock_start_loc; }
 
@@ -309,11 +311,11 @@ class TMStateManager : public ComponentInfo {
 
   void decode(int* now, const UINT* const original) const;
 
-  std::ostream& dump(const int* const state, std::ostream& out) const;
+  std::ostream& dump( std::ostream& out, const int* const state) const;
 
-  void dump(const int* const state) const { dump(state, cout); }
+  void dump(const int* const state) const { dump( cout, state); }
 
-  void dump(const vector<int>& state) const { dump(&(state[0]), cout); }
+  void dump(const vector<int>& state) const { dump(cout, &(state[0])); }
 
  private:
   const INT_TAS_t& sys;

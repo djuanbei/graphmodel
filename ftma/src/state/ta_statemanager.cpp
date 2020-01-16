@@ -112,6 +112,10 @@ bool TMStateManager::isReachable(const int component, const int loc,
                                                            getDBM(state));
 }
 
+int TMStateManager::getCompentId(const string& template_name,
+                                 const int agent_id) const {
+  return sys.getCompentId(template_name, agent_id);
+}
 std::vector<int> TMStateManager::getCommitComponents(
     const int* const state) const {
   std::vector<int> re;
@@ -193,8 +197,8 @@ int TMStateManager::getTypeNumber(const TYPE_T type) const {
   }
 }
 
-int TMStateManager::getValue(const int component, const int* const state,
-                             const string& key) const {
+const int* TMStateManager::getValue(const int component, const string& key,
+                             const int* const state) const {
   TYPE_T type = sys.getType(component, key);
 
   if (type == NO_T) {
@@ -202,11 +206,11 @@ int TMStateManager::getValue(const int component, const int* const state,
     return 0;
   }
   int start = getTypeStart(type);
-  return state[start + sys.getKeyID(component, type, key)];
+  return state+(start + sys.getKeyID(component, type, key));
 }
 
-void TMStateManager::setValue(const int component, int* state,
-                              const string& key, int value) const {
+void TMStateManager::setValue(const int component, const string& key, int value,
+                              int* state) const {
   TYPE_T type = sys.getType(component, key);
 
   if (type == NO_T) {
@@ -216,17 +220,16 @@ void TMStateManager::setValue(const int component, int* state,
   state[start + sys.getKeyID(component, type, key)] = value;
 }
 
-int& TMStateManager::getValue(const int component, int* state,
-                              const string& key) const {
+int* TMStateManager::getValue(const int component, const string& key,
+                              int* state) const {
   TYPE_T type = sys.getType(component, key);
 
   if (type == NO_T) {
     assert(false);
-    static int error_return = 0;
-    return error_return;
+    return nullptr;
   }
   int start = getTypeStart(type);
-  return state[start + sys.getKeyID(component, type, key)];
+  return state+(start + sys.getKeyID(component, type, key));
 }
 
 MatrixValue TMStateManager::getClockLowerBound(const int component,
@@ -278,11 +281,9 @@ MatrixValue TMStateManager::getClockDiffLowerBound(
   return re;
 }
 
-void TMStateManager::setClockLowerBound(const int componentA,
-                                        const std::string& keyA,
-                                        const int componentB,
-                                        const std::string& keyB, int* state,
-                                        const MatrixValue& value) const {
+void TMStateManager::setClockLowerBound(
+    const int componentA, const std::string& keyA, const int componentB,
+    const std::string& keyB, const MatrixValue& value, int* state) const {
   int idA = sys.getKeyID(componentA, CLOCK_T, keyA);
   int idB = sys.getKeyID(componentB, CLOCK_T, keyB);
 
@@ -304,11 +305,9 @@ MatrixValue TMStateManager::getClockUpperBound(const int componentA,
   return getClockManager().getUpperBound(dbm, idA, idB);
 }
 
-void TMStateManager::setClockUpperBound(const int componentA,
-                                        const std::string& keyA,
-                                        const int componentB,
-                                        const std::string& keyB, int* state,
-                                        const MatrixValue& value) const {
+void TMStateManager::setClockUpperBound(
+    const int componentA, const std::string& keyA, const int componentB,
+    const std::string& keyB, const MatrixValue& value, int* state) const {
   int idA = sys.getKeyID(componentA, CLOCK_T, keyA);
   int idB = sys.getKeyID(componentB, CLOCK_T, keyB);
   int* dbm = getDBM(state);
@@ -649,7 +648,7 @@ void TMStateManager::decode(int* now, const UINT* const original) const {
   getClockManager().decode(getDBM(now));
 }
 
-ostream& TMStateManager::dump(const int* const state, ostream& out) const {
+ostream& TMStateManager::dump(ostream& out, const int* const state) const {
   for (int i = 0; i < component_num; i++) {
     int loc = getLocationID(i, state);
 

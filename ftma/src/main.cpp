@@ -37,8 +37,8 @@ int main(int argc, const char* argv[]) {
   incrementalTestTG();
 
   // fischer(3);
-  return 0;
-  incrementalTestFS();
+  // return 0;
+  // incrementalTestFS();
   return 0;
 
   //  return 0;
