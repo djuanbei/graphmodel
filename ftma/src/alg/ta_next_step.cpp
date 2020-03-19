@@ -27,12 +27,12 @@ std::vector<OneStep> TANextStep::getNextStep(void* s) const {
 }
 
 void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
-  vector<set<int>> enableoutNorChan;
+  vector<unordered_set<int>> enableoutNorChan;
   vector<int> has_enable_chan_components;
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
     if (sys.hasNormalCh(i, loc_a)) {
-      set<int> dummy_a = manager->getEnableOutNormalChan(i, loc_a, state);
+      unordered_set<int> dummy_a = manager->getEnableOutNormalChan(i, loc_a, state);
       if (!dummy_a.empty()) {
         enableoutNorChan.push_back(std::move(dummy_a));
         has_enable_chan_components.push_back(i);
@@ -43,12 +43,12 @@ void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
   // std::unordered_map<std::pair<int, int> , vector<int> > chanLinks;
 
   for (int ii = 0; ii + 1 < (int)has_enable_chan_components.size(); ii++) {
-    set<int>& dummy_a = enableoutNorChan[ii];
+    unordered_set<int>& dummy_a = enableoutNorChan[ii];
     int i = has_enable_chan_components[ii];
     const int loc_a = manager->getLocationID(i, state);
 
     for (int jj = ii + 1; jj < (int)has_enable_chan_components.size(); jj++) {
-      const set<int>& dummy_b = enableoutNorChan[jj];
+      const unordered_set<int>& dummy_b = enableoutNorChan[jj];
       int j = has_enable_chan_components[jj];
 
       const int loc_b = manager->getLocationID(j, state);
@@ -151,10 +151,10 @@ void TANextStep::doCommit(int* state, std::vector<OneStep>& re) const {
 
 void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
   vector<int> hasUrgentCh_part;
-  vector<set<int>> enableoutUrgantChan;
+  vector<unordered_set<int>> enableoutUrgantChan;
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
-    std::set<int> dummy_a = manager->getEnableOutUrgent(i, loc_a, state);
+    std::unordered_set<int> dummy_a = manager->getEnableOutUrgent(i, loc_a, state);
     if (!dummy_a.empty()) {
       hasUrgentCh_part.push_back(i);
       enableoutUrgantChan.push_back(std::move(dummy_a));
@@ -163,13 +163,13 @@ void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
 
   for (int ii = 0; ii < (int)hasUrgentCh_part.size(); ii++) {
     int i = hasUrgentCh_part[ii];
-    std::set<int>& dummy_a = enableoutUrgantChan[ii];
+    std::unordered_set<int>& dummy_a = enableoutUrgantChan[ii];
 
     const int loc_a = manager->getLocationID(i, state);
 
     for (int jj = ii + 1; jj < (int)hasUrgentCh_part.size(); jj++) {
       int j = hasUrgentCh_part[jj];
-      const std::set<int>& dummy_b = enableoutUrgantChan[jj];
+      const std::unordered_set<int>& dummy_b = enableoutUrgantChan[jj];
 
       const int loc_b = manager->getLocationID(j, state);
 
@@ -207,7 +207,7 @@ void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
 void TANextStep::doBroadcast(int* state, std::vector<OneStep>& re) const {
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
-    std::set<int> dummy_a = manager->getEnableOutBroadcast(i, loc_a, state);
+    std::unordered_set<int> dummy_a = manager->getEnableOutBroadcast(i, loc_a, state);
     if (!dummy_a.empty()) {
       std::set<int> temp(dummy_a.begin(), dummy_a.end());
       for (auto chid : temp) {
@@ -226,7 +226,7 @@ void TANextStep::doBroadcast(int* state, std::vector<OneStep>& re) const {
                 continue;
               }
               const int loc_b = manager->getLocationID(j, state);
-              const std::set<int> dummy_b =
+              const std::unordered_set<int> dummy_b =
                   manager->getEnableOutBroadcast(j, loc_b, state);
               for (auto e : dummy_b) {
                 if (e == -chid) {  // match recieve  action

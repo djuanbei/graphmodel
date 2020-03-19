@@ -136,7 +136,7 @@ bool TMStateManager::hasMatchOutUrgentChan(const int* const state) const {
   for (int comp = 0; comp < component_num; comp++) {
     int loc = getLocationID(comp, state);
     if (sys.hasUrgentCh(comp, loc)) {
-      std::set<int> dummy =
+      std::unordered_set<int> dummy =
           getEnableOutUrgent(comp, loc, const_cast<int*>(state));
 
       for (auto e : dummy) {
@@ -151,21 +151,18 @@ bool TMStateManager::hasMatchOutUrgentChan(const int* const state) const {
   return false;
 }
 
-// TODO:
 bool TMStateManager::hasOutSendBroadcastChan(const int* const state) const {
   if (!sys.hasBroadcaseCh()) {
     return false;
   }
-  std::set<int> send_part, receive_part;
+  // std::set<int> send_part, receive_part;
   for (int comp = 0; comp < component_num; comp++) {
     int loc = getLocationID(comp, state);
     if (sys.hasBroadcaseSendCh(comp, loc)) {
-      std::set<int> dummy =
-          getEnableOutBroadcast(comp, loc, const_cast<int*>(state));
-      for (auto e : dummy) {
-        if (e > 0) {
-          return true;
-        }
+      std::unordered_set<int> dummy =
+          getEnableOutSendBroadcast(comp, loc, const_cast<int*>(state));
+      if (!dummy.empty()) {
+        return true;
       }
     }
   }
@@ -198,7 +195,7 @@ int TMStateManager::getTypeNumber(const TYPE_T type) const {
 }
 
 const int* TMStateManager::getValue(const int component, const string& key,
-                             const int* const state) const {
+                                    const int* const state) const {
   TYPE_T type = sys.getType(component, key);
 
   if (type == NO_T) {
@@ -206,7 +203,7 @@ const int* TMStateManager::getValue(const int component, const string& key,
     return 0;
   }
   int start = getTypeStart(type);
-  return state+(start + sys.getKeyID(component, type, key));
+  return state + (start + sys.getKeyID(component, type, key));
 }
 
 void TMStateManager::setValue(const int component, const string& key, int value,
@@ -229,7 +226,7 @@ int* TMStateManager::getValue(const int component, const string& key,
     return nullptr;
   }
   int start = getTypeStart(type);
-  return state+(start + sys.getKeyID(component, type, key));
+  return state + (start + sys.getKeyID(component, type, key));
 }
 
 MatrixValue TMStateManager::getClockLowerBound(const int component,
@@ -380,10 +377,9 @@ std::vector<int> TMStateManager::getEnableOutLinks(const int component,
   return re;
 }
 
-std::set<int> TMStateManager::getEnableOutBroadcast(const int component,
-                                                    const int loc,
-                                                    int* state) const {
-  std::set<int> re;
+std::unordered_set<int> TMStateManager::getEnableOutBroadcast(
+    const int component, const int loc, int* state) const {
+  std::unordered_set<int> re;
   int* counter_value = getCounterValue(state);
   const vector<int>& outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {
@@ -402,10 +398,27 @@ std::set<int> TMStateManager::getEnableOutBroadcast(const int component,
   return re;
 }
 
-std::set<int> TMStateManager::getEnableOutUrgent(const int component,
-                                                 const int loc,
-                                                 State_t* state) const {
-  std::set<int> re;
+std::unordered_set<int> TMStateManager::getEnableOutSendBroadcast(
+    const int component, const int loc, int* state) const {
+  std::unordered_set<int> re;
+  int* counter_value = getCounterValue(state);
+  const vector<int>& outs = sys.getOutTransition(component, loc);
+  for (auto link : outs) {
+    if (sys.hasBroadcaseSendCh(component, link)) {
+      if (transitionReady(component, link, state)) {
+        re.insert(sys.agents[component]
+                      ->transitions[link]
+                      .getChannel()
+                      .getSiginGlobalId(counter_value));
+      }
+    }
+  }
+  return re;
+}
+
+std::unordered_set<int> TMStateManager::getEnableOutUrgent(
+    const int component, const int loc, State_t* state) const {
+  std::unordered_set<int> re;
   int* counter_value = getCounterValue(state);
   const vector<int>& outs = sys.getOutTransition(component, loc);
   for (auto link : outs) {
@@ -424,10 +437,9 @@ std::set<int> TMStateManager::getEnableOutUrgent(const int component,
   return re;
 }
 
-set<int> TMStateManager::getEnableOutNormalChan(const int component,
-                                                const int loc,
-                                                int* state) const {
-  set<int> re;
+std::unordered_set<int> TMStateManager::getEnableOutNormalChan(
+    const int component, const int loc, int* state) const {
+  std::unordered_set<int> re;
   const vector<int>& outs = sys.getOutTransition(component, loc);
   int* counter_value = getCounterValue(state);
   for (auto link : outs) {

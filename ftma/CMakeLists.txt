@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 #set( CMAKE_VERBOSE_MAKEFILE on )
-set(PROJECT_ROOT "/Users/yunyun/mycode/c++/graphmodel/ftma")
+set(PROJECT_ROOT ".")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Options. Turn on with 'cmake -Dmyvarname=ON'.
 option(test "Build all tests." OFF) # Makes boolean 'test' available.

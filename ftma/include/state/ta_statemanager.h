@@ -10,7 +10,8 @@
 
 #ifndef __STATE_MANAGER_H
 #define __STATE_MANAGER_H
-#include <set>
+
+#include <unordered_set>
 #include <vector>
 
 #include "discretestate.hpp"
@@ -286,13 +287,16 @@ class TMStateManager : public ComponentInfo {
   std::vector<int> getEnableOutLinks(const int component, int loc,
                                      int* state) const;
 
-  std::set<int> getEnableOutBroadcast(const int component, const int loc,
+  std::unordered_set<int> getEnableOutBroadcast(const int component, const int loc,
                                       int* state) const;
 
-  std::set<int> getEnableOutUrgent(const int component, const int loc,
+  std::unordered_set<int> getEnableOutSendBroadcast(const int component, const int loc,
+                                      int* state) const;
+
+  std::unordered_set<int> getEnableOutUrgent(const int component, const int loc,
                                    int* state) const;
 
-  std::set<int> getEnableOutNormalChan(const int component, const int loc,
+  std::unordered_set<int> getEnableOutNormalChan(const int component, const int loc,
                                        int* state) const;
 
   bool hasDiffCons() const;
