@@ -16,6 +16,7 @@
 //#define YYDEBUG 1
 
 #include "example.h"
+#include "sim/data/trace.h"
 #include "util/timer.h"
 #include <vector>
 

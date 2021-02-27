@@ -49,8 +49,8 @@ source_group("parser" FILES ${PARSER_SRC})
 ################################
 file(GLOB_RECURSE LIB_SRCS   ${PROJECT_ROOT}/src/*.cpp)
 list(REMOVE_ITEM LIB_SRCS "src/main.cpp")
-add_library(gmodel_lib ${LIB_SRCS} ${CURRENT_HEADERS} ${PARSER_SRC})
-add_executable(gmodel src/main.cpp )
+add_library(gmodel_lib ${LIB_SRCS} ${CURRENT_HEADERS} ${PARSER_SRC} include/sim/data/trace.h include/sim/constant.h)
+add_executable(gmodel src/main.cpp include/sim/data/trace.h include/sim/constant.h)
 # Key idea: SEPARATE OUT your main() function into its own file so it can be its
 # own executable. Separating out main() means you can add this library to be
 # used elsewhere.
@@ -80,7 +80,7 @@ if (test)
   ##############
   file(GLOB_RECURSE TEST_SRCS   ${PROJECT_ROOT}/test/*.cpp)
   source_group("test" FILES ${TEST_SRCS})
-  add_executable(runUnitTests ${TEST_SRCS})
+  add_executable(runUnitTests ${TEST_SRCS} include/sim/data/trace.h include/sim/constant.h)
 
   # Standard linking to gtest stuff.
   target_link_libraries(runUnitTests gtest gtest_main)
