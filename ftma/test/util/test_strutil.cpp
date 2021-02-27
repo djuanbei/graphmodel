@@ -1,8 +1,7 @@
 #include "gtest/gtest.h"
-
 #include "util/strutil.h"
 
-using namespace graphsat;
+using namespace graphmodel;
 
 TEST(STR_UTIL, getFunArg) {
   std::string fun = "get( x)";

@@ -1,6 +1,6 @@
 #include "alg/combination.h"
 
-namespace graphsat {
+namespace graphmodel {
 Combination_n_k::Combination_n_k(int nn, int kk) : n(nn), k(kk), data(kk) {
   first = data.begin();
   last = data.end();
@@ -51,4 +51,4 @@ bool FullChoose::next() {
   return true;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

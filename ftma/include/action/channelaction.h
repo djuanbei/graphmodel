@@ -10,7 +10,7 @@
 
 #ifndef CHANNEL_ACTION_H
 #define CHANNEL_ACTION_H
-namespace graphsat {
+namespace graphmodel {
 enum ChannelActionT { SEND_T, RECEIVE_T };
 class ChannelAction {
  public
@@ -23,6 +23,6 @@ class ChannelAction {
   int gloabl_channel_id;
 };
 
-};  // namespace graphsat
+};  // namespace graphmodel
 
 #endif

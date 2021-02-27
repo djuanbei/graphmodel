@@ -13,7 +13,7 @@
 #include "to_real.h"
 #include "util/dbmutil.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 
 class Channel {
  public:
@@ -78,6 +78,6 @@ class Channel {
   int ch_sigin{1};
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

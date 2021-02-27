@@ -1,8 +1,8 @@
-#include <cassert>
-
 #include "model/transition.h"
 
-namespace graphsat {
+#include <cassert>
+
+namespace graphmodel {
 
 bool Transition::ready(const TMStateManager* manager,
                        const int* const state) const {
@@ -99,4 +99,4 @@ std::ostream& Transition::dump2Dot(std::ostream& out) const {
   return out;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

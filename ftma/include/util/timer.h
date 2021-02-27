@@ -14,7 +14,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
-namespace graphsat {
+namespace graphmodel {
 
 class timer {
  public:
@@ -58,5 +58,5 @@ void run_time(const std::string& name, Function func) {
   std::cout << '\t' << duration.count() << std::endl;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

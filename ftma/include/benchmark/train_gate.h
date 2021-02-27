@@ -16,10 +16,9 @@
 #include "model/location.h"
 #include "model/system_generator.h"
 #include "model/transition.h"
-
 #include "property/train_gate_prop.h"
 
-namespace graphsat {
+namespace graphmodel {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 class TrainGate : public SystemGenerator {
  public:
@@ -53,6 +52,6 @@ class Tail_F : public Function {
   virtual Function* copy() const { return new Tail_F(); }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

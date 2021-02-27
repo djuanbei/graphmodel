@@ -9,7 +9,7 @@
  */
 #ifndef COUNTER_HPP
 #define COUNTER_HPP
-namespace graphsat {
+namespace graphmodel {
 
 const int MAX_COUNTER_VALUE = 255;
 class Counter {
@@ -27,6 +27,6 @@ class Counter {
   int getLB() const { return lb; }
   int getUP() const { return up; }
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

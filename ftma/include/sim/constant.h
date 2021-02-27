@@ -6,11 +6,12 @@
 #define GMODEL_CONSTANT_H
 #include <string>
 
-namespace Sim {
+namespace graphmodel {
+namespace sim {
 using std::string;
 
-string DefaultVersion = "DefaultVersion";
+const static string DefaultVersion = "DefaultVersion";
 
-}  // namespace Sim
-
+}  // namespace sim
+}  // namespace graphmodel
 #endif  // GMODEL_CONSTANT_H

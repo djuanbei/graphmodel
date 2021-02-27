@@ -1,12 +1,12 @@
+#include "util/argument.h"
+
 #include <cassert>
 #include <iostream>
 #include <string>
 
-#include "util/argument.h"
-
 #include "model/function.h"
 
-namespace graphsat {
+namespace graphmodel {
 std::string Argument::to_string() const {
   if (type == EMPTY_ARG) {
     return "";
@@ -118,4 +118,4 @@ RealArgument& RealArgument::operator=(const RealArgument& other) {
   }
   return *this;
 }
-}  // namespace graphsat
+}  // namespace graphmodel

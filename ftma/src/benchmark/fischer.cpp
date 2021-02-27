@@ -1,7 +1,7 @@
 
 #include "benchmark/fischer.h"
 
-namespace graphsat {
+namespace graphmodel {
 typedef typename INT_TAS_t::Agent_t Agent_t;
 FischerGenerator::FischerGenerator() : k(3) {}
 void FischerGenerator::initial(
@@ -92,4 +92,4 @@ INT_TAS_t FischerGenerator::generate(int n) const {
   re.getStateManager();
   return re;
 }
-}  // namespace graphsat
+}  // namespace graphmodel

@@ -18,7 +18,7 @@
 #include "constraint/clockdiffcons.h"
 #include "domain/dbm.h"
 
-namespace graphsat {
+namespace graphmodel {
 using std::string;
 using std::to_string;
 using std::vector;
@@ -158,6 +158,6 @@ class Location {
   template <typename LL, typename TT>
   friend class AgentTemplate;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

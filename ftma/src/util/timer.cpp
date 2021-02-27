@@ -1,6 +1,6 @@
 #include "util/timer.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 bool test_timer(int diff) {
   using std::chrono::milliseconds;
@@ -17,4 +17,4 @@ bool test_timer(int diff) {
   return (recorded - milliseconds(diff) < sleep_time) &&
          (recorded + milliseconds(diff) > sleep_time);
 }
-}  // namespace graphsat
+}  // namespace graphmodel

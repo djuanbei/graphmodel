@@ -10,7 +10,7 @@
 #ifndef RUN_PATH_H
 #define RUN_PATH_H
 
-namespace graphsat {
+namespace graphmodel {
 
 class Path {
  public:
@@ -24,6 +24,6 @@ class Path {
   virtual void reset();
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

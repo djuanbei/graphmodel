@@ -15,7 +15,7 @@
 #include "model/system_generator.h"
 #include "model/transition.h"
 
-namespace graphsat {
+namespace graphmodel {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 class FischerGenerator : public SystemGenerator {
@@ -32,6 +32,6 @@ class FischerGenerator : public SystemGenerator {
   void initial(shared_ptr<typename INT_TAS_t::AgentTemplate_t>& tmt) const;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

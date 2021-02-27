@@ -16,7 +16,7 @@
 
 #include "util/typedef.h"
 
-namespace graphsat {
+namespace graphmodel {
 // using std::map;
 // using std::vector;
 
@@ -72,6 +72,6 @@ class Parameter {
   friend class Reachability;
   friend class UppaalParser;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

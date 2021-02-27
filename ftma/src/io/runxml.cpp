@@ -1,9 +1,10 @@
 #include "io/runxml.h"
+
 #include "io/stateout.h"
 #include "io/uppaalmodelparser.h"
 #include "state/reachableset.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 
 typedef ReachableSet<INT_TAS_t::StateManager_t> R_t;
 
@@ -23,4 +24,4 @@ void runxml(const std::string& file_name) {
   // data.generatorDot("test.gv");
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

@@ -1,13 +1,13 @@
+#include "benchmark/fischer_projector.h"
+
 #include <map>
 
 #include "alg/combination.h"
-#include "benchmark/fischer.h"
-#include "benchmark/fischer_projector.h"
-
 #include "alg/one_step.h"
 #include "alg/ta_next_step.h"
+#include "benchmark/fischer.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 FischerProjector::FischerProjector(
     const std::shared_ptr<TMStateManager>& out_manager, const int pro_d)
@@ -154,4 +154,4 @@ bool FischerProjector::constructState(
   return true;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

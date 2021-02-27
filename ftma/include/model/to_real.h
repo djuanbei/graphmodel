@@ -11,7 +11,7 @@
 #define _TO_REAL_H
 #include "util/argument.h"
 #include "util/typedef.h"
-namespace graphsat {
+namespace graphmodel {
 class TOReal {
  public:
   virtual RealArgument to_real(const TYPE_T& type,
@@ -21,6 +21,6 @@ class TOReal {
   }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

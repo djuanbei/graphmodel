@@ -13,11 +13,10 @@
 #include <map>
 #include <vector>
 
+#include "domain/dbm.h"
 #include "util/dbmutil.hpp"
 
-#include "domain/dbm.h"
-
-namespace graphsat {
+namespace graphmodel {
 // using namespace std;
 template <typename C>
 class DBMset {
@@ -243,5 +242,5 @@ class DBMset {
     return false;
   }
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

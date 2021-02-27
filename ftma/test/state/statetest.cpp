@@ -1,17 +1,15 @@
 
+#include <gtest/gtest.h>
+
 #include <random>
 #include <vector>
 
-#include <gtest/gtest.h>
-
-#include "state/discretestate.hpp"
-
+#include "alg/util.h"
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
+#include "state/discretestate.hpp"
 
-#include "alg/util.h"
-
-using namespace graphsat;
+using namespace graphmodel;
 using namespace std;
 
 std::default_random_engine generator;

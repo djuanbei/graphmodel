@@ -13,13 +13,13 @@
 
 #include "one_step.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class NextStep {
  public:
   virtual std::vector<OneStep> getNextStep(void* state) const = 0;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

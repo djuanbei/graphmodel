@@ -1,7 +1,7 @@
 
 #include "model/location.h"
 
-namespace graphsat {
+namespace graphmodel {
 bool Location::operator()(const DBMManager& dbm_manager, const int* const dbm,
                           vector<int*>& re_vec) const {
   int* newDBM = dbm_manager.createDBM(dbm);
@@ -54,4 +54,4 @@ std::ostream& Location::dump2Dot(std::ostream& out) const {
   return out;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

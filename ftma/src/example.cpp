@@ -1,4 +1,6 @@
 
+#include "example.h"
+
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -14,11 +16,10 @@
 #include "benchmark/liftcustomer_projector.h"
 #include "benchmark/liftcustomerproperty.h"
 #include "benchmark/train_gate.h"
-
+#include "benchmark/train_gate_projector.h"
 #include "constraint/clockdiffcons.h"
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
-#include "example.h"
 #include "io/stateout.h"
 #include "io/uppaalmodelparser.h"
 #include "log/logset.h"
@@ -34,12 +35,8 @@
 #include "util/datacompression.h"
 #include "util/dbmutil.hpp"
 
-#include "benchmark/liftcustomer.h"
-#include "benchmark/train_gate.h"
-#include "benchmark/train_gate_projector.h"
-
 using std::vector;
-using namespace graphsat;
+using namespace graphmodel;
 
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 typedef typename INT_TAS_t::Agent_t Agent_t;
@@ -48,7 +45,7 @@ typedef ReachableSet<INT_TAS_t::StateManager_t> R_t;
 
 typedef Reachability<INT_TAS_t> RS_t;
 
-namespace graphsat {
+namespace graphmodel {
 
 std::default_random_engine generator;
 std::uniform_int_distribution<int> distribution(0, 1000);
@@ -263,8 +260,8 @@ void fischer(int n) {
 
     data.getStateAt(state, i);
     dummy.push_back(state[0]);
-    dummy.push_back(*manager->getValue(0,  "id", state) == 1);
-    dummy.push_back(*manager->getValue(0,  "id", state) > 0);
+    dummy.push_back(*manager->getValue(0, "id", state) == 1);
+    dummy.push_back(*manager->getValue(0, "id", state) > 0);
     int* dbm = manager->getDBM(state);
     manager->getClockManager().encode(dbm);
     dummy.push_back(manager->getClockManager().at(dbm, 0, 0));
@@ -696,4 +693,4 @@ void fischerSymmetry(int n) {
   }
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

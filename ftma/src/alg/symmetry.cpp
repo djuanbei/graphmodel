@@ -1,11 +1,11 @@
+#include "alg/symmetry.h"
+
 #include <cassert>
 #include <map>
 
-#include "alg/symmetry.h"
-
 #include "io/stateout.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 bool Symmetry::isSymmetry(const StateSet<UINT>& sets,
                           const ReachableSet<TMStateManager>& reachSet,
@@ -97,4 +97,4 @@ void Symmetry::swap(int* source, const vector<int>& swap_map,
   }
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

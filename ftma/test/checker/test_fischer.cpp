@@ -1,30 +1,25 @@
+#include <gtest/gtest.h>
+
 #include <random>
 #include <vector>
 
-#include <gtest/gtest.h>
-
+#include "alg/symmetry.h"
+#include "alg/util.h"
+#include "benchmark/fischer.h"
+#include "benchmark/fischer_projector.h"
+#include "domain/dbm.h"
+#include "domain/dbmset.hpp"
 #include "model/graphmodel.hpp"
 #include "model/location.h"
 #include "model/transition.h"
+#include "problem/pmcp.hpp"
 #include "problem/reachability.hpp"
+#include "property/fisherprop.h"
+#include "property/locreachprop.h"
 #include "state/discretestate.hpp"
 #include "state/reachableset.hpp"
 
-#include "domain/dbm.h"
-#include "domain/dbmset.hpp"
-#include "property/fisherprop.h"
-#include "property/locreachprop.h"
-
-#include "benchmark/fischer.h"
-#include "benchmark/fischer_projector.h"
-
-#include "problem/pmcp.hpp"
-
-#include "alg/symmetry.h"
-
-#include "alg/util.h"
-
-using namespace graphsat;
+using namespace graphmodel;
 using namespace std;
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 

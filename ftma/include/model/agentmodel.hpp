@@ -13,17 +13,15 @@
 #include <map>
 #include <vector>
 
-#include "graph/graph.hpp"
-
 #include "function.h"
+#include "graph/graph.hpp"
+#include "location.h"
 #include "templatemodel.hpp"
 #include "to_real.h"
+#include "transition.h"
 #include "util/strutil.h"
 
-#include "location.h"
-#include "transition.h"
-
-namespace graphsat {
+namespace graphmodel {
 using namespace raptor;
 
 template <typename L, typename T>
@@ -44,9 +42,7 @@ class Agent : public VariableMap, public TOReal {
     }
     return agent_tempate->getName() + "[" + to_string(id) + "]";
   }
-  std::string getTemplateName( void) const{
-    return agent_tempate->getName();
-  }
+  std::string getTemplateName(void) const { return agent_tempate->getName(); }
 
   void findRhs(const int link, const int lhs, int& rhs) const {
     graph.findRhs(link, lhs, rhs);
@@ -331,5 +327,5 @@ class Agent : public VariableMap, public TOReal {
   }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

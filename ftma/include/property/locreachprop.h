@@ -12,7 +12,7 @@
 #define LOC_REACH_PROP_H
 #include "property/property.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class LocReachProperty : public Property {
  public:
@@ -26,6 +26,6 @@ class LocReachProperty : public Property {
  private:
   vector<int> loc;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

@@ -1,8 +1,8 @@
-#include <random>
-
 #include "util/strutil.h"
 
-namespace graphsat {
+#include <random>
+
+namespace graphmodel {
 
 std::string getFunArg(const std::string& fun) {
   std::string::size_type start = fun.find("(");
@@ -88,4 +88,4 @@ std::string deleteChar(const std::string& value, const size_t start,
   return std::string(buf);
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

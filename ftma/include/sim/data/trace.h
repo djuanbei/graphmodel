@@ -6,11 +6,14 @@
 #define GMODEL_TRACE_H
 #include <time.h>
 
+#include <cmath>
 #include <string>
+#include <vector>
 
 #include "sim/constant.h"
 
-namespace Sim {
+namespace graphmodel {
+namespace sim {
 using std::string;
 
 struct Point {
@@ -21,6 +24,15 @@ struct Point {
     location = loc;
     content = cont;
   }
+  Point(time_t time, std::pair<float, float> p, string loc, string cont) {
+    this->time = time;
+    longitude = p.first;
+    latitude = p.second;
+    location = loc;
+    content = cont;
+  }
+  string toString();
+
   time_t time;
   float longitude;
   float latitude;
@@ -42,13 +54,29 @@ class Trace {
     this->version = version;
   }
 
+  void setLoc(time_t time, float lon, float lat) {
+    currentTime = time;
+    longitude = lon;
+    latitude = lat;
+  }
+  void nextLoc(time_t time, float lon, float lat);
+
   long getId() const { return id; }
   float getLongitude() const { return longitude; }
   float getLatitude() const { return latitude; }
 
-  void save(time_t time, string name, string content) { currentTime = time; }
+  void save(time_t time, string loc, string content);
+
+  string toJson() const;
+  void parseFromJson(string& jsonStr);
 
  private:
+  std::pair<float, float> travelLoc(time_t time) {
+    float diff = difftime(time, currentTime);
+
+    return std::make_pair(longitude + longMoveRateBySec * diff,
+                          latitude + latMoveRateBySec * diff);
+  }
   long id;
   time_t currentTime;
   float longitude;
@@ -57,6 +85,8 @@ class Trace {
   float latMoveRateBySec = 0;
   string version = DefaultVersion;
   bool isOccur = false;
+  std::vector<Point> traces;
 };
-}  // namespace Sim
+}  // namespace sim
+}  // namespace graphmodel
 #endif  // GMODEL_TRACE_H

@@ -1,7 +1,9 @@
 #include "util/dbmutil.hpp"
+
 #include <cassert>
+
 #include "model/function.h"
-namespace graphsat {
+namespace graphmodel {
 extern std::string trim(std::string s);
 
 std::string getOpStr(COMP_OPERATOR op) {
@@ -144,4 +146,4 @@ bool isRefType(const TYPE_T type) {
 int fromPidToChanId(int id) { return id + 1; }
 
 int chanIdToFromPid(int id) { return id - 1; }
-}  // namespace graphsat
+}  // namespace graphmodel

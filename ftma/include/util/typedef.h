@@ -18,7 +18,7 @@
 
 #include "macrodef.h"
 
-namespace graphsat {
+namespace graphmodel {
 // using std::std::string;
 typedef unsigned int UINT;
 
@@ -145,6 +145,6 @@ const static std::string TRANSITION_NAME_PRE = "Tran_";
 
 const static std::string CLOCK_NAME_PRE = "c_";
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

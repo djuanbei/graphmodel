@@ -19,7 +19,7 @@
 #include "model/to_real.h"
 #include "util/dbmutil.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 
 // using namespace std;
 
@@ -82,5 +82,5 @@ class ClockConstraint {
 };
 ClockConstraint randConst(const int num, const int low, const int up);
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

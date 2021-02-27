@@ -10,7 +10,9 @@
 
 #ifndef CLOCK_RESET_H
 #define CLOCK_RESET_H
-namespace graphsat {
+#include "util/argument.h"
+#include "model/to_real.h"
+namespace graphmodel {
 class ClockReset {
  public:
   ClockReset(const Argument& clock_arg, const Argument& rhs_arg)
@@ -31,6 +33,6 @@ class ClockReset {
   Argument clock, rhs;
   RealArgument clock_value, rhs_value;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

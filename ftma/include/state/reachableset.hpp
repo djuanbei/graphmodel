@@ -16,16 +16,14 @@
 #include <random>
 #include <vector>
 
-#include "util/typedef.h"
-
-#include "state/discretestate.hpp"
-
 #include "alg/one_step.h"
 #include "alg/ta_next_step.h"
 #include "property/property.h"
+#include "state/discretestate.hpp"
 #include "util/datacompression.h"
+#include "util/typedef.h"
 
-namespace graphsat {
+namespace graphmodel {
 using std::copy;
 using std::deque;
 using std::fill;
@@ -346,6 +344,6 @@ class ReachableSet {
   }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

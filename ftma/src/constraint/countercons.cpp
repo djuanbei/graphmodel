@@ -1,6 +1,6 @@
 #include "constraint/countercons.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 void CounterConstraint::to_real(const TOReal* convertor) {
   first_value = convertor->to_real(INT_T, first);
@@ -19,4 +19,4 @@ CounterConstraint* createConstraint(const Argument& out_first,
                                     const Argument& out_rhs) {
   return new CounterConstraint(out_first, out_second, oop, out_rhs);
 }
-}  // namespace graphsat
+}  // namespace graphmodel

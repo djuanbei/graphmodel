@@ -25,7 +25,7 @@
 extern int yy_flex_debug;
 
 using std::vector;
-using namespace graphsat;
+using namespace graphmodel;
 
 int main(int argc, const char* argv[]) {
   // fischer(4);

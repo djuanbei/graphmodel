@@ -1,7 +1,7 @@
 
 #include "log/logset.h"
 
-namespace graphsat {
+namespace graphmodel {
 void logSet() {
   //  FLAGS_alsologtostderr = 1;
   //  google::SetStderrLogging(
@@ -17,4 +17,4 @@ void logSet() {
   // 设置ERROR级别以上的信息log文件的路径和前缀名
   // google::SetLogDestination(google::GLOG_ERROR, "~/log/ERROR_");
 }
-}  // namespace graphsat
+}  // namespace graphmodel

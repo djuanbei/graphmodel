@@ -13,21 +13,17 @@
 #include <memory>
 #include <vector>
 
-#include "channel.h"
-#include "clock.h"
-
-#include "constraint/countercons.h"
-#include "model/location.h"
-#include "state/ta_statemanager.h"
-
 #include "action/clockreset.h"
 #include "action/counteraction.h"
-
+#include "channel.h"
+#include "clock.h"
 #include "constraint/clockdiffcons.h"
-
+#include "constraint/countercons.h"
+#include "model/location.h"
 #include "model/vardecl.h"
+#include "state/ta_statemanager.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class Location;
 
@@ -185,6 +181,6 @@ class Transition {
   template <typename LL, typename TT>
   friend class AgentTemplate;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

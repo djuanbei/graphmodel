@@ -1,7 +1,7 @@
 #include "alg/combination.h"
 #include "gtest/gtest.h"
 
-using namespace graphsat;
+using namespace graphmodel;
 
 TEST(Combination_n_k, Combination_n_k) {
   Combination_n_k com(5, 3);

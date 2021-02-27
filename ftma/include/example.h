@@ -11,7 +11,7 @@
 #ifndef EXAMPLE_H
 #define EXAMPLE_H
 
-namespace graphsat {
+namespace graphmodel {
 
 void example1(void);
 void example50();
@@ -46,6 +46,6 @@ void train_gate(const int n);
 
 void lift_customer(int n);
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

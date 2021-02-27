@@ -9,14 +9,14 @@
  *
  */
 
+#include "io/xmlconf.h"
+
 #include <fstream>
 #include <iostream>
 
 #include "io/rapidxml.hpp"
 
-#include "io/xmlconf.h"
-
-namespace graphsat {
+namespace graphmodel {
 using namespace rapidxml;
 using namespace std;
 
@@ -163,4 +163,4 @@ int convert(const string str, string& val) {
 //   return s;
 // }
 
-}  // namespace graphsat
+}  // namespace graphmodel

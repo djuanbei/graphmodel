@@ -9,7 +9,7 @@
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
 
-using namespace graphsat;
+using namespace graphmodel;
 using namespace std;
 
 TEST(DBMFactory, createDBM) {

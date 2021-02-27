@@ -18,10 +18,9 @@
 #include <vector>
 
 #include "macrodef.h"
-
 #include "typedef.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 inline static std::string arrayToVar(const std::string& name, size_t id) {
   std::stringstream ss;
@@ -436,6 +435,6 @@ class ValueData {
 
 typedef ValueData<void*> PointerData;
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

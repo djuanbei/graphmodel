@@ -1,8 +1,7 @@
+#include "constraint/clockdiffcons.h"
 #include "gtest/gtest.h"
 
-#include "constraint/clockdiffcons.h"
-
-using namespace graphsat;
+using namespace graphmodel;
 
 TEST(LIN_SIMP_CONS_H, ClockConstraint) {
   Argument c1(NORMAL_VAR_ARG, 1);

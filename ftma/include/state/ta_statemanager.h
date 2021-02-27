@@ -21,7 +21,7 @@
 #include "state/componentstate.h"
 #include "util/datacompression.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 using std::vector;
 class Location;
@@ -167,13 +167,13 @@ class TMStateManager : public ComponentInfo {
    *
    * @return
    */
-  const int* getValue(const int component, 
-               const std::string& key, const int* const state) const;
+  const int* getValue(const int component, const std::string& key,
+                      const int* const state) const;
 
-  void setValue(const int component,  const std::string& key,
-                int value, int* state) const;
+  void setValue(const int component, const std::string& key, int value,
+                int* state) const;
 
-  int* getValue(const int component,  const std::string& key, int* state) const;
+  int* getValue(const int component, const std::string& key, int* state) const;
 
   /**
    * @brief As the state is  abstract symbolic state. A symbolic state
@@ -188,8 +188,8 @@ class TMStateManager : public ComponentInfo {
 
   void destroyState(int* state) const { delete[] state; }
 
-  int getCompentId( const std::string & template_name, const int agent_id) const;
-  
+  int getCompentId(const std::string& template_name, const int agent_id) const;
+
   int getComponentNumber() const { return component_num; }
 
   inline const DBMManager& getClockManager() const { return dbm_manager; }
@@ -287,17 +287,20 @@ class TMStateManager : public ComponentInfo {
   std::vector<int> getEnableOutLinks(const int component, int loc,
                                      int* state) const;
 
-  std::unordered_set<int> getEnableOutBroadcast(const int component, const int loc,
-                                      int* state) const;
+  std::unordered_set<int> getEnableOutBroadcast(const int component,
+                                                const int loc,
+                                                int* state) const;
 
-  std::unordered_set<int> getEnableOutSendBroadcast(const int component, const int loc,
-                                      int* state) const;
+  std::unordered_set<int> getEnableOutSendBroadcast(const int component,
+                                                    const int loc,
+                                                    int* state) const;
 
   std::unordered_set<int> getEnableOutUrgent(const int component, const int loc,
-                                   int* state) const;
+                                             int* state) const;
 
-  std::unordered_set<int> getEnableOutNormalChan(const int component, const int loc,
-                                       int* state) const;
+  std::unordered_set<int> getEnableOutNormalChan(const int component,
+                                                 const int loc,
+                                                 int* state) const;
 
   bool hasDiffCons() const;
 
@@ -315,9 +318,9 @@ class TMStateManager : public ComponentInfo {
 
   void decode(int* now, const UINT* const original) const;
 
-  std::ostream& dump( std::ostream& out, const int* const state) const;
+  std::ostream& dump(std::ostream& out, const int* const state) const;
 
-  void dump(const int* const state) const { dump( cout, state); }
+  void dump(const int* const state) const { dump(cout, state); }
 
   void dump(const vector<int>& state) const { dump(cout, &(state[0])); }
 
@@ -344,5 +347,5 @@ class TMStateManager : public ComponentInfo {
   vector<int*> init_states;
   int* cache_state;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

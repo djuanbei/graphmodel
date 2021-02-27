@@ -12,7 +12,7 @@
 
 #include "state/reachableset.hpp"
 #include "state/ta_statemanager.h"
-namespace graphsat {
+namespace graphmodel {
 
 class StateOutput {
  public:
@@ -25,6 +25,6 @@ class StateOutput {
                            const string& filename, const int* const target);
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

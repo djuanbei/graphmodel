@@ -1,13 +1,13 @@
 
+#include "state/ta_statemanager.h"
+
 #include <cassert>
 #include <unordered_set>
-
-#include "state/ta_statemanager.h"
 
 #include "alg/one_step.h"
 #include "model/graphmodel.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 TMStateManager::TMStateManager(const INT_TAS_t& s,
                                const vector<Counter>& ecounters,
                                int out_clock_num,
@@ -675,4 +675,4 @@ ostream& TMStateManager::dump(ostream& out, const int* const state) const {
   return getClockManager().dump(out, getDBM(state)) << endl;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

@@ -18,15 +18,13 @@
 #include <set>
 #include <vector>
 
+#include "alg/ta_next_step.h"
+#include "model/channel.h"
+#include "property/property.h"
 #include "util/macrodef.h"
 #include "util/parallel.h"
 
-#include "model/channel.h"
-#include "property/property.h"
-
-#include "alg/ta_next_step.h"
-
-namespace graphsat {
+namespace graphmodel {
 
 template <typename SYS>
 class Reachability {
@@ -130,6 +128,6 @@ class Reachability {
   State_t* next_state;
   std::default_random_engine generator;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

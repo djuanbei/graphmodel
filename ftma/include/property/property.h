@@ -13,7 +13,7 @@
 
 #include "state/componentstate.h"
 
-namespace graphsat {
+namespace graphmodel {
 using std::vector;
 
 class Property {
@@ -23,6 +23,6 @@ class Property {
   }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

@@ -1,6 +1,6 @@
 #include "problem/pmcp.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 
 // bool element_cmp(const vector<int>& lhs, const vector<int>& rhs) {
 //   for (size_t i = 0; i < lhs.size(); i++) {
@@ -12,4 +12,4 @@ namespace graphsat {
 //   }
 //   return false;
 // }
-}  // namespace graphsat
+}  // namespace graphmodel

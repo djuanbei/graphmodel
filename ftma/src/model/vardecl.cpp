@@ -1,6 +1,6 @@
 #include "model/vardecl.h"
 
-namespace graphsat {
+namespace graphmodel {
 VarDecl::~VarDecl() {
   const std::vector<std::pair<std::string, std::vector<void*>>>& int_values =
       data.getValue(INT_T);
@@ -246,4 +246,4 @@ CHANNEL_TYPE VarDecl::getChanType(const std::string& name) const {
   return ONE2ONE_CH;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

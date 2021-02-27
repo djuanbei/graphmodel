@@ -10,13 +10,12 @@
 
 #ifndef TA_NEXT_STEP_H
 #define TA_NEXT_STEP_H
-#include "next_step.h"
-
 #include "model/graphmodel.hpp"
 #include "model/location.h"
 #include "model/transition.h"
+#include "next_step.h"
 
-namespace graphsat {
+namespace graphmodel {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 class TANextStep : public NextStep {
@@ -75,6 +74,6 @@ class TANextStep : public NextStep {
   void doBroadcast(int* state, std::vector<OneStep>& re) const;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

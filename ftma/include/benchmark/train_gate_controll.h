@@ -16,7 +16,7 @@
 #include "model/location.h"
 #include "model/transition.h"
 
-namespace graphsat {
+namespace graphmodel {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
 class TrainGateControl {
@@ -27,6 +27,6 @@ class TrainGateControl {
  private:
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

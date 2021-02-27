@@ -10,7 +10,7 @@
 #ifndef FISHER_PROPERTY_H
 #define FISHER_PROPERTY_H
 #include "property/property.h"
-namespace graphsat {
+namespace graphmodel {
 
 class FischerMutual : public Property {
  public:
@@ -26,6 +26,6 @@ class FischerMutual : public Property {
   }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

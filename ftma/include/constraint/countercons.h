@@ -15,13 +15,11 @@
 #include <iostream>
 #include <vector>
 
+#include "model/to_real.h"
+#include "util/data.hpp"
 #include "util/dbmutil.hpp"
 
-#include "util/data.hpp"
-
-#include "model/to_real.h"
-
-namespace graphsat {
+namespace graphmodel {
 
 // first - second op rhs
 class CounterConstraint {
@@ -52,6 +50,6 @@ class CounterConstraint {
 CounterConstraint* createConstraint(const Argument& out_first,
                                     const Argument& out_second,
                                     COMP_OPERATOR oop, const Argument& out_rhs);
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

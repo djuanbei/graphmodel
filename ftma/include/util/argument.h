@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace graphsat {
+namespace graphmodel {
 
 #define AVOID_COPY(T)                  \
  private:                              \
@@ -147,5 +147,5 @@ class Argument {
 // int_fast64_t getMapValue(const Argument& arg, const std::vector<int>& id_map,
 //                          const std::vector<int>& parameter_value);
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

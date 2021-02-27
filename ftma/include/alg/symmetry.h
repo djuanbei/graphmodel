@@ -17,7 +17,7 @@
 #include "state/reachableset.hpp"
 #include "state/ta_statemanager.h"
 
-namespace graphsat {
+namespace graphmodel {
 using namespace std;
 class Symmetry {
  public:
@@ -35,6 +35,6 @@ class Symmetry {
   int len;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

@@ -15,7 +15,7 @@
 
 #include "util/typedef.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class OneStep {
  public:
@@ -181,6 +181,6 @@ std ::vector<State_t*> doEvolution(const M* manager, const int component,
   return re;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

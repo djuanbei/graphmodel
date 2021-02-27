@@ -1,7 +1,8 @@
 #include "io/uppaaldata.h"
+
 #include <cassert>
 
-namespace graphsat {
+namespace graphmodel {
 bool UppaalData::IS_SYSTEM_PROCEDURE = false;
 UppaalData::UppaalData() {
   IS_SYSTEM_PROCEDURE = false;
@@ -167,4 +168,4 @@ void UppaalData::addClockConstraint(int clock1_id, int clock2_id,
   }
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

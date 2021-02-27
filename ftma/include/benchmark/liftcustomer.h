@@ -13,11 +13,10 @@
 
 #include "model/graphmodel.hpp"
 #include "model/location.h"
+#include "model/system_generator.h"
 #include "model/transition.h"
 
-#include "model/system_generator.h"
-
-namespace graphsat {
+namespace graphmodel {
 
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
@@ -25,6 +24,6 @@ class LiftCustomer : public SystemGenerator {
  public:
   INT_TAS_t generate(int n) const;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

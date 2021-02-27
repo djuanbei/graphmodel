@@ -2,7 +2,7 @@
 
 #include "model/location.h"
 
-using namespace graphsat;
+using namespace graphmodel;
 
 TEST(__LOCATION_H, LOCATION) {
   // Location loc(1);

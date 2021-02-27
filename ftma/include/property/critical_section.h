@@ -13,7 +13,7 @@
 #include "property/property.h"
 #include "state/componentstate.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class CriticalSection : public Property {
  public:
@@ -34,6 +34,6 @@ class CriticalSection : public Property {
 
   int CS;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

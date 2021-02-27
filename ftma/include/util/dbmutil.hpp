@@ -16,11 +16,10 @@
 #include <string>
 #include <vector>
 
+#include "macrodef.h"
 #include "typedef.h"
 
-#include "macrodef.h"
-
-namespace graphsat {
+namespace graphmodel {
 // using std::map;
 // using std::string;
 // using std::vector;
@@ -116,6 +115,6 @@ inline C negMatrixValue(C matrix_value) {
   return getMatrixValue(-getRight(matrix_value), strict);
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

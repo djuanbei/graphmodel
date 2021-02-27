@@ -1,4 +1,4 @@
 #include "model/clock.h"
-namespace graphsat {
+namespace graphmodel {
 const Clock Clock::ZERO;
 }

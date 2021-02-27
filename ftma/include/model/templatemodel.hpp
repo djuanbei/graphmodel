@@ -15,12 +15,11 @@
 
 #include "graph/graph.hpp"
 #include "graphmodel.hpp"
-#include "vardecl.h"
-
 #include "location.h"
 #include "transition.h"
+#include "vardecl.h"
 
-namespace graphsat {
+namespace graphmodel {
 using namespace raptor;
 
 /**
@@ -323,6 +322,6 @@ class AgentTemplate : public VarDecl {
 //   template <typename L1, typename T1> friend class AgentSystem;
 // };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

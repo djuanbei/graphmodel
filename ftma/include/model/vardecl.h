@@ -17,10 +17,9 @@
 #include "channel.h"
 #include "clock.h"
 #include "function.h"
-
 #include "util/data.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 
 struct BaseDecl {
   int start_loc;
@@ -137,6 +136,6 @@ class VarDecl {
 
   int getTypeNumber(const int type) const;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

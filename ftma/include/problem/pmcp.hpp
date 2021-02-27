@@ -19,8 +19,7 @@
 #include "property/property.h"
 #include "state/reachableset.hpp"
 
-namespace graphsat {
-
+namespace graphmodel {
 
 template <typename SYS, typename G, typename PROJ>
 class IncrementalCheck {
@@ -60,10 +59,10 @@ class IncrementalCheck {
       deleteRepeat(project);
 
       if (proj.include(project, pre_project)) {
-        if( proj.projectStableCheck(project, data, &g  )){
-        cout << "size: " << project.size() << " : " << pre_project.size()
-             << endl;
-        return true;
+        if (proj.projectStableCheck(project, data, &g)) {
+          cout << "size: " << project.size() << " : " << pre_project.size()
+               << endl;
+          return true;
         }
       }
 
@@ -84,6 +83,6 @@ class IncrementalCheck {
   size_t project_dim;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

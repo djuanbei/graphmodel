@@ -12,7 +12,7 @@
 #define TRAIN_GATE_PROPERTY_H
 #include "property/critical_section.h"
 
-namespace graphsat {
+namespace graphmodel {
 class TrainGatePro : public CriticalSection {
  public:
   TrainGatePro(const int n) : train_num(n) {}
@@ -26,6 +26,6 @@ class TrainGatePro : public CriticalSection {
   int train_num;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

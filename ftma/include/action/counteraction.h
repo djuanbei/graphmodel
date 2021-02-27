@@ -17,11 +17,10 @@
 
 #include "model/function.h"
 #include "model/to_real.h"
-
 #include "util/data.hpp"
 #include "util/dbmutil.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 
 #define ACTION_TYPE_CASE(op)                                                \
   switch (rhs.type) {                                                       \
@@ -141,5 +140,5 @@ class CounterAction {
   RealArgument real_rhs;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

@@ -16,7 +16,7 @@
   using std::vector;
   using std::make_pair;
       
-  using namespace graphsat;
+  using namespace graphmodel;
   
   int yydebug=1;   
   using std::cerr;
@@ -1020,7 +1020,7 @@ void yyerror(const string &s){
 }
 
 
-namespace graphsat{
+namespace graphmodel{
   void parseProblem( const string &str,   UppaalData* d){
     
     current_data=d;

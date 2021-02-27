@@ -1,23 +1,19 @@
-#include "gtest/gtest.h"
-
-#include "model/graphmodel.hpp"
-#include "model/location.h"
-#include "model/transition.h"
-#include "problem/reachability.hpp"
-#include "state/reachableset.hpp"
-
-#include "benchmark/train_gate.h"
-#include "benchmark/train_gate_projector.h"
-
 #include "benchmark/liftcustomer.h"
 #include "benchmark/liftcustomer_projector.h"
 #include "benchmark/liftcustomerproperty.h"
-
+#include "benchmark/train_gate.h"
+#include "benchmark/train_gate_projector.h"
+#include "gtest/gtest.h"
+#include "model/graphmodel.hpp"
+#include "model/location.h"
+#include "model/transition.h"
 #include "problem/pmcp.hpp"
+#include "problem/reachability.hpp"
+#include "state/reachableset.hpp"
 
 #undef PRINT_STATE
 
-using namespace graphsat;
+using namespace graphmodel;
 
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 
@@ -413,8 +409,8 @@ TEST(PMCP, train_gate) {
   //  EXPECT_TRUE(check.check(TG, &prop));
 }
 
-TEST( PMCP,liftcustomer){
-    LiftCustomer generator;
+TEST(PMCP, liftcustomer) {
+  LiftCustomer generator;
   IncrementalCheck<INT_TAS_t, LiftCustomer, LiftCustomerProjector> check;
   INT_TAS_t sys = generator.generate(1);
   int overload_loc = sys.getLocationID(0, "overload");
@@ -422,6 +418,5 @@ TEST( PMCP,liftcustomer){
   locs.push_back(overload_loc);
 
   LiftCustomerProperty prop(locs);
-  EXPECT_TRUE( check.check( generator, &prop));
-  
+  EXPECT_TRUE(check.check(generator, &prop));
 }

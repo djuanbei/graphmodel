@@ -12,7 +12,7 @@
 #include "alg/projector.h"
 #include "state/ta_statemanager.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class TrainGateProjector : public Projector {
  public:
@@ -34,8 +34,8 @@ class TrainGateProjector : public Projector {
                       const std::vector<std::vector<int>>& vertices,
                       const std::vector<int>& choose,
                       const std::vector<std::pair<int, int>>& link_src_snk_map
-                      //const std::map<int, int>& link_map
-                      ) const override final;
+                      // const std::map<int, int>& link_map
+  ) const override final;
 
   std::ostream& dump(const std::vector<int>& proj_e,
                      std::ostream& out) const override final;
@@ -50,5 +50,5 @@ class TrainGateProjector : public Projector {
   enum Order { UNKOWN = 0, EQUAL = 1, FRONTER = 2, LATER = 3 };
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

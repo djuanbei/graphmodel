@@ -14,11 +14,12 @@
 #include <map>
 #include <string>
 #include <vector>
+
 #include "model/graphmodel.hpp"
 #include "model/location.h"
 #include "model/transition.h"
 #include "util/data.hpp"
-namespace graphsat {
+namespace graphmodel {
 // using std::map;
 // using std::pair;
 // using std::string;
@@ -270,6 +271,6 @@ void parseProblem(const string& str, UppaalData*);
 
 void runxml(const string& file_name);
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

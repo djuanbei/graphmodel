@@ -1,6 +1,6 @@
 #include "io/stateout.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 void StateOutput::generatorDot(const ReachableSet<TMStateManager>& reachSet,
                                const string& filename) {
@@ -141,4 +141,4 @@ bool StateOutput::generatePath(const ReachableSet<TMStateManager>& reachSet,
 
   return true;
 }
-}  // namespace graphsat
+}  // namespace graphmodel

@@ -10,24 +10,19 @@
 #ifndef __MODEL_PARSER_HPP
 #define __MODEL_PARSER_HPP
 
-#include "io/xmlconf.h"
-#include "model/graphmodel.hpp"
-
 #include "action/counteraction.h"
 #include "constraint/clockdiffcons.h"
-#include "model/location.h"
-
-#include "model/transition.h"
-#include "problem/reachability.hpp"
-
-#include "util/dbmutil.hpp"
-
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
-
 #include "io/uppaaldata.h"
+#include "io/xmlconf.h"
+#include "model/graphmodel.hpp"
+#include "model/location.h"
+#include "model/transition.h"
+#include "problem/reachability.hpp"
+#include "util/dbmutil.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 typedef AgentSystem<Location, Transition> INT_TAS_t;
 static const TYPE_T gloabl_variable_types[] = {INT_T, CLOCK_T, CHAN_T};
 
@@ -77,6 +72,6 @@ class UppaalParser {
                  string& code_name);
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

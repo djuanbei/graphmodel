@@ -12,7 +12,7 @@
 #define STR_UTIL_H
 #include <string>
 #include <vector>
-namespace graphsat {
+namespace graphmodel {
 
 std::vector<std::string> splitStr(const std::string& stringToBeSplitted,
                                   const std::string& delimeter);
@@ -32,6 +32,6 @@ std::string trim(std::string s);
 
 std::string rand_str(int len = 6);
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

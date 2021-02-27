@@ -17,7 +17,7 @@
 
 #include "util/strutil.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 // using namespace std;
 
@@ -157,6 +157,6 @@ class XmlConfig {
   FXML_ATTRLIST attr;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

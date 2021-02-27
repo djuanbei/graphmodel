@@ -15,7 +15,7 @@
 
 #include "property/property.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 class LiftCustomerProperty : public Property {
  public:
@@ -27,6 +27,6 @@ class LiftCustomerProperty : public Property {
  private:
   std::vector<int> loc;
 };
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

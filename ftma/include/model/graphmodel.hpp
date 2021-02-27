@@ -15,21 +15,16 @@
 #include <vector>
 
 #include "action/counteraction.h"
+#include "agentmodel.hpp"
 #include "channel.h"
 #include "counter.h"
-
 #include "domain/dbmset.hpp"
-
 #include "parameter.h"
 #include "state/discretestate.hpp"
-
 #include "templatemodel.hpp"
-
-#include "agentmodel.hpp"
-
 #include "vardecl.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 template <typename L, typename T>
 class AgentSystem : public VarDecl {
@@ -109,7 +104,7 @@ class AgentSystem : public VarDecl {
         if (pass == agent_id) {
           return i;
         }
-         pass++;
+        pass++;
       }
     }
     return NOT_FOUND;
@@ -414,6 +409,6 @@ class AgentSystem : public VarDecl {
   // template <typename TT> friend class Reachability;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

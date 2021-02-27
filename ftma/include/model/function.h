@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-namespace graphsat {
+namespace graphmodel {
 
 // using namespace std;
 
@@ -39,6 +39,6 @@ class Function {
   virtual Function* copy() const = 0;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

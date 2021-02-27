@@ -1,7 +1,8 @@
 #include "domain/dbm.h"
+
 #include <cassert>
 
-namespace graphsat {
+namespace graphmodel {
 MatrixValue::MatrixValue(int matrix_value) {
   strict = isStrict<int>(matrix_value);
   value = getRight(matrix_value);
@@ -552,4 +553,4 @@ std::ostream& DBMManager::dumpElement(std::ostream& out, const int* const dbm,
   return out;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

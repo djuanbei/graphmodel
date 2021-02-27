@@ -11,7 +11,7 @@
 #define LOG_SETING_H
 //#include <glog/logging.h>
 
-namespace graphsat {
+namespace graphmodel {
 void logSet();
 }
 

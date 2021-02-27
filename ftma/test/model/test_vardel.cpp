@@ -1,8 +1,7 @@
 #include "gtest/gtest.h"
-
 #include "model/vardecl.h"
 
-using namespace graphsat;
+using namespace graphmodel;
 
 TEST(VAR_DECL_H, VarDecl) {
   VarDecl vdel;

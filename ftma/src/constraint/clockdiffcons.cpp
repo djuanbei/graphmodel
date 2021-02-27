@@ -1,7 +1,8 @@
 #include "constraint/clockdiffcons.h"
+
 #include <cassert>
 
-namespace graphsat {
+namespace graphmodel {
 
 ClockConstraint::ClockConstraint(const Argument& clock_id1, COMP_OPERATOR eop,
                                  const Argument& rhs) {
@@ -216,4 +217,4 @@ ClockConstraint randConst(const int num, const int low, const int up) {
   }
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

@@ -1,6 +1,6 @@
 #include "benchmark/train_gate_controll.h"
 
-namespace graphsat {
+namespace graphmodel {
 typedef typename INT_TAS_t::Agent_t Agent_t;
 TrainGateControl::TrainGateControl() {}
 INT_TAS_t TrainGateControl::generate(int n) const {
@@ -101,4 +101,4 @@ INT_TAS_t TrainGateControl::generate(int n) const {
 
   return sys;
 }
-}  // namespace graphsat
+}  // namespace graphmodel

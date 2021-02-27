@@ -5,7 +5,7 @@
 #include "alg/one_step.h"
 #include "alg/ta_next_step.h"
 
-namespace graphsat {
+namespace graphmodel {
 bool Projector::include(const std::vector<std::vector<int>>& lhs,
 
                         const std::vector<std::vector<int>>& rhs) const {
@@ -167,4 +167,4 @@ bool Projector::projectStableCheck(
   return true;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

@@ -13,12 +13,11 @@
 #include <iostream>
 #include <vector>
 
+#include "model/system_generator.h"
 #include "state/reachableset.hpp"
 #include "state/ta_statemanager.h"
 
-#include "model/system_generator.h"
-
-namespace graphsat {
+namespace graphmodel {
 
 class Projector {
  public:
@@ -40,12 +39,13 @@ class Projector {
       const SystemGenerator* generator) const;
 
   virtual bool constructState(
-      TMStateManager * manager,
-      int* state, const std::vector<std::vector<int>>& projs,
-      const std::vector<std::vector<int>> & vertices, const std::vector<int>& choose,
+      TMStateManager* manager, int* state,
+      const std::vector<std::vector<int>>& projs,
+      const std::vector<std::vector<int>>& vertices,
+      const std::vector<int>& choose,
       const std::vector<std::pair<int, int>>& link_src_snk_map
-      //const std::map<int, int>& link_map
-                              ) const = 0;
+      // const std::map<int, int>& link_map
+  ) const = 0;
 
   virtual std::vector<int> getSrc(const std::vector<int>& proj) const = 0;
 
@@ -75,6 +75,6 @@ class Projector {
   const std::shared_ptr<TMStateManager> manager;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

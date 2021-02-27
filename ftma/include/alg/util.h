@@ -11,7 +11,7 @@
 #ifndef ALG_UTIL_H
 #define ALG_UTIL_H
 
-namespace graphsat {
+namespace graphmodel {
 
 template <typename T>
 bool vect_cmp(const std::vector<T>& lhs, const std::vector<T>& rhs) {
@@ -33,7 +33,7 @@ int findIndex(const std::vector<T>& values, const T& v) {
   }
   return it - values.begin();
 
-}  // namespace graphsat
+}
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

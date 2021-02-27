@@ -1,29 +1,23 @@
+#include <gtest/gtest.h>
+
 #include <random>
 #include <vector>
 
-#include <gtest/gtest.h>
-
-#include "state/discretestate.hpp"
-
+#include "benchmark/fischer.h"
+#include "benchmark/train_gate.h"
+#include "benchmark/train_gate_projector.h"
 #include "domain/dbm.h"
 #include "domain/dbmset.hpp"
-
-#include "property/fisherprop.h"
-
-#include "benchmark/fischer.h"
-
 #include "model/graphmodel.hpp"
 #include "model/location.h"
 #include "model/transition.h"
+#include "problem/pmcp.hpp"
 #include "problem/reachability.hpp"
+#include "property/fisherprop.h"
+#include "state/discretestate.hpp"
 #include "state/reachableset.hpp"
 
-#include "benchmark/train_gate.h"
-#include "benchmark/train_gate_projector.h"
-
-#include "problem/pmcp.hpp"
-
-using namespace graphsat;
+using namespace graphmodel;
 using namespace std;
 
 TEST(STATE_MANAGER_H, getStateLen) {
@@ -182,8 +176,8 @@ TEST(STATE_MANAGER_H, setValue) {
   // int index = 2 * (n + 1) + 1;
   for (int i = 0; i < 10; i++) {
     int v = rand() % 20;
-    manager->setValue(n,  "len", v, state);
-    EXPECT_EQ(*manager->getValue(n,  "len", state), v);
+    manager->setValue(n, "len", v, state);
+    EXPECT_EQ(*manager->getValue(n, "len", state), v);
   }
 
   manager->destroyState(state);

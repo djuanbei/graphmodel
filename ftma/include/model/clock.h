@@ -12,7 +12,7 @@
 #define TYPE_CLOCK_H
 #include <cassert>
 
-namespace graphsat {
+namespace graphmodel {
 
 struct Clock {
   explicit Clock(const int d) : id(d) {
@@ -23,6 +23,6 @@ struct Clock {
   const static Clock ZERO;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

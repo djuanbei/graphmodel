@@ -14,24 +14,22 @@
 #ifndef __DBM__HPP
 #define __DBM__HPP
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <limits>
 #include <map>
-#include <sstream>
-#include <vector>
-
-#include <cassert>
 #include <random>
+#include <sstream>
 #include <utility>
-
-#include "util/fastHash.h"
+#include <vector>
 
 #include "constraint/clockdiffcons.h"
 #include "util/dbmutil.hpp"
+#include "util/fastHash.h"
 
-namespace graphsat {
+namespace graphmodel {
 // using namespace std;
 
 #define ADD(x, y)                               \
@@ -422,6 +420,6 @@ class DBMManager {
                                    int i, int j, int clock_num);
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

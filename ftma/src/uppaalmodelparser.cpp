@@ -1,9 +1,11 @@
 #include "io/uppaalmodelparser.h"
+
 #include <cassert>
 #include <iostream>
+
 #include "util/dbmutil.hpp"
 
-namespace graphsat {
+namespace graphmodel {
 using namespace std;
 typedef typename INT_TAS_t::Agent_t Agent_t;
 UppaalParser::UppaalParser(const string& xmlfile) {
@@ -381,4 +383,4 @@ int UppaalParser::setChannel() {
   return 0;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel

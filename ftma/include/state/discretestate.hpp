@@ -22,7 +22,7 @@
 #include "util/fastHash.h"
 #include "util/typedef.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 using std::cin;
 using std::cout;
@@ -821,5 +821,5 @@ class CompactComposeStateSet : public ComposeStateSet<T> {
   ExpandComposeStateSet<T> other;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 #endif

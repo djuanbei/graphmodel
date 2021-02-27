@@ -14,7 +14,7 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
-namespace graphsat {
+namespace graphmodel {
 
 struct C_unique {
   int current;
@@ -53,6 +53,6 @@ class FullChoose {
   size_t current;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

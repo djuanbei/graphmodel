@@ -1,10 +1,9 @@
 #include "gtest/gtest.h"
-
 #include "util/argument.h"
 #include "util/strutil.h"
 #include "util/typedef.h"
 
-using namespace graphsat;
+using namespace graphmodel;
 
 TEST(Argument, to_string) {
   Argument h;

@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "util/typedef.h"
-namespace graphsat {
+namespace graphmodel {
 
 template <typename T>
 class Compression {
@@ -158,6 +158,6 @@ class StateConvert {
   Compression<C> body_comp;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

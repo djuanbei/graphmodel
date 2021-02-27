@@ -14,7 +14,7 @@
 #define RUN_XML_H
 
 #include <string>
-namespace graphsat {
+namespace graphmodel {
 
 void runxml(const std::string& file_name);
 }

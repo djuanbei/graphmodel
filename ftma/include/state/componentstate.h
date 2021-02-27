@@ -10,13 +10,13 @@
 
 #ifndef COMPONENT_STATE_H
 #define COMPONENT_STATE_H
-namespace graphsat {
+namespace graphmodel {
 
 class ComponentInfo {
  public:
   virtual int getComponentNumber() const { return 0; }
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

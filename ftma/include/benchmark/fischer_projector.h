@@ -11,13 +11,11 @@
 #define FISCHER_PROJECTOR_H
 #include <set>
 
-#include "graph/graph.hpp"
-
 #include "alg/projector.h"
-
+#include "graph/graph.hpp"
 #include "state/ta_statemanager.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 using namespace raptor;
 
@@ -38,13 +36,13 @@ class FischerProjector : public Projector {
 
   std::vector<int> getSnk(const std::vector<int>& proj) const override final;
 
-  bool constructState(TMStateManager* manager,
-                      int* state, const std::vector<std::vector<int>>& projs,
-                      const std::vector<std::vector<int> >& vertices,
+  bool constructState(TMStateManager* manager, int* state,
+                      const std::vector<std::vector<int>>& projs,
+                      const std::vector<std::vector<int>>& vertices,
                       const std::vector<int>& choose,
                       const std::vector<std::pair<int, int>>& link_src_snk_map
-                      //const std::map<int, int>& link_map
-                      ) const override final;
+                      // const std::map<int, int>& link_map
+  ) const override final;
 
   std::ostream& dump(const std::vector<int>& proj_e,
                      std::ostream& out) const override final {
@@ -79,6 +77,6 @@ class FischerProjector : public Projector {
   std::set<BetaElement> projb;
 };
 
-}  // namespace graphsat
+}  // namespace graphmodel
 
 #endif

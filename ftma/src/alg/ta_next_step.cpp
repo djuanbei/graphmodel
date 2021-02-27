@@ -1,7 +1,8 @@
 #include "alg/ta_next_step.h"
+
 #include <unordered_map>
 
-namespace graphsat {
+namespace graphmodel {
 
 std::vector<OneStep> TANextStep::getNextStep(void* s) const {
   int* state = (int*)s;
@@ -32,7 +33,8 @@ void TANextStep::doNormal(int* state, std::vector<OneStep>& re) const {
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
     if (sys.hasNormalCh(i, loc_a)) {
-      unordered_set<int> dummy_a = manager->getEnableOutNormalChan(i, loc_a, state);
+      unordered_set<int> dummy_a =
+          manager->getEnableOutNormalChan(i, loc_a, state);
       if (!dummy_a.empty()) {
         enableoutNorChan.push_back(std::move(dummy_a));
         has_enable_chan_components.push_back(i);
@@ -154,7 +156,8 @@ void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
   vector<unordered_set<int>> enableoutUrgantChan;
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
-    std::unordered_set<int> dummy_a = manager->getEnableOutUrgent(i, loc_a, state);
+    std::unordered_set<int> dummy_a =
+        manager->getEnableOutUrgent(i, loc_a, state);
     if (!dummy_a.empty()) {
       hasUrgentCh_part.push_back(i);
       enableoutUrgantChan.push_back(std::move(dummy_a));
@@ -207,7 +210,8 @@ void TANextStep::doUrgant(int* state, std::vector<OneStep>& re) const {
 void TANextStep::doBroadcast(int* state, std::vector<OneStep>& re) const {
   for (int i = 0; i < component_num; i++) {
     const int loc_a = manager->getLocationID(i, state);
-    std::unordered_set<int> dummy_a = manager->getEnableOutBroadcast(i, loc_a, state);
+    std::unordered_set<int> dummy_a =
+        manager->getEnableOutBroadcast(i, loc_a, state);
     if (!dummy_a.empty()) {
       std::set<int> temp(dummy_a.begin(), dummy_a.end());
       for (auto chid : temp) {
@@ -312,4 +316,4 @@ int TANextStep::getCommitCount(const int component, const int link,
 void TANextStep::doCommitComponent(int* state, int component,
                                    std::vector<OneStep>& re) const {}
 
-}  // namespace graphsat
+}  // namespace graphmodel

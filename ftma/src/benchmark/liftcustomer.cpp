@@ -1,6 +1,6 @@
 #include "benchmark/liftcustomer.h"
 
-namespace graphsat {
+namespace graphmodel {
 
 INT_TAS_t LiftCustomer::generate(int n) const {
   INT_TAS_t sys;
@@ -127,4 +127,4 @@ INT_TAS_t LiftCustomer::generate(int n) const {
   return sys;
 }
 
-}  // namespace graphsat
+}  // namespace graphmodel
