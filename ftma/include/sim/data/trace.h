@@ -46,9 +46,7 @@ class Trace {
   float getLongitude() const { return longitude; }
   float getLatitude() const { return latitude; }
 
-  void save(time_t time, string name, string content) { currentTime = time;
-
-  }
+  void save(time_t time, string name, string content) { currentTime = time; }
 
  private:
   long id;
