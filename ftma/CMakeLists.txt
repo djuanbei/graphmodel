@@ -8,8 +8,10 @@ option(test "Build all tests." OFF) # Makes boolean 'test' available.
 # Make PROJECT_SOURCE_DIR, PROJECT_BINARY_DIR, and PROJECT_NAME available.
 set(PROJECT_NAME gmodel)
 project(${PROJECT_NAME})
+set(CMAKE_CXX_FLAGS "-Werror -g -std=c++11")
+# -fdiagnostics-absolute-paths -Wno-deprecated-register")
 
-set(CMAKE_CXX_FLAGS "-Werror -g -std=c++11 -fdiagnostics-absolute-paths -Wno-deprecated-register")
+#set(CMAKE_CXX_FLAGS "-Werror -g -std=c++11 -fdiagnostics-absolute-paths -Wno-deprecated-register")
 #link_directories(/usr/local/lib/)
 
 # force static runtime libraries for msvc builds
@@ -31,7 +33,7 @@ endif()
 # include_directories(${COMMON_INCLUDES}) in other CMakeLists.txt files.
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 include_directories(${COMMON_INCLUDES}
-    ../../raptor/include
+        /home/yun/mycode/c++/raptor/include/
     #    /usr/local/include
 )
 

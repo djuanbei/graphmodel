@@ -17,6 +17,7 @@
 
 #include "example.h"
 #include "util/timer.h"
+#include <vector>
 
 #include <iostream>
 
